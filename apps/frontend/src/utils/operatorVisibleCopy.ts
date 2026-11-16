@@ -27,17 +27,15 @@ import {
 } from '@/utils/codeNameDictionaryCopy';
 import {
   DECODE_VISUALS_BETA,
-  DECODE_VISUALS_EMPTY,
   DECODE_VISUALS_FEEDBACK,
   DECODE_VISUALS_INTRO,
   DECODE_VISUALS_MAP_LOADING,
   DECODE_VISUALS_NO_MAP,
   DECODE_VISUALS_NO_REGION,
+  DECODE_VISUALS_NO_STATION,
   DECODE_VISUALS_NO_WIND,
   DECODE_VISUALS_OPEN,
   DECODE_VISUALS_REGION_CAPTION,
-  DECODE_VISUALS_SEARCH_PLACEHOLDER,
-  DECODE_VISUALS_STATION_LABEL,
   DECODE_VISUALS_TITLE,
   DECODE_VISUALS_WIND_VARIABLE,
 } from '@/utils/decodeVisualsCopy';
@@ -72,6 +70,7 @@ import {
   LIVE_MAP_ZOOM_HINT,
   productLabel,
 } from '@/utils/liveMap';
+import { LIVE_MAP_ACTIVE_EMPTY, LIVE_MAP_FILTER_ACTIVE } from '@/utils/liveMapValidity';
 import {
   LIVE_MAP_CLUSTER_COUNT,
   LIVE_MAP_CLUSTER_PICK,
@@ -412,12 +411,7 @@ export function collectOperatorVisibleCopy(): OperatorVisibleCopyEntry[] {
     { id: 'decode-visuals.intro', text: DECODE_VISUALS_INTRO },
     { id: 'decode-visuals.beta', text: DECODE_VISUALS_BETA },
     { id: 'decode-visuals.feedback', text: DECODE_VISUALS_FEEDBACK },
-    { id: 'decode-visuals.station', text: DECODE_VISUALS_STATION_LABEL },
-    {
-      id: 'decode-visuals.search-placeholder',
-      text: DECODE_VISUALS_SEARCH_PLACEHOLDER,
-    },
-    { id: 'decode-visuals.empty', text: DECODE_VISUALS_EMPTY },
+    { id: 'decode-visuals.no-station', text: DECODE_VISUALS_NO_STATION },
     { id: 'decode-visuals.no-map', text: DECODE_VISUALS_NO_MAP },
     { id: 'decode-visuals.map-loading', text: DECODE_VISUALS_MAP_LOADING },
     { id: 'decode-visuals.no-region', text: DECODE_VISUALS_NO_REGION },
@@ -457,6 +451,8 @@ export function collectOperatorVisibleCopy(): OperatorVisibleCopyEntry[] {
     { id: 'live-map.filter-region', text: LIVE_MAP_FILTER_REGION },
     { id: 'live-map.filter-time', text: LIVE_MAP_FILTER_TIME },
     { id: 'live-map.filter-phenomenon', text: LIVE_MAP_FILTER_PHENOMENON },
+    { id: 'live-map.filter-active', text: LIVE_MAP_FILTER_ACTIVE },
+    { id: 'live-map.active-empty', text: LIVE_MAP_ACTIVE_EMPTY },
     ...LIVE_MAP_PHENOMENA.map((item) => ({
       id: `live-map.phenomenon.${item.id}`,
       text: item.label,

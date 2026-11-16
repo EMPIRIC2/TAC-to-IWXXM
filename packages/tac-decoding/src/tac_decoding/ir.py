@@ -1,12 +1,13 @@
 """Project convert IR slots from a pack match.
 
 This is the convert side of a match. It does not emit XML and does not import
-``tac2iwxxm``.
+``tac2iwxxm``. [Corpus: product §F9]
 """
 
 from __future__ import annotations
 
 from tac_decoding.match import MatchResult
+from tac_decoding.models.ir import IrResidual, IrSpan, PackIr
 
 
 def project_ir(
@@ -14,7 +15,7 @@ def project_ir(
     *,
     product: str,
     pack_id: str,
-) -> dict[str, object]:
+) -> PackIr:
     """
     Build a pack IR dict beside the legacy parser IR.
 
@@ -32,36 +33,41 @@ def project_ir(
 
     Returns
     -------
-    dict[str, object]
+    PackIr
         Versioned IR projection. Callers keep legacy XML emit on the parser IR.
 
     Examples
     --------
-    >>> 1 + 1 # docstring smoke (project_ir)
+    >>> 1 + 1  # docstring smoke (project_ir)
     2
     """
+    spans: list[IrSpan] = [
+        {
+            "rule_id": span.rule_id,
+            "code": span.code,
+            "start": span.start,
+            "end": span.end,
+            "explanation": span.explanation,
+        }
+        for span in match.spans
+    ]
+    residuals: list[IrResidual] = [
+        {
+            "code": span.code,
+            "start": span.start,
+            "end": span.end,
+        }
+        for span in match.residuals
+    ]
     return {
         "ir_version": 1,
         "product": product.upper(),
         "pack_id": pack_id,
         "iwxxm_version": match.iwxxm_version,
         "profile": match.profile,
-        "spans": [
-            {
-                "rule_id": span.rule_id,
-                "code": span.code,
-                "start": span.start,
-                "end": span.end,
-                "explanation": span.explanation,
-            }
-            for span in match.spans
-        ],
-        "residuals": [
-            {
-                "code": span.code,
-                "start": span.start,
-                "end": span.end,
-            }
-            for span in match.residuals
-        ],
+        "spans": spans,
+        "residuals": residuals,
     }
+
+
+__all__ = ["IrResidual", "IrSpan", "PackIr", "project_ir"]

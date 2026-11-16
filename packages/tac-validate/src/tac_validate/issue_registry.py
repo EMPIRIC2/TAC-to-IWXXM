@@ -7,9 +7,111 @@ severity or code string literals. Catalog export (``make catalog-regen``) iterat
 
 from __future__ import annotations
 
+import string
+
 import msgspec
 
 from tac_validate.models import Issue
+
+# Catalog / soft-preview may render templates without live kwargs. Prefer a
+# readable noun over literal ``{product}`` braces in operator copy.
+_OPERATOR_FORMAT_DEFAULTS: dict[str, str] = {
+    "product": "report",
+    "token": "token",
+    "expected": "supported products",
+    "keywords": "product keywords",
+    "hit": "phenomena",
+    "family": "register",
+}
+
+
+def format_operator_message(template: str, **kwargs: object) -> str:
+    """
+    Format a registry message template for operators.
+
+    Missing placeholders use safe defaults (for example ``product`` → ``report``)
+    so catalog and soft-preview never show raw ``{product}`` braces.
+
+    Parameters
+    ----------
+    template : str
+        Registry ``message_template``.
+    **kwargs : object
+        Values for placeholders (``product``, ``token``, …).
+
+    Returns
+    -------
+    str
+        Formatted operator text with no unresolved ``{…}`` field names when
+        defaults cover the template.
+
+    Examples
+    --------
+    >>> format_operator_message("This {product} is an amendment (AMD).", product="taf")
+    'This TAF is an amendment (AMD).'
+    """
+    merged: dict[str, object] = dict(_OPERATOR_FORMAT_DEFAULTS)
+    for key, raw in kwargs.items():
+        if raw is None:
+            continue
+        text = str(raw).strip()
+        if not text:
+            continue
+        merged[key] = text.upper() if key == "product" else text
+    for _literal, field_name, _format_spec, _conversion in string.Formatter().parse(template):
+        if field_name and field_name not in merged:
+            # Omit unknown fields rather than echo the field name or braces.
+            merged[field_name] = ""
+    try:
+        return template.format(**merged)
+    except (KeyError, ValueError, IndexError):
+        return _strip_unresolved_braces(template, merged)
+
+
+def _strip_unresolved_braces(template: str, values: dict[str, object]) -> str:
+    """
+    Best-effort substitute then remove leftover ``{name}`` / ``{name!r}``.
+
+    Parameters
+    ----------
+    template : str
+        Message template that failed normal ``str.format``.
+    values : dict[str, object]
+        Placeholder values already merged with operator defaults.
+
+    Returns
+    -------
+    str
+        Operator text with known fields filled and unknown fields omitted.
+    """
+    text = template
+    for key, value in values.items():
+        text = text.replace(f"{{{key}!r}}", repr(value))
+        text = text.replace(f"{{{key}}}", str(value))
+    parts: list[str] = []
+    for literal, field_name, format_spec, conversion in string.Formatter().parse(text):
+        parts.append(literal or "")
+        if field_name is None:
+            continue
+        if field_name in values:
+            value = values[field_name]
+            try:
+                if conversion == "r":
+                    parts.append(repr(value))
+                elif conversion == "s":
+                    parts.append(str(value))
+                elif conversion == "a":
+                    parts.append(ascii(value))
+                elif format_spec:
+                    parts.append(format(value, format_spec))
+                else:
+                    parts.append(str(value))
+            except (ValueError, TypeError):
+                parts.append(str(value))
+        else:
+            # Omit unknown fields rather than show braces.
+            continue
+    return "".join(parts)
 
 
 class IssueSpec(msgspec.Struct, frozen=True):
@@ -80,579 +182,579 @@ ISSUES: tuple[IssueSpec, ...] = (
     _row(
         "UNKNOWN_PRODUCT",
         "error",
-        "Unknown product {product!r}; expected one of {expected}",
+        "Product {product!r} is not supported. Use one of: {expected}.",
         tags=("parse_gate",),
     ),
     _row(
         "EMPTY_TAC",
         "error",
-        "TAC text is empty",
+        "The TAC text is empty. Paste or load a report before conversion.",
         tags=("parse_gate", "body"),
     ),
     _row(
         "MISSING_PRODUCT_KEYWORD",
         "error",
-        "{product} TAC must contain one of {keywords}",
+        "This {product} must include one of these keywords: {keywords}.",
         tags=("parse_gate", "header"),
     ),
     _row(
         "INVALID_AHL",
         "error",
-        "WMO abbreviated heading is not valid communications format",
+        "The WMO abbreviated heading is not valid. Correct the heading before conversion.",
         tags=("bulletin", "ahl", "parse_gate"),
     ),
     _row(
         "MISSING_TERMINATOR",
         "info",
-        "Reports in bulletins end with '=' - add it before publishing",
+        "Bulletin reports should end with '='. Add the terminator before you publish.",
         tags=("terminator", "metar", "speci", "taf"),
     ),
     _row(
         "MISSING_CCCC",
         "error",
-        "{product} missing ICAO location (CCCC)",
+        "This {product} is missing the ICAO station location (CCCC). Add the four-letter location.",
         tags=("station", "metar", "speci", "taf", "sigmet", "airmet"),
     ),
     _row(
         "MISSING_OBS_TIME",
         "error",
-        "{product} missing observation time ddhhmmZ - A3-2 #3",
+        "This {product} is missing the observation time (ddhhmmZ). Add the time group.",
         tags=("time", "metar", "speci"),
     ),
     _row(
         "MISSING_DECODE_MATCH",
         "error",
-        "{product} annex3 theme checks require a decode match",
+        "This {product} could not be decoded for theme checks. Fix the TAC so decode succeeds.",
         tags=("match", "metar"),
     ),
     _row(
         "PARTIAL_DECODE",
         "warning",
-        "Some TAC tokens were not decoded (partial decode); conversion may still succeed",
+        "Some TAC tokens were not decoded. Conversion can still continue; review residual groups.",
         tags=("decode", "residual"),
     ),
     _row(
         "ODD_FIELD_ORDER",
         "warning",
-        "{product} groups out of A3-2 order (CCCC → ddhhmmZ → wind)",
+        "This {product} has groups out of the usual order (CCCC, then ddhhmmZ, then wind). Review the group order.",
         tags=("order", "station", "time", "metar", "speci"),
     ),
     _row(
         "MISSING_WIND",
         "error",
-        "{product} missing surface wind group - A3-2 #5",
+        "This {product} is missing the surface wind group. Add the wind group.",
         tags=("wind", "metar", "speci"),
     ),
     _row(
         "MISSING_VISIBILITY",
         "error",
-        "{product} missing visibility or CAVOK - A3-2 #6",
+        "This {product} is missing visibility or CAVOK. Add a visibility group or CAVOK.",
         tags=("visibility", "metar", "speci"),
     ),
     _row(
         "INVALID_VISIBILITY",
         "error",
-        "{product} invalid visibility token (use SM, meters, or CAVOK)",
+        "This {product} has an invalid visibility token. Use statute miles (SM), meters, or CAVOK.",
         tags=("visibility", "metar", "speci"),
     ),
     _row(
         "INVALID_WEATHER",
         "error",
-        "{product} invalid present weather token {token!r} - A3-2 #8",
+        "This {product} has an invalid present-weather token {token!r}. Correct the weather group.",
         tags=("weather", "metar", "speci"),
     ),
     _row(
         "MISSING_TEMP_DEWPOINT",
         "error",
-        "{product} missing temperature/dewpoint tt/td - A3-2 #10",
+        "This {product} is missing temperature/dewpoint (tt/td). Add the temperature group.",
         tags=("temperature", "metar", "speci"),
     ),
     _row(
         "DEWPOINT_NOT_OBSERVABLE",
         "info",
-        "{product} dewpoint not observable (tt///) - temperature present",
+        "This {product} shows dewpoint as not observable (tt///). Temperature is present. Conversion can continue.",
         tags=("temperature", "metar", "speci", "auto"),
     ),
     _row(
         "MISSING_QNH",
         "error",
-        "{product} missing QNH/altimeter (Qnnnn/Annnn) - A3-2 #11",
+        "This {product} is missing QNH or altimeter (Qnnnn or Annnn). Add the pressure group.",
         tags=("pressure", "metar", "speci"),
     ),
     _row(
         "INVALID_CLOUD_TOKEN",
         "error",
-        "{product} invalid cloud/VV token {token!r} - A3-2 #9",
+        "This {product} has an invalid cloud or VV token {token!r}. Correct the cloud group.",
         tags=("cloud", "metar", "speci"),
     ),
     _row(
         "CLOUD_CB_OR_TCU",
         "info",
-        "{product} cloud group includes convective type CB/TCU",
+        "This {product} cloud group includes convective type CB or TCU. Conversion can continue.",
         tags=("cloud", "metar", "speci", "cb", "tcu"),
     ),
     _row(
         "CLOUD_TYPE_NOT_OBSERVABLE",
         "info",
-        "{product} cloud group uses /// because the convective cloud type was not observed. Informational: noted for operator awareness; does not by itself block conversion. Source: nilReason notObservable.",
+        "This {product} cloud group uses /// because convective cloud type was not observed. Conversion can continue.",
         tags=("cloud", "metar", "speci", "auto"),
     ),
     _row(
         "REMARK_US_EXTENSION",
         "info",
-        "{product} US remarks present - iwxxm_us profile awareness",
+        "This {product} includes US remark groups used with the US IWXXM profile. Conversion can continue.",
         tags=("remark", "metar", "speci", "iwxxm_us"),
     ),
     _row(
         "INVALID_REMARK",
         "error",
-        "{product} malformed remark group {token!r}",
+        "This {product} has a malformed remark group {token!r}. Correct the remark.",
         tags=("remark", "metar", "speci", "iwxxm_us"),
     ),
     _row(
         "MALFORMED_SOURCE_TOKEN",
         "warning",
-        "{product} looks like a source typo or garbled group {token!r}",
+        "This {product} has a token that looks garbled or mistyped: {token!r}. Review and correct it.",
         tags=("parse_gate", "metar", "speci", "taf", "sigmet"),
     ),
     _row(
         "AUTO_PRESENT",
         "info",
-        "{product} includes the AUTO modifier, meaning the observation was produced by an automatic station. Informational: noted for operator awareness; does not by itself block conversion. Source: ICAO Annex 3 Table A3-2 / App 3. Full normative text may require purchase.",
+        "This {product} was produced by an automatic station (AUTO). Conversion can continue.",
         tags=("modifier", "metar", "speci"),
     ),
     _row(
         "CA_STATUTE_MILE_VIS",
         "info",
-        "{product} uses statute-mile visibility - MANOBS Canadian overlay",
+        "This {product} uses statute-mile visibility (Canadian MANOBS). Conversion can continue.",
         tags=("visibility", "metar", "speci", "ca_eccc", "manobs"),
     ),
     _row(
         "CA_ALTIMETER_INHG",
         "info",
-        "{product} uses inch-of-mercury altimeter (A####) - MANOBS Canadian overlay",
+        "This {product} uses an inch-of-mercury altimeter (A####) (Canadian MANOBS). Conversion can continue.",
         tags=("pressure", "metar", "speci", "ca_eccc", "manobs"),
     ),
     _row(
         "CA_REMARK_MANOBS",
         "info",
-        "{product} Canadian REMARKS present - ca_eccc profile awareness",
+        "This {product} includes Canadian REMARKS (MANOBS). Conversion can continue.",
         tags=("remark", "metar", "speci", "ca_eccc", "manobs"),
     ),
     _row(
         "CA_REMARK_PRESRR",
         "info",
-        "{product} MANOBS pressure rising rapidly (PRESRR) - ca_eccc profile awareness",
+        "This {product} includes PRESRR (pressure rising rapidly). Conversion can continue.",
         tags=("remark", "metar", "speci", "ca_eccc", "manobs", "presrr"),
     ),
     _row(
         "CA_REMARK_PRESFR",
         "info",
-        "{product} MANOBS pressure falling rapidly (PRESFR) - ca_eccc profile awareness",
+        "This {product} includes PRESFR (pressure falling rapidly). Conversion can continue.",
         tags=("remark", "metar", "speci", "ca_eccc", "manobs", "presfr"),
     ),
     _row(
         "CA_REMARK_NOSPECI",
         "info",
-        "{product} MANOBS no-specials remark (NOSPECI) - ca_eccc profile awareness",
+        "This {product} includes NOSPECI (no specials). Conversion can continue.",
         tags=("remark", "metar", "speci", "ca_eccc", "manobs", "nospeci"),
     ),
     _row(
         "CA_REMARK_SECTOR_VIS",
         "info",
-        "{product} MANOBS sector visibility remark - ca_eccc profile awareness",
+        "This {product} includes a sector visibility remark. Conversion can continue.",
         tags=("remark", "metar", "speci", "ca_eccc", "manobs", "visibility"),
     ),
     _row(
         "CA_ALTIMETER_NOT_OBS",
         "info",
-        "{product} altimeter not observable (A////) - MANOBS Canadian overlay",
+        "This {product} shows altimeter as not observable (A////). Conversion can continue.",
         tags=("pressure", "metar", "speci", "ca_eccc", "manobs"),
     ),
     _row(
         "CA_METAR_LWIS",
         "info",
-        "{product} Limited Weather Information System (LWIS) report - MANOBS CA overlay",
+        "This {product} is a Limited Weather Information System (LWIS) report. Conversion can continue.",
         tags=("metar", "ca_eccc", "manobs", "lwis"),
     ),
     _row(
         "CA_METAR_SAWR",
         "info",
-        "{product} Surface Aviation Weather Report (SAWR) - MANOBS CA overlay",
+        "This {product} is a Surface Aviation Weather Report (SAWR). Conversion can continue.",
         tags=("metar", "ca_eccc", "manobs", "sawr"),
     ),
     _row(
         "CA_TAF_NCLWS",
         "info",
-        "{product} includes MANAIR non-convective low-level wind shear (WS group)",
+        "This {product} includes non-convective low-level wind shear (WS). Conversion can continue.",
         tags=("taf", "ca_eccc", "manair", "nclws"),
     ),
     _row(
         "IN_TAF_TX_TN_OMITTED",
         "info",
-        "{product} does not include TX/TN temperature forecast groups. Informational: India Meteorological Department TAFs often omit temperature extremes; this does not by itself block conversion.",
+        "This {product} omits TX/TN temperature extremes. India Meteorological Department TAFs often do this. Conversion can continue.",
         product="TAF",
         tags=("taf", "in_imd", "temperature", "tx_tn"),
     ),
     _row(
         "US_TAF_BECMG_FORBIDDEN",
         "error",
-        "{product} BECMG change group is forbidden under US_FAA_NWS",
+        "This {product} must not use BECMG under the US FAA/NWS profile. Remove BECMG or change the profile.",
         product="TAF",
         tags=("taf", "iwxxm_us", "us_faa_nws"),
     ),
     _row(
         "US_TAF_TEMPO_MAX_4H",
         "error",
-        "{product} TEMPO change group exceeds 4-hour US_FAA_NWS maximum",
+        "This {product} TEMPO period is longer than the 4-hour US FAA/NWS maximum. Shorten TEMPO.",
         product="TAF",
         tags=("taf", "iwxxm_us", "us_faa_nws"),
     ),
     _row(
         "US_TAF_PROB40_NOT_USED",
         "error",
-        "{product} PROB40 change group is not used in NWS TAFs under US_FAA_NWS",
+        "This {product} must not use PROB40 under the US FAA/NWS profile. Remove PROB40 or change the profile.",
         product="TAF",
         tags=("taf", "iwxxm_us", "us_faa_nws", "prob40"),
     ),
     _row(
         "US_METAR_STATUTE_MILE_VIS",
         "info",
-        "{product} uses statute-mile visibility with SM - US national METAR overlay",
+        "This {product} uses statute-mile visibility with SM (US METAR). Conversion can continue.",
         tags=("metar", "speci", "iwxxm_us", "us_faa_nws", "visibility"),
     ),
     _row(
         "US_METAR_INHG_ALTIMETER",
         "info",
-        "{product} uses inch-of-mercury altimeter (A####) - US national METAR overlay",
+        "This {product} uses an inch-of-mercury altimeter (A####) (US METAR). Conversion can continue.",
         tags=("metar", "speci", "iwxxm_us", "us_faa_nws", "pressure"),
     ),
     _row(
         "CA_METAR_UP_AWOS_ONLY",
         "info",
-        "{product} unknown precipitation (UP) is an AWOS-only present-weather code under CA_ECCC",
+        "This {product} uses UP (unknown precipitation), which is AWOS-only under the Canadian profile. Conversion can continue.",
         tags=("metar", "speci", "ca_eccc", "manobs", "awos", "up"),
     ),
     _row(
         "US_SWXA_SATCOM_NOT_ISSUED",
         "error",
-        "{product} SATCOM space weather is not issued under US_FAA_NWS",
+        "This {product} must not issue SATCOM space weather under the US FAA/NWS profile. Remove SATCOM or change the profile.",
         product="SWXA",
         tags=("swxa", "iwxxm_us", "us_faa_nws", "satcom"),
     ),
     _row(
         "US_TCA_OBSERVED_CB_NOT_PROVIDED",
         "error",
-        "{product} observed CB must be NIL under US_FAA_NWS - observed CB not provided",
+        "This {product} must set observed CB to NIL under the US FAA/NWS profile. Observed CB is not provided.",
         product="TCA",
         tags=("tca", "iwxxm_us", "us_faa_nws", "cb"),
     ),
     _row(
         "CA_AIRMET_GFA",
         "info",
-        "{product} encodes MANAIR GFA compound phenomenon - ca_eccc profile awareness",
+        "This {product} encodes a MANAIR GFA compound phenomenon. Conversion can continue.",
         tags=("airmet", "ca_eccc", "manair", "gfa"),
     ),
     _row(
         "COR_PRESENT",
         "info",
-        "{product} includes the COR (correction) modifier, indicating a corrected report replacing a prior issue. Informational: noted for operator awareness; does not by itself block conversion. Source: ICAO Annex 3 App 5 / Table A5-1. Full normative text may require purchase.",
+        "This {product} is a correction (COR). Conversion can continue.",
         tags=("modifier", "metar", "speci", "taf"),
     ),
     _row(
         "AMD_PRESENT",
         "info",
-        "{product} includes the AMD (amendment) modifier, indicating an amended forecast. Informational: noted for operator awareness; does not by itself block conversion. Source: ICAO Annex 3 App 5 / Table A5-1. Full normative text may require purchase.",
+        "This {product} is an amendment (AMD). Conversion can continue.",
         product="taf",
         tags=("modifier", "taf"),
     ),
     _row(
         "NIL_REPORT",
         "info",
-        "{product} is a NIL report (no observation/forecast available for the period). Informational: noted for operator awareness; does not by itself block conversion. Source: ICAO Annex 3 App 5 / Table A5-1. Full normative text may require purchase.",
+        "This {product} is a NIL report (no observation or forecast for the period). Conversion can continue.",
         tags=("nil", "metar", "speci", "taf"),
     ),
     _row(
         "CNL_REPORT",
         "info",
-        "{product} is a CNL (cancel) report that withdraws a previously issued forecast. Informational: noted for operator awareness; does not by itself block conversion. Source: ICAO Annex 3 App 5 / Table A5-1. Full normative text may require purchase.",
+        "This {product} is a cancel (CNL) that withdraws a prior forecast. Conversion can continue.",
         product="taf",
         tags=("cnl", "taf"),
     ),
     _row(
         "INVALID_NIL",
         "error",
-        "{product} NIL report also contains body groups; NIL must stand alone without observation/forecast body content. Error: the TAC does not meet a required format or product rule and should be corrected. Source: ICAO Annex 3 App 5 / Table A5-1. Full normative text may require purchase.",
+        "This {product} is marked NIL but still has body groups. NIL must stand alone. Remove the body content.",
         tags=("nil", "metar", "speci", "taf"),
     ),
     _row(
         "MULTI_REPORT_BULLETIN",
         "info",
-        "{product} bulletin has multiple TAC reports - one IWXXM report per TAC (Guidance C1)",
+        "This {product} bulletin has more than one TAC report. Convert one report at a time.",
         tags=("bulletin", "metar", "speci", "taf", "sigmet", "airmet", "one_report"),
     ),
     _row(
         "NOSIG_PRESENT",
         "info",
-        "{product} includes a NOSIG trend, meaning no significant change is expected. Informational: noted for operator awareness; does not by itself block conversion. Source: ICAO Annex 3 Table A3-2 / App 3. Full normative text may require purchase.",
+        "This {product} includes NOSIG (no significant change expected). Conversion can continue.",
         tags=("trend", "metar", "speci"),
     ),
     _row(
         "TEMPO_PRESENT",
         "info",
-        "{product} includes a TEMPO trend/change group for temporary fluctuations. Informational: noted for operator awareness; does not by itself block conversion. Source: ICAO Annex 3 App 5 / Table A5-1. Full normative text may require purchase.",
+        "This {product} includes TEMPO (temporary fluctuations). Conversion can continue.",
         tags=("trend", "change", "metar", "speci", "taf"),
     ),
     _row(
         "RVR_PRESENT",
         "info",
-        "{product} includes one or more runway visual range (RVR) groups. Informational: noted for operator awareness; does not by itself block conversion. Source: ICAO Annex 3 Table A3-2 / App 3. Full normative text may require purchase.",
+        "This {product} includes runway visual range (RVR) groups. Conversion can continue.",
         tags=("rvr", "metar", "speci"),
     ),
     _row(
         "INVALID_RVR",
         "error",
-        "{product} has an invalid RVR token {token!r} that does not match allowed RVR syntax. Error: the TAC does not meet a required format or product rule and should be corrected. Source: No single RVR concept register - cite 49-2 family + grammar sources.",
+        "This {product} has an invalid RVR token {token!r}. Correct the RVR group.",
         tags=("rvr", "metar", "speci"),
     ),
     _row(
         "WIND_VRB_OR_GUST",
         "info",
-        "{product} wind group uses variable direction (VRB) and/or a gust value. Informational: noted for operator awareness; does not by itself block conversion. Source: ICAO Annex 3 Table A3-2 / App 3. Full normative text may require purchase.",
+        "This {product} wind group uses variable direction (VRB) and/or a gust. Conversion can continue.",
         tags=("wind", "metar", "speci"),
     ),
     _row(
         "INVALID_WIND",
         "error",
-        "{product} has an invalid wind token {token!r}. Error: the TAC does not meet a required format or product rule and should be corrected. Source: Wind not in AerodromePresentWeather list.",
+        "This {product} has an invalid wind token {token!r}. Correct the wind group.",
         tags=("wind", "metar", "speci"),
     ),
     _row(
         "MISSING_ISSUE_TIME",
         "error",
-        "TAF missing issue time ddhhmmZ - A5-1 #3",
+        "This TAF is missing the issue time (ddhhmmZ). Add the issue time.",
         product="taf",
         tags=("time", "taf"),
     ),
     _row(
         "MISSING_VALIDITY",
         "error",
-        "TAF missing validity period ddhh/ddhh - A5-1 #5",
+        "This TAF is missing the validity period (ddhh/ddhh). Add the validity period.",
         product="taf",
         tags=("validity", "taf"),
     ),
     _row(
         "INVALID_CNL_SHAPE",
         "error",
-        "TAF CNL must end the message - A5-1 #6",
+        "This TAF CNL must end the message. Remove content after CNL.",
         product="taf",
         tags=("cnl", "taf"),
     ),
     _row(
         "FM_PRESENT",
         "info",
-        "{product} includes an FM (from) change group that starts a new forecast period. Informational: noted for operator awareness; does not by itself block conversion. Source: ICAO Annex 3 App 5 / Table A5-1. Full normative text may require purchase.",
+        "This {product} includes an FM (from) change group. Conversion can continue.",
         product="taf",
         tags=("change", "taf", "fm"),
     ),
     _row(
         "BECMG_PRESENT",
         "info",
-        "{product} includes a BECMG (becoming) change group describing a gradual change. Informational: noted for operator awareness; does not by itself block conversion. Source: ICAO Annex 3 App 5 / Table A5-1. Full normative text may require purchase.",
+        "This {product} includes a BECMG (becoming) change group. Conversion can continue.",
         product="taf",
         tags=("change", "taf", "becmg"),
     ),
     _row(
         "PROB_PRESENT",
         "info",
-        "{product} includes a PROB30 or PROB40 probability change group. Informational: noted for operator awareness; does not by itself block conversion. Source: ICAO Annex 3 App 5 / Table A5-1. Full normative text may require purchase.",
+        "This {product} includes a PROB30 or PROB40 probability group. Conversion can continue.",
         product="taf",
         tags=("change", "taf", "prob"),
     ),
     _row(
         "TL_PRESENT",
         "info",
-        "{product} includes a TL (until) time qualifier on a change group. Informational: noted for operator awareness; does not by itself block conversion. Source: ICAO Annex 3 App 5 / Table A5-1. Full normative text may require purchase.",
+        "This {product} includes a TL (until) time qualifier. Conversion can continue.",
         product="taf",
         tags=("change", "taf", "tl"),
     ),
     _row(
         "AT_PRESENT",
         "info",
-        "{product} includes an AT time qualifier on a change group. Informational: noted for operator awareness; does not by itself block conversion. Source: ICAO Annex 3 App 5 / Table A5-1. Full normative text may require purchase.",
+        "This {product} includes an AT time qualifier. Conversion can continue.",
         product="taf",
         tags=("change", "taf", "at"),
     ),
     _row(
         "INVALID_PROB",
         "error",
-        "{product} has an invalid PROB group (only PROB30/PROB40 are allowed; PROB must not qualify BECMG/FM). Error: the TAC does not meet a required format or product rule and should be corrected. Source: ICAO Annex 3 App 5 / Table A5-1. Full normative text may require purchase.",
+        "This {product} has an invalid PROB group. Use only PROB30 or PROB40, and do not qualify BECMG or FM with PROB.",
         product="taf",
         tags=("change", "taf", "prob"),
     ),
     _row(
         "PROB_PERIOD_WITHOUT_TEMPO",
         "warning",
-        "{product} historically flagged standalone PROB30/40 + period (or INTER) without TEMPO. Annex 3 allows standalone PROB; emission retired — engines emit PROB_PRESENT info instead. True defects stay INVALID_PROB. Source: ICAO Annex 3 App 5 / Table A5-1 and live eval.",
+        "This {product} has a standalone PROB30/40 period. Annex 3 allows that form; engines emit PROB_PRESENT for awareness. True defects stay INVALID_PROB.",
         product="taf",
         tags=("change", "taf", "prob"),
     ),
     _row(
         "TX_TN_PRESENT",
         "info",
-        "{product} includes TX/TN temperature forecast groups on the base forecast. Informational: noted for operator awareness; does not by itself block conversion. Source: ICAO Annex 3 App 5 / Table A5-1. Full normative text may require purchase.",
+        "This {product} includes TX/TN temperature forecasts on the base forecast. Conversion can continue.",
         product="taf",
         tags=("temperature", "taf"),
     ),
     _row(
         "INVALID_TX_TN",
         "error",
-        "{product} places TX/TN temperature groups outside the base forecast where they are not allowed. Error: the TAC does not meet a required format or product rule and should be corrected. Source: ICAO Annex 3 App 5 / Table A5-1. Full normative text may require purchase.",
+        "This {product} places TX/TN outside the base forecast. Move TX/TN to the base forecast only.",
         product="taf",
         tags=("temperature", "taf"),
     ),
     _row(
         "CAVOK_PRESENT",
         "info",
-        "{product} includes CAVOK (ceiling and visibility OK). Informational: noted for operator awareness; does not by itself block conversion. Source: ICAO Annex 3 App 5 / Table A5-1. Full normative text may require purchase.",
+        "This {product} includes CAVOK (ceiling and visibility OK). Conversion can continue.",
         tags=("cavok", "metar", "speci", "taf"),
     ),
     _row(
         "NSC_PRESENT",
         "info",
-        "{product} includes NSC (no significant cloud). Informational: noted for operator awareness; does not by itself block conversion. Source: ICAO Annex 3 App 5 / Table A5-1. Full normative text may require purchase.",
+        "This {product} includes NSC (no significant cloud). Conversion can continue.",
         tags=("cloud", "metar", "speci", "taf"),
     ),
     _row(
         "NSC_WITH_CLOUD_LAYERS",
         "warning",
-        "{product} combines NSC (no significant cloud) with FEW/SCT/BKN/OVC cloud layers in the same group - FAQ §14.3 exclusivity. Warning: conflicting cloud amounts may confuse downstream systems; review before dissemination. Source: ICAO Annex 3 FAQ §14.3. Full normative text may require purchase.",
+        "This {product} combines NSC with FEW/SCT/BKN/OVC in the same group (FAQ 14.3 exclusivity). Review before you publish.",
         tags=("cloud", "metar", "speci", "taf"),
     ),
     _row(
         "NCD_PRESENT",
         "info",
-        "{product} includes NCD (no cloud detected), typically from AUTO stations. Informational: noted for operator awareness; does not by itself block conversion. Source: NCD cloud amount notation family.",
+        "This {product} includes NCD (no cloud detected), often from AUTO stations. Conversion can continue.",
         tags=("cloud", "metar", "speci", "auto"),
     ),
     _row(
         "NSW_PRESENT",
         "info",
-        "{product} includes NSW (nil significant weather). Informational: noted for operator awareness; does not by itself block conversion. Source: ICAO Annex 3 App 5 / Table A5-1. Full normative text may require purchase.",
+        "This {product} includes NSW (nil significant weather). Conversion can continue.",
         tags=("weather", "metar", "speci", "taf"),
     ),
     _row(
         "VV_OMIT",
         "info",
-        "{product} uses VV///; vertical visibility should be omitted without a nil reason in this product context. Informational: noted for operator awareness; does not by itself block conversion. Source: ICAO Annex 3 App 5 / Table A5-1. Full normative text may require purchase.",
+        "This {product} uses VV///. For this product, omit vertical visibility when there is no nil reason. Conversion can continue.",
         product="taf",
         tags=("cloud", "taf", "vv"),
     ),
     _row(
         "VV_NOT_OBSERVABLE",
         "info",
-        "{product} uses VV/// meaning vertical visibility is not observable. Informational: noted for operator awareness; does not by itself block conversion. Source: Vertical visibility missingness via nil.",
+        "This {product} uses VV/// (vertical visibility not observable). Conversion can continue.",
         tags=("cloud", "metar", "speci", "vv"),
     ),
     _row(
         "WX_NOT_OBSERVABLE",
         "info",
-        "{product} present weather uses // meaning weather phenomena are not observable. Informational: noted for operator awareness; does not by itself block conversion. Source: nilReason notObservable; prefer iwxxm/nil when pin policy says so.",
+        "This {product} present weather uses // (phenomena not observable). Conversion can continue.",
         tags=("weather", "metar", "speci"),
     ),
     _row(
         "WIND_DIR_VARIATION",
         "info",
-        "{product} includes wind direction variation in dddVddd form. Informational: noted for operator awareness; does not by itself block conversion. Source: ICAO Annex 3 Table A3-2 / App 3. Full normative text may require purchase.",
+        "This {product} includes wind direction variation (dddVddd). Conversion can continue.",
         tags=("wind", "metar", "speci"),
     ),
     _row(
         "MISSING_VALID",
         "error",
-        "{product} missing VALID ddhhmm/ddhhmm period - A6 identity",
+        "This {product} is missing the VALID period (ddhhmm/ddhhmm). Add the validity period.",
         tags=("valid", "sigmet", "airmet"),
     ),
     _row(
         "MULTIPLE_PHENOMENA",
         "error",
-        "{product} encodes multiple phenomenon families {hit} - A6 one-phenomenon gate",
+        "This {product} encodes more than one phenomenon family ({hit}). Keep one phenomenon family per report.",
         tags=("phenomenon", "sigmet", "airmet"),
     ),
     # S059 / EV-050 / #959 - offline WMO register membership (Validated)
     _row(
         "UNKNOWN_WMO_MEMBERSHIP",
         "error",
-        "{product} token {token!r} not in WMO register ({family})",
+        "This {product} token {token!r} is not in the WMO register ({family}). Correct the token.",
         tags=("membership", "wmo", "weather", "cloud", "phenomenon"),
     ),
     # F23 theme G1 - general SIGMET exceptional (#733 / research G1)
     _row(
         "SIGMET_CNL",
         "info",
-        "SIGMET CNL cancel report. Informational: noted for operator awareness; does not by itself block conversion. Source: EUR Doc 014 public; Annex 3 paywall companion.",
+        "This SIGMET is a cancel (CNL). Conversion can continue.",
         product="sigmet",
         tags=("cnl", "sigmet"),
     ),
     _row(
         "STNR_MOVEMENT",
         "info",
-        "SIGMET/AIRMET STNR stationary movement. Informational: noted for operator awareness; does not by itself block conversion. Source: EUR Doc 014 public; Annex 3 paywall companion.",
+        "This SIGMET/AIRMET is stationary (STNR). Conversion can continue.",
         product="sigmet",
         tags=("stnr", "movement", "sigmet", "airmet"),
     ),
     _row(
         "POINT_LOCATION",
         "info",
-        "SIGMET single-point location (encode CircleByCenterPoint r=0). Informational: noted for operator awareness; does not by itself block conversion. Source: EUR Doc 014 public; Annex 3 paywall companion.",
+        "This SIGMET uses a single-point location. Conversion can continue.",
         product="sigmet",
         tags=("geometry", "point", "sigmet"),
     ),
     _row(
         "SINGLE_ALTITUDE",
         "info",
-        "SIGMET single altitude (same lower/upper). Informational: noted for operator awareness; does not by itself block conversion. Source: EUR Doc 014 public; Annex 3 paywall companion.",
+        "This SIGMET uses one altitude for lower and upper. Conversion can continue.",
         product="sigmet",
         tags=("altitude", "sigmet"),
     ),
     _row(
         "POLYGON_LOCATION",
         "info",
-        "SIGMET polygon/line WI geometry. Informational: noted for operator awareness; does not by itself block conversion. Source: EUR Doc 014 public; Annex 3 paywall companion.",
+        "This SIGMET uses WI polygon or line geometry. Conversion can continue.",
         product="sigmet",
         tags=("geometry", "polygon", "sigmet"),
     ),
     _row(
         "TOP_ABV_OR_BLW",
         "info",
-        "SIGMET/AIRMET TOP ABV/BLW level grammar. Informational: noted for operator awareness; does not by itself block conversion. Source: EUR Doc 014 public; Annex 3 paywall companion.",
+        "This SIGMET/AIRMET uses TOP ABV or TOP BLW level wording. Conversion can continue.",
         product="sigmet",
         tags=("altitude", "top", "sigmet", "airmet"),
     ),
     _row(
         "INVALID_SIGMET_CNL",
         "error",
-        "SIGMET CNL must omit phenomenon/analysis body. Error: the TAC does not meet a required format or product rule and should be corrected. Source: EUR Doc 014 public; Annex 3 paywall companion.",
+        "This SIGMET CNL must omit phenomenon and analysis body. Remove the body content.",
         product="sigmet",
         tags=("cnl", "sigmet"),
     ),
     _row(
         "INVALID_SIGMET_COR",
         "error",
-        "SIGMET must not use COR (cancel + re-issue). Error: the TAC does not meet a required format or product rule and should be corrected. Source: EUR Doc 014 public; Annex 3 paywall companion.",
+        "This SIGMET must not use COR. Cancel and re-issue instead.",
         product="sigmet",
         tags=("cor", "sigmet"),
     ),
     _row(
         "INVALID_STNR_MOVEMENT",
         "error",
-        "SIGMET/AIRMET STNR conflicts with MOV. Error: the TAC does not meet a required format or product rule and should be corrected. Source: EUR Doc 014 public; Annex 3 paywall companion.",
+        "This SIGMET/AIRMET has STNR together with MOV. Remove one of the conflicting movement groups.",
         product="sigmet",
         tags=("stnr", "movement", "sigmet", "airmet"),
     ),
     _row(
         "DVLPG_AREA_QUALIFIER",
         "error",
-        "Convective SIGMET has a misplaced or incomplete DVLPG (developing) qualifier. Use DVLPG AREA after the FROM ring; DVLPG is a hazard qualifier, not a VOR offset.",
+        "This convective SIGMET has a misplaced or incomplete DVLPG (developing) qualifier. Put DVLPG AREA after the FROM ring.",
         product="sigmet",
         tags=("geometry", "convective", "sigmet", "us_nws"),
     ),
@@ -660,56 +762,56 @@ ISSUES: tuple[IssueSpec, ...] = (
     _row(
         "SIGMET_SEQUENCE",
         "info",
-        "{product} includes a recognized SIGMET SEQUENCE element/group in the TAC text. Informational: noted for operator awareness; does not by itself block conversion. Source: EUR Doc 014 public; Annex 3 paywall companion.",
+        "This {product} includes a SEQUENCE number. Conversion can continue.",
         product="sigmet",
         tags=("sequence", "sigmet"),
     ),
     _row(
         "FIR_OR_CTA",
         "info",
-        "SIGMET FIR/CTA/UIR airspace identity. Informational: noted for operator awareness; does not by itself block conversion. Source: EUR Doc 014 public; Annex 3 paywall companion.",
+        "This SIGMET names FIR, CTA, or UIR airspace. Conversion can continue.",
         product="sigmet",
         tags=("fir", "cta", "sigmet"),
     ),
     _row(
         "OBS_OR_FCST",
         "info",
-        "SIGMET/AIRMET OBS or FCST analysis. Informational: noted for operator awareness; does not by itself block conversion. Source: EUR Doc 014 public; Annex 3 paywall companion.",
+        "This SIGMET/AIRMET includes OBS or FCST. Conversion can continue.",
         product="sigmet",
         tags=("obs", "fcst", "sigmet", "airmet"),
     ),
     _row(
         "INTENSITY_CHANGE",
         "info",
-        "SIGMET/AIRMET intensity change INTSF/WKN/NC. Informational: noted for operator awareness; does not by itself block conversion. Source: EUR Doc 014 public; Annex 3 paywall companion.",
+        "This SIGMET/AIRMET includes intensity change (INTSF, WKN, or NC). Conversion can continue.",
         product="sigmet",
         tags=("intensity", "sigmet", "airmet"),
     ),
     _row(
         "MISSING_SEQUENCE",
         "error",
-        "SIGMET/AIRMET missing sequence number. Error: the TAC does not meet a required format or product rule and should be corrected. Source: EUR Doc 014 public; Annex 3 paywall companion.",
+        "This SIGMET/AIRMET is missing a sequence number. Add the sequence number.",
         product="sigmet",
         tags=("sequence", "sigmet", "airmet"),
     ),
     _row(
         "INVALID_VALIDITY_DURATION",
         "error",
-        "SIGMET VALID period exceeds 4 hours (WS). Error: the TAC does not meet a required format or product rule and should be corrected. Source: EUR Doc 014 public; Annex 3 paywall companion.",
+        "This SIGMET VALID period is longer than 4 hours (WS). Shorten the validity period.",
         product="sigmet",
         tags=("valid", "sigmet"),
     ),
     _row(
         "MISSING_FIR_OR_CTA",
         "error",
-        "SIGMET/AIRMET missing FIR/CTA/UIR airspace identity. Error: the TAC does not meet a required format or product rule and should be corrected. Source: EUR Doc 014 public; Annex 3 paywall companion.",
+        "This SIGMET/AIRMET is missing FIR, CTA, or UIR airspace identity. Add the airspace name.",
         product="sigmet",
         tags=("fir", "cta", "sigmet", "airmet"),
     ),
     _row(
         "MISSING_OBS_OR_FCST",
         "error",
-        "SIGMET/AIRMET missing OBS or FCST. Error: the TAC does not meet a required format or product rule and should be corrected. Source: EUR Doc 014 public; Annex 3 paywall companion.",
+        "This SIGMET/AIRMET is missing OBS or FCST. Add OBS or FCST.",
         product="sigmet",
         tags=("obs", "fcst", "sigmet", "airmet"),
     ),
@@ -717,216 +819,216 @@ ISSUES: tuple[IssueSpec, ...] = (
     _row(
         "VA_VOLCANO_IDENTITY",
         "info",
-        "VA SIGMET erupting volcano identity (name/MT PSN). Informational: noted for operator awareness; does not by itself block conversion. Source: EUR Doc 014 public; Annex 3 paywall companion.",
+        "This VA SIGMET names the erupting volcano (name or MT PSN). Conversion can continue.",
         product="sigmet",
         tags=("va", "volcano", "sigmet"),
     ),
     _row(
         "VA_ASH_GEOMETRY",
         "info",
-        "VA SIGMET ash cloud geometry / forecast position. Informational: noted for operator awareness; does not by itself block conversion. Source: EUR Doc 014 public; Annex 3 paywall companion.",
+        "This VA SIGMET includes ash cloud geometry or forecast position. Conversion can continue.",
         product="sigmet",
         tags=("va", "geometry", "sigmet"),
     ),
     _row(
         "NO_VA_EXP",
         "info",
-        "VA SIGMET NO VA EXP absence token. Informational: noted for operator awareness; does not by itself block conversion. Source: EUR Doc 014 public; Annex 3 paywall companion.",
+        "This VA SIGMET includes NO VA EXP (no volcanic ash expected). Conversion can continue.",
         product="sigmet",
         tags=("va", "no_va_exp", "sigmet"),
     ),
     _row(
         "VA_CNL_FIR_MOVED",
         "info",
-        "VA SIGMET CNL identifies FIR to which ash has moved. Informational: noted for operator awareness; does not by itself block conversion. Source: EUR Doc 014 public; Annex 3 paywall companion.",
+        "This VA SIGMET CNL names the FIR to which ash has moved. Conversion can continue.",
         product="sigmet",
         tags=("va", "cnl", "fir", "sigmet"),
     ),
     _row(
         "MISSING_VA_VOLCANO",
         "error",
-        "VA SIGMET missing volcano identity (name/MT … PSN). Error: the TAC does not meet a required format or product rule and should be corrected. Source: EUR Doc 014 public; Annex 3 paywall companion.",
+        "This VA SIGMET is missing volcano identity (name or MT … PSN). Add the volcano identity.",
         product="sigmet",
         tags=("va", "volcano", "sigmet"),
     ),
     _row(
         "INVALID_NO_VA_EXP",
         "error",
-        "VA SIGMET NO VA EXP must not include VA CLD body. Error: the TAC does not meet a required format or product rule and should be corrected. Source: EUR Doc 014 public; Annex 3 paywall companion.",
+        "This VA SIGMET with NO VA EXP must not include a VA CLD body. Remove the ash-cloud body.",
         product="sigmet",
         tags=("va", "no_va_exp", "sigmet"),
     ),
     _row(
         "TC_CYCLONE_IDENTITY",
         "info",
-        "TC SIGMET includes tropical cyclone identity (TC … PSN). Informational: noted for operator awareness; does not by itself block conversion. Source: EUR Doc 014 public; Annex 3 paywall companion.",
+        "This TC SIGMET includes tropical cyclone identity (TC … PSN). Conversion can continue.",
         product="sigmet",
         tags=("tc", "cyclone", "sigmet"),
     ),
     _row(
         "TC_CB_GEOMETRY",
         "info",
-        "TC SIGMET CB geometry uses WI … OF TC CENTRE wording. Informational: noted for operator awareness; does not by itself block conversion. Source: EUR Doc 014 public; Annex 3 paywall companion.",
+        "This TC SIGMET CB geometry uses WI … OF TC CENTRE wording. Conversion can continue.",
         product="sigmet",
         tags=("tc", "geometry", "sigmet"),
     ),
     _row(
         "MISSING_TC_IDENTITY",
         "error",
-        "TC SIGMET missing cyclone identity (TC … PSN). Error: the TAC does not meet a required format or product rule and should be corrected. Source: EUR Doc 014 public; Annex 3 paywall companion.",
+        "This TC SIGMET is missing cyclone identity (TC … PSN). Add the cyclone identity.",
         product="sigmet",
         tags=("tc", "cyclone", "sigmet"),
     ),
     _row(
         "MISSING_DTG",
         "error",
-        "{product} missing DTG: template field",
+        "This {product} is missing the DTG field. Add DTG.",
         tags=("dtg", "vaa", "tca", "swxa", "vona"),
     ),
     _row(
         "MISSING_VAAC",
         "error",
-        "VAA missing VAAC: template field - A2-1",
+        "This VAA is missing the VAAC field. Add VAAC.",
         product="vaa",
         tags=("vaac", "vaa"),
     ),
     _row(
         "MISSING_VOLCANO",
         "error",
-        "VAA missing VOLCANO: template field - A2-1",
+        "This VAA is missing the VOLCANO field. Add VOLCANO.",
         product="vaa",
         tags=("volcano", "vaa"),
     ),
     _row(
         "VAA_VOLCANO_UNKNOWN",
         "info",
-        "VAA VOLCANO UNKNOWN - exceptional name allowed",
+        "This VAA uses VOLCANO UNKNOWN. That exceptional name is allowed. Conversion can continue.",
         product="vaa",
         tags=("volcano", "unknown", "vaa"),
     ),
     _row(
         "VAA_VOLCANO_UNNAMED",
         "info",
-        "VAA VOLCANO UNNAMED - exceptional name allowed",
+        "This VAA uses VOLCANO UNNAMED. That exceptional name is allowed. Conversion can continue.",
         product="vaa",
         tags=("volcano", "unnamed", "vaa"),
     ),
     _row(
         "VAA_RMK_NIL",
         "info",
-        "VAA RMK NIL - remarks inapplicable",
+        "This VAA has RMK NIL (remarks not applicable). Conversion can continue.",
         product="vaa",
         tags=("remarks", "nil", "vaa"),
     ),
     _row(
         "VAA_FCST_NO_VA_EXP",
         "info",
-        "VAA forecast NO VA EXP - status NO_VOLCANIC_ASH_EXPECTED",
+        "This VAA forecast is NO VA EXP (no volcanic ash expected). Conversion can continue.",
         product="vaa",
         tags=("forecast", "no_va_exp", "vaa"),
     ),
     _row(
         "VAA_NO_FURTHER_ADVISORIES",
         "info",
-        "VAA NXT ADVISORY NO FURTHER ADVISORIES - next time inapplicable",
+        "This VAA next advisory is NO FURTHER ADVISORIES. Conversion can continue.",
         product="vaa",
         tags=("next_advisory", "vaa"),
     ),
     _row(
         "MISSING_MAX_WIND",
         "error",
-        "TCA missing MAX WIND: template field - A2-2",
+        "This TCA is missing the MAX WIND field. Add MAX WIND.",
         product="tca",
         tags=("max_wind", "tca"),
     ),
     _row(
         "MISSING_TC",
         "error",
-        "TCA missing TC: template field - A2-2",
+        "This TCA is missing the TC field. Add TC.",
         product="tca",
         tags=("tropical_cyclone", "tca"),
     ),
     _row(
         "TCA_CYCLONE_UNNAMED",
         "info",
-        "TCA TC UNNAMED - exceptional name allowed",
+        "This TCA uses TC UNNAMED. That exceptional name is allowed. Conversion can continue.",
         product="tca",
         tags=("tropical_cyclone", "unnamed", "tca"),
     ),
     _row(
         "TCA_RMK_NIL",
         "info",
-        "TCA RMK NIL - remarks inapplicable",
+        "This TCA has RMK NIL (remarks not applicable). Conversion can continue.",
         product="tca",
         tags=("remarks", "nil", "tca"),
     ),
     _row(
         "TCA_NO_MSG_EXP",
         "info",
-        "TCA NXT MSG NO MSG EXP - next time inapplicable",
+        "This TCA next message is NO MSG EXP. Conversion can continue.",
         product="tca",
         tags=("next_advisory", "tca"),
     ),
     _row(
         "TCA_CB_NIL",
         "info",
-        "TCA CB NIL - CB missing",
+        "This TCA has CB NIL (no CB). Conversion can continue.",
         product="tca",
         tags=("cb", "nil", "tca"),
     ),
     _row(
         "MISSING_SWXC",
         "error",
-        "SWXA missing SWXC: template field - A2-3",
+        "This SWXA is missing the SWXC field. Add SWXC.",
         product="swxa",
         tags=("swxc", "swxa"),
     ),
     _row(
         "SWXA_RMK_NIL",
         "info",
-        "SWXA RMK NIL - remarks inapplicable",
+        "This SWXA has RMK NIL (remarks not applicable). Conversion can continue.",
         product="swxa",
         tags=("remarks", "nil", "swxa"),
     ),
     _row(
         "SWXA_FCST_NO_SWX_EXP",
         "info",
-        "SWXA forecast NO SWX EXP - no space weather expected",
+        "This SWXA forecast is NO SWX EXP (no space weather expected). Conversion can continue.",
         product="swxa",
         tags=("forecast", "no_swx_exp", "swxa"),
     ),
     _row(
         "SWXA_NO_FURTHER_ADVISORIES",
         "info",
-        "SWXA NXT ADVISORY NO FURTHER ADVISORIES - next time inapplicable",
+        "This SWXA next advisory is NO FURTHER ADVISORIES. Conversion can continue.",
         product="swxa",
         tags=("next_advisory", "swxa"),
     ),
     _row(
         "MISSING_SVO",
         "error",
-        "VONA missing SVO: template field - A7-1",
+        "This VONA is missing the SVO field. Add SVO.",
         product="vona",
         tags=("svo", "vona"),
     ),
     _row(
         "MISSING_VONA_VOLCANO",
         "error",
-        "VONA missing VOLCANO: template field - A7-1",
+        "This VONA is missing the VOLCANO field. Add VOLCANO.",
         product="vona",
         tags=("volcano", "vona"),
     ),
     _row(
         "VONA_ONSET_NIL",
         "info",
-        "VONA ONSET NIL - onsetTime omitted",
+        "This VONA has ONSET NIL (onset time omitted). Conversion can continue.",
         product="vona",
         tags=("onset", "nil", "vona"),
     ),
     _row(
         "VONA_DUR_NIL",
         "info",
-        "VONA DUR NIL - duration omitted",
+        "This VONA has DUR NIL (duration omitted). Conversion can continue.",
         product="vona",
         tags=("duration", "nil", "vona"),
     ),
@@ -1044,12 +1146,7 @@ def issue_from(
     2
     """
     spec = by_code(code)
-    if message is not None:
-        text = message
-    elif kwargs:
-        text = spec.message_template.format(**kwargs)
-    else:
-        text = spec.message_template
+    text = message if message is not None else format_operator_message(spec.message_template, **kwargs)
     return Issue(
         severity=spec.severity,
         code=spec.code,
@@ -1060,4 +1157,11 @@ def issue_from(
     )
 
 
-__all__ = ["ISSUES", "IssueSpec", "by_code", "catalog_entries", "issue_from"]
+__all__ = [
+    "ISSUES",
+    "IssueSpec",
+    "by_code",
+    "catalog_entries",
+    "format_operator_message",
+    "issue_from",
+]

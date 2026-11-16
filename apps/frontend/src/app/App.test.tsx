@@ -63,7 +63,6 @@ vi.mock('./components/FileConverter', async () => {
   return {
     FileConverter: ({
       onOpenHistory,
-      onOpenVisuals,
       onRequestLogin,
       onLogout,
       onLoadWorkSession,
@@ -76,7 +75,6 @@ vi.mock('./components/FileConverter', async () => {
       isGuest,
     }: {
       onOpenHistory?: () => void;
-      onOpenVisuals?: () => void;
       onRequestLogin?: () => void;
       onLogout?: () => void | Promise<void>;
       onLoadWorkSession?: (s: WorkSession) => void;
@@ -102,13 +100,6 @@ vi.mock('./components/FileConverter', async () => {
             {pendingMapTac}
           </button>
         ) : null}
-        <button
-          type="button"
-          data-testid="open-visuals"
-          onClick={() => onOpenVisuals?.()}
-        >
-          Open visuals
-        </button>
         <button
           type="button"
           data-testid="open-history"
@@ -664,10 +655,10 @@ describe('App Component (F31 optional Auth)', () => {
     });
   });
 
-  it('opens Live map from Convert and sends map TAC into the converter', async () => {
+  it('opens Live map from shell nav and sends map TAC into the converter', async () => {
     const user = userEvent.setup();
     render(<App />);
-    await user.click(screen.getByTestId('open-visuals'));
+    await user.click(screen.getByTestId('shell-nav-visuals'));
     expect(screen.getByTestId('decode-visuals-page')).toBeInTheDocument();
     expect(screen.getByTestId('shell-nav-visuals')).toHaveAttribute(
       'aria-selected',

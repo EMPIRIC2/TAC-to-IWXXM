@@ -6,6 +6,7 @@
  */
 
 import type { LintIssueCatalogEntry } from './api';
+import { formatOperatorMessageTemplate } from './formatOperatorMessage';
 import { isPlanningEvolveTag, scrubInternalDocRefs } from './internalDocRefGuard';
 
 /**
@@ -48,7 +49,10 @@ export function resolveLintIssueTooltip(
   if (!entry) {
     return `${code} (not in loaded catalog)`;
   }
-  return scrubInternalDocRefs(`${entry.severity}: ${entry.message_template}`);
+  const message = formatOperatorMessageTemplate(entry.message_template, {
+    product: entry.product,
+  });
+  return scrubInternalDocRefs(`${entry.severity}: ${message}`);
 }
 
 /**

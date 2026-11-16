@@ -26,6 +26,14 @@ packages = ["src/tac_decoding"]
 "src/tac_decoding/data/packs/metar.yaml" = "tac_decoding/data/packs/metar.yaml"
 "src/tac_decoding/data/packs/speci.yaml" = "tac_decoding/data/packs/speci.yaml"
 
+# ADR-048 / TC-EVDOC-007: warnings are errors (same bar as packages/auth).
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+filterwarnings = [
+  "error",
+]
+
 # Override (required): package sources are formatted at line-length 120; root is 88.
 [tool.ruff]
 extend = "../../pyproject.toml"
@@ -33,6 +41,17 @@ line-length = 120
 
 # Override (required): package coverage CLI uses this file as --cov-config; keep
 # pragma / TYPE_CHECKING excludes that are not on the root report table.
+
+# Pattern tables live in decode_patterns; sibling decode_* modules star-import them
+# after the ≤500-line split. Nested pyproject replaces root per-file-ignores, so
+# keep test docstring ignores here too. [Corpus: product §F9]
+[tool.ruff.lint.per-file-ignores]
+"src/tac_decoding/decode_*.py" = ["F403", "F405"]
+"src/tac_decoding/decode.py" = ["F401"]
+"tests/**" = ["ANN", "D"]
+"**/test_*.py" = ["ANN", "D"]
+"**/conftest.py" = ["ANN", "D"]
+
 [tool.coverage.run]
 branch = true
 source = ["src/tac_decoding"]

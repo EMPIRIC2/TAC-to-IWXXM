@@ -1,0 +1,414 @@
+"""Split part body (exec'd into package namespace)."""
+
+from __future__ import annotations
+
+
+def _gfa_structured_extension(ir: dict[str, Any]) -> str:
+    """
+    Internal helper ``_gfa_structured_extension``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
+    structured = ir.get("ca_gfa_structured")
+    if not isinstance(structured, dict):
+        return ""
+    data = cast(dict[str, Any], structured)
+    fir = str(ir["fir"]).lower()
+    parts: list[str] = ["      <iwxxm:extension>"]
+    vis = data.get("surface_visibility_m")
+    if isinstance(vis, dict):
+        vis_rng = cast(dict[str, Any], vis)
+        lo = int(vis_rng["lower"])
+        hi = int(vis_rng.get("higher", lo))
+        parts.extend(
+            [
+                f'        <iwxxm-ca:surfaceVisibility gml:id="gfa.vis.{fir}">',
+                f'          <iwxxm-ca:surfaceVisibilityLower uom="m">{lo}</iwxxm-ca:surfaceVisibilityLower>',
+                f'          <iwxxm-ca:surfaceVisibilityHigher uom="m">{hi}</iwxxm-ca:surfaceVisibilityHigher>',
+                "        </iwxxm-ca:surfaceVisibility>",
+            ]
+        )
+    cloud = data.get("cloud_base_ft")
+    if isinstance(cloud, dict):
+        cloud_rng = cast(dict[str, Any], cloud)
+        lo_ft = int(cloud_rng["lower"])
+        hi_ft = int(cloud_rng.get("higher", lo_ft))
+        parts.extend(
+            [
+                f'        <iwxxm-ca:cloudBase gml:id="gfa.cld.{fir}">',
+                f'          <iwxxm-ca:cloudBaseLower uom="[ft_i]">{lo_ft}</iwxxm-ca:cloudBaseLower>',
+                f'          <iwxxm-ca:cloudBaseHigher uom="[ft_i]">{hi_ft}</iwxxm-ca:cloudBaseHigher>',
+                "        </iwxxm-ca:cloudBase>",
+            ]
+        )
+    wind = data.get("surface_wind_kt")
+    if isinstance(wind, dict):
+        wind_rng = cast(dict[str, Any], wind)
+        lo_kt = int(wind_rng["lower"])
+        hi_kt = int(wind_rng.get("higher", lo_kt))
+        parts.extend(
+            [
+                f'        <iwxxm-ca:surfaceWindSpeed gml:id="gfa.wind.{fir}">',
+                f'          <iwxxm-ca:surfaceWindSpeedLower uom="[kn_i]">{lo_kt}</iwxxm-ca:surfaceWindSpeedLower>',
+                f'          <iwxxm-ca:surfaceWindSpeedHigher uom="[kn_i]">{hi_kt}</iwxxm-ca:surfaceWindSpeedHigher>',
+                "        </iwxxm-ca:surfaceWindSpeed>",
+            ]
+        )
+    if len(parts) == 1:
+        return ""
+    parts.append("      </iwxxm:extension>")
+    return "\n".join(parts) + "\n"
+
+
+def _inject_airmet_gfa_extension(xml: str, extension: str) -> str:
+    """
+    Internal helper ``_inject_airmet_gfa_extension``.
+
+    Parameters
+    ----------
+    xml : str
+        Argument ``xml``.
+
+    extension : str
+        Argument ``extension``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
+    if not extension:
+        return xml
+    needle = "</iwxxm:AIRMETEvolvingCondition>"
+    if needle not in xml:
+        return xml
+    return xml.replace(needle, f"{extension}        {needle}", 1)
+
+
+def _ca_airmet_gml_id(ir: dict[str, Any]) -> str:
+    """
+    Internal helper ``_ca_airmet_gml_id``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
+    fir = str(ir["fir"]).lower()
+    if ir.get("ca_gfa_structured"):
+        return f"airmet.ca.gfa.vis.{fir}"
+    if ir.get("ca_gfa_phenomenon"):
+        return f"airmet.ca.gfa.{fir}"
+    return f"airmet.ca.basic.{fir}"
+
+
+def _ca_airmet_phenomenon_href(ir: dict[str, Any]) -> str | None:
+    """
+    Internal helper ``_ca_airmet_phenomenon_href``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    Returns
+    -------
+    str | None
+        Return value.
+    """
+    code = ir.get("ca_gfa_phenomenon")
+    if not isinstance(code, str):
+        return None
+    from tac2iwxxm.code_list_policy import resolve_national_href
+
+    return resolve_national_href(area="airmet_phenomena", token=code) or f"{CA_AIRMET_PHENOM_BASE}/{code}"
+
+
+def _inject_ca_airmet_namespace(xml: str, *, iwxxm_version: str) -> str:
+    """
+    Internal helper ``_inject_ca_airmet_namespace``.
+
+    Parameters
+    ----------
+    xml : str
+        Argument ``xml``.
+
+    iwxxm_version : str
+        Argument ``iwxxm_version``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
+    needle = f'<iwxxm:AIRMET xmlns:iwxxm="{NS[iwxxm_version]}"'
+    if needle not in xml:
+        return xml
+    return xml.replace(
+        needle,
+        f'{needle}\n    xmlns:iwxxm-ca="{CA_NS}"',
+        1,
+    )
+
+
+def _inject_ca_airmet_gml_id(xml: str, *, gml_id: str) -> str:
+    """
+    Internal helper ``_inject_ca_airmet_gml_id``.
+
+    Parameters
+    ----------
+    xml : str
+        Argument ``xml``.
+
+    gml_id : str
+        Argument ``gml_id``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
+    return re.sub(r'gml:id="airmet\.[^"]+"', f'gml:id="{gml_id}"', xml, count=1)
+
+
+def _require_ca_pin(iwxxm_version: str) -> None:
+    """
+    Internal helper ``_require_ca_pin``.
+
+    Parameters
+    ----------
+    iwxxm_version : str
+        Requested IWXXM pin.
+
+    Returns
+    -------
+    None
+        Returns when the pin is the Canadian operational line.
+    """
+    if iwxxm_version != CA_IWXXM_VERSION:
+        raise ValueError(f"profile ca_eccc requires iwxxm_version {CA_IWXXM_VERSION!r}, got {iwxxm_version!r}")
+
+
+def emit_sigmet_ca_eccc(ir: dict[str, Any], *, iwxxm_version: str) -> str:
+    """
+    Emit SIGMET IWXXM for profile ``CA_ECCC``.
+
+    Canadian SIGMET uses the ICAO SIGMET body on the MSC IWXXM 3.0.0 line.
+    There is no separate iwxxm-ca SIGMET schema.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Parsed intermediate representation from ``parse_sigmet``.
+
+    iwxxm_version : str
+        Must be ``3.0.0``.
+
+    Returns
+    -------
+    str
+        IWXXM 3.0.0 SIGMET XML.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (emit_sigmet_ca_eccc)
+    2
+    """
+    _require_ca_pin(iwxxm_version)
+    return emit_sigmet_annex3(ir, iwxxm_version=iwxxm_version)
+
+
+def emit_vaa_ca_eccc(ir: dict[str, Any], *, iwxxm_version: str) -> str:
+    """
+    Emit VAA IWXXM for profile ``CA_ECCC``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Parsed intermediate representation from ``parse_vaa``.
+
+    iwxxm_version : str
+        Must be ``3.0.0``.
+
+    Returns
+    -------
+    str
+        IWXXM 3.0.0 volcanic ash advisory XML.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (emit_vaa_ca_eccc)
+    2
+    """
+    _require_ca_pin(iwxxm_version)
+    return emit_vaa_annex3(ir, iwxxm_version=iwxxm_version)
+
+
+def emit_airmet_ca_eccc(ir: dict[str, Any], *, iwxxm_version: str) -> str:
+    """
+    Emit AIRMET IWXXM for profile ``CA_ECCC``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Parsed intermediate representation from ``parse_airmet``.
+
+    iwxxm_version : str
+        Must be ``3.0.0`` (MSC operational line).
+
+    Returns
+    -------
+    str
+        IWXXM 3.0.0 XML with code-ca GFA phenomenon href when present.
+
+    Raises
+    ------
+    ValueError
+        When ``iwxxm_version`` is not ``3.0.0``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (emit_airmet_ca_eccc)
+    2
+    """
+    if iwxxm_version != CA_IWXXM_VERSION:
+        raise ValueError(f"profile ca_eccc requires iwxxm_version {CA_IWXXM_VERSION!r}, got {iwxxm_version!r}")
+
+    xml = emit_airmet_annex3(
+        ir,
+        iwxxm_version=iwxxm_version,
+        phenomenon_href=_ca_airmet_phenomenon_href(ir),
+    )
+    xml = _inject_ca_airmet_namespace(xml, iwxxm_version=iwxxm_version)
+    xml = _inject_ca_airmet_gml_id(xml, gml_id=_ca_airmet_gml_id(ir))
+    return _inject_airmet_gfa_extension(xml, _gfa_structured_extension(ir))
+
+
+def emit_taf_ca_eccc(ir: dict[str, Any], *, iwxxm_version: str) -> str:
+    """
+    Emit TAF IWXXM for profile ``CA_ECCC``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Parsed intermediate representation from ``parse_taf``.
+
+    iwxxm_version : str
+        Must be ``3.0.0`` (MSC operational line).
+
+    Returns
+    -------
+    str
+        IWXXM 3.0.0 XML with ``iwxxm-ca`` NCLWS extension when present.
+
+    Raises
+    ------
+    ValueError
+        When ``iwxxm_version`` is not ``3.0.0``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (emit_taf_ca_eccc)
+    2
+    """
+    if iwxxm_version != CA_IWXXM_VERSION:
+        raise ValueError(f"profile ca_eccc requires iwxxm_version {CA_IWXXM_VERSION!r}, got {iwxxm_version!r}")
+
+    ca_ir = _prepare_ca_taf_ir(ir)
+    extension = _taf_forecast_extension(ca_ir)
+    xml = emit_taf_annex3(ca_ir, iwxxm_version=iwxxm_version, forecast_extension=extension)
+    xml = _inject_ca_taf_namespace(xml, iwxxm_version=iwxxm_version)
+    return _inject_ca_taf_gml_id(xml, gml_id=_ca_taf_gml_id(ca_ir))
+
+
+def emit_metar_speci_ca_eccc(
+    ir: dict[str, Any],
+    *,
+    product: str,
+    iwxxm_version: str,
+) -> str:
+    """
+    Emit METAR/SPECI IWXXM for profile ``CA_ECCC``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Parsed intermediate representation from ``parse_metar_speci``.
+
+    product : str
+        ``METAR`` or ``SPECI``.
+
+    iwxxm_version : str
+        Must be ``3.0.0`` (MSC operational line).
+
+    Returns
+    -------
+    str
+        IWXXM 3.0.0 XML with ``iwxxm-ca`` extensions where MANOBS rules apply.
+
+    Raises
+    ------
+    ValueError
+        When ``iwxxm_version`` is not ``3.0.0``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (emit_metar_speci_ca_eccc)
+    2
+    """
+    if iwxxm_version != CA_IWXXM_VERSION:
+        raise ValueError(f"profile ca_eccc requires iwxxm_version {CA_IWXXM_VERSION!r}, got {iwxxm_version!r}")
+
+    ns = NS[iwxxm_version]
+    ca_ir = _prepare_ca_ir(ir)
+    station = str(ca_ir["station"])
+    stamp = obs_timestamp(ca_ir)
+    ns_prefix, root_tag = _ca_iwxxm_root_tag(ca_ir, product)
+    gml_id = _ca_gml_id(ca_ir, product)
+    override = ca_ir.get("report_status")
+    if override in {"NORMAL", "AMENDMENT", "CORRECTION"}:
+        report_status = str(override)
+    else:
+        report_status = "CORRECTION" if ca_ir.get("correction") else "NORMAL"
+    automated = "true" if ca_ir.get("auto") else "false"
+
+    addendum = _addendum_extension(ca_ir)
+    observation, trends = build_observation_and_trends(ca_ir, addendum_extension=addendum)
+    aerodrome = aerodrome_block(station)
+
+    return f"""<?xml version="1.0" encoding="UTF-8"?>
+<{ns_prefix}:{root_tag} xmlns:iwxxm="{ns}"
+    xmlns:iwxxm-ca="{CA_NS}"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    xmlns:gml="http://www.opengis.net/gml/3.2"
+    xmlns:aixm="http://www.aixm.aero/schema/5.1.1"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    gml:id="{gml_id}"
+    reportStatus="{report_status}"
+    permissibleUsage="OPERATIONAL"
+    automatedStation="{automated}">
+  <iwxxm:issueTime>
+    <gml:TimeInstant gml:id="t.issue">
+      <gml:timePosition>{stamp}</gml:timePosition>
+    </gml:TimeInstant>
+  </iwxxm:issueTime>
+{aerodrome}  <iwxxm:observationTime>
+    <gml:TimeInstant gml:id="t.obs">
+      <gml:timePosition>{stamp}</gml:timePosition>
+    </gml:TimeInstant>
+  </iwxxm:observationTime>
+{observation}{trends}</{ns_prefix}:{root_tag}>
+"""

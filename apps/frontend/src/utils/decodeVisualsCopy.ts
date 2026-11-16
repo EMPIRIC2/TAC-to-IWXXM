@@ -9,10 +9,9 @@ export const DECODE_VISUALS_BETA = 'Beta';
 export const DECODE_VISUALS_FEEDBACK = 'Send feedback';
 export const DECODE_VISUALS_FEEDBACK_URL =
   'https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/new?labels=beta-feedback';
-export const DECODE_VISUALS_STATION_LABEL = 'Search';
-export const DECODE_VISUALS_SEARCH_PLACEHOLDER = 'Find a station';
-export const DECODE_VISUALS_EMPTY =
-  'Optional. Find a station. The map already shows current reports.';
+/** Shown when Convert has no complete station for wind / focus. */
+export const DECODE_VISUALS_NO_STATION =
+  'Open a report in Convert to show wind for that station. The map already shows current reports.';
 export const DECODE_VISUALS_NO_MAP = 'No map for this station.';
 export const DECODE_VISUALS_MAP_LOADING = 'Loading map…';
 export const DECODE_VISUALS_NO_REGION = 'No region sketch for this station.';

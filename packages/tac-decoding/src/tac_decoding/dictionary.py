@@ -14,6 +14,11 @@ from typing import Any, cast
 import yaml
 
 from tac_decoding.glossary import load_glossary
+from tac_decoding.models.dictionary import (
+    DictionaryEntry,
+    DictionaryFacets,
+    DictionaryTokenFields,
+)
 
 _DATA_DIR = Path(__file__).resolve().parent / "data"
 _CATALOG_META_PATH = _DATA_DIR / "catalog_meta.yaml"
@@ -114,7 +119,7 @@ def _string_list(raw: object) -> list[str]:
     return out
 
 
-def _token_fields_from_value(value_map: Mapping[Any, Any]) -> dict[str, Any]:
+def _token_fields_from_value(value_map: Mapping[Any, Any]) -> DictionaryTokenFields:
     """
     Extract dictionary tag fields from one YAML token map.
 
@@ -125,10 +130,10 @@ def _token_fields_from_value(value_map: Mapping[Any, Any]) -> dict[str, Any]:
 
     Returns
     -------
-    dict[str, Any]
+    DictionaryTokenFields
         Non-empty override fields only.
     """
-    fields: dict[str, Any] = {}
+    fields: DictionaryTokenFields = {}
     if "products" in value_map:
         fields["products"] = [p.upper() for p in _string_list(value_map.get("products"))]
     if "countries" in value_map:
@@ -143,7 +148,7 @@ def _token_fields_from_value(value_map: Mapping[Any, Any]) -> dict[str, Any]:
     return fields
 
 
-def _tokens_dictionary_from_mapping(raw: object) -> dict[str, dict[str, Any]]:
+def _tokens_dictionary_from_mapping(raw: object) -> dict[str, DictionaryTokenFields]:
     """
     Parse dictionary tag fields from ``catalog_meta.yaml``.
 
@@ -154,7 +159,7 @@ def _tokens_dictionary_from_mapping(raw: object) -> dict[str, dict[str, Any]]:
 
     Returns
     -------
-    dict[str, dict[str, Any]]
+    dict[str, DictionaryTokenFields]
         Uppercase token → products / countries / wmo_amendment overrides.
     """
     if not isinstance(raw, dict):
@@ -163,7 +168,7 @@ def _tokens_dictionary_from_mapping(raw: object) -> dict[str, dict[str, Any]]:
     tokens_raw = mapping.get("tokens", {})
     if not isinstance(tokens_raw, dict):
         return {}
-    out: dict[str, dict[str, Any]] = {}
+    out: dict[str, DictionaryTokenFields] = {}
     for key, value in cast(Mapping[Any, Any], tokens_raw).items():
         if not isinstance(key, str) or not key.strip() or not isinstance(value, dict):
             continue
@@ -193,13 +198,13 @@ def _load_raw_catalog_meta_doc() -> object:
 
 
 @lru_cache(maxsize=1)
-def load_dictionary_meta() -> dict[str, dict[str, Any]]:
+def load_dictionary_meta() -> dict[str, DictionaryTokenFields]:
     """
     Load dictionary tag overrides from ``catalog_meta.yaml``.
 
     Returns
     -------
-    dict[str, dict[str, Any]]
+    dict[str, DictionaryTokenFields]
         Token → override fields.
 
     Examples
@@ -210,13 +215,13 @@ def load_dictionary_meta() -> dict[str, dict[str, Any]]:
     return _tokens_dictionary_from_mapping(_load_raw_catalog_meta_doc())
 
 
-def reload_dictionary_meta() -> dict[str, dict[str, Any]]:
+def reload_dictionary_meta() -> dict[str, DictionaryTokenFields]:
     """
     Clear dictionary meta cache and reload (tests).
 
     Returns
     -------
-    dict[str, dict[str, Any]]
+    dict[str, DictionaryTokenFields]
         Fresh overrides.
 
     Examples
@@ -282,7 +287,7 @@ def dictionary_entries() -> tuple[dict[str, Any], ...]:
     """
     glossary = load_glossary()
     meta = load_dictionary_meta()
-    items: list[dict[str, Any]] = []
+    items: list[DictionaryEntry] = []
     for token in sorted(glossary):
         products, countries, amendment = _resolved_tags(token, meta.get(token))
         items.append(
@@ -295,7 +300,7 @@ def dictionary_entries() -> tuple[dict[str, Any], ...]:
                 "wmo_amendment": amendment,
             }
         )
-    return tuple(items)
+    return cast(tuple[dict[str, Any], ...], tuple(items))
 
 
 def dictionary_facets(rows: list[dict[str, Any]] | None = None) -> dict[str, list[str]]:
@@ -327,11 +332,12 @@ def dictionary_facets(rows: list[dict[str, Any]] | None = None) -> dict[str, lis
         amd = row.get("wmo_amendment")
         if isinstance(amd, str) and amd.strip():
             amendments.add(amd.strip())
-    return {
+    facets: DictionaryFacets = {
         "products": sorted(products),
         "countries": sorted(countries),
         "wmo_amendments": sorted(amendments),
     }
+    return cast(dict[str, list[str]], facets)
 
 
 def filter_dictionary_entries(
@@ -386,5 +392,5 @@ def filter_dictionary_entries(
             meaning = str(row.get("meaning") or "").lower()
             if query not in code and query not in meaning:
                 continue
-        out.append(dict(row))
+        out.append(row)
     return out

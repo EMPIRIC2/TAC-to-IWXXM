@@ -825,6 +825,9 @@ describe('LiveWorldMap', () => {
   it('paints TAC precip overlays and opens a rainy station from the map', async () => {
     const user = userEvent.setup();
     const onOpenPlace = vi.fn();
+    // Keep wall-clock near fixture stamps so the default Last-* time window
+    // still includes these reports (CI can run days after the fixture date).
+    vi.spyOn(Date, 'now').mockReturnValue(Date.parse('2026-11-13T18:30:00Z'));
     const rainy: LivePlace = {
       place_key: 'KJFK',
       product: 'metar',
@@ -864,8 +867,20 @@ describe('LiveWorldMap', () => {
     vi.mocked(L.marker).mockClear();
     render(<LiveWorldMap onOpenPlace={onOpenPlace} />);
     expect(await screen.findByTestId('tac-overlay-precip')).toBeInTheDocument();
+    await waitFor(() => expect(L.circleMarker).toHaveBeenCalled());
     expect(screen.queryByTestId('live-map-tac-overlay-empty')).not.toBeInTheDocument();
+    vi.mocked(L.divIcon).mockClear();
     await user.click(screen.getByTestId('tac-overlay-precip'));
+    await waitFor(() => {
+      expect(screen.getByTestId('tac-overlay-precip')).toBeChecked();
+    });
+    // Re-paint after overlay toggle (same path as zoomend redraw).
+    const onZoom = map.on.mock.calls
+      .filter((call) => call[0] === 'zoomend')
+      .at(-1)?.[1] as (() => void) | undefined;
+    act(() => {
+      onZoom?.();
+    });
     await waitFor(() => {
       expect(L.divIcon).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -955,5 +970,69 @@ describe('LiveWorldMap', () => {
     });
     expect(preventDefault).toHaveBeenCalled();
     expect(onOpenPlace).toHaveBeenCalled();
+  });
+
+  it('Active reports switch filters and shows empty copy', async () => {
+    const user = userEvent.setup();
+    const expiredTaf: LivePlace = {
+      place_key: 'KJFK',
+      product: 'taf',
+      latitude: 40.6,
+      longitude: -73.7,
+      geometry: { kind: 'point' },
+      reports: [
+        {
+          observed_at: '2026-11-13T12:00:00Z',
+          tac: 'TAF KJFK 131200Z 1312/1412 18010KT',
+          valid_from: '2026-11-13T12:00:00Z',
+          valid_to: '2026-11-13T14:00:00Z',
+        },
+      ],
+    };
+    const metar: LivePlace = {
+      place_key: 'KBOS',
+      product: 'metar',
+      latitude: 42.3,
+      longitude: -71.0,
+      geometry: { kind: 'point' },
+      reports: [
+        {
+          observed_at: '2026-11-13T14:51:00Z',
+          tac: 'METAR KBOS 131451Z 18010KT=',
+        },
+      ],
+    };
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({ places: [expiredTaf, metar] }),
+      }),
+    );
+    const nowSpy = vi
+      .spyOn(Date, 'now')
+      .mockReturnValue(Date.parse('2026-11-13T15:00:00Z'));
+    const { LIVE_MAP_ACTIVE_EMPTY } = await import('@/utils/liveMapValidity');
+    render(<LiveWorldMap />);
+    const toggle = await screen.findByTestId('live-map-filter-active-reports');
+    expect(toggle).toHaveAttribute('role', 'switch');
+    expect(toggle).toHaveAttribute('aria-label', 'Active reports');
+    // Default ON when validity fields exist; expired + METAR-without-validity → empty
+    await waitFor(() => expect(toggle).toBeChecked());
+    await waitFor(() => {
+      expect(screen.getByTestId('live-map-status')).toHaveTextContent(
+        LIVE_MAP_ACTIVE_EMPTY,
+      );
+    });
+    await user.click(toggle);
+    await waitFor(() => expect(toggle).not.toBeChecked());
+    await user.click(toggle);
+    await waitFor(() => expect(toggle).toBeChecked());
+    await waitFor(() => {
+      expect(screen.getByTestId('live-map-status')).toHaveTextContent(
+        LIVE_MAP_ACTIVE_EMPTY,
+      );
+    });
+    nowSpy.mockRestore();
   });
 });

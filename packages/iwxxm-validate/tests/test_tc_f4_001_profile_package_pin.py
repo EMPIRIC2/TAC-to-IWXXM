@@ -8,14 +8,27 @@ from pathlib import Path
 import pytest
 from iwxxm_validate import validate, validate_iwxxm
 from iwxxm_validate.models import ValidationReport
+from iwxxm_validate.native import rust_available
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
 METAR_2025_2 = REPO_ROOT / "vendor/schemas/iwxxm/2025-2/IWXXM/examples/metar-A3-1.xml"
 METAR_3_0 = REPO_ROOT / "vendor/schemas/iwxxm/3.0.0/IWXXM/examples/metar-A3-1.xml"
 _PLAIN_REJECTION = "This file uses an IWXXM package this profile does not accept."
 _INTERNAL_TOKENS = ("[Corpus:", "ADR-", "EV-", "TC-", "docs/", "#1273")
+_NATIVE_REQUIRED = (
+    "iwxxm_validate._rust is required for CA_ECCC IWXXM 3.0.0 XSD "
+    "(lxml hits SCHEMA_PARSE on gml:AngleType). "
+    "Run: make build-iwxxm-validate-native "
+    "or bash scripts/ci/ensure_iwxxm_validate_native.sh"
+)
 
 ValidateFn = Callable[..., ValidationReport]
+
+
+def _require_native_for_ca_eccc() -> None:
+    """Fail closed when the native engine is missing (EV-068 CA_ECCC gate)."""
+    if not rust_available():
+        pytest.fail(_NATIVE_REQUIRED)
 
 
 def _assert_plain_rejection(report: ValidationReport) -> None:
@@ -30,6 +43,7 @@ def _assert_plain_rejection(report: ValidationReport) -> None:
 @pytest.mark.parametrize("validate_fn", [validate, validate_iwxxm])
 def test_tc_f4_001_canada_metar_validates_on_3_0_0(validate_fn: ValidateFn) -> None:
     """A Canada 3.0.0 METAR validates when that profile pin is selected."""
+    _require_native_for_ca_eccc()
     report = validate_fn(
         METAR_3_0.read_text(encoding="utf-8"),
         iwxxm_version="3.0.0",

@@ -33,7 +33,8 @@ run_one shared packages/shared
 # tac2iwxxm after tac-decoding so shims resolve correctly when isolated
 run_one tac2iwxxm packages/tac2iwxxm/src \
   --ignore=packages/tac2iwxxm/src/tac2iwxxm/decode.py \
-  --ignore=packages/tac2iwxxm/src/tac2iwxxm/glossary.py
+  --ignore=packages/tac2iwxxm/src/tac2iwxxm/glossary.py \
+  --ignore-glob='**/tac2iwxxm/**/_part*.py'
 run_one backend apps/backend/src
 run_one worker apps/worker
 
