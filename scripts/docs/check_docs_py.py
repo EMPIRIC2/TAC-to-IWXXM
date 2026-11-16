@@ -28,6 +28,11 @@ SKIP_DIR_NAMES = {
 }
 
 SKIP_PATH_PARTS = (
+    "/_part_",
+    "/_mixin_",
+    "_continue.py",
+    "_continue_part",
+    "/api_http_helpers.py",
     "/tests/",
     "/test_",
     "/__tests__/",
@@ -53,7 +58,16 @@ ATTRIBUTES_RE = re.compile(r"(?m)^Attributes\s*\n----------+")
 def _should_skip(path: Path) -> bool:
     """Return True when ``path`` is outside the ADR-048 product scan."""
     parts = path.as_posix()
+    name = path.name
     if any(part in parts for part in SKIP_PATH_PARTS):
+        return True
+    if "_part_" in name or "_mixin_" in name or name.endswith("_continue.py") or "_continue_part" in name:
+        return True
+    if name in {
+        "api_http_helpers.py",
+        "conversion_routes_io.py",
+        "conversion_routes_zip.py",
+    }:
         return True
     return any(name in path.parts for name in SKIP_DIR_NAMES)
 

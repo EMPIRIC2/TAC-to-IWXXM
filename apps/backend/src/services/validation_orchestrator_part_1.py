@@ -1,7 +1,7 @@
 """Part 1 of ``validation_orchestrator.py`` (line-cap split)."""
 
 import logging
-from dataclasses import field
+from dataclasses import dataclass, field
 
 from ..schemas.validation import (
     CodelistValidationResult,
@@ -20,6 +20,7 @@ ValidationOutcome = (
 )
 
 
+@dataclass
 class ComprehensiveValidationResult:
     """
     Result of comprehensive multi-layer validation.

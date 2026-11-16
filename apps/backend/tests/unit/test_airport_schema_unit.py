@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 
 import pytest
+from src.models import airport as airport_model
 from src.schemas import airport as airport_schema
 
 
@@ -83,7 +84,7 @@ def test_airport_validator_load_and_lookup(tmp_path, monkeypatch):
     fake_file = tmp_path / "backend" / "src" / "schemas" / "airport.py"
     fake_file.parent.mkdir(parents=True)
     fake_file.write_text("# test")
-    monkeypatch.setattr(airport_schema, "__file__", str(fake_file))
+    monkeypatch.setattr(airport_model, "__file__", str(fake_file))
 
     validator = airport_schema.AirportValidator()
     validator._loaded = False
@@ -130,7 +131,7 @@ def test_airport_validator_search_helpers_and_all_airports(tmp_path, monkeypatch
     fake_file = tmp_path / "backend" / "src" / "schemas" / "airport.py"
     fake_file.parent.mkdir(parents=True)
     fake_file.write_text("# test")
-    monkeypatch.setattr(airport_schema, "__file__", str(fake_file))
+    monkeypatch.setattr(airport_model, "__file__", str(fake_file))
 
     validator = airport_schema.AirportValidator()
     validator._loaded = False
@@ -148,14 +149,14 @@ def test_airport_validator_search_helpers_and_all_airports(tmp_path, monkeypatch
 
 
 def test_get_airport_validator_singleton(monkeypatch):
-    original = airport_schema._validator_instance
+    original = airport_model._validator_instance
     try:
-        airport_schema._validator_instance = None
+        airport_model._validator_instance = None
         first = airport_schema.get_airport_validator()
         second = airport_schema.get_airport_validator()
         assert first is second
     finally:
-        airport_schema._validator_instance = original
+        airport_model._validator_instance = original
 
 
 def test_airport_coordinates_defaults_and_bounds():
@@ -204,7 +205,7 @@ def test_airport_validator_skips_invalid_entries(tmp_path, monkeypatch):
     fake_file = tmp_path / "backend" / "src" / "schemas" / "airport.py"
     fake_file.parent.mkdir(parents=True)
     fake_file.write_text("# test")
-    monkeypatch.setattr(airport_schema, "__file__", str(fake_file))
+    monkeypatch.setattr(airport_model, "__file__", str(fake_file))
 
     validator = airport_schema.AirportValidator()
     validator._loaded = False
@@ -263,7 +264,7 @@ def test_airport_validator_merges_registry_supplements(tmp_path, monkeypatch):
     fake_file = tmp_path / "backend" / "src" / "schemas" / "airport.py"
     fake_file.parent.mkdir(parents=True)
     fake_file.write_text("# test")
-    monkeypatch.setattr(airport_schema, "__file__", str(fake_file))
+    monkeypatch.setattr(airport_model, "__file__", str(fake_file))
 
     validator = airport_schema.AirportValidator()
     validator._loaded = False
@@ -295,7 +296,7 @@ def test_airport_validator_tolerates_corrupt_supplements(tmp_path, monkeypatch):
     fake_file = tmp_path / "backend" / "src" / "schemas" / "airport.py"
     fake_file.parent.mkdir(parents=True)
     fake_file.write_text("# test")
-    monkeypatch.setattr(airport_schema, "__file__", str(fake_file))
+    monkeypatch.setattr(airport_model, "__file__", str(fake_file))
 
     validator = airport_schema.AirportValidator()
     validator._loaded = False
@@ -327,7 +328,7 @@ def test_airport_validator_ignores_non_list_supplement_stations(tmp_path, monkey
     fake_file = tmp_path / "backend" / "src" / "schemas" / "airport.py"
     fake_file.parent.mkdir(parents=True)
     fake_file.write_text("# test")
-    monkeypatch.setattr(airport_schema, "__file__", str(fake_file))
+    monkeypatch.setattr(airport_model, "__file__", str(fake_file))
 
     validator = airport_schema.AirportValidator()
     validator._loaded = False
@@ -341,7 +342,7 @@ def test_airport_validator_load_raises_when_airports_file_missing(tmp_path, monk
     fake_file = tmp_path / "backend" / "src" / "schemas" / "airport.py"
     fake_file.parent.mkdir(parents=True)
     fake_file.write_text("# test")
-    monkeypatch.setattr(airport_schema, "__file__", str(fake_file))
+    monkeypatch.setattr(airport_model, "__file__", str(fake_file))
 
     validator = airport_schema.AirportValidator()
     validator._loaded = True

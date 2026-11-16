@@ -73,6 +73,7 @@ def profiles_service(
     return ConversionProfilesService(str(user.get("sub") or user.get("user_id")))
 
 
+@router.get("/catalog", response_model=ProfileCatalogResponse)
 def get_catalog(
     _user: dict[str, Any] = Depends(verify_supabase_token),
     service: ConversionProfilesService = Depends(profiles_service),
@@ -105,6 +106,7 @@ def get_catalog(
     )
 
 
+@router.get("/rule-packs", response_model=RulePackListResponse)
 def list_rule_packs(
     service: ConversionProfilesService = Depends(profiles_service),
 ) -> RulePackListResponse:
@@ -130,6 +132,7 @@ def list_rule_packs(
     return RulePackListResponse(items=service.list_rule_packs())
 
 
+@router.post("/rule-packs", response_model=RulePackOut, status_code=201)
 def create_rule_pack(
     payload: RulePackCreate,
     service: ConversionProfilesService = Depends(profiles_service),
@@ -138,6 +141,7 @@ def create_rule_pack(
     return service.create_rule_pack(payload)
 
 
+@router.get("/rule-packs/{pack_id}", response_model=RulePackOut)
 def get_rule_pack(
     pack_id: UUID,
     service: ConversionProfilesService = Depends(profiles_service),
@@ -146,6 +150,7 @@ def get_rule_pack(
     return service.get_rule_pack(pack_id)
 
 
+@router.patch("/rule-packs/{pack_id}", response_model=RulePackOut)
 def patch_rule_pack(
     pack_id: UUID,
     payload: RulePackUpdate,
@@ -155,6 +160,7 @@ def patch_rule_pack(
     return service.update_rule_pack(pack_id, payload)
 
 
+@router.delete("/rule-packs/{pack_id}", status_code=204)
 def delete_rule_pack(
     pack_id: UUID,
     service: ConversionProfilesService = Depends(profiles_service),
@@ -178,6 +184,7 @@ def delete_rule_pack(
     service.delete_rule_pack(pack_id)
 
 
+@router.get("/presets", response_model=PresetListResponse)
 def list_presets(
     service: ConversionProfilesService = Depends(profiles_service),
 ) -> PresetListResponse:
@@ -203,6 +210,7 @@ def list_presets(
     return PresetListResponse(items=service.list_presets())
 
 
+@router.post("/presets", response_model=PresetOut, status_code=201)
 def create_preset(
     payload: PresetCreate,
     service: ConversionProfilesService = Depends(profiles_service),
@@ -211,6 +219,7 @@ def create_preset(
     return service.create_preset(payload)
 
 
+@router.get("/presets/{preset_id}", response_model=PresetOut)
 def get_preset(
     preset_id: UUID,
     service: ConversionProfilesService = Depends(profiles_service),
@@ -219,6 +228,7 @@ def get_preset(
     return service.get_preset(preset_id)
 
 
+@router.patch("/presets/{preset_id}", response_model=PresetOut)
 def patch_preset(
     preset_id: UUID,
     payload: PresetUpdate,
@@ -228,6 +238,7 @@ def patch_preset(
     return service.update_preset(preset_id, payload)
 
 
+@router.delete("/presets/{preset_id}", status_code=204)
 def delete_preset(
     preset_id: UUID,
     service: ConversionProfilesService = Depends(profiles_service),
@@ -251,6 +262,7 @@ def delete_preset(
     service.delete_preset(preset_id)
 
 
+@router.get("/templates", response_model=DisseminationTemplateListResponse)
 def list_templates(
     service: ConversionProfilesService = Depends(profiles_service),
 ) -> DisseminationTemplateListResponse:
@@ -276,6 +288,7 @@ def list_templates(
     return DisseminationTemplateListResponse(items=service.list_templates())
 
 
+@router.post("/templates", response_model=DisseminationTemplateOut, status_code=201)
 def create_template(
     payload: DisseminationTemplateCreate,
     service: ConversionProfilesService = Depends(profiles_service),
@@ -284,6 +297,7 @@ def create_template(
     return service.create_template(payload)
 
 
+@router.get("/templates/{template_id}", response_model=DisseminationTemplateOut)
 def get_template(
     template_id: UUID,
     service: ConversionProfilesService = Depends(profiles_service),
@@ -292,6 +306,7 @@ def get_template(
     return service.get_template(template_id)
 
 
+@router.delete("/templates/{template_id}", status_code=204)
 def delete_template(
     template_id: UUID,
     service: ConversionProfilesService = Depends(profiles_service),

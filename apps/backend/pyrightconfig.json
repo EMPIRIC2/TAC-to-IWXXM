@@ -26,6 +26,14 @@
     "src/routers/conversion_zip_tail.py",
     "src/routers/conversion_convert_continue.py",
     "src/routers/conversion_convert_continue_part2.py",
-    "src/routers/conversion_zip_continue.py"
+    "src/routers/conversion_zip_continue.py",
+    "src/routers/comprehensive_validation.py",
+    "src/routers/health.py",
+    "src/routers/mass_ingest.py",
+    "src/routers/tac_quality.py",
+    "src/routers/conversion_profiles_part_1.py",
+    "src/routers/conversion_profiles_part_2.py",
+    "src/routers/conversion_profiles_part_3.py",
+    "src/models/conversion.py"
   ]
 }

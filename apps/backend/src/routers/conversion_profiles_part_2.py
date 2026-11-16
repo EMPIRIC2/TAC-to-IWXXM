@@ -6,7 +6,7 @@ from uuid import UUID
 
 from fastapi import Depends
 
-from src.routers.conversion_profiles_part_1 import _library_authoring_gone, profiles_service
+from src.routers.conversion_profiles_part_1 import profiles_service, router
 
 from ..schemas.conversion_profiles import (
     ConversionTemplateCreate,
@@ -17,13 +17,6 @@ from ..schemas.conversion_profiles import (
     ConversionTemplateUpdate,
     DisseminationTemplateOut,
     DisseminationTemplateUpdate,
-    LibraryAssetCreate,
-    LibraryAssetListResponse,
-    LibraryAssetOut,
-    LibraryRulePreviewRequest,
-    LibraryRulePreviewResponse,
-    LibraryYamlValidateRequest,
-    LibraryYamlValidateResponse,
     OverlayCreate,
     OverlayListResponse,
     OverlayOut,
@@ -32,6 +25,7 @@ from ..schemas.conversion_profiles import (
 from ..services.conversion_profiles_service import ConversionProfilesService
 
 
+@router.patch("/templates/{template_id}", response_model=DisseminationTemplateOut)
 def patch_template(
     template_id: UUID,
     payload: DisseminationTemplateUpdate,
@@ -63,6 +57,7 @@ def patch_template(
     return service.update_template(template_id, payload)
 
 
+@router.get("/overlays", response_model=OverlayListResponse)
 def list_overlays(
     service: ConversionProfilesService = Depends(profiles_service),
 ) -> OverlayListResponse:
@@ -88,6 +83,7 @@ def list_overlays(
     return OverlayListResponse(items=service.list_overlays())
 
 
+@router.post("/overlays", response_model=OverlayOut, status_code=201)
 def create_overlay(
     payload: OverlayCreate,
     service: ConversionProfilesService = Depends(profiles_service),
@@ -116,6 +112,7 @@ def create_overlay(
     return service.create_overlay(payload)
 
 
+@router.get("/overlays/{overlay_id}", response_model=OverlayOut)
 def get_overlay(
     overlay_id: UUID,
     service: ConversionProfilesService = Depends(profiles_service),
@@ -144,6 +141,7 @@ def get_overlay(
     return service.get_overlay(overlay_id)
 
 
+@router.patch("/overlays/{overlay_id}", response_model=OverlayOut)
 def patch_overlay(
     overlay_id: UUID,
     payload: OverlayUpdate,
@@ -175,6 +173,7 @@ def patch_overlay(
     return service.update_overlay(overlay_id, payload)
 
 
+@router.delete("/overlays/{overlay_id}", status_code=204)
 def delete_overlay(
     overlay_id: UUID,
     service: ConversionProfilesService = Depends(profiles_service),
@@ -198,6 +197,7 @@ def delete_overlay(
     service.delete_overlay(overlay_id)
 
 
+@router.get("/conversion-templates", response_model=ConversionTemplateListResponse)
 def list_conversion_templates(
     service: ConversionProfilesService = Depends(profiles_service),
 ) -> ConversionTemplateListResponse:
@@ -223,6 +223,7 @@ def list_conversion_templates(
     return ConversionTemplateListResponse(items=service.list_conversion_templates())
 
 
+@router.post("/conversion-templates", response_model=ConversionTemplateOut, status_code=201)
 def create_conversion_template(
     payload: ConversionTemplateCreate,
     service: ConversionProfilesService = Depends(profiles_service),
@@ -251,6 +252,10 @@ def create_conversion_template(
     return service.create_conversion_template(payload)
 
 
+@router.post(
+    "/conversion-templates/preview",
+    response_model=ConversionTemplatePreviewResponse,
+)
 def preview_conversion_template(
     payload: ConversionTemplatePreviewRequest,
     service: ConversionProfilesService = Depends(profiles_service),
@@ -306,6 +311,7 @@ def preview_conversion_template(
     )
 
 
+@router.get("/conversion-templates/{template_id}", response_model=ConversionTemplateOut)
 def get_conversion_template(
     template_id: str,
     service: ConversionProfilesService = Depends(profiles_service),
@@ -334,6 +340,7 @@ def get_conversion_template(
     return service.get_conversion_template(template_id)
 
 
+@router.patch("/conversion-templates/{template_id}", response_model=ConversionTemplateOut)
 def patch_conversion_template(
     template_id: str,
     payload: ConversionTemplateUpdate,
@@ -365,6 +372,7 @@ def patch_conversion_template(
     return service.update_conversion_template(template_id, payload)
 
 
+@router.delete("/conversion-templates/{template_id}", status_code=204)
 def delete_conversion_template(
     template_id: str,
     service: ConversionProfilesService = Depends(profiles_service),
@@ -386,115 +394,3 @@ def delete_conversion_template(
         Argument ``service``.
     """
     service.delete_conversion_template(template_id)
-
-
-def list_library_assets(
-    kind: str | None = None,
-    service: ConversionProfilesService = Depends(profiles_service),
-) -> LibraryAssetListResponse:
-    """
-    List first-party and custom five-Libraries assets.
-
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (list_library_assets)
-    2
-
-    Parameters
-    ----------
-    kind : object
-        Argument ``kind``.
-    service : object
-        Argument ``service``.
-
-    Returns
-    -------
-    object
-        Return value.
-    """
-    return LibraryAssetListResponse(items=service.list_library_assets(kind=kind))
-
-
-def create_library_asset(
-    payload: LibraryAssetCreate,
-    service: ConversionProfilesService = Depends(profiles_service),
-) -> LibraryAssetOut:
-    """
-    Library authoring is no longer available.
-
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (create_library_asset)
-    2
-
-    Parameters
-    ----------
-    payload : object
-        Argument ``payload``.
-    service : object
-        Argument ``service``.
-
-    Returns
-    -------
-    object
-        Return value.
-    """
-    _library_authoring_gone()
-
-
-def validate_library_yaml(
-    payload: LibraryYamlValidateRequest,
-    service: ConversionProfilesService = Depends(profiles_service),
-) -> LibraryYamlValidateResponse:
-    """
-    Library authoring is no longer available.
-
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (validate_library_yaml)
-    2
-
-    Parameters
-    ----------
-    payload : object
-        Argument ``payload``.
-    service : object
-        Argument ``service``.
-
-    Returns
-    -------
-    object
-        Return value.
-    """
-    _library_authoring_gone()
-
-
-def preview_library_rule(
-    payload: LibraryRulePreviewRequest,
-    service: ConversionProfilesService = Depends(profiles_service),
-) -> LibraryRulePreviewResponse:
-    """
-    Library authoring is no longer available.
-
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (preview_library_rule)
-    2
-
-    Parameters
-    ----------
-    payload : object
-        Argument ``payload``.
-    service : object
-        Argument ``service``.
-
-    Returns
-    -------
-    object
-        Return value.
-    """
-    _library_authoring_gone()

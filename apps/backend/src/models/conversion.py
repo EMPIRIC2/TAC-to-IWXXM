@@ -194,7 +194,15 @@ class ConversionResult(BaseModel):
 
 
 class ConversionResponseMetadata(BaseModel):
-    """Nested convert response metadata (extra keys allowed for wire stability)."""
+    """Nested convert response metadata (extra keys allowed for wire stability).
+
+    Attributes
+    ----------
+    bulletin_id : str | None
+        Optional bulletin identifier.
+    product : str | None
+        Optional product family.
+    """
 
     model_config = ConfigDict(extra="allow")
 
