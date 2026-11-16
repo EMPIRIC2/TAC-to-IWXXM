@@ -45,7 +45,7 @@ export type LivePlace = {
  * const _ = true;
  */
 
-export type MapTimePreset = '1h' | '3h' | '6h' | '12h' | 'full';
+export type MapTimePreset = 'latest' | '1h' | '3h' | '6h' | '12h' | 'full';
 
 /**
  * Geographic edges of the current map view.

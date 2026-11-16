@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment, @typescript-eslint/no-explicit-any, complexity */
+/* eslint-disable @typescript-eslint/ban-ts-comment, @typescript-eslint/no-explicit-any */
 // @ts-nocheck — mechanical line-count split from stage LiveWorldMap
 import {
   DECODE_VISUALS_BETA,
@@ -42,6 +42,12 @@ import { toggleTacOverlay } from '@/utils/liveMapTacLayers';
 import { LIVE_MAP_FILTER_ACTIVE } from '@/utils/liveMapValidity';
 import { LiveMapTacOverlayToggles } from '@/app/components/LiveMapTacOverlayToggles';
 
+const filterSelect =
+  'h-9 min-w-[10rem] rounded-lg border border-gray-200 bg-white px-2.5 text-sm font-medium text-gray-900 shadow-sm outline-none focus:ring-2 focus:ring-sky-500 dark:border-gray-700 dark:bg-gray-900 dark:text-white';
+
+/**
+ * Presentational controls and canvas for the live world map.
+ */
 export function LiveWorldMapView(props: any) {
   const {
     host,
@@ -69,7 +75,6 @@ export function LiveWorldMapView(props: any) {
     annex3Mode,
     overlaysMode,
     temperaturesMode,
-    products,
     countries,
     visible,
     message,
@@ -401,5 +406,4 @@ export function LiveWorldMapView(props: any) {
       />
     </div>
   );
-
 }

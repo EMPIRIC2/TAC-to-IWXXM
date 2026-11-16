@@ -55,12 +55,6 @@ export const OPERATOR_VISIBLE_COPY_PART1: OperatorVisibleCopyEntry[] = [
   { id: 'decode-visuals.intro', text: C.DECODE_VISUALS_INTRO },
   { id: 'decode-visuals.beta', text: C.DECODE_VISUALS_BETA },
   { id: 'decode-visuals.feedback', text: C.DECODE_VISUALS_FEEDBACK },
-  { id: 'decode-visuals.station', text: C.DECODE_VISUALS_STATION_LABEL },
-  {
-    id: 'decode-visuals.search-placeholder',
-    text: C.DECODE_VISUALS_SEARCH_PLACEHOLDER,
-  },
-  { id: 'decode-visuals.empty', text: C.DECODE_VISUALS_EMPTY },
   { id: 'decode-visuals.no-map', text: C.DECODE_VISUALS_NO_MAP },
   { id: 'decode-visuals.map-loading', text: C.DECODE_VISUALS_MAP_LOADING },
   { id: 'decode-visuals.no-region', text: C.DECODE_VISUALS_NO_REGION },

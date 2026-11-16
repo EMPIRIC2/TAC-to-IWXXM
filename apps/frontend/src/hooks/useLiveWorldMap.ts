@@ -63,6 +63,9 @@ import {
   showPopup,
 } from '@/utils/liveWorldMapHelpers';
 
+/**
+ * Live world map state, fetch, and Leaflet paint effects.
+ */
 export function useLiveWorldMap({
   focusStation = '',
   onOpenPlace,
@@ -392,10 +395,6 @@ export function useLiveWorldMap({
     }, LIVE_MAP_REFRESH_MS);
     return () => window.clearInterval(timer);
   }, [bounds, products]);
-
-  const filterSelect =
-    'h-9 min-w-[10rem] rounded-lg border border-gray-200 bg-white px-2.5 text-sm font-medium text-gray-900 shadow-sm outline-none focus:ring-2 focus:ring-sky-500 dark:border-gray-700 dark:bg-gray-900 dark:text-white';
-
 
   return {
     host,

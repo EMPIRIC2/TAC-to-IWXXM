@@ -3,6 +3,8 @@
 /** Live map place filters. */
 import type { LivePlace, MapTimePreset } from '@/models/liveMap';
 
+const HAZARD_PRODUCTS = new Set(['airmet', 'gairmet', 'sigmet']);
+
 /**
  * Filter live map places by country/region/time/phenomena overlays.
  * @example
@@ -132,6 +134,7 @@ function passesIssueWindow(
     return true;
   }
   const hoursByPreset: Record<MapTimePreset, number> = {
+    latest: 1,
     '1h': 1,
     '3h': 3,
     '6h': 6,

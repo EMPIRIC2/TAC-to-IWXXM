@@ -12,10 +12,7 @@ import {
   LIVE_MAP_TEMP_F,
   LIVE_MAP_TEMP_UNIT,
 } from '@/utils/liveMapModes';
-import {
-  LIVE_MAP_ACTIVE_EMPTY,
-  LIVE_MAP_FILTER_ACTIVE,
-} from '@/utils/liveMapValidity';
+import { LIVE_MAP_ACTIVE_EMPTY, LIVE_MAP_FILTER_ACTIVE } from '@/utils/liveMapValidity';
 import * as C from './operatorVisibleCopyConsts';
 import { OPERATOR_VISIBLE_COPY_PART1 } from './operatorVisibleCopy.part1';
 import { OPERATOR_VISIBLE_COPY_PART2 } from './operatorVisibleCopy.part2';
