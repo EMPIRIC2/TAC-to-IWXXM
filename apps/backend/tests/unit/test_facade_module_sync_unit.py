@@ -184,25 +184,26 @@ def test_conversion_router_facade_sync() -> None:
 
     original_lint = mod.tac_lint_fn
     original_svc = mod.ConversionProfilesService
+    part2_had_lint = hasattr(part2, "tac_lint_fn")
     try:
         mod._facade_probe_unsynced = 1
         delattr(mod, "_facade_probe_unsynced")
         part2.tac_lint_fn = original_lint  # type: ignore[attr-defined,misc]
         mod._ORIG["tac_lint_fn"] = original_lint  # type: ignore[attr-defined]
         _pulse_delattr(mod, "tac_lint_fn", original_lint)
-        part6.ConversionProfilesService = original_svc  # type: ignore[misc]
-        routes_io.ConversionProfilesService = original_svc  # type: ignore[attr-defined,misc]
+        # part6 / routes_io already import this name — only reassign, never delete.
         mod._ORIG["ConversionProfilesService"] = original_svc  # type: ignore[attr-defined]
         _pulse_delattr(mod, "ConversionProfilesService", original_svc)
     finally:
         mod.tac_lint_fn = original_lint
         mod.ConversionProfilesService = original_svc
         part1.tac_lint_fn = original_lint  # type: ignore[attr-defined]
-        if hasattr(part2, "tac_lint_fn"):
+        if part2_had_lint:
+            part2.tac_lint_fn = original_lint  # type: ignore[attr-defined]
+        elif hasattr(part2, "tac_lint_fn"):
             delattr(part2, "tac_lint_fn")
         part6.ConversionProfilesService = original_svc
-        if hasattr(routes_io, "ConversionProfilesService"):
-            delattr(routes_io, "ConversionProfilesService")
+        routes_io.ConversionProfilesService = original_svc
 
 
 def test_conversion_api_surface_delattr() -> None:
