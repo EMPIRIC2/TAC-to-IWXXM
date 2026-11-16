@@ -1,5 +1,5 @@
 /**
- * Unit tests for convert parameter mapping (ADR-023 / ADR-024).
+ * Unit tests for convert parameter mapping ().
  */
 import { describe, expect, it } from 'vitest';
 import {

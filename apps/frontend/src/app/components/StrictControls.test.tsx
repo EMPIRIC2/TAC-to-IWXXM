@@ -1,5 +1,5 @@
 /**
- * StrictControls smoke coverage (ADR-054).
+ * StrictControls smoke coverage .
  */
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';

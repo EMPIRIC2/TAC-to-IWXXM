@@ -1,5 +1,5 @@
 /**
- * Soft-preview checkbox for convert ``preview=true`` (UJ-016 / ADR-022).
+ * Soft-preview checkbox for convert ``preview=true`` (UJ-016).
  */
 
 /** Operator-visible label (scanned by TC-EV048-003). */

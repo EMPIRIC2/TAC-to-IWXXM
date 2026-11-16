@@ -2,7 +2,7 @@
 
 ``xml`` matches :func:`tac2iwxxm.convert.convert` at the resolved IR source.
 ``legacy_ir`` always comes from ``ir_source=legacy`` when that path succeeds.
-[Corpus: adr/ADR-045]
+
 """
 
 from __future__ import annotations

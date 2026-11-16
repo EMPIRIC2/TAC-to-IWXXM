@@ -1,7 +1,7 @@
 """Map pack match spans into convert IR slots.
 
 Span IR stays in ``tac-decoding``. Slot builders (not ``products/*.py``) fill IR.
-[Corpus: adr/ADR-045]
+
 """
 
 from __future__ import annotations

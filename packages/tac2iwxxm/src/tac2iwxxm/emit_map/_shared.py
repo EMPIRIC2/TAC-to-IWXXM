@@ -1,4 +1,4 @@
-"""Declarative convert emit maps (ADR-047 / #1229).
+"""Declarative convert emit maps (#1229).
 
 Builtin YAML under ``data/emit_maps/`` selects the python plugin for
 ``profile x product x iwxxm_version``. Optional ``TAC2IWXXM_EMIT_MAP_DIR`` overlays

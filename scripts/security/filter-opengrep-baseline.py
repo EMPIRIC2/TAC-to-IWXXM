@@ -2,7 +2,7 @@
 """Fail if OpenGrep JSON has findings not listed in the baseline file.
 
 Baseline format (tab-separated): check_id\\tpath  (repo-relative path)
-[Corpus: adr-037]
+
 """
 
 from __future__ import annotations

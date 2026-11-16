@@ -521,7 +521,7 @@ try:
 except Exception as e:  # pragma: no cover - defensive
     logger.error(f"DEBUG: Failed to include TD-3b routers: {e}", exc_info=True)
 
-# F31 / ADR-033 amend: FE-direct Supabase Auth; packages/auth is JWKS + proxy only.
+# F31 amend: FE-direct Supabase Auth; packages/auth is JWKS + proxy only.
 # Ensure SUPABASE_URL is available for JWKS verification on work-sessions.
 try:
     from metar_shared.supabase_env import get_supabase_url

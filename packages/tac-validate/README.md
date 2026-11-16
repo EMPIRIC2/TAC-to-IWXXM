@@ -41,7 +41,7 @@ cannot be read).
 
 ## Policy overlays
 
-Optional TAC quality policy YAML via `TAC_VALIDATE_POLICY_DIR` (ADR-046). See the
+Optional TAC quality policy YAML via `TAC_VALIDATE_POLICY_DIR` . See the
 monorepo [Overlay cookbook](https://github.com/EMPIRIC2/TAC-to-IWXXM/blob/stage/docs/domain/overlays/overlay-cookbook.md),
 `examples/overlays/`, and copy-paste `examples/starters/`. Detector packs use
 `TAC_VALIDATE_DETECTOR_DIR`.

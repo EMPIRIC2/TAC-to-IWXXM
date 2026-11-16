@@ -5,7 +5,7 @@ hotfix triage work, read the rows below that apply. Do not invent alternate
 document sets.
 
 > Skills and rules must cite paths from this file (for example
-> `[Corpus: system-spec]`, `[Corpus: adr/ADR-00N]` when a local ADR copy exists).
+> `[Corpus: system-spec]`, `` when a local ADR copy exists).
 >
 > Default load is the **engineering spine** only. Local trees listed under
 > **Local opt-in** are not in git. Keep them on disk for agent work when needed.

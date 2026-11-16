@@ -1,9 +1,9 @@
-"""Convert inherit factory adapter (ADR-055 ConvertResolvePort).
+"""Convert inherit factory adapter (ConvertResolvePort).
 
 Opt-in prefer remaps default emit keys for station maps. ``convert()`` keeps
 the caller profile as-is so annex3 goldens / pin selection stay unchanged —
 callers that want prefer invoke ``prefer_emit_profile`` or
-``ConvertInheritResolver`` first. [Corpus: adr/ADR-055] [Corpus: product §F6]
+``ConvertInheritResolver`` first. [Corpus: product §F6]
 [Corpus: pack-engine-boundary]
 """
 

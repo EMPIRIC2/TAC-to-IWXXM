@@ -1,4 +1,4 @@
-"""Unit tests: Auth HTTP proxy routes removed (F31 FE-direct / ADR-033 amend)."""
+"""Unit tests: Auth HTTP proxy routes removed (F31 FE-direct / amend)."""
 
 from __future__ import annotations
 

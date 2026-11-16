@@ -1,4 +1,4 @@
-"""Schematron assert inventory for a primary IWXXM pin (ADR-046 / #1216 M4).
+"""Schematron assert inventory for a primary IWXXM pin (#1216 M4).
 
 Ids are ``sch:pattern/@id`` values from the pin's ``*.sch`` files. Vendor Schematron
 remains the executable source of truth; this set is the policy membership list.

@@ -1,4 +1,4 @@
-"""SQLAlchemy CRUD for ``tac_work_sessions`` on ``DATABASE_URL`` (F31 / ADR-033)."""
+"""SQLAlchemy CRUD for ``tac_work_sessions`` on ``DATABASE_URL`` (F31)."""
 
 from __future__ import annotations
 

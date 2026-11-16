@@ -1,4 +1,4 @@
-"""Optional PyO3 extension loader (F13 / E10-36; mirrors tac2iwxxm ADR-017).
+"""Optional PyO3 extension loader (F13 E10-36; mirrors tac2iwxxm).
 
 The ``iwxxm_validate._rust`` module is built by maturin. Pure-Python lxml paths keep
 working when the extension is absent (local without rustc); CI rust job requires it.

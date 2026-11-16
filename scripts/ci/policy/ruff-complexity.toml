@@ -1,4 +1,4 @@
-# ADR-056 — dedicated complexity gate (ruff check --config config/ruff-complexity.toml).
+# — dedicated complexity gate (ruff check --config config/ruff-complexity.toml).
 line-length = 88
 target-version = "py312"
 

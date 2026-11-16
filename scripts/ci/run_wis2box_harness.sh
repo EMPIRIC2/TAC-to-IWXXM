@@ -63,7 +63,7 @@ fi
 echo "[wis2box-harness] HTTP dataset PUT/GET smoke ok"
 
 # TC-F17-001 publish pytest (T3.4) — only real .py files named *harness* / *staging*.
-# Loopback CIDR required for ADR-029 DNS-rebinding guard when using localhost/127.0.0.1.
+# Loopback CIDR required for DNS-rebinding guard when using localhost/127.0.0.1.
 export DISSEMINATION_EGRESS_ALLOWLIST="${DISSEMINATION_EGRESS_ALLOWLIST:-wis2box,127.0.0.1,127.0.0.0/8,localhost}"
 export WIS2BOX_HARNESS_EXTERNAL=1
 

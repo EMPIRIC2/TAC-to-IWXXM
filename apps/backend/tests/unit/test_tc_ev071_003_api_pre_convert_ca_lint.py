@@ -1,6 +1,6 @@
 """TC-EV071-003 - API pre-convert CA lint wire (EV-071 M1 / FR-L6).
 
-[Corpus: api] [Corpus: tests §TC-EV071] [Corpus: adr/ADR-055]
+[Corpus: api] [Corpus: tests §TC-EV071]
 """
 
 from __future__ import annotations
@@ -65,7 +65,7 @@ def test_tc_ev071_003_annex3_cy_station_prefers_ca_lint(
     client: TestClient,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    # ADR-055: default ICAO_2025/annex3 + CY* METAR remaps to ca_eccc prefer.
+    # : default ICAO_2025/annex3 + CY* METAR remaps to ca_eccc prefer.
     monkeypatch.setattr(
         api_module,
         "convert_metar_tac_with_metadata",

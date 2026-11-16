@@ -1,4 +1,4 @@
-"""msgspec models for TAC lint issues and fixes (ADR-016 / Q9=C)."""
+"""msgspec models for TAC lint issues and fixes (Q9=C)."""
 
 # pyright: reportWildcardImportFromLibrary=false, reportConstantRedefinition=false, reportUnknownVariableType=false, reportUnknownParameterType=false, reportUnknownArgumentType=false, reportInvalidTypeForm=false, reportUnusedImport=false, reportPrivateUsage=false, reportGeneralTypeIssues=false
 from __future__ import annotations

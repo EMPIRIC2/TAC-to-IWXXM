@@ -1,4 +1,4 @@
-"""Thin FastAPI routers for dissemination preflight/send (F16-F19 / ADR-030)."""
+"""Thin FastAPI routers for dissemination preflight/send (F16-F19)."""
 
 from __future__ import annotations
 

@@ -65,7 +65,7 @@ def convert_csv_to_json(csv_path: Path, json_path: Path) -> None:
 
         for row in reader:
             # Prefer icao_code; fall back to ident when it is a 4-char designator
-            # (aligns with ADR-051 reference-lookup matching on ident).
+            # (aligns with reference-lookup matching on ident).
             icao = row.get("icao_code", "").strip().upper()
             if not icao:
                 ident = row.get("ident", "").strip().upper()

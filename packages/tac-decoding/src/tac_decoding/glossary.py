@@ -1,4 +1,4 @@
-"""Extensible decode glossary - official tables + YAML overrides (F9 / ADR-032).
+"""Extensible decode glossary - official tables + YAML overrides (F9).
 
 Merge order: official/near-official meanings first, then YAML overlay
 (``decode_glossary.yaml`` / ``TAC_DECODING_GLOSSARY_PATH`` or legacy

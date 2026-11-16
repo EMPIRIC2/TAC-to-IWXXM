@@ -1,4 +1,4 @@
-"""DisseminationGateway façade over SinkAdapter (ADR-041 / EV-936).
+"""DisseminationGateway façade over SinkAdapter (EV-936).
 
 Maps ``validate`` → adapter ``preflight``, ``send`` → adapter ``send``, and
 ``health`` → connectivity-only probes. Does not replace the HTTP SinkAdapter
@@ -78,7 +78,7 @@ class ValidationResult:
 @dataclass(frozen=True, slots=True)
 class DeliveryReceipt:
     """
-    Delivery audit row (ADR-041) — never stores BYOC secrets.
+    Delivery audit row () — never stores BYOC secrets.
 
     Parameters
     ----------

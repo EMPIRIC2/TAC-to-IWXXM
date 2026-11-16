@@ -1,5 +1,5 @@
 /**
- * BetaBadge Vitest — EV-1150 / ADR-043.
+ * BetaBadge Vitest — EV-1150 .
  */
 
 import { describe, expect, it } from 'vitest';

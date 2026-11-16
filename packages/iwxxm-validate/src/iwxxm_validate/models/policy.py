@@ -1,4 +1,4 @@
-"""IWXXM output policy document models (ADR-046)."""
+"""IWXXM output policy document models."""
 
 from __future__ import annotations
 

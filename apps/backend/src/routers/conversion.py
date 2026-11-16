@@ -504,7 +504,7 @@ class _ConvertAccumulator:
         base_offset: int = 0,
     ) -> None:
         """
-        Mark soft-preview Layer 1-2 failure and copy spans when present (ADR-022).
+        Mark soft-preview Layer 1-2 failure and copy spans when present ().
 
 
         Parameters
@@ -2895,7 +2895,7 @@ async def convert(
     if not include_nil_reasons:
         logger.info(
             "[CONVERT] include_nil_reasons=false accepted; tac2iwxxm may still emit "
-            "nilReason on NIL reports until engine honors the flag (ADR-024 placeholder)",
+            "nilReason on NIL reports until engine honors the flag (placeholder)",
         )
 
     acc = _ConvertAccumulator()

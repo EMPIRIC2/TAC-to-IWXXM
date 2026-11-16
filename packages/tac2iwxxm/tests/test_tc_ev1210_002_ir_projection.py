@@ -1,7 +1,7 @@
 """T6.2 — pack IR projects beside the legacy parser.
 
 XML still comes from the legacy convert. Pack IR is additive. Parsers and the
-version matrix stay. [Corpus: tests] [Corpus: adr/ADR-045]
+version matrix stay. [Corpus: tests]
 """
 
 from __future__ import annotations

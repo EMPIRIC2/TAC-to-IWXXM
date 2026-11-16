@@ -2,7 +2,7 @@
 
 > **Profile id**: `US_MILITARY` · **Wire / lint id**: `us_military`  
 > **Kind**: semantic · **Priority**: P2 · **Status**: implemented (EV-regional-dialect-profiles)  
-> **Catalog row**: [`catalog.yaml`](../catalog.yaml) · **ADR**: [ADR-036](../../../adr/ADR-036-semantic-vs-exchange-profiles.md) · [ADR-046](../../../adr/ADR-046-validation-policy-layers.md)
+> **Catalog row**: [`catalog.yaml`](../catalog.yaml) · **ADR**: [](../../../adr/-semantic-vs-exchange-profiles.md) · [](../../../adr/-validation-policy-layers.md)
 
 Lint profile for US military TAFs that put TX/TN after BECMG/TEMPO/FM.
 Convert uses core IWXXM (`annex3`). This is not `US_FAA_NWS` / `iwxxm_us`

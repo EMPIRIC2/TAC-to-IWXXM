@@ -1,5 +1,5 @@
 """
-Strict raise policy helpers for convert/lint/validate (ADR-054).
+Strict raise policy helpers for convert/lint/validate ().
 
 Server returns all issues; raised_severities describes which severities the
 client should treat as raised given Strict and step flags.

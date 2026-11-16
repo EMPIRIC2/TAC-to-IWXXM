@@ -1,4 +1,4 @@
-"""H5 runtime config gate - validates /config.json contract (ADR-010, S003)."""
+"""H5 runtime config gate - validates /config.json contract (, S003)."""
 
 from __future__ import annotations
 

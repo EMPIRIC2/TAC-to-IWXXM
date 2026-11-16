@@ -1,4 +1,4 @@
-"""Semantic profile id registry (F35 / ADR-036).
+"""Semantic profile id registry (F35).
 
 Canonical semantic ids map to internal emitter keys (`annex3` / `iwxxm_us`).
 Legacy aliases remain accepted during the deprecation window ([#1025](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1025)).

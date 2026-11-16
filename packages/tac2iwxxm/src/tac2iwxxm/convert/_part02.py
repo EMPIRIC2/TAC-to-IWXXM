@@ -327,7 +327,7 @@ def _emit(product: str, profile: str, ir: dict[str, Any], iwxxm_version: str) ->
         Return value.
     """
     if product in {"METAR", "SPECI", "TAF", "SIGMET", "AIRMET", "VAA", "TCA"}:
-        # ADR-047: core F6 products emit via YAML maps (python plugins remain builders).
+        # : core F6 products emit via YAML maps (python plugins remain builders).
         return emit_with_map(ir, product=product, profile=profile, iwxxm_version=iwxxm_version)
     if product == "SWXA":
         return emit_swxa_annex3(ir, iwxxm_version=iwxxm_version)

@@ -1,4 +1,4 @@
-"""TAC quality policy load + resolve (ADR-046 / #1216).
+"""TAC quality policy load + resolve.
 
 Draft lifecycle warns on unknown registry codes; activate fails closed.
 """

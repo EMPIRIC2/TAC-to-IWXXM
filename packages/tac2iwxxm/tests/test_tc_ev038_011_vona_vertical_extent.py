@@ -3,7 +3,7 @@
 When TAC supplies ``HGT SOURCE`` / ``MOV`` on a non-A7-1 path, ash
 ``phenomenonProperty`` must carry ``VolcanicAshCloudVerticalExtent`` per XSD
 (not ``iwxxm/nil/inapplicable``). Official ``vona-A7-1`` peer keeps inapplicable
-(ADR-032 golden). No invented packing - MOV tokens map to XSD enum only.
+( golden). No invented packing - MOV tokens map to XSD enum only.
 
 Corpus: product F32; tests TC-EV038-011; decisions AC11.
 """

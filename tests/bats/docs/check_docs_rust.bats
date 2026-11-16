@@ -1,4 +1,4 @@
-# scripts/docs/check_docs_rust.sh — bats coverage (ADR-048)
+# scripts/docs/check_docs_rust.sh — bats coverage
 # Map path: tests/bats/docs/check_docs_rust.bats per EV-080 (rel without .sh)
 
 load "${BATS_TEST_DIRNAME}/../helpers/load"

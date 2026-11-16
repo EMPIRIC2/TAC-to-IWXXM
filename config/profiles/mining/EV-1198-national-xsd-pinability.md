@@ -4,7 +4,7 @@
 **Dates:** Stage 0 2026-09-16 · **Stage 1 live web re-verify 2026-09-16**  
 **Session:** `EV-1198-stage1-national-xsd-web-reverify`  
 **Status:** Stage 1 complete: **#1198 stays blocked for Conversion mining**; **AU = partial candidate (license + scope gate)**; no M6 vendor-sync PR opened this pass  
-**Corpus:** [Corpus: product §F7.w] [Corpus: product §M6] [Corpus: adr/ADR-038] [Corpus: domain-profiles]
+**Corpus:** [Corpus: product §F7.w] [Corpus: product §M6] [Corpus: domain-profiles]
 
 ## Bottom line
 

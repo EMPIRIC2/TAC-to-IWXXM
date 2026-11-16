@@ -1,6 +1,6 @@
-"""Types and Protocol ports for ADR-055 inherit factory.
+"""Types and Protocol ports for inherit factory.
 
-[Corpus: adr/ADR-055] [Corpus: pack-engine-boundary]
+[Corpus: pack-engine-boundary]
 """
 
 from __future__ import annotations

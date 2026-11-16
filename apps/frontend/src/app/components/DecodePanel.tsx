@@ -38,7 +38,7 @@ export interface DecodeResidualView {
 export interface DecodePanelProps {
   segments: DecodeSegmentView[];
   residuals: DecodeResidualView[];
-  /** Deterministic plain-language paragraph from decode-tac (F9 / ADR-025). */
+  /** Deterministic plain-language paragraph from decode-tac (F9). */
   summary?: string;
   product?: string;
   loading?: boolean;

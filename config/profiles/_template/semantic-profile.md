@@ -2,7 +2,7 @@
 
 > **Profile id**: `PLACEHOLDER_ID` · **Kind**: semantic · **Priority**: P2 · **Status**: planned  
 > **Catalog row**: [`catalog.yaml`](../catalog.yaml) · **Playbook**: [NATIONAL_PROFILE_PLAYBOOK.md](../NATIONAL_PROFILE_PLAYBOOK.md)  
-> **ADR**: [ADR-036](../../../adr/ADR-036-semantic-vs-exchange-profiles.md)
+> **ADR**: [](../../../adr/-semantic-vs-exchange-profiles.md)
 
 One-paragraph purpose: issuing body, products, thin vs full path.
 

@@ -1,4 +1,4 @@
-"""HTTPS / object-prefix ingest poller (Q16=A / ADR-018)."""
+"""HTTPS object-prefix ingest poller (Q16=A)."""
 
 from __future__ import annotations
 
