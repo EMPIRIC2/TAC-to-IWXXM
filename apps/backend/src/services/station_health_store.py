@@ -158,7 +158,9 @@ class StationHealthStore:
 
             airport = get_airport_validator().get_airport(code)
             if airport is not None and getattr(airport, "country", None):
-                country = str(airport.country).strip().upper() or None
+                raw_country = str(airport.country).strip().upper()
+                # WMO region map keys are ISO 3166-1 alpha-2 only.
+                country = raw_country if len(raw_country) == 2 else None
         except Exception:
             logger.exception("station health country lookup failed for %s", code)
         with self._lock:

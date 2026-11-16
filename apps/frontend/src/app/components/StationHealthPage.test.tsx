@@ -56,6 +56,18 @@ describe('StationHealthPage', () => {
               lint_severity_score: 100,
               lint_error_count: 0,
             },
+            {
+              product: 'speci',
+              grade: 'B',
+              overall_score: 80,
+              availability_score: null,
+              actual_count: 0,
+              expected_count: 0,
+              solidus_rate: null,
+              missing_digit_rate: null,
+              lint_severity_score: null,
+              lint_error_count: 0,
+            },
           ],
         },
       ],
@@ -87,12 +99,12 @@ describe('StationHealthPage', () => {
     );
     expect(screen.queryByText('Score')).not.toBeInTheDocument();
     expect(screen.getByTestId('station-health-availability-KJFK')).toHaveTextContent(
-      '83.3',
+      '41.6',
     );
     expect(screen.getByTestId('station-health-solidus-KJFK')).toHaveTextContent(
-      '0.020',
+      '0.010',
     );
-    expect(screen.getByTestId('station-health-lint-KJFK')).toHaveTextContent('100.0');
+    expect(screen.getByTestId('station-health-lint-KJFK')).toHaveTextContent('50.0');
     expect(screen.getByTestId('station-health-score-help')).toBeInTheDocument();
     expect(
       screen.getByTestId('station-health-metric-availability'),
@@ -223,6 +235,54 @@ describe('StationHealthPage', () => {
         'Unknown region',
       );
     });
+  });
+
+  it('renders maintenance, format, issue, and centennial cells', async () => {
+    fetchStationHealthList.mockResolvedValue({
+      window: '90d',
+      computed_at: '2026-11-13T12:00:00Z',
+      stations: [
+        {
+          icao: 'KJFK',
+          name: 'John F Kennedy International',
+          wmo_region: 'IV',
+          overall_grade: 'A',
+          overall_score: 95,
+          products: [],
+          maintenance_tag_counts: { AUTO: 2, COR: 0 },
+          file_format_counts: { tac: 3 },
+          issue_code_counts: { MISSING_DIGIT: 1 },
+          centennial_metrics: [
+            { id: 'named', label: 'Named', status: 'available', score: 100 },
+            { id: 'coords', label: 'Coords', status: 'available', score: null },
+            { id: 'skip', label: 'Skip', status: 'insufficient', score: 0 },
+          ],
+        },
+      ],
+      summary: { station_count: 1, grade_counts: { A: 1, B: 0, C: 0, D: 0, F: 0 } },
+    });
+    render(<StationHealthPage />);
+    await waitFor(() => {
+      expect(screen.getByTestId('station-health-row-KJFK')).toBeInTheDocument();
+    });
+    expect(screen.getByTestId('station-health-maintenance-KJFK')).toHaveTextContent(
+      'AUTO 2',
+    );
+    expect(screen.getByTestId('station-health-formats-KJFK')).toHaveTextContent(
+      'tac 3',
+    );
+    expect(screen.getByTestId('station-health-issues-KJFK')).toHaveTextContent(
+      'MISSING_DIGIT 1',
+    );
+    expect(screen.getByTestId('station-health-centennial-KJFK')).toHaveTextContent(
+      'Named 100',
+    );
+    expect(screen.getByTestId('station-health-centennial-KJFK')).toHaveTextContent(
+      'Coords',
+    );
+    expect(screen.getByTestId('station-health-centennial-KJFK')).not.toHaveTextContent(
+      'Skip',
+    );
   });
 });
 
