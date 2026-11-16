@@ -18,6 +18,14 @@ from .wmo_codelists_client_part_2 import (
 
 
 def _load_requests() -> tuple[object | None, bool]:
+    """
+    Internal helper ``_load_requests``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     try:
         return import_module("requests"), True
     except ImportError:  # pragma: no cover
@@ -36,7 +44,19 @@ _ORIG: dict[str, object] = {}
 
 
 class _WmoCodelistsModule(types.ModuleType):
+    """Sync facade attribute patches into split part modules."""
+
     def __setattr__(self, name: str, value: object) -> None:
+        """
+        Internal helper ``__setattr__``.
+
+        Parameters
+        ----------
+        name : object
+            Argument ``name``.
+        value : object
+            Argument ``value``.
+        """
         if name in {"REQUESTS_AVAILABLE", "requests", "CodeListParser"}:
             setattr(_part1, name, value)
             if hasattr(_part2, name):
@@ -44,6 +64,14 @@ class _WmoCodelistsModule(types.ModuleType):
         super().__setattr__(name, value)
 
     def __delattr__(self, name: str) -> None:
+        """
+        Internal helper ``__delattr__``.
+
+        Parameters
+        ----------
+        name : object
+            Argument ``name``.
+        """
         if name in _ORIG and hasattr(_part1, name):
             setattr(_part1, name, _ORIG[name])
         if name in _ORIG and hasattr(_part2, name):

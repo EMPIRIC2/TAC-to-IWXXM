@@ -255,11 +255,6 @@ async def add_translation_centre_headers(
     """
     Add ICAO Translation Centre identification headers to all responses.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (add_translation_centre_headers)
-    2
-
     Parameters
     ----------
     request : object

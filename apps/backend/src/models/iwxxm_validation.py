@@ -89,11 +89,6 @@ def is_valid_meteorological_feature(feature: str) -> bool:
     """
     Check if a meteorological feature code is valid.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (is_valid_meteorological_feature)
-    2
-
     Parameters
     ----------
     feature : object
@@ -110,11 +105,6 @@ def is_valid_meteorological_feature(feature: str) -> bool:
 def is_valid_volcanic_code(code: str) -> bool:
     """
     Check if a volcanic aviation colour code is valid.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (is_valid_volcanic_code)
-    2
 
     Parameters
     ----------
@@ -133,11 +123,6 @@ def is_valid_nil_reason(reason: str) -> bool:
     """
     Check if a nil reason is valid.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (is_valid_nil_reason)
-    2
-
     Parameters
     ----------
     reason : object
@@ -154,11 +139,6 @@ def is_valid_nil_reason(reason: str) -> bool:
 def is_supported_iwxxm_version(version: str) -> bool:
     """
     Check if an IWXXM version is supported.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (is_supported_iwxxm_version)
-    2
 
     Parameters
     ----------
@@ -196,11 +176,6 @@ def extract_iwxxm_namespace_version(namespace_uri: str) -> str:
     -------
     object
         Version string (e.g., "2023-1")
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (extract_iwxxm_namespace_version)
-    2
     """
     if not namespace_uri.startswith("http://icao.int/iwxxm/"):
         raise ValueError(f"Invalid IWXXM namespace: {namespace_uri}")
@@ -231,11 +206,6 @@ def get_namespace_version(xml_string: str) -> str:
     -------
     object
         Version string (e.g., "2023-1" or "3.0")
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (get_namespace_version)
-    2
     """
     import re
 

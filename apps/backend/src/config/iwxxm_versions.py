@@ -98,7 +98,19 @@ for _n in _SYNC:
 
 
 class _IwxxmVersionsModule(types.ModuleType):
+    """Sync facade attribute patches into split part modules."""
+
     def __setattr__(self, name: str, value: object) -> None:
+        """
+        Internal helper ``__setattr__``.
+
+        Parameters
+        ----------
+        name : object
+            Argument ``name``.
+        value : object
+            Argument ``value``.
+        """
         if name == "__file__":
             # Keep part_1 Path(__file__) fallbacks and detectors in sync for tests.
             object.__setattr__(self, name, value)
@@ -110,6 +122,14 @@ class _IwxxmVersionsModule(types.ModuleType):
         super().__setattr__(name, value)
 
     def __delattr__(self, name: str) -> None:
+        """
+        Internal helper ``__delattr__``.
+
+        Parameters
+        ----------
+        name : object
+            Argument ``name``.
+        """
         if name in _ORIG and hasattr(_part1, name):
             setattr(_part1, name, _ORIG[name])
         if name in _ORIG and hasattr(_part2, name):

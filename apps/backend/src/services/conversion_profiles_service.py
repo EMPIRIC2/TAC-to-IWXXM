@@ -57,11 +57,29 @@ class _ConversionProfilesServiceModule(types.ModuleType):
     """Keep facade patches in sync with part_1 call sites."""
 
     def __setattr__(self, name: str, value: object) -> None:
+        """
+        Internal helper ``__setattr__``.
+
+        Parameters
+        ----------
+        name : object
+            Argument ``name``.
+        value : object
+            Argument ``value``.
+        """
         if (name == "_engine" or name in _SYNC) and hasattr(_part1, name):
             setattr(_part1, name, value)
         super().__setattr__(name, value)
 
     def __delattr__(self, name: str) -> None:
+        """
+        Internal helper ``__delattr__``.
+
+        Parameters
+        ----------
+        name : object
+            Argument ``name``.
+        """
         if name in _ORIG and hasattr(_part1, name):
             setattr(_part1, name, _ORIG[name])
         super().__delattr__(name)

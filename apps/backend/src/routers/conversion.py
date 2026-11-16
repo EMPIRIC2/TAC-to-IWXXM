@@ -62,7 +62,19 @@ for _n in _SYNC:
 
 
 class _ConversionRouterModule(types.ModuleType):
+    """Sync facade attribute patches into split part modules."""
+
     def __setattr__(self, name: str, value: object) -> None:
+        """
+        Internal helper ``__setattr__``.
+
+        Parameters
+        ----------
+        name : object
+            Argument ``name``.
+        value : object
+            Argument ``value``.
+        """
         if name in _SYNC:
             for mod in (_part1, _part2, _part6, _routes_io):
                 if hasattr(mod, name):
@@ -70,6 +82,14 @@ class _ConversionRouterModule(types.ModuleType):
         super().__setattr__(name, value)
 
     def __delattr__(self, name: str) -> None:
+        """
+        Internal helper ``__delattr__``.
+
+        Parameters
+        ----------
+        name : object
+            Argument ``name``.
+        """
         if name in _ORIG and hasattr(_part1, name):
             setattr(_part1, name, _ORIG[name])
         if name in _ORIG and hasattr(_part2, name):

@@ -23,7 +23,19 @@ _ORIG: dict[str, object] = {}
 
 # Populated lazily on first setattr for unknown sync sets
 class _AviationWeatherClientModule(types.ModuleType):
+    """Sync facade attribute patches into split part modules."""
+
     def __setattr__(self, name: str, value: object) -> None:
+        """
+        Internal helper ``__setattr__``.
+
+        Parameters
+        ----------
+        name : object
+            Argument ``name``.
+        value : object
+            Argument ``value``.
+        """
         if name in {"httpx", "asyncio"}:
             for mod in (_part2, _part3):
                 if hasattr(mod, name):
@@ -31,6 +43,14 @@ class _AviationWeatherClientModule(types.ModuleType):
         super().__setattr__(name, value)
 
     def __delattr__(self, name: str) -> None:
+        """
+        Internal helper ``__delattr__``.
+
+        Parameters
+        ----------
+        name : object
+            Argument ``name``.
+        """
         if name in _ORIG and hasattr(_part2, name):
             setattr(_part2, name, _ORIG[name])
         if name in _ORIG and hasattr(_part3, name):
