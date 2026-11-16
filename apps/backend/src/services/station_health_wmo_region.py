@@ -53,14 +53,14 @@ def _iso_to_region() -> dict[str, str]:
     return result
 
 
-def normalize_wmo_region(value: str | None) -> str | None:
+def normalize_wmo_region(value: object | None) -> str | None:
     """
     Normalize a region query value, or return ``None`` when absent.
 
     Parameters
     ----------
-    value : str | None
-        Raw query string.
+    value : object | None
+        Raw query string (or FastAPI ``Query`` default when called directly).
 
     Returns
     -------
