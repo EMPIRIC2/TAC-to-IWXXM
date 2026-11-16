@@ -39,6 +39,7 @@ export default defineConfig({
         // Static TAC/XML example bodies + generated SoT — not executable app code
         'src/fixtures/**',
         'src/generated/**',
+        'src/data/**/*.json',
         // Mechanical re-export barrels from the models/split (no runtime logic).
         'src/hooks/fileConverterDeps.ts',
         'src/app/components/fileConverterViewScope.tsx',

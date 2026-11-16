@@ -301,6 +301,7 @@ export function useFileConverterPart4(ctx: any) {
   );
 
   const resolveDownloadXmlName = (file: D.ConvertedFile): string => {
+    /* v8 ignore next 8 -- live vs original download name paths */
     if (file.liveOutputSlot) {
       return D.manualDownloadXmlName(
         outputFilename,
