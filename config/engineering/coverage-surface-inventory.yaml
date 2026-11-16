@@ -1,5 +1,5 @@
 # EV-080 / #1077 — coverage surface inventory (@ 100%)
-# Corpus: [Corpus: adr/] [Corpus: tests] [Corpus: tech-spec]
+# Corpus: [Corpus: tests] [Corpus: tech-spec]
 #
 # target_floor: universal minimum after EV-080. measured_* updated M3 (2026-08-28).
 
