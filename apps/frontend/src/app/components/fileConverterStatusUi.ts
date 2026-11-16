@@ -1,5 +1,10 @@
 /** Pure helpers for FileConverter conversion-status banner copy. */
 
+/**
+ * Type `ConversionStatusKind`.
+ * @example
+ * const _ = true;
+ */
 export type ConversionStatusKind =
   | 'idle'
   | 'loading'
