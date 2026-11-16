@@ -78,9 +78,8 @@ def normalize_wmo_region(value: object | None) -> str | None:
     trimmed = value.strip()
     if not trimmed:
         return None
-    key = trimmed.lower() if trimmed.lower() == UNKNOWN_WMO_REGION else trimmed.upper()
-    if key == "UNKNOWN":
-        key = UNKNOWN_WMO_REGION
+    # Lowercase only the fail-closed unknown token; all other ids are Roman numerals.
+    key = UNKNOWN_WMO_REGION if trimmed.lower() == UNKNOWN_WMO_REGION else trimmed.upper()
     if key not in VALID_WMO_REGIONS:
         msg = "Region must be I, II, III, IV, V, VI, or unknown"
         raise ValueError(msg)
