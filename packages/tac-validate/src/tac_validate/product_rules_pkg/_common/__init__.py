@@ -13,10 +13,7 @@ from tac_validate.product_rules_pkg._common.gates import (
     _report_segment_count,
 )
 from tac_validate.product_rules_pkg._common.helpers import (
-    _append_remark_issue,
     _body_span,
-    _check_phenomenon_membership,
-    _cloud_candidate_tokens,
     _consume_wx_descriptors,
     _first_icao,
     _first_icao_index,
@@ -140,6 +137,11 @@ from tac_validate.product_rules_pkg._common.patterns import (
     _WX_SPECIAL,
     _WX_STANDALONE,
     _WX_TOKEN_SHAPE,
+)
+from tac_validate.product_rules_pkg._common.phenomenon import (
+    _append_remark_issue,
+    _check_phenomenon_membership,
+    _cloud_candidate_tokens,
 )
 
 __all__ = [

@@ -12,6 +12,7 @@ from tac_validate.product_rules_pkg._common.gates import (  # noqa: F401
 )
 from tac_validate.product_rules_pkg._common.helpers import *
 from tac_validate.product_rules_pkg._common.patterns import *
+from tac_validate.product_rules_pkg._common.phenomenon import *
 
 
 def _check_us_remarks(
