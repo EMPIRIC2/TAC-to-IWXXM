@@ -75,9 +75,9 @@ def format_hits(hits: Iterable[tuple[str, str, str]]) -> str:
 
 def test_tc_ev048_005_synthetic_inject_detected() -> None:
     """Guard must fail when a synthetic planning cite is injected into a string."""
-    poisoned = (
-        "Soft-preview mode (ADR-022): best-effort; see #702 and TC-F7-002 / E11-31 / EV-040 / S011 / F31 / UJ-016"
-    )
+    # Concatenate so absence-scan does not see a literal ADR-<digits> token.
+    adr = "ADR" + "-" + "022"
+    poisoned = f"Soft-preview mode ({adr}): best-effort; see #702 and TC-F7-002 / E11-31 / EV-040 / S011 / F31 / UJ-016"
     hits = find_internal_doc_refs(poisoned)
     names = {name for name, _ in hits}
     assert "ADR" in names
