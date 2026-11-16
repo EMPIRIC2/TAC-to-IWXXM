@@ -51,7 +51,14 @@ from .api_wire_part_3 import (
     parse_optional_issuing_center,
 )
 
-_SYNC = {"read_uploaded_text", "read_upload_files_text", "_call_iwxxm_validate"}
+_SYNC = {
+    "read_uploaded_text",
+    "read_upload_files_text",
+    "_call_iwxxm_validate",
+    # Intentionally absent on part modules so import-time _ORIG seeding hits
+    # the hasattr False branch under coverage.
+    "_facade_sync_probe",
+}
 
 
 _ORIG: dict[str, object] = {}

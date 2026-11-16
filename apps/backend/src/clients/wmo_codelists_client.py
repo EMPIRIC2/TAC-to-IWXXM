@@ -2,7 +2,7 @@
 
 import sys
 import types
-from importlib import import_module
+from typing import Any
 
 from . import wmo_codelists_client_part_1 as _part1
 from . import wmo_codelists_client_part_2 as _part2
@@ -17,7 +17,7 @@ from .wmo_codelists_client_part_2 import (
 )
 
 
-def _load_requests() -> tuple[object | None, bool]:
+def _load_requests() -> tuple[Any, bool]:
     """
     Internal helper ``_load_requests``.
 
@@ -26,9 +26,13 @@ def _load_requests() -> tuple[object | None, bool]:
     object
         Return value.
     """
+    # Statement import so builtins.__import__ monkeypatches still work;
+    # importlib.import_module bypasses that hook.
     try:
-        return import_module("requests"), True
-    except ImportError:  # pragma: no cover
+        import requests as requests_mod
+
+        return requests_mod, True
+    except ImportError:
         return None, False
 
 

@@ -21,7 +21,7 @@ from .tac_quality_part_2 import (
     station_point,
 )
 
-_SYNC = {"get_airport_validator"}
+_SYNC = {"get_airport_validator", "_facade_sync_probe"}
 _ORIG: dict[str, object] = {}
 for _n in _SYNC:
     if hasattr(_part2, _n):

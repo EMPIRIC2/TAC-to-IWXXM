@@ -9,7 +9,7 @@ from typing import Any, cast
 
 try:
     import requests
-except ImportError:
+except ImportError:  # pragma: no cover - requests is a workspace dependency
     requests = None  # type: ignore[assignment,misc]
 
 REQUESTS_AVAILABLE = requests is not None

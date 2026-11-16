@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import sys
 import types
-from importlib import import_module
+from typing import Any
 
 from ..config.validation import get_validation_settings
 from ..schemas.validation import (
@@ -28,7 +28,7 @@ from .codelist_parser_part_3 import (
 from .xml_types import lxml_etree as etree
 
 
-def _load_requests() -> tuple[object | None, bool]:
+def _load_requests() -> tuple[Any, bool]:
     """
     Internal helper ``_load_requests``.
 
@@ -37,9 +37,13 @@ def _load_requests() -> tuple[object | None, bool]:
     object
         Return value.
     """
+    # Use a statement import so builtins.__import__ monkeypatches (unit tests)
+    # still observe ImportError; importlib.import_module bypasses that hook.
     try:
-        return import_module("requests"), True
-    except ImportError:  # pragma: no cover
+        import requests as requests_mod
+
+        return requests_mod, True
+    except ImportError:
         return None, False
 
 
