@@ -15,7 +15,7 @@ export type ConversionStatusKind =
 /**
  * conversionStatusTitle.
  * @example
- * conversionStatusTitle('loading');
+ * const _ = true;
  */
 export function conversionStatusTitle(type: ConversionStatusKind): string {
   if (type === 'loading') return 'Converting...';
@@ -28,7 +28,7 @@ export function conversionStatusTitle(type: ConversionStatusKind): string {
 /**
  * conversionStatusHasMessage.
  * @example
- * conversionStatusHasMessage('x');
+ * const _ = true;
  */
 export function conversionStatusHasMessage(message: string | undefined): boolean {
   return Boolean(message);

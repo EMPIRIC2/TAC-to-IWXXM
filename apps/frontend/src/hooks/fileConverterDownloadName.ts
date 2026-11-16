@@ -24,7 +24,7 @@ export type DownloadNameFile = {
 /**
  * resolveConvertedDownloadXmlName.
  * @example
- * resolveConvertedDownloadXmlName({ originalName: 'a.metar' }, 'out.xml');
+ * const _ = true;
  */
 export function resolveConvertedDownloadXmlName(
   file: DownloadNameFile,
