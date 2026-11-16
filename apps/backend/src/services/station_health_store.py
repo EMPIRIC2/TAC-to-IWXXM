@@ -20,6 +20,7 @@ from src.services.station_health_signals import (
     extract_maintenance_tags,
     normalize_issue_codes,
 )
+from src.services.station_health_store_rows import region_filter_key, station_list_row
 from src.services.station_health_types import (
     DEFAULT_METRICS,
     StationHealthStoreProtocol,
@@ -29,83 +30,6 @@ from src.services.station_health_types import (
 from src.services.station_health_wmo_region import wmo_region_for_icao
 
 logger = logging.getLogger(__name__)
-
-
-def _region_filter_key(region: str | None) -> str | None:
-    """
-    Normalize an optional WMO region filter to a store key.
-
-    Parameters
-    ----------
-    args
-        See function signature.
-
-    Returns
-    -------
-    object
-        Return value.
-    """
-    if not region:
-        return None
-    region_filter = region.strip().lower()
-    if region_filter == "unknown":
-        return "unknown"
-    return region.strip().upper()
-
-
-def _station_list_row(
-    *,
-    icao: str,
-    meta: StationMeta,
-    icao_rows: list[StationRecord],
-    window_key: str,
-    product_filter: str | None,
-    grade_filter: str | None,
-) -> dict[str, Any] | None:
-    """
-    Build one list-row dict, or ``None`` when filters exclude the station.
-
-    Parameters
-    ----------
-    args
-        See function signature.
-
-    Returns
-    -------
-    object
-        Return value.
-    """
-    wmo_region = wmo_region_for_icao(icao, country=meta.country)
-    enriched = enrich_station_window(
-        meta=meta,
-        rows=icao_rows,
-        window_key=window_key,
-    )
-    products = enriched["products"]
-    if product_filter:
-        products = [item for item in products if item["product"] == product_filter]
-        if not products:
-            return None
-        enriched = enrich_station_window(
-            meta=meta,
-            rows=icao_rows,
-            window_key=window_key,
-            products=products,
-        )
-    if grade_filter and enriched["overall_grade"] != grade_filter:
-        return None
-    return {
-        "icao": icao,
-        "name": meta.name,
-        "wmo_region": wmo_region,
-        "overall_grade": enriched["overall_grade"],
-        "overall_score": enriched["overall_score"],
-        "products": enriched["products"],
-        "maintenance_tag_counts": enriched["maintenance_tag_counts"],
-        "file_format_counts": enriched["file_format_counts"],
-        "issue_code_counts": enriched["issue_code_counts"],
-        "centennial_metrics": enriched["centennial_metrics"],
-    }
 
 
 @dataclass
@@ -305,7 +229,7 @@ class StationHealthStore:
         cutoff = max(now - window_timedelta(window_key), retention_cutoff)
         product_filter = product.strip().lower() if product else None
         grade_filter = grade.strip().upper() if grade else None
-        region_key = _region_filter_key(region)
+        region_key = region_filter_key(region)
 
         with self._lock:
             stations = dict(self._stations)
@@ -323,7 +247,7 @@ class StationHealthStore:
             wmo_region = wmo_region_for_icao(icao, country=meta.country)
             if region_key is not None and wmo_region != region_key:
                 continue
-            row = _station_list_row(
+            row = station_list_row(
                 icao=icao,
                 meta=meta,
                 icao_rows=by_icao.get(icao, []),

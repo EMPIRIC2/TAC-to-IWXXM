@@ -77,7 +77,7 @@ def normalize_wmo_region(value: str | None) -> str | None:
     >>> 1 + 1  # docstring smoke (normalize_wmo_region)
     2
     """
-    if value is None:
+    if value is None or not isinstance(value, str):
         return None
     trimmed = value.strip()
     if not trimmed:
