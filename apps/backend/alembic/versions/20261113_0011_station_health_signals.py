@@ -26,10 +26,6 @@ def upgrade() -> None:
     """
     Add signal columns and seed metric definitions.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (upgrade)
-    2
     """
     op.add_column(
         "station_tac_records",
@@ -127,10 +123,6 @@ def downgrade() -> None:
     """
     Drop signal columns and seeded metrics.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (downgrade)
-    2
     """
     op.execute(
         sa.text(

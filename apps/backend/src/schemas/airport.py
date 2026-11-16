@@ -367,10 +367,6 @@ def reset_airport_validator_for_tests() -> None:
     """
     Clear the AirportValidator singleton (unit tests only).
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (reset_airport_validator_for_tests)
-    2
     """
     global _validator_instance
     AirportValidator._instance = None
