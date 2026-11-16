@@ -23,10 +23,6 @@ def _repo_root() -> Path:
     """
     Resolve the repository root that holds ``config/profiles``.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (_repo_root)
-    2
 
     Returns
     -------
@@ -47,10 +43,6 @@ def national_replace_tokens() -> frozenset[str]:
     """
     Return tokens that require a national code under ``CA_ECCC``.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (national_replace_tokens)
-    2
 
     Returns
     -------
@@ -97,10 +89,6 @@ def check_global_only_tokens(
     product : str
         Product label for issue text (default ``TAF``).
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (check_global_only_tokens)
-    2
 
     Returns
     -------

@@ -61,11 +61,6 @@ class ExplanationHook:
         -------
         str
             The hook phrase for ``rule_id``, or the pack template.
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (template_for)
-        2
         """
         phrase = self.phrases.get(rule_id)
         if phrase is None:

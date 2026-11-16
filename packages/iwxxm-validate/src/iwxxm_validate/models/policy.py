@@ -1,10 +1,4 @@
 """IWXXM output policy document models (ADR-046).
-
-Examples
---------
->>> 1 + 1  # docstring smoke
-2
-
 """
 
 from __future__ import annotations
@@ -23,12 +17,6 @@ class PolicyError(ValueError):
     ----------
     args : tuple
         Arguments passed to the exception constructor.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke
-    2
-
     """
 
 
@@ -40,23 +28,11 @@ class PolicyActivationError(PolicyError):
     ----------
     args : tuple
         Arguments passed to the exception constructor.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke
-    2
-
     """
 
 
 class OutputPolicyRaw(TypedDict, total=False):
     """YAML mapping shape for one output policy document before parse.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke
-    2
-
     """
 
     schema_version: int
@@ -94,12 +70,6 @@ class OutputPolicyDocument:
         Profiles.
     source_path : str or None, optional
         Source path. By default ``None``.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke
-    2
-
     """
 
     schema_version: int
@@ -130,12 +100,6 @@ class ResolvedOutputPolicy:
         Enabled.
     warnings : tuple[str, ...]
         Warnings.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke
-    2
-
     """
 
     id: str
@@ -154,12 +118,6 @@ class OutputPolicyCatalog:
     ----------
     by_id : dict[str, OutputPolicyDocument]
         Policy documents keyed by ``id``.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke
-    2
-
     """
 
     by_id: dict[str, OutputPolicyDocument]
@@ -177,12 +135,6 @@ class OutputPolicyCatalog:
         -------
         OutputPolicyDocument or None
             Matching document, or ``None``.
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke
-        2
-
         """
         return self.by_id.get(policy_id)
 
@@ -199,12 +151,6 @@ class OutputPolicyCatalog:
         -------
         bool
             ``True`` when the id is present.
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke
-        2
-
         """
         return policy_id in self.by_id
 
@@ -216,12 +162,6 @@ class OutputPolicyCatalog:
         -------
         dict[str, OutputPolicyDocument]
             Catalog contents.
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke
-        2
-
         """
         return self.by_id
 

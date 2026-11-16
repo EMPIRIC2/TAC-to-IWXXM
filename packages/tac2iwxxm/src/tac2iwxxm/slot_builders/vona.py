@@ -299,11 +299,6 @@ def parse_vona(tac: str, *, product: str = "VONA") -> dict[str, Any]:
     ------
     ValueError
         When product is wrong or required fields are missing.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (parse_vona)
-    2
     """
     if product.upper() != "VONA":
         raise ValueError(f"VONA parser expected product VONA, found {product!r}")

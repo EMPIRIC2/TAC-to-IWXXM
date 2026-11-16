@@ -85,10 +85,6 @@ class CodeListPolicy:
         """
         Return global URIs that must not appear under this profile.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (disallowed_global_uris)
-        2
 
         Returns
         -------
@@ -112,10 +108,6 @@ class CodeListPolicy:
         token : str
             TAC / code token.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (resolve_ca_uri)
-        2
 
         Returns
         -------

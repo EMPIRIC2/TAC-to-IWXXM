@@ -80,10 +80,6 @@ class EvaluationService:
 
         Removes: id, schemaLocation, UUID-like values, timestamps
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (strip_dynamic_attrs)
-        2
 
         Parameters
         ----------
@@ -119,11 +115,6 @@ class EvaluationService:
         -------
         object
             ComparisonResult with detailed comparison
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (compare_iwxxm)
-        2
         """
         try:
             our_tree = ET.fromstring(our_xml)

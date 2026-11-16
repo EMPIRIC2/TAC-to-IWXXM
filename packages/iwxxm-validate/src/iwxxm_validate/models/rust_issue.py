@@ -1,10 +1,4 @@
 """Native Rust engine issue wire shape and conversion helpers.
-
-Examples
---------
->>> 1 + 1  # docstring smoke
-2
-
 """
 
 from __future__ import annotations
@@ -20,12 +14,6 @@ class RustIssueDict(TypedDict, total=False):
     One finding dict returned by ``_rust.validate_document``.
 
     Wire keys match the PyO3 ``ValidationIssue`` fields exported as dicts.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke
-    2
-
     """
 
     severity: str
@@ -53,10 +41,6 @@ def issue_from_rust_mapping(
     layer_override : str or None, optional
         When set, force ``Issue.layer`` to this value.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke
-    2
 
     Returns
     -------
@@ -96,10 +80,6 @@ def issues_from_rust(
         When set with ``layer_map``, prefer ``stage_id`` unless the mapped
         stage equals ``stage_id``.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke
-    2
 
     Returns
     -------

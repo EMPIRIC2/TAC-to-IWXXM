@@ -117,11 +117,6 @@ def validate_codelist_references(
     -------
     list[Issue]
         Findings for unresolved or invalid codelist references.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (validate_codelist_references)
-    2
     """
     issues: list[Issue] = []
     cache = _load_codelist_cache(codelists_dir)

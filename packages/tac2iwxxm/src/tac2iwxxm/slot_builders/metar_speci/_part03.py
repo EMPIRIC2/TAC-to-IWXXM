@@ -220,11 +220,6 @@ def fold_observation_case(tac: str) -> str:
     -------
     str
         Text with observation spans in capitals.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (fold_observation_case)
-    2
     """
     if not tac:
         return tac

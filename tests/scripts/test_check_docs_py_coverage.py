@@ -80,14 +80,25 @@ def test_doc_ok_helpers() -> None:
         "missing docstring"
     ]
     issues = _doc_ok_public_fn("summary\n", has_args=True, has_return=True)
-    assert "missing Examples section" in issues
+    assert "missing Examples section" not in issues
     assert "missing Parameters section" in issues
     assert "missing Returns section" in issues
-    good = (
-        "summary\n\nParameters\n----------\nx : int\n\n"
-        "Returns\n-------\nint\n\nExamples\n--------\n>>> 1\n1\n"
-    )
+    good = "summary\n\nParameters\n----------\nx : int\n\nReturns\n-------\nint\n"
     assert _doc_ok_public_fn(good, has_args=True, has_return=True) == []
+    smoke = (
+        "summary\n\nParameters\n----------\nx : int\n\n"
+        "Returns\n-------\nint\n\nExamples\n--------\n"
+        ">>> 1 + 1  # docstring smoke (f)\n2\n"
+    )
+    assert "placeholder doctest smoke" in " ".join(
+        _doc_ok_public_fn(smoke, has_args=True, has_return=True)
+    )
+    real_ex = (
+        "summary\n\nParameters\n----------\nx : int\n\n"
+        "Returns\n-------\nint\n\nExamples\n--------\n>>> 1 + 2\n3\n"
+    )
+    # Real arithmetic that is not the banned placeholder pattern is allowed.
+    assert _doc_ok_public_fn(real_ex, has_args=True, has_return=True) == []
     assert _doc_ok_public_class(None) == ["missing docstring"]
     assert _doc_ok_public_class("only title") == [
         "missing Attributes or Parameters section"

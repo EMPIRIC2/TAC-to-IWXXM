@@ -64,11 +64,6 @@ class UnavailableSource:
         ------
         SourceUnavailable
             Always.
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (lookup)
-        2
         """
         raise SourceUnavailable(ident)
 
@@ -118,11 +113,6 @@ class CsvCoordinateSource:
         ------
         SourceUnavailable
             When the id is missing, ambiguous, or the wrong shape.
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (lookup)
-        2
         """
         key = ident.strip().upper()
         if len(key) == 3 and key.isalpha():
@@ -174,11 +164,6 @@ class LiveOurAirportsSource:
         -------
         tuple[float, float]
             Latitude and longitude in decimal degrees.
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (lookup)
-        2
         """
         if self._parsed is None:
             self._parsed = self._download()
@@ -217,11 +202,6 @@ def read_csvs(client: httpx.Client) -> CsvCoordinateSource:
     -------
     CsvCoordinateSource
         Parsed maps.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (read_csvs)
-    2
     """
     try:
         navaids = client.get(NAVAIDS_URL)

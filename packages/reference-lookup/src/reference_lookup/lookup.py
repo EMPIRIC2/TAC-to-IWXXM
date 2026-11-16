@@ -45,11 +45,6 @@ def set_coordinate_source(source: CoordinateSource | None) -> None:
     ----------
     source : CoordinateSource | None
         Injected source, or ``None`` to clear it.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (set_coordinate_source)
-    2
     """
     global _override, _override_set
     _override = source
@@ -64,11 +59,6 @@ def live_source() -> LiveOurAirportsSource:
     -------
     LiveOurAirportsSource
         Shared downloader for this process.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (live_source)
-    2
     """
     global _live
     if _live is None:
@@ -84,11 +74,6 @@ def current_source() -> CoordinateSource:
     -------
     CoordinateSource
         The source ``lookup_coordinate`` will call.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (current_source)
-    2
     """
     if _override_set:
         return cast(CoordinateSource, _override)
@@ -115,11 +100,6 @@ def lookup_coordinate(ident: str) -> tuple[float, float]:
     ------
     SourceUnavailable
         When the source misses, is ambiguous, or fails.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (lookup_coordinate)
-    2
     """
     try:
         return current_source().lookup(ident)

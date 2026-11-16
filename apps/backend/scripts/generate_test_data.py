@@ -25,10 +25,6 @@ def print_section(title: str):
     """
     Print section header.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (print_section)
-    2
 
     Parameters
     ----------
@@ -44,10 +40,6 @@ def generate_diverse_sample(generator: METARTestGenerator, count: int = 200):
     """
     Generate diverse sample and print statistics.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (generate_diverse_sample)
-    2
 
     Parameters
     ----------
@@ -116,10 +108,6 @@ def generate_regional_samples(generator: METARTestGenerator):
     """
     Generate samples from each region.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (generate_regional_samples)
-    2
 
     Parameters
     ----------
@@ -152,10 +140,6 @@ def generate_phenomenon_coverage(generator: METARTestGenerator):
     """
     Generate coverage for specific phenomena.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (generate_phenomenon_coverage)
-    2
 
     Parameters
     ----------
@@ -196,11 +180,6 @@ def generate_phenomenon_coverage(generator: METARTestGenerator):
 def print_api_configuration():
     """
     Print API configuration status.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (print_api_configuration)
-    2
     """
     print_section("API Configuration Status")
 
@@ -238,11 +217,6 @@ def print_api_configuration():
 def main():
     """
     Main entry point.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (main)
-    2
     """
     print("\n" + "#" * 70)
     print("#  METAR Test Generator - Sprint 2")

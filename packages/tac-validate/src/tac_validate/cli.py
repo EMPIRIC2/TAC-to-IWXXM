@@ -132,11 +132,6 @@ def main(argv: Sequence[str] | None = None) -> int:
     -------
     int
         ``0`` when ``report.ok``; ``1`` on lint errors or I/O failure; ``2`` when the profile or policy id is unknown.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (main)
-    2
     """
     parser = _build_parser()
     args = parser.parse_args(list(argv) if argv is not None else None)

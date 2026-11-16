@@ -52,10 +52,6 @@ def looks_like_xml(text: str) -> bool:
     """
     Return True when trimmed text appears to be XML markup.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (looks_like_xml)
-    2
 
     Parameters
     ----------
@@ -83,11 +79,6 @@ def lint_iwxxm_pass_through(text: str) -> IwxxmLintReport:
     -------
     IwxxmLintReport
         ``ok`` is False for empty, non-XML, or not well-formed input.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (lint_iwxxm_pass_through)
-    2
     """
     stripped = (text or "").strip()
     if not stripped:

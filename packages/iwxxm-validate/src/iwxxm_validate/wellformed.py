@@ -21,10 +21,6 @@ def run_wellformed_lxml(xml_content: str) -> list[Issue]:
     """
     Return issues when ``xml_content`` is not well-formed XML.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (run_wellformed_lxml)
-    2
 
     Parameters
     ----------

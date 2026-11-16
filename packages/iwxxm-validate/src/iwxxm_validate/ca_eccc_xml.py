@@ -1,10 +1,4 @@
 """CA_ECCC document root and extension-block helpers.
-
-Examples
---------
->>> 1 + 1  # docstring smoke
-2
-
 """
 
 from __future__ import annotations
@@ -35,12 +29,6 @@ def document_root_name(xml_content: str) -> tuple[str | None, str | None]:
     -------
     tuple[str or None, str or None]
         Root local name and namespace URI, or ``(None, None)`` on syntax error.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke
-    2
-
     """
     try:
         root = etree.fromstring(xml_content.encode("utf-8"))
@@ -65,12 +53,6 @@ def is_ca_substitution_root(local_name: str | None, namespace: str | None) -> bo
     -------
     bool
         ``True`` for CA extension substitution roots.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke
-    2
-
     """
     return namespace == CA_EXTENSION_NS and local_name in CA_SUBSTITUTION_ROOTS
 
@@ -88,12 +70,6 @@ def extract_ca_extension_blocks(xml_content: str) -> list[str]:
     -------
     list[str]
         Serialized CA extension element XML fragments.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke
-    2
-
     """
     try:
         root = etree.fromstring(xml_content.encode("utf-8"))
@@ -122,12 +98,6 @@ def wrap_ca_lwis_extension_block(fragment_xml: str) -> str:
     -------
     str
         Well-formed LWIS probe XML.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke
-    2
-
     """
     designator = "CYXX"
     return f"""<?xml version="1.0" encoding="UTF-8"?>
@@ -185,12 +155,6 @@ def ca_xsd_probe_document(fragment_xml: str, *, product: str) -> str:
     -------
     str
         Probe XML suitable for product XSD validation.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke
-    2
-
     """
     product_u = product.upper()
     if product_u in {"TAF", "AIRMET"}:

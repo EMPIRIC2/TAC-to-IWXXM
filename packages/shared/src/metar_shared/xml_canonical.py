@@ -54,11 +54,6 @@ def local_name(tag: str) -> str:
     -------
     str
         The local part of a Clark-notation tag.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (local_name)
-    2
     """
     if tag.startswith("{"):
         return tag.rsplit("}", 1)[-1]
@@ -222,11 +217,6 @@ def canonicalize_xml(xml_content: str) -> str:
     -------
     str
         Deterministic canonical representation.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (canonicalize_xml)
-    2
     """
     root = _parse_root_element(xml_content)
     canonical = _canonicalize_element(root)
@@ -249,11 +239,6 @@ def compare_canonical_xml(expected: str, actual: str) -> bool:
     -------
     bool
         True when two XML documents match after canonicalization.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (compare_canonical_xml)
-    2
     """
     return canonicalize_xml(expected) == canonicalize_xml(actual)
 
@@ -274,11 +259,6 @@ def diff_canonical_xml(expected: str, actual: str) -> str | None:
     -------
     str | None
         A short diff summary when canonical forms differ.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (diff_canonical_xml)
-    2
     """
     exp = canonicalize_xml(expected)
     act = canonicalize_xml(actual)
@@ -297,11 +277,6 @@ def strip_volatile_attributes(elem: ET.Element) -> None:
     ----------
     elem : ET.Element
         XML element.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (strip_volatile_attributes)
-    2
     """
     for key in list(elem.attrib):
         if local_name(key) in VOLATILE_ATTRS or (
@@ -330,11 +305,6 @@ def iter_local_names(elem: ET.Element) -> Iterable[str]:
     -------
     Iterable[str]
         Local tag names in document order (testing helper).
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (iter_local_names)
-    2
     """
     yield local_name(elem.tag)
     for child in elem:

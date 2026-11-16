@@ -74,11 +74,6 @@ def _utc_now() -> datetime:
     -------
     datetime
         Current UTC time.
-
-    Examples
-    --------
-    >>> 1 + 1
-    2
     """
     return datetime.now(UTC)
 
@@ -95,11 +90,6 @@ def retention_cutoff(*, now: datetime | None = None) -> datetime:
     -------
     datetime
         UTC cutoff (exclusive of older stamps).
-
-    Examples
-    --------
-    >>> 1 + 1
-    2
     """
     clock = now if now is not None else _utc_now()
     if clock.tzinfo is None:
@@ -223,11 +213,6 @@ class LiveMapCache:
         -------
         bool
             False when a refresh is already running.
-
-        Examples
-        --------
-        >>> 1 + 1
-        2
         """
         if self._refreshing:
             return False
@@ -236,11 +221,6 @@ class LiveMapCache:
 
     def end_refresh(self) -> None:
         """Allow the next refresh.
-
-        Examples
-        --------
-        >>> 1 + 1
-        2
         """
         self._refreshing = False
 
@@ -256,11 +236,6 @@ class LiveMapCache:
         -------
         str | None
             ``pending``, ``ready``, ``failed``, or None when the row is absent.
-
-        Examples
-        --------
-        >>> 1 + 1
-        2
         """
         with self._engine.connect() as conn:
             row = conn.execute(
@@ -284,11 +259,6 @@ class LiveMapCache:
         ----------
         report : LiveMapReport
             Observation to keep.
-
-        Examples
-        --------
-        >>> 1 + 1
-        2
         """
         if report.observed_at.astimezone(UTC) < retention_cutoff():
             return
@@ -369,11 +339,6 @@ class LiveMapCache:
             Notes for the operator. Empty while the report is still pending.
         status : str
             ``ready`` or ``failed``.
-
-        Examples
-        --------
-        >>> 1 + 1
-        2
         """
         with self._engine.begin() as conn:
             conn.execute(
@@ -419,11 +384,6 @@ class LiveMapCache:
         list[_PlaceJson]
             Places inside the box, newest report first. Reports older than
             :data:`RETENTION_HOURS` are omitted.
-
-        Examples
-        --------
-        >>> 1 + 1
-        2
         """
         if not products:
             return []
@@ -551,11 +511,6 @@ def apply_refresh(cache: LiveMapCache, reports: list[LiveMapReport]) -> str:
     -------
     str
         ``stored`` or ``skipped``.
-
-    Examples
-    --------
-    >>> 1 + 1
-    2
     """
     if not cache.begin_refresh():
         return "skipped"
@@ -579,11 +534,6 @@ def _cache_url(url: str) -> str:
     -------
     str
         URL SQLAlchemy can open with psycopg.
-
-    Examples
-    --------
-    >>> 1 + 1
-    2
     """
     raw = url.strip()
     if raw.startswith("postgresql+asyncpg://"):
@@ -609,11 +559,6 @@ def engine_for_url(url: str | None) -> Engine:
     -------
     Engine
         SQLAlchemy engine for the cache.
-
-    Examples
-    --------
-    >>> 1 + 1
-    2
     """
     raw = _cache_url(url or "")
     if not raw:
@@ -632,10 +577,5 @@ def cache_from_env() -> LiveMapCache:
     -------
     LiveMapCache
         Cache for this process.
-
-    Examples
-    --------
-    >>> 1 + 1
-    2
     """
     return LiveMapCache(engine_for_url(os.getenv("LIVE_MAP_CACHE_URL")))
