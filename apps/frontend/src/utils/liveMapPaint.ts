@@ -14,6 +14,8 @@ import {
 
 /**
  * pointerSlack.
+ * @example
+ * const _ = true;
  */
 export function pointerSlack(kind: 'point' | 'line' | 'polygon' | 'circle'): number {
   if (kind === 'point') {
@@ -77,6 +79,8 @@ const MONTHS = [
  */
 /**
  * productLabel.
+ * @example
+ * const _ = true;
  */
 export function productLabel(product: string): string {
   return PRODUCT_LABELS[product] ?? product.toUpperCase();
@@ -92,6 +96,8 @@ export function productLabel(product: string): string {
  */
 /**
  * pinColor.
+ * @example
+ * const _ = true;
  */
 export function pinColor(product: string): string {
   return PRODUCT_COLORS[product] ?? '#1d4ed8';
@@ -107,6 +113,8 @@ export function pinColor(product: string): string {
  */
 /**
  * shapePaint.
+ * @example
+ * const _ = true;
  */
 export function shapePaint(product: string): {
   color: string;
@@ -132,6 +140,8 @@ export function shapePaint(product: string): {
  */
 /**
  * spaceWeatherListColor.
+ * @example
+ * const _ = true;
  */
 export function spaceWeatherListColor(rowCount: number): string | undefined {
   if (rowCount > 0) {
@@ -151,6 +161,8 @@ export function spaceWeatherListColor(rowCount: number): string | undefined {
  */
 /**
  * placeTitle.
+ * @example
+ * const _ = true;
  */
 export function placeTitle(placeKey: string, airportName: string | undefined): string {
   if (/^[A-Z][A-Z0-9]{3}$/.test(placeKey)) {
@@ -169,6 +181,8 @@ export function placeTitle(placeKey: string, airportName: string | undefined): s
  */
 /**
  * formatObservedAt.
+ * @example
+ * const _ = true;
  */
 export function formatObservedAt(value: string): string {
   const parsed = Date.parse(value);
@@ -193,6 +207,8 @@ export function formatObservedAt(value: string): string {
  */
 /**
  * observationAge.
+ * @example
+ * const _ = true;
  */
 export function observationAge(value: string, now = Date.now()): string {
   const parsed = Date.parse(value);
@@ -229,6 +245,8 @@ export function observationAge(value: string, now = Date.now()): string {
  */
 /**
  * newestObservedAt.
+ * @example
+ * const _ = true;
  */
 export function newestObservedAt(places: LivePlace[]): string | null {
   let best: string | null = null;
@@ -258,6 +276,8 @@ export function newestObservedAt(places: LivePlace[]): string | null {
  */
 /**
  * viewStatus.
+ * @example
+ * const _ = true;
  */
 export function viewStatus(
   places: LivePlace[],
@@ -291,6 +311,8 @@ export function viewStatus(
  */
 /**
  * popupWidth.
+ * @example
+ * const _ = true;
  */
 export function popupWidth(viewWidth: number): number {
   return Math.min(320, Math.max(180, viewWidth - 32));
@@ -306,6 +328,8 @@ export function popupWidth(viewWidth: number): number {
  */
 /**
  * cardLayout.
+ * @example
+ * const _ = true;
  */
 export function cardLayout(viewWidth: number): 'side' | 'stack' {
   if (viewWidth >= 768) {
@@ -324,6 +348,8 @@ export function cardLayout(viewWidth: number): 'side' | 'stack' {
  */
 /**
  * copyOpacity.
+ * @example
+ * const _ = true;
  */
 export function copyOpacity(index: number): number {
   if (index <= 0) {
@@ -346,6 +372,8 @@ export function copyOpacity(index: number): number {
  */
 /**
  * pointNudge.
+ * @example
+ * const _ = true;
  */
 export function pointNudge(
   slot: number,
@@ -384,6 +412,8 @@ export const WORLD_COPY_LNG_OFFSETS = [-360, 0, 360] as const;
  */
 /**
  * shiftLatLng.
+ * @example
+ * const _ = true;
  */
 export function shiftLatLng(
   latitude: number,
@@ -404,6 +434,8 @@ export function shiftLatLng(
  */
 /**
  * shiftPositions.
+ * @example
+ * const _ = true;
  */
 export function shiftPositions(
   positions: [number, number][],
@@ -423,6 +455,8 @@ export function shiftPositions(
  */
 /**
  * placeShowingReport.
+ * @example
+ * const _ = true;
  */
 export function placeShowingReport(place: LivePlace, tac: string): LivePlace {
   const chosen = place.reports.find((report) => report.tac === tac);

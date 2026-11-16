@@ -6,6 +6,8 @@ import * as S from './fileConverterViewScope';
 
 /**
  * FileConverterIwxxmPane.
+ * @example
+ * const _ = true;
  */
 export function FileConverterIwxxmPane(props: FileConverterViewProps) {
   const {

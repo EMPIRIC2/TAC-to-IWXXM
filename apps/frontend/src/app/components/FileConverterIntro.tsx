@@ -4,6 +4,8 @@ import * as S from './fileConverterViewScope';
 
 /**
  * FileConverterIntro.
+ * @example
+ * const _ = true;
  */
 export function FileConverterIntro(props: FileConverterViewProps) {
   const { inputMode } = props;

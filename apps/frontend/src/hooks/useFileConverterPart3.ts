@@ -5,6 +5,8 @@ import * as D from './fileConverterDeps';
 
 /**
  * useFileConverterPart3.
+ * @example
+ * const _ = true;
  */
 export function useFileConverterPart3(ctx: any) {
   const { setPendingFiles, inputMode, setInputMode, setIsDragging } = ctx;

@@ -23,10 +23,17 @@ import {
 } from '@/utils/exchangeProfile';
 import { progressRowState } from '@/utils/disseminationDrawerHelpers';
 
+/**
+ * Type `DisseminationDrawerViewProps`.
+ * @example
+ * const _ = true;
+ */
 export type DisseminationDrawerViewProps = Record<string, any>;
 
 /**
  * DisseminationDrawerView.
+ * @example
+ * const _ = true;
  */
 export function DisseminationDrawerView({
   exchangeProfile,

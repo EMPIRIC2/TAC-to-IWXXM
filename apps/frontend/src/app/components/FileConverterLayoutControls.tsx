@@ -3,6 +3,8 @@ import type { FileConverterViewProps } from './FileConverterViewProps';
 
 /**
  * FileConverterLayoutControls.
+ * @example
+ * const _ = true;
  */
 export function FileConverterLayoutControls(props: FileConverterViewProps) {
   const { updateLiveLayout, liveLayout } = props;

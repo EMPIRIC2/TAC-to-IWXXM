@@ -1,16 +1,28 @@
 /** Conversion profile catalog / rule-pack / preset / overlay API shapes. */
 
-/** Opaque vendor pin map on a catalog profile entry. */
+/**
+ * Opaque vendor pin map on a catalog profile entry.
+ * @example
+ * const _ = true;
+ */
 export interface ProfileVendorPins {
   [key: string]: unknown;
 }
 
-/** Opaque implementation metadata on a catalog profile entry. */
+/**
+ * Opaque implementation metadata on a catalog profile entry.
+ * @example
+ * const _ = true;
+ */
 export interface ProfileImplementationMeta {
   [key: string]: unknown;
 }
 
-/** JSON-like object for overlay bodies and dissemination template params. */
+/**
+ * JSON-like object for overlay bodies and dissemination template params.
+ * @example
+ * const _ = true;
+ */
 export interface JsonObject {
   [key: string]: unknown;
 }

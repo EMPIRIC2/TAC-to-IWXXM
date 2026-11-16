@@ -22,6 +22,8 @@ import { GlossaryRichText } from '@/app/components/glossary/GlossaryRichText';
 
 /**
  * Extra fields for the selected rule in the detailed catalog view.
+ * @example
+ * const _ = true;
  */
 export function SelectedRuleFacts({ entry }: { entry: LintIssueCatalogEntry }) {
   return (
@@ -41,6 +43,8 @@ export function SelectedRuleFacts({ entry }: { entry: LintIssueCatalogEntry }) {
 
 /**
  * Reports for the selected rule.
+ * @example
+ * const _ = true;
  */
 export function RuleExamples({
   code,

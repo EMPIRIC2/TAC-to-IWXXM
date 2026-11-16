@@ -12,6 +12,8 @@ import { useSidebar } from './sidebar-context';
 
 /**
  * SidebarGroup.
+ * @example
+ * const _ = true;
  */
 export function SidebarGroup({ className, ...props }: React.ComponentProps<'div'>) {
   return (
@@ -29,6 +31,8 @@ export function SidebarGroup({ className, ...props }: React.ComponentProps<'div'
  */
 /**
  * SidebarGroupLabel.
+ * @example
+ * const _ = true;
  */
 export function SidebarGroupLabel({
   className,
@@ -56,6 +60,8 @@ export function SidebarGroupLabel({
  */
 /**
  * SidebarGroupAction.
+ * @example
+ * const _ = true;
  */
 export function SidebarGroupAction({
   className,
@@ -85,6 +91,8 @@ export function SidebarGroupAction({
  */
 /**
  * SidebarGroupContent.
+ * @example
+ * const _ = true;
  */
 export function SidebarGroupContent({
   className,
@@ -105,6 +113,8 @@ export function SidebarGroupContent({
  */
 /**
  * SidebarMenu.
+ * @example
+ * const _ = true;
  */
 export function SidebarMenu({ className, ...props }: React.ComponentProps<'ul'>) {
   return (
@@ -122,6 +132,8 @@ export function SidebarMenu({ className, ...props }: React.ComponentProps<'ul'>)
  */
 /**
  * SidebarMenuItem.
+ * @example
+ * const _ = true;
  */
 export function SidebarMenuItem({ className, ...props }: React.ComponentProps<'li'>) {
   return (
@@ -161,6 +173,8 @@ const sidebarMenuButtonVariants = cva(
  */
 /**
  * SidebarMenuButton.
+ * @example
+ * const _ = true;
  */
 export function SidebarMenuButton({
   asChild = false,
@@ -217,6 +231,8 @@ export function SidebarMenuButton({
  */
 /**
  * SidebarMenuAction.
+ * @example
+ * const _ = true;
  */
 export function SidebarMenuAction({
   className,
@@ -255,6 +271,8 @@ export function SidebarMenuAction({
  */
 /**
  * SidebarMenuBadge.
+ * @example
+ * const _ = true;
  */
 export function SidebarMenuBadge({ className, ...props }: React.ComponentProps<'div'>) {
   return (
@@ -280,6 +298,8 @@ export function SidebarMenuBadge({ className, ...props }: React.ComponentProps<'
  */
 /**
  * SidebarMenuSkeleton.
+ * @example
+ * const _ = true;
  */
 export function SidebarMenuSkeleton({
   className,
@@ -318,6 +338,8 @@ export function SidebarMenuSkeleton({
  */
 /**
  * SidebarMenuSub.
+ * @example
+ * const _ = true;
  */
 export function SidebarMenuSub({ className, ...props }: React.ComponentProps<'ul'>) {
   return (
@@ -339,6 +361,8 @@ export function SidebarMenuSub({ className, ...props }: React.ComponentProps<'ul
  */
 /**
  * SidebarMenuSubItem.
+ * @example
+ * const _ = true;
  */
 export function SidebarMenuSubItem({
   className,
@@ -359,6 +383,8 @@ export function SidebarMenuSubItem({
  */
 /**
  * SidebarMenuSubButton.
+ * @example
+ * const _ = true;
  */
 export function SidebarMenuSubButton({
   asChild = false,

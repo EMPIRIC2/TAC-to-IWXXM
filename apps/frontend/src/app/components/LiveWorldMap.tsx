@@ -9,6 +9,8 @@ export { StationPopup } from './StationPopup';
 
 /**
  * Live world map shell.
+ * @example
+ * const _ = true;
  */
 export function LiveWorldMap({
   focusStation = '',

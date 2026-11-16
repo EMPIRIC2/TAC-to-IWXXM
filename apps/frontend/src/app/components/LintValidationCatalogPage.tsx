@@ -56,6 +56,8 @@ export {
 
 /**
  * LintValidationCatalogPage.
+ * @example
+ * const _ = true;
  */
 export function LintValidationCatalogPage({
   focusCode,

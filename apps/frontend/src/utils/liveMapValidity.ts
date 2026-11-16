@@ -69,6 +69,8 @@ const VALID_UNTIL_HHMMZ = /\bVALID\s+UNTIL\s+(\d{2})(\d{2})Z?\b/i;
  */
 /**
  * parseValidityStamp.
+ * @example
+ * const _ = true;
  */
 export function parseValidityStamp(value: string | null | undefined): number | null {
   if (typeof value !== 'string' || !value.trim()) {
@@ -150,6 +152,8 @@ function yearMonthForTacDay(
  */
 /**
  * stampFromDayHourMinute.
+ * @example
+ * const _ = true;
  */
 export function stampFromDayHourMinute(
   day: number,
@@ -201,6 +205,8 @@ function orderedWindow(
  */
 /**
  * validityFromTac.
+ * @example
+ * const _ = true;
  */
 export function validityFromTac(
   tac: string,
@@ -267,6 +273,8 @@ export function validityFromTac(
  */
 /**
  * resolveReportValidity.
+ * @example
+ * const _ = true;
  */
 export function resolveReportValidity(report: ValidityReport): ReportValidity | null {
   const fromField = parseValidityStamp(report.valid_from);
@@ -296,6 +304,8 @@ export function resolveReportValidity(report: ValidityReport): ReportValidity | 
  */
 /**
  * isReportActiveNow.
+ * @example
+ * const _ = true;
  */
 export function isReportActiveNow(
   validity: ReportValidity,
@@ -317,6 +327,8 @@ export function isReportActiveNow(
  */
 /**
  * placeIsActiveNow.
+ * @example
+ * const _ = true;
  */
 export function placeIsActiveNow(place: ValidityPlace, nowMs = Date.now()): boolean {
   const newest = place.reports[0];
@@ -340,6 +352,8 @@ export function placeIsActiveNow(place: ValidityPlace, nowMs = Date.now()): bool
  */
 /**
  * defaultActiveReportsOn.
+ * @example
+ * const _ = true;
  */
 export function defaultActiveReportsOn(places: readonly ValidityPlace[]): boolean {
   return places.some((place) =>

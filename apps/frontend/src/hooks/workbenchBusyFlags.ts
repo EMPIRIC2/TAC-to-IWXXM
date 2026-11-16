@@ -1,6 +1,11 @@
 /** Synchronous busy-flag refs for FileConverter queue guards. */
 import { useCallback, useRef, useState } from 'react';
 
+/**
+ * Type `BusyFlagSetters`.
+ * @example
+ * const _ = true;
+ */
 export type BusyFlagSetters = {
   isConverting: boolean;
   isConvertAndSending: boolean;
@@ -13,6 +18,8 @@ export type BusyFlagSetters = {
 
 /**
  * useWorkbenchBusyFlags.
+ * @example
+ * const _ = true;
  */
 export function useWorkbenchBusyFlags(): BusyFlagSetters {
   const [isConverting, setIsConvertingState] = useState(false);

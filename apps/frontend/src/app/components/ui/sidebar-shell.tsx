@@ -21,6 +21,8 @@ import { useSidebar } from './sidebar-context';
 
 /**
  * Sidebar.
+ * @example
+ * const _ = true;
  */
 export function Sidebar({
   side = 'left',
@@ -129,6 +131,8 @@ export function Sidebar({
  */
 /**
  * SidebarTrigger.
+ * @example
+ * const _ = true;
  */
 export function SidebarTrigger({
   className,
@@ -161,6 +165,8 @@ export function SidebarTrigger({
  */
 /**
  * SidebarRail.
+ * @example
+ * const _ = true;
  */
 export function SidebarRail({ className, ...props }: React.ComponentProps<'button'>) {
   const { toggleSidebar } = useSidebar();
@@ -192,6 +198,8 @@ export function SidebarRail({ className, ...props }: React.ComponentProps<'butto
  */
 /**
  * SidebarInset.
+ * @example
+ * const _ = true;
  */
 export function SidebarInset({ className, ...props }: React.ComponentProps<'main'>) {
   return (
@@ -212,6 +220,8 @@ export function SidebarInset({ className, ...props }: React.ComponentProps<'main
  */
 /**
  * SidebarInput.
+ * @example
+ * const _ = true;
  */
 export function SidebarInput({
   className,
@@ -232,6 +242,8 @@ export function SidebarInput({
  */
 /**
  * SidebarHeader.
+ * @example
+ * const _ = true;
  */
 export function SidebarHeader({ className, ...props }: React.ComponentProps<'div'>) {
   return (
@@ -249,6 +261,8 @@ export function SidebarHeader({ className, ...props }: React.ComponentProps<'div
  */
 /**
  * SidebarFooter.
+ * @example
+ * const _ = true;
  */
 export function SidebarFooter({ className, ...props }: React.ComponentProps<'div'>) {
   return (
@@ -266,6 +280,8 @@ export function SidebarFooter({ className, ...props }: React.ComponentProps<'div
  */
 /**
  * SidebarSeparator.
+ * @example
+ * const _ = true;
  */
 export function SidebarSeparator({
   className,
@@ -286,6 +302,8 @@ export function SidebarSeparator({
  */
 /**
  * SidebarContent.
+ * @example
+ * const _ = true;
  */
 export function SidebarContent({ className, ...props }: React.ComponentProps<'div'>) {
   return (

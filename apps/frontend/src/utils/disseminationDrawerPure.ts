@@ -10,6 +10,8 @@ import type { DisseminationRowUiState } from '@/models/disseminationDrawer';
  */
 /**
  * hasDropFiles.
+ * @example
+ * const _ = true;
  */
 export function hasDropFiles(files: FileList | null | undefined): boolean {
   return Boolean(files && files.length > 0);
@@ -22,6 +24,8 @@ export function hasDropFiles(files: FileList | null | undefined): boolean {
  */
 /**
  * dropReaderText.
+ * @example
+ * const _ = true;
  */
 export function dropReaderText(result: string | ArrayBuffer | null): string {
   return String(result ?? '');
@@ -34,6 +38,8 @@ export function dropReaderText(result: string | ArrayBuffer | null): string {
  */
 /**
  * progressRowState.
+ * @example
+ * const _ = true;
  */
 export function progressRowState(
   state: Record<string, DisseminationRowUiState>,

@@ -12,7 +12,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[3]
 OUTPUT_FILENAME = ROOT / "apps" / "frontend" / "src" / "utils" / "outputFilename.ts"
 FILE_CONVERTER = (
-    ROOT / "apps" / "frontend" / "src" / "app" / "components" / "FileConverter.tsx"
+    ROOT / "apps" / "frontend" / "src" / "hooks" / "useFileConverterPart4.ts"
 )
 
 

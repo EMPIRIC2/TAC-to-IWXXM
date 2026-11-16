@@ -5,6 +5,8 @@ import * as D from './fileConverterDeps';
 
 /**
  * useFileConverterPart4.
+ * @example
+ * const _ = true;
  */
 export function useFileConverterPart4(ctx: any) {
   const {

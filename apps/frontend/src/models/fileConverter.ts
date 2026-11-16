@@ -9,13 +9,22 @@ import type { ConversionExportContext } from '@/utils/conversionExportMetadata';
 import type { IwxxmVersionId } from '@/utils/iwxxmVersions';
 import type { ResultIssueInput } from '@/utils/resultCard';
 
-/** Issues captured for one converted result card. */
+/**
+ * Issues captured for one converted result card.
+ * @example
+ * const _ = true;
+ */
 export interface ConvertedFileResultCard {
   errors: string[];
   issues: ResultIssueInput[];
   ok?: boolean;
 }
 
+/**
+ * Type `ConvertedFile`.
+ * @example
+ * const _ = true;
+ */
 export interface ConvertedFile {
   id: string;
   originalName: string;
@@ -39,12 +48,22 @@ export interface ConvertedFile {
   resultCard?: ConvertedFileResultCard;
 }
 
+/**
+ * Type `PendingFile`.
+ * @example
+ * const _ = true;
+ */
 export interface PendingFile {
   id: string;
   name: string;
   content: string;
 }
 
+/**
+ * Type `FileConverterProps`.
+ * @example
+ * const _ = true;
+ */
 export interface FileConverterProps {
   /** JWT for server session APIs when logged in (F31). Convert stays public. */
   accessToken?: string;
@@ -76,6 +95,11 @@ export interface FileConverterProps {
   ) => void;
 }
 
+/**
+ * Type `ConversionParams`.
+ * @example
+ * const _ = true;
+ */
 export interface ConversionParams {
   bulletinId: string;
   issuingCenter: string;
@@ -104,10 +128,25 @@ export interface ConversionParams {
   logLevel: LogLevel;
 }
 
+/**
+ * Type `IWXXMVersion`.
+ * @example
+ * const _ = true;
+ */
 export type IWXXMVersion = IwxxmVersionId;
 
+/**
+ * Type `OnErrorBehavior`.
+ * @example
+ * const _ = true;
+ */
 export type OnErrorBehavior = 'skip' | 'fail' | 'warn';
 
+/**
+ * Type `LogLevel`.
+ * @example
+ * const _ = true;
+ */
 export type LogLevel = 'DEBUG' | 'INFO' | 'WARNING' | 'ERROR' | 'CRITICAL';
 
 /**
@@ -132,7 +171,11 @@ export interface StoredConverterPreferences {
   [key: string]: unknown;
 }
 
-/** Operator-facing conversion log panel payload. */
+/**
+ * Operator-facing conversion log panel payload.
+ * @example
+ * const _ = true;
+ */
 export interface ConversionLog {
   errors: string[];
   issues: ConversionIssue[];

@@ -24,6 +24,8 @@ import {
   LIVE_MAP_VIEWS,
   LIVE_MAP_ZOOM_HINT,
   pinColor,
+  productLabel,
+  spaceWeatherListColor,
 } from '@/utils/liveMap';
 import { regionFilterNames } from '@/utils/liveMapRegions';
 import {
@@ -47,6 +49,8 @@ const filterSelect =
 
 /**
  * Presentational controls and canvas for the live world map.
+ * @example
+ * const _ = true;
  */
 export function LiveWorldMapView(props: any) {
   const {

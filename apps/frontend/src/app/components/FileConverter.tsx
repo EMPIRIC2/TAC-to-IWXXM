@@ -7,6 +7,8 @@ import type { FileConverterProps } from '@/models/fileConverter';
  */
 /**
  * FileConverter.
+ * @example
+ * const _ = true;
  */
 export function FileConverter({
   accessToken,

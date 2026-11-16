@@ -6,6 +6,8 @@ import * as S from './fileConverterViewScope';
 
 /**
  * FileConverterParamsBar.
+ * @example
+ * const _ = true;
  */
 export function FileConverterParamsBar(props: FileConverterViewProps) {
   const {

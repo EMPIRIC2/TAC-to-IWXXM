@@ -21,6 +21,8 @@ export type { FileConverterViewProps } from './FileConverterViewProps';
 
 /**
  * FileConverterView.
+ * @example
+ * const _ = true;
  */
 export function FileConverterView(props: FileConverterViewProps) {
   const {

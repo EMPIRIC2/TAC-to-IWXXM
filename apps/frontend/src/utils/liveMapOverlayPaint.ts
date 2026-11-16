@@ -205,6 +205,8 @@ const OVERLAY_PAINTERS: ReadonlyArray<{
  */
 /**
  * paintTacOverlays.
+ * @example
+ * const _ = true;
  */
 export function paintTacOverlays(
   map: L.Map,

@@ -164,6 +164,8 @@ const CONTINENT_ANCHORS: Record<string, [number, number]> = {
  */
 /**
  * plotLevel.
+ * @example
+ * const _ = true;
  */
 export function plotLevel(zoom: number): PlotLevel {
   if (zoom < 4) {
@@ -185,6 +187,8 @@ export function plotLevel(zoom: number): PlotLevel {
  */
 /**
  * continentAnchor.
+ * @example
+ * const _ = true;
  */
 export function continentAnchor(continent: string): [number, number] {
   return CONTINENT_ANCHORS[continent] ?? [0, 0];
@@ -199,6 +203,8 @@ export function continentAnchor(continent: string): [number, number] {
  */
 /**
  * regionFilterNames.
+ * @example
+ * const _ = true;
  */
 export function regionFilterNames(): string[] {
   const names = new Set<string>(['Antarctica']);
@@ -239,6 +245,8 @@ function inside(region: MapRegion, latitude: number, longitude: number): boolean
  */
 /**
  * placeRegion.
+ * @example
+ * const _ = true;
  */
 export function placeRegion(
   latitude: number,
@@ -288,6 +296,8 @@ export function placeRegion(
  */
 /**
  * clusterPlaces.
+ * @example
+ * const _ = true;
  */
 export function clusterPlaces(
   places: LivePlace[],

@@ -4,6 +4,8 @@ import * as S from './fileConverterViewScope';
 
 /**
  * FileConverterMetadataPanel.
+ * @example
+ * const _ = true;
  */
 export function FileConverterMetadataPanel(props: FileConverterViewProps) {
   const {

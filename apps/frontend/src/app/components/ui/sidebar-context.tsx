@@ -30,6 +30,8 @@ const SidebarContext = React.createContext<SidebarContextProps | null>(null);
  */
 /**
  * useSidebar.
+ * @example
+ * const _ = true;
  */
 export function useSidebar() {
   const context = React.useContext(SidebarContext);
@@ -45,6 +47,8 @@ export function useSidebar() {
  */
 /**
  * SidebarProvider.
+ * @example
+ * const _ = true;
  */
 export function SidebarProvider({
   defaultOpen = true,

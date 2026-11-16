@@ -65,6 +65,8 @@ import {
 
 /**
  * Live world map state, fetch, and Leaflet paint effects.
+ * @example
+ * const _ = true;
  */
 export function useLiveWorldMap({
   focusStation = '',

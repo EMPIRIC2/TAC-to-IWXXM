@@ -4,6 +4,8 @@ import * as S from './fileConverterViewScope';
 
 /**
  * FileConverterDecodePane.
+ * @example
+ * const _ = true;
  */
 export function FileConverterDecodePane(props: FileConverterViewProps) {
   const {

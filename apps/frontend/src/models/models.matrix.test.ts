@@ -5,6 +5,7 @@
 import { describe, expect, it } from 'vitest';
 import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { join, relative, resolve } from 'node:path';
+import * as ModelsBarrel from './index';
 import type { Airport } from './airport';
 import type { HealthResponse, MassIngestResponse } from './api';
 import type {
@@ -56,6 +57,10 @@ function walkTsFiles(dir: string, out: string[] = []): string[] {
 }
 
 describe('frontend models split matrix', () => {
+  it('exposes the models barrel', () => {
+    expect(ModelsBarrel).toBeTruthy();
+  });
+
   describe('validation success (V+)', () => {
     it('accepts a typed ConversionResponse with named group_trace entries', () => {
       const trace: GroupTraceEntry = {

@@ -5,6 +5,8 @@ import * as S from './fileConverterViewScope';
 
 /**
  * FileConverterActionStrip.
+ * @example
+ * const _ = true;
  */
 export function FileConverterActionStrip(props: FileConverterViewProps) {
   const {

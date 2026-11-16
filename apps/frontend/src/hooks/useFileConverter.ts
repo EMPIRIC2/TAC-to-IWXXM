@@ -14,6 +14,8 @@ import { useFileConverterPart6 } from './useFileConverterPart6';
 
 /**
  * Composed FileConverter workbench state and actions.
+ * @example
+ * const _ = true;
  */
 export function useFileConverter(props: FileConverterProps) {
   let ctx: any = useFileConverterPart1(props);

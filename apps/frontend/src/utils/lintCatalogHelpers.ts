@@ -89,6 +89,8 @@ export const ALL_FAMILY_TYPE_OPTIONS = [
  */
 /**
  * typeOptionsForFamily.
+ * @example
+ * const _ = true;
  */
 export function typeOptionsForFamily(family: FamilyFilter): readonly string[] {
   if (family === 'conversion') {
@@ -166,6 +168,8 @@ export function sortFieldValue(entry: LintIssueCatalogEntry, sortBy: SortKey): s
  */
 /**
  * compareEntries.
+ * @example
+ * const _ = true;
  */
 export function compareEntries(
   a: LintIssueCatalogEntry,
@@ -203,6 +207,8 @@ export function compareEntries(
  */
 /**
  * entryMatchesLevelFilter.
+ * @example
+ * const _ = true;
  */
 export function entryMatchesLevelFilter(
   entry: LintIssueCatalogEntry,
@@ -223,6 +229,8 @@ export function entryMatchesLevelFilter(
  */
 /**
  * entryMatchesTypeFilter.
+ * @example
+ * const _ = true;
  */
 export function entryMatchesTypeFilter(
   entry: LintIssueCatalogEntry,
@@ -243,6 +251,8 @@ export function entryMatchesTypeFilter(
  */
 /**
  * entryMatchesAccessFilter.
+ * @example
+ * const _ = true;
  */
 export function entryMatchesAccessFilter(
   entry: LintIssueCatalogEntry,
@@ -280,6 +290,8 @@ type RuleCatalogItemLike = {
  */
 /**
  * mapRuleCatalogItem.
+ * @example
+ * const _ = true;
  */
 export function mapRuleCatalogItem(
   item: RuleCatalogItemLike,

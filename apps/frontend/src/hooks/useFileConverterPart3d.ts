@@ -3,6 +3,8 @@
 /** useFileConverterPart3d — no-op slice (logic folded into part3b). */
 /**
  * useFileConverterPart3d.
+ * @example
+ * const _ = true;
  */
 export function useFileConverterPart3d(_ctx: any) {
   return {};

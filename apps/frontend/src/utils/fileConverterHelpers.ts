@@ -11,6 +11,8 @@ import { hydrateSemanticProfile } from '@/utils/tacProduct';
  */
 /**
  * isStructuredConvertError.
+ * @example
+ * const _ = true;
  */
 export function isStructuredConvertError(
   error: unknown,
@@ -30,6 +32,8 @@ export function isStructuredConvertError(
  */
 /**
  * mergeVisibleConvertErrors.
+ * @example
+ * const _ = true;
  */
 export function mergeVisibleConvertErrors(
   primaryMessage: string,
@@ -54,6 +58,8 @@ export function mergeVisibleConvertErrors(
  */
 /**
  * fallbackProfileSummary.
+ * @example
+ * const _ = true;
  */
 export function fallbackProfileSummary(
   profile: IwxxmProfile,

@@ -4,6 +4,8 @@ import * as S from './fileConverterViewScope';
 
 /**
  * FileConverterRecentAside.
+ * @example
+ * const _ = true;
  */
 export function FileConverterRecentAside(props: FileConverterViewProps) {
   const {

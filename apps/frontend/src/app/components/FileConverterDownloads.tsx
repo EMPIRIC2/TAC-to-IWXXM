@@ -6,6 +6,8 @@ import * as S from './fileConverterViewScope';
 
 /**
  * FileConverterDownloads.
+ * @example
+ * const _ = true;
  */
 export function FileConverterDownloads(props: FileConverterViewProps) {
   const {

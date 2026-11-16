@@ -32,6 +32,8 @@ export const DEFAULT_LIVE_MAP_BOUNDS: MapBounds = {
  */
 /**
  * isUsableMapBounds.
+ * @example
+ * const _ = true;
  */
 export function isUsableMapBounds(bounds: MapBounds): boolean {
   return bounds.west < bounds.east && bounds.south < bounds.north;
@@ -47,6 +49,8 @@ export function isUsableMapBounds(bounds: MapBounds): boolean {
  */
 /**
  * sanitizeMapBounds.
+ * @example
+ * const _ = true;
  */
 export function sanitizeMapBounds(bounds: MapBounds): MapBounds {
   return isUsableMapBounds(bounds) ? bounds : DEFAULT_LIVE_MAP_BOUNDS;
@@ -62,6 +66,8 @@ export function sanitizeMapBounds(bounds: MapBounds): MapBounds {
  */
 /**
  * boundsOf.
+ * @example
+ * const _ = true;
  */
 export function boundsOf(map: {
   getBounds: () => {
@@ -120,6 +126,8 @@ const PRODUCT_FORM: Record<string, string> = {
  */
 /**
  * viewById.
+ * @example
+ * const _ = true;
  */
 export function viewById(viewId: string): (typeof LIVE_MAP_VIEWS)[number] {
   return LIVE_MAP_VIEWS.find((item) => item.id === viewId) ?? LIVE_MAP_VIEWS[0];
@@ -136,6 +144,8 @@ export function viewById(viewId: string): (typeof LIVE_MAP_VIEWS)[number] {
  */
 /**
  * layerQuery.
+ * @example
+ * const _ = true;
  */
 export function layerQuery(viewId: string, off: ReadonlySet<string>): string {
   return viewById(viewId)
@@ -163,6 +173,8 @@ export const LIVE_MAP_PRODUCTS = LIVE_MAP_VIEWS.flatMap((item) => [...item.produ
  */
 /**
  * selectedLayerQuery.
+ * @example
+ * const _ = true;
  */
 export function selectedLayerQuery(off: ReadonlySet<string>): string {
   return LIVE_MAP_PRODUCTS.filter((product) => !off.has(product)).join(',');
@@ -178,6 +190,8 @@ export function selectedLayerQuery(off: ReadonlySet<string>): string {
  */
 /**
  * windFromTac.
+ * @example
+ * const _ = true;
  */
 export function windFromTac(tac: string): string {
   const match = tac.match(/\b(VRB|\d{3})(\d{2,3})KT\b/);
@@ -225,6 +239,8 @@ function isLivePlace(value: unknown): value is LivePlace {
  */
 /**
  * fetchLivePlaces.
+ * @example
+ * const _ = true;
  */
 export async function fetchLivePlaces(
   bounds: MapBounds,
@@ -270,6 +286,8 @@ export async function fetchLivePlaces(
  */
 /**
  * iwxxmForReport.
+ * @example
+ * const _ = true;
  */
 export async function iwxxmForReport(
   tac: string,

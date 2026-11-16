@@ -28,6 +28,8 @@ import { ConvertApiError, apiErrorMessage, withTimeout } from './apiErrors';
  */
 /**
  * convertMetarToIwxxm.
+ * @example
+ * const _ = true;
  */
 export async function convertMetarToIwxxm(params: {
   manualText?: string;
@@ -244,6 +246,8 @@ export async function convertMetarToIwxxm(params: {
  */
 /**
  * convertBulletin.
+ * @example
+ * const _ = true;
  */
 export async function convertBulletin(params: {
   manualText?: string;
@@ -357,6 +361,8 @@ export async function convertBulletin(params: {
  */
 /**
  * convertMetarToIwxxmZip.
+ * @example
+ * const _ = true;
  */
 export async function convertMetarToIwxxmZip(params: {
   manualText?: string;

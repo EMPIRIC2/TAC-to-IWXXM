@@ -8,6 +8,8 @@ import type { ConversionIssue } from '@/models/openapi';
  */
 /**
  * withTimeout.
+ * @example
+ * const _ = true;
  */
 export function withTimeout<T>(
   promise: Promise<T>,
@@ -73,6 +75,8 @@ export class ConvertApiError extends Error {
 
 /**
  * apiErrorMessage.
+ * @example
+ * const _ = true;
  */
 export function apiErrorMessage(
   error: { detail?: unknown; message?: unknown },

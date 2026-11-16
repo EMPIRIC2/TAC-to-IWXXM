@@ -5,6 +5,8 @@ import * as S from './fileConverterViewScope';
 
 /**
  * FileConverterSecondaryActions.
+ * @example
+ * const _ = true;
  */
 export function FileConverterSecondaryActions(props: FileConverterViewProps) {
   const {

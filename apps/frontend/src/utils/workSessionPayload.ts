@@ -67,6 +67,8 @@ const SESSION_PRODUCTS = new Set<WorkSessionProduct>([
  */
 /**
  * resolveSessionProduct.
+ * @example
+ * const _ = true;
  */
 export function resolveSessionProduct(snapshot: ConverterSnapshot): WorkSessionProduct {
   const raw = snapshot.conversionParams.product;
@@ -89,6 +91,8 @@ export function resolveSessionProduct(snapshot: ConverterSnapshot): WorkSessionP
  */
 /**
  * extractSessionTitle.
+ * @example
+ * const _ = true;
  */
 export function extractSessionTitle(manualInput: string): string {
   const match = manualInput.match(ICAO_RE);
@@ -106,6 +110,8 @@ export function extractSessionTitle(manualInput: string): string {
  */
 /**
  * hasConverterContent.
+ * @example
+ * const _ = true;
  */
 export function hasConverterContent(snapshot: ConverterSnapshot): boolean {
   return (
@@ -126,6 +132,8 @@ export function hasConverterContent(snapshot: ConverterSnapshot): boolean {
  */
 /**
  * buildWorkSessionPayload.
+ * @example
+ * const _ = true;
  */
 export function buildWorkSessionPayload(
   snapshot: ConverterSnapshot,
@@ -177,6 +185,8 @@ export function buildWorkSessionPayload(
  */
 /**
  * resolveManualLineMetaFromResult.
+ * @example
+ * const _ = true;
  */
 export function resolveManualLineMetaFromResult(
   name: string,

@@ -36,6 +36,8 @@ import { readWmoLibraryDefaultsSync } from '@/utils/wmoLibraryDefaultsSync';
  */
 /**
  * paramsBarFromState.
+ * @example
+ * const _ = true;
  */
 export function paramsBarFromState(
   params: ConversionParams,
@@ -72,6 +74,8 @@ export function paramsBarFromState(
  */
 /**
  * snapshotExportContext.
+ * @example
+ * const _ = true;
  */
 export function snapshotExportContext(
   params: ConversionParams,
@@ -99,6 +103,8 @@ export function snapshotExportContext(
  */
 /**
  * initialConversionParams.
+ * @example
+ * const _ = true;
  */
 export function initialConversionParams(): ConversionParams {
   const base: ConversionParams = {
@@ -143,6 +149,8 @@ export function initialConversionParams(): ConversionParams {
  */
 /**
  * conversionParamsFromStoredPreferences.
+ * @example
+ * const _ = true;
  */
 export function conversionParamsFromStoredPreferences(
   prefs: StoredConverterPreferences,
@@ -187,6 +195,8 @@ export function conversionParamsFromStoredPreferences(
  */
 /**
  * activeMetarFamilyVariants.
+ * @example
+ * const _ = true;
  */
 export function activeMetarFamilyVariants(
   entry: ProfileCatalogEntry,

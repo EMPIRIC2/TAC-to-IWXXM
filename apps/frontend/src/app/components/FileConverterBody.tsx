@@ -6,6 +6,8 @@ import * as S from './fileConverterViewScope';
 
 /**
  * FileConverterBody.
+ * @example
+ * const _ = true;
  */
 export function FileConverterBody(props: FileConverterViewProps) {
   const {

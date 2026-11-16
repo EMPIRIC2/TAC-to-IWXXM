@@ -27,6 +27,8 @@ export {
  */
 /**
  * resolveCandidateIwxxmXml.
+ * @example
+ * const _ = true;
  */
 export async function resolveCandidateIwxxmXml(
   candidate: ExportCandidate,

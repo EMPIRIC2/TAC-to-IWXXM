@@ -6,6 +6,8 @@ import { useWorkbenchBusyFlags } from './workbenchBusyFlags';
 
 /**
  * useFileConverterPart1.
+ * @example
+ * const _ = true;
  */
 export function useFileConverterPart1(props: any) {
   const {

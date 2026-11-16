@@ -11,6 +11,8 @@ import { FileConverterLayoutControls } from './FileConverterLayoutControls';
 
 /**
  * FileConverterChromeToolbar.
+ * @example
+ * const _ = true;
  */
 export function FileConverterChromeToolbar(props: FileConverterViewProps) {
   const {

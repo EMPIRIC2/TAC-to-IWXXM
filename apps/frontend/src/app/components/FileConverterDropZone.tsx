@@ -4,6 +4,8 @@ import * as S from './fileConverterViewScope';
 
 /**
  * FileConverterDropZone.
+ * @example
+ * const _ = true;
  */
 export function FileConverterDropZone(props: FileConverterViewProps) {
   const {

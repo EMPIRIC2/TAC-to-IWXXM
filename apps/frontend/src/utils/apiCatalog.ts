@@ -24,6 +24,8 @@ export { EndpointNotImplementedError } from './apiErrors';
  */
 /**
  * ingestCollect.
+ * @example
+ * const _ = true;
  */
 export async function ingestCollect(params: {
   manualText?: string;
@@ -105,6 +107,8 @@ export async function ingestCollect(params: {
  */
 /**
  * massIngestFiles.
+ * @example
+ * const _ = true;
  */
 export async function massIngestFiles(params: {
   files: File[];
@@ -162,6 +166,8 @@ export async function massIngestFiles(params: {
  */
 /**
  * fetchRuleCatalog.
+ * @example
+ * const _ = true;
  */
 export async function fetchRuleCatalog(params: {
   family: 'tac' | 'iwxxm' | 'conversion' | 'dissemination' | 'decoding';
@@ -228,6 +234,8 @@ export async function fetchRuleCatalog(params: {
  */
 /**
  * fetchCodeNameDictionary.
+ * @example
+ * const _ = true;
  */
 export async function fetchCodeNameDictionary(
   params: {
@@ -283,6 +291,8 @@ export async function fetchCodeNameDictionary(
  */
 /**
  * fetchSelectionOptions.
+ * @example
+ * const _ = true;
  */
 export async function fetchSelectionOptions(params: {
   kind: SelectionOptionKind;

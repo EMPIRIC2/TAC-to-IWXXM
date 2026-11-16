@@ -55,6 +55,11 @@ type FamilyFilter =
   | 'dissemination'
   | 'decoding';
 
+/**
+ * Type `LintValidationCatalogViewProps`.
+ * @example
+ * const _ = true;
+ */
 export type LintValidationCatalogViewProps = {
   familyFilter: any;
   setFamilyFilter: any;
@@ -86,6 +91,8 @@ export type LintValidationCatalogViewProps = {
  */
 /**
  * LintValidationCatalogView.
+ * @example
+ * const _ = true;
  */
 export function LintValidationCatalogView({
   familyFilter,

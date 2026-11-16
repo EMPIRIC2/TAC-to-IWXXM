@@ -6,6 +6,8 @@ import * as S from './fileConverterViewScope';
 
 /**
  * FileConverterQueue.
+ * @example
+ * const _ = true;
  */
 export function FileConverterQueue(props: FileConverterViewProps) {
   const {

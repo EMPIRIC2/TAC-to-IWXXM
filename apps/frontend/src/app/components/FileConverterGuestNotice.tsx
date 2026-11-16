@@ -4,6 +4,8 @@ import * as S from './fileConverterViewScope';
 
 /**
  * FileConverterGuestNotice.
+ * @example
+ * const _ = true;
  */
 export function FileConverterGuestNotice(props: FileConverterViewProps) {
   const { onRequestLogin } = props;

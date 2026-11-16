@@ -22,6 +22,8 @@ export type { OperatorVisibleCopyEntry } from '@/models/operatorCopy';
 
 /**
  * Collect operator-visible copy entries for guard scans.
+ * @example
+ * const _ = true;
  */
 export function collectOperatorVisibleCopy(): OperatorVisibleCopyEntry[] {
   const entries: OperatorVisibleCopyEntry[] = [

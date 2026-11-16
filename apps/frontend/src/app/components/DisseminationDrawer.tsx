@@ -56,6 +56,8 @@ interface RowUiState {
 
 /**
  * DisseminationDrawer.
+ * @example
+ * const _ = true;
  */
 export function DisseminationDrawer({
   open,

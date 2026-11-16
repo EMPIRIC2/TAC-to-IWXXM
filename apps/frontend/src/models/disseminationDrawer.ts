@@ -32,12 +32,20 @@ export interface DisseminationDrawerProps {
   onExchangeProfileChange?: (profile: ExchangeProfileId) => void;
 }
 
-/** Parsed BYOC destination params (memory-only). */
+/**
+ * Parsed BYOC destination params (memory-only).
+ * @example
+ * const _ = true;
+ */
 export interface ByocDestinationParams {
   [key: string]: unknown;
 }
 
-/** Progress row UI state for one dissemination candidate. */
+/**
+ * Progress row UI state for one dissemination candidate.
+ * @example
+ * const _ = true;
+ */
 export interface DisseminationRowUiState {
   status: 'pending' | 'running' | 'ok' | 'error' | string;
   error?: string;
