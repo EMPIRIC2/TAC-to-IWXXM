@@ -288,4 +288,4 @@ async def convert_zip(
 
     from src.routers.conversion_zip_continue import convert_zip_continue
 
-    return await convert_zip_continue(locals())
+    return await convert_zip_continue({**globals(), **locals()})

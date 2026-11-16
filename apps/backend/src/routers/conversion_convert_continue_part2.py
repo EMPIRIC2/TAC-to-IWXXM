@@ -2,46 +2,53 @@
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, cast
 
+from fastapi import HTTPException
+from tac2iwxxm.group_trace import trace_entries
+from tac2iwxxm.heading_paste import (
+    HeadingPasteError,
+    http_status_for_heading_error,
+    reports_for_convert,
+)
+
+from src.models.conversion import GroupTrace
+from src.routers.conversion_api_surface import api_surface
+from src.routers.conversion_part_1 import (
+    _ConvertRuntime,
+    _infer_report_variant_from_sample,
+)
+from src.routers.conversion_part_2 import (
+    _append_pre_convert_lint_issues,
+    _record_convert_station_health,
+)
+from src.routers.conversion_part_3 import _process_json_metars
+from src.routers.conversion_part_4 import _process_manual_entries
+from src.routers.conversion_part_5 import _process_uploaded_files
 from src.schemas.conversion import (
     ConversionIssue,
+    ConversionIssueSeverity,
+    ConversionResponse,
+    ErrorDetail,
+)
+from src.utilities.ca_exchange_wire import (
+    apply_ca_eccc_collect_output,
+    ca_eccc_output_spec_for_request,
+)
+from src.utilities.strict_raise import (
+    promote_convert_failure_severity,
 )
 
 
 async def convert_continue_part2(_prelude: dict[str, Any]) -> Any:
     """Resume convert_continue."""
-    Any = _prelude.get("Any")
-    ConversionIssue = _prelude.get("ConversionIssue")
-    ConversionIssueSeverity = _prelude.get("ConversionIssueSeverity")
-    ConversionResponse = _prelude.get("ConversionResponse")
-    ConversionResult = _prelude.get("ConversionResult")
-    ErrorDetail = _prelude.get("ErrorDetail")
-    GroupTrace = _prelude.get("GroupTrace")
-    HTTPException = _prelude.get("HTTPException")
-    HeadingPasteError = _prelude.get("HeadingPasteError")
-    IWXXM_CA_TOKEN = _prelude.get("IWXXM_CA_TOKEN")
-    NOT_XML_CODE = _prelude.get("NOT_XML_CODE")
     _ = _prelude.get("_")
-    _ConvertAccumulator = _prelude.get("_ConvertAccumulator")
-    _ConvertRuntime = _prelude.get("_ConvertRuntime")
-    _append_pre_convert_lint_issues = _prelude.get("_append_pre_convert_lint_issues")
-    _convert_output_policy_id = _prelude.get("_convert_output_policy_id")
     _custom_engine = _prelude.get("_custom_engine")
+    # Nested helper may be defined later in this function; keep prelude binding optional.
     _finalize_exchange_xml = _prelude.get("_finalize_exchange_xml")
-    _infer_report_variant_from_sample = _prelude.get("_infer_report_variant_from_sample")
-    _process_json_metars = _prelude.get("_process_json_metars")
-    _process_manual_entries = _prelude.get("_process_manual_entries")
-    _process_uploaded_files = _prelude.get("_process_uploaded_files")
-    _record_convert_station_health = _prelude.get("_record_convert_station_health")
-    _resolve_effective_iwxxm_version = _prelude.get("_resolve_effective_iwxxm_version")
-    _resolve_report_variant = _prelude.get("_resolve_report_variant")
     acc = _prelude.get("acc")
-    api_surface = _prelude.get("api_surface")
     applied_conversion_library_id = _prelude.get("applied_conversion_library_id")
     applied_conversion_template_id = _prelude.get("applied_conversion_template_id")
-    apply_ca_eccc_collect_output = _prelude.get("apply_ca_eccc_collect_output")
-    apply_strict_validate_flags = _prelude.get("apply_strict_validate_flags")
     asset = _prelude.get("asset")
     auth_user = _prelude.get("auth_user")
     body_conversion_library_id = _prelude.get("body_conversion_library_id")
@@ -59,8 +66,6 @@ async def convert_continue_part2(_prelude: dict[str, Any]) -> Any:
     bulletin_date = _prelude.get("bulletin_date")
     bulletin_id = _prelude.get("bulletin_id")
     ca_eccc_bundle_available = _prelude.get("ca_eccc_bundle_available")
-    ca_eccc_output_spec_for_request = _prelude.get("ca_eccc_output_spec_for_request")
-    cast = _prelude.get("cast")
     compute_raised_severities = _prelude.get("compute_raised_severities")
     conversion_library_id = _prelude.get("conversion_library_id")
     conversion_template_id = _prelude.get("conversion_template_id")
@@ -80,7 +85,6 @@ async def convert_continue_part2(_prelude: dict[str, Any]) -> Any:
     get_first_party_template = _prelude.get("get_first_party_template")
     get_namespace_version = _prelude.get("get_namespace_version")
     group_trace = _prelude.get("group_trace")
-    http_status_for_heading_error = _prelude.get("http_status_for_heading_error")
     i = _prelude.get("i")
     include_nil_reasons = _prelude.get("include_nil_reasons")
     is_first_party = _prelude.get("is_first_party")
@@ -118,7 +122,6 @@ async def convert_continue_part2(_prelude: dict[str, Any]) -> Any:
     product = _prelude.get("product")
     profile = _prelude.get("profile")
     profiles_service = _prelude.get("profiles_service")
-    promote_convert_failure_severity = _prelude.get("promote_convert_failure_severity")
     promoted = _prelude.get("promoted")
     promoted_issues = _prelude.get("promoted_issues")
     propagate_residuals_to_remarks = _prelude.get("propagate_residuals_to_remarks")
@@ -126,11 +129,9 @@ async def convert_continue_part2(_prelude: dict[str, Any]) -> Any:
     raw_name = _prelude.get("raw_name")
     report = _prelude.get("report")
     report_variant = _prelude.get("report_variant")
-    reports_for_convert = _prelude.get("reports_for_convert")
     request = _prelude.get("request")
     request_body = _prelude.get("request_body")
     request_metadata = _prelude.get("request_metadata")
-    resolve_engine_profile_from_conversion_library = _prelude.get("resolve_engine_profile_from_conversion_library")
     resolved_extensions = _prelude.get("resolved_extensions")
     resolved_report_variant = _prelude.get("resolved_report_variant")
     response_report_variant = _prelude.get("response_report_variant")
@@ -151,7 +152,6 @@ async def convert_continue_part2(_prelude: dict[str, Any]) -> Any:
     tac_lint_fn = _prelude.get("tac_lint_fn")
     tac_validation_library_id = _prelude.get("tac_validation_library_id")
     tmpl = _prelude.get("tmpl")
-    trace_entries = _prelude.get("trace_entries")
     translation_centre_designator = _prelude.get("translation_centre_designator")
     translation_centre_name = _prelude.get("translation_centre_name")
     validate_output = _prelude.get("validate_output")

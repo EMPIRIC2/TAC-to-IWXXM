@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from dataclasses import dataclass
 from typing import Any
 
 from fastapi import APIRouter, File, Form, HTTPException, Request, UploadFile
@@ -52,6 +53,7 @@ def _ensure_airport_location_resolver() -> None:
     _location_resolver_ready = True
 
 
+@dataclass(frozen=True)
 class _DecodedRow:
     """Internal helper ``_DecodedRow``."""
 
@@ -61,6 +63,7 @@ class _DecodedRow:
     explanation: str
 
 
+@dataclass(frozen=True)
 class _DecodedResidual:
     """Internal helper ``_DecodedResidual``."""
 
@@ -243,6 +246,12 @@ def _enrich_advisory_decode(
     return enriched, [], " ".join(summary_parts).strip() or (summary or "")
 
 
+@router.get(
+    "/lint-issue-catalog",
+    response_model=LintIssueCatalogResponse,
+    summary="Lint and validation catalog",
+    responses={},
+)
 async def lint_issue_catalog(
     product: str | None = None,
     family: str | None = None,
@@ -398,6 +407,16 @@ async def lint_issue_catalog(
     return api_surface.msgspec_json_response(LintIssueCatalogResponse(issues=issues))
 
 
+@router.post(
+    "/decode-tac",
+    tags=["Conversion"],
+    summary="Decode TAC",
+    response_model=DecodeTacResponse,
+    responses={
+        415: {"description": "Unsupported Media Type - multipart/form-data required"},
+        422: {"description": "Missing required product field"},
+    },
+)
 async def decode_tac_endpoint(
     request: Request,
     product: str = Form(..., description="TAC product (required)"),

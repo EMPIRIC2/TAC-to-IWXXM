@@ -5,6 +5,7 @@ from __future__ import annotations
 import logging
 import re
 from collections.abc import Callable
+from dataclasses import dataclass
 from typing import Any, cast
 
 from fastapi import APIRouter, HTTPException
@@ -337,6 +338,7 @@ def _infer_report_variant_from_sample(emit_profile: str, product: str, sample_te
     return None
 
 
+@dataclass(slots=True)
 class _ConvertRuntime:
     """Internal helper ``_ConvertRuntime``."""
 

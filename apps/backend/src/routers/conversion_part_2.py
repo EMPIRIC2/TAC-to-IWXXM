@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from dataclasses import field
+from dataclasses import dataclass, field
 from typing import Any, cast
 
 from tac_validate.models import LintReport
@@ -16,6 +16,7 @@ from src.schemas.conversion import (
 )
 
 
+@dataclass(slots=True)
 class _ConvertAccumulator:
     """Internal helper ``_ConvertAccumulator``."""
 

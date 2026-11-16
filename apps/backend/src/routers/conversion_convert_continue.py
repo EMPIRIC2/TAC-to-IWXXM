@@ -2,40 +2,51 @@
 
 from __future__ import annotations
 
+import logging
+import warnings
 from typing import Any
 
+from fastapi import HTTPException
+
+from src.metar_iwxxm_api.convert_library_hard_cut import (
+    resolve_engine_profile_from_conversion_library,
+)
+from src.models.iwxxm_validation import get_namespace_version
+from src.routers.conversion_api_surface import api_surface
+from src.routers.conversion_part_1 import (
+    _convert_output_policy_id,
+    _resolve_effective_iwxxm_version,
+    _resolve_report_variant,
+    tac_lint_fn,
+)
+from src.routers.conversion_part_2 import _ConvertAccumulator
 from src.schemas.conversion import (
     ConversionIssue,
+    ConversionIssueSeverity,
     ConversionResponse,
     ConversionResult,
+    ErrorDetail,
 )
 from src.utilities.extension_wire import IWXXM_CA_TOKEN
-from src.utilities.iwxxm_pass_through import NOT_XML_CODE
+from src.utilities.iwxxm_pass_through import NOT_XML_CODE, lint_iwxxm_pass_through
+from src.utilities.observability import set_request_log_level
+from src.utilities.strict_raise import apply_strict_validate_flags, compute_raised_severities
+from src.utilities.version_migration import migrate_xml
+
+logger = logging.getLogger(__name__)
+warning = warnings.warn
 
 
 async def convert_continue(_prelude: dict[str, Any]) -> Any:
     """Resume ``convert`` after prelude."""
-    resolve_engine_profile_from_conversion_library = _prelude.get("resolve_engine_profile_from_conversion_library")
     conversion_library_id = _prelude.get("conversion_library_id")
     _custom_engine = _prelude.get("_custom_engine")
     conversion_template_id = _prelude.get("conversion_template_id")
     report_variant = _prelude.get("report_variant")
     lint = _prelude.get("lint")
-    Any = _prelude.get("Any")
-    ConversionIssue = _prelude.get("ConversionIssue")
-    ConversionIssueSeverity = _prelude.get("ConversionIssueSeverity")
-    ErrorDetail = _prelude.get("ErrorDetail")
-    HTTPException = _prelude.get("HTTPException")
-    _ConvertAccumulator = _prelude.get("_ConvertAccumulator")
-    _convert_output_policy_id = _prelude.get("_convert_output_policy_id")
-    _resolve_effective_iwxxm_version = _prelude.get("_resolve_effective_iwxxm_version")
-    _resolve_report_variant = _prelude.get("_resolve_report_variant")
-    api_surface = _prelude.get("api_surface")
     applied_conversion_library_id = _prelude.get("applied_conversion_library_id")
-    apply_strict_validate_flags = _prelude.get("apply_strict_validate_flags")
     bulletin_id = _prelude.get("bulletin_id")
     ca_eccc_bundle_available = _prelude.get("ca_eccc_bundle_available")
-    compute_raised_severities = _prelude.get("compute_raised_severities")
     conversion_template_token = _prelude.get("conversion_template_token")
     emit_profile = _prelude.get("emit_profile")
     err = _prelude.get("err")
@@ -43,7 +54,6 @@ async def convert_continue(_prelude: dict[str, Any]) -> Any:
     extensions = _prelude.get("extensions")
     files = _prelude.get("files")
     get_first_party_template = _prelude.get("get_first_party_template")
-    get_namespace_version = _prelude.get("get_namespace_version")
     i = _prelude.get("i")
     include_nil_reasons = _prelude.get("include_nil_reasons")
     is_first_party = _prelude.get("is_first_party")
@@ -54,12 +64,9 @@ async def convert_continue(_prelude: dict[str, Any]) -> Any:
     iwxxm_version = _prelude.get("iwxxm_version")
     joined = _prelude.get("joined")
     json_extensions = _prelude.get("json_extensions")
-    lint_iwxxm_pass_through = _prelude.get("lint_iwxxm_pass_through")
     log_level = _prelude.get("log_level")
     log_level_norm = _prelude.get("log_level_norm")
-    logger = _prelude.get("logger")
     manual_text = _prelude.get("manual_text")
-    migrate_xml = _prelude.get("migrate_xml")
     migrated_iwxxm = _prelude.get("migrated_iwxxm")
     migrated_payload = _prelude.get("migrated_payload")
     migration_warnings = _prelude.get("migration_warnings")
@@ -74,20 +81,17 @@ async def convert_continue(_prelude: dict[str, Any]) -> Any:
     resolved_extensions = _prelude.get("resolved_extensions")
     sample = _prelude.get("sample")
     semantic_profile = _prelude.get("semantic_profile")
-    set_request_log_level = _prelude.get("set_request_log_level")
     source_iwxxm_version = _prelude.get("source_iwxxm_version")
     stop_on_error = _prelude.get("stop_on_error")
     strict = _prelude.get("strict")
     strict_convert = _prelude.get("strict_convert")
     strict_lint = _prelude.get("strict_lint")
     strict_validate = _prelude.get("strict_validate")
-    tac_lint_fn = _prelude.get("tac_lint_fn")
     tmpl = _prelude.get("tmpl")
     validate_output = _prelude.get("validate_output")
     validation_issues = _prelude.get("validation_issues")
     validation_level = _prelude.get("validation_level")
     want_validate = _prelude.get("want_validate")
-    warning = _prelude.get("warning")
     wire = _prelude.get("wire")
     xml_payload = _prelude.get("xml_payload")
     try:
@@ -426,4 +430,4 @@ async def convert_continue(_prelude: dict[str, Any]) -> Any:
     metars_list: list[Any] = []
     from src.routers.conversion_convert_continue_part2 import convert_continue_part2
 
-    return await convert_continue_part2(locals())
+    return await convert_continue_part2({**globals(), **locals()})

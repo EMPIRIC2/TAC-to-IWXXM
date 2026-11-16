@@ -7,11 +7,25 @@ from typing import Any
 from fastapi import Depends, Form, HTTPException, Request, UploadFile
 from fastapi.responses import Response
 
+from src.metar_iwxxm_api.convert_library_hard_cut import (
+    resolve_engine_profile_from_conversion_library,
+)
 from src.routers.conversion_api_surface import api_surface, parse_files
 from src.routers.conversion_part_1 import (
+    _convert_output_policy_id,
+    _resolve_effective_iwxxm_version,
+    _resolve_report_variant,
     logger,
     router,
 )
+from src.routers.conversion_part_2 import (
+    _append_pre_convert_lint_issues,
+    _ConvertAccumulator,
+    _record_convert_station_health,
+)
+from src.routers.conversion_part_3 import _process_json_metars
+from src.routers.conversion_part_4 import _process_manual_entries
+from src.routers.conversion_part_5 import _process_uploaded_files
 from src.schemas.conversion import (
     ConversionIssue,
     ConversionIssueSeverity,
@@ -21,6 +35,21 @@ from src.schemas.conversion import (
 )
 from src.services.conversion_profiles_service import ConversionProfilesService
 from src.utilities.security import verify_optional_supabase_token
+
+# Kept alive for convert_continue({**globals(), **locals()}) handoff.
+_CONVERT_HANDOFF_HELPERS = (
+    resolve_engine_profile_from_conversion_library,
+    _convert_output_policy_id,
+    _resolve_effective_iwxxm_version,
+    _resolve_report_variant,
+    _ConvertAccumulator,
+    _append_pre_convert_lint_issues,
+    _record_convert_station_health,
+    _process_json_metars,
+    _process_manual_entries,
+    _process_uploaded_files,
+    api_surface,
+)
 
 
 @router.post(
@@ -368,4 +397,6 @@ async def convert(
 
     from src.routers.conversion_convert_continue import convert_continue
 
-    return await convert_continue(locals())
+    # Module-level imports live in globals(), not locals(); merge so continue
+    # modules receive helpers (_resolve_*, api_surface, schemas, etc.).
+    return await convert_continue({**globals(), **locals()})
