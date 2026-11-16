@@ -32,10 +32,6 @@ def load_detector_catalog(profile: str | None = None) -> dict[str, DetectorPack]
     ids in its header. Omitting ``profile`` leaves those layers off. A new pack
     id with no ``extends`` is added for every profile.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (load_detector_catalog)
-    2
 
     Parameters
     ----------
@@ -73,10 +69,6 @@ def detector_mode() -> Literal["legacy", "shadow", "detector"]:
     """
     Return effective detector mode (default ``detector`` after R2 flip).
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (detector_mode)
-    2
 
     Returns
     -------

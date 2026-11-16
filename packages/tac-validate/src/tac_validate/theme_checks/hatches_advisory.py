@@ -11,10 +11,6 @@ def hatch_vaa(tac_text: str, product: str) -> list[Issue]:
     """
     Detector hatch for VAA checklist.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (hatch_vaa)
-    2
 
     Parameters
     ----------
@@ -38,10 +34,6 @@ def hatch_tca(tac_text: str, product: str) -> list[Issue]:
     """
     Detector hatch for TCA checklist.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (hatch_tca)
-    2
 
     Parameters
     ----------

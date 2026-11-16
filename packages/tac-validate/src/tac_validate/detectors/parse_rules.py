@@ -320,10 +320,6 @@ def load_detector_pack(path: Path | str) -> DetectorPack:
     """
     Load one detector pack YAML file.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (load_detector_pack)
-    2
 
     Parameters
     ----------

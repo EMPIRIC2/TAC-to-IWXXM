@@ -82,10 +82,6 @@ def r1_identity_order(tac_text: str, product: str) -> list[Issue]:
     """
     R1: CCCC, observation time, field order.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (r1_identity_order)
-    2
 
     Parameters
     ----------
@@ -131,10 +127,6 @@ def r3_weather(tac_text: str, product: str) -> list[Issue]:
     """
     R3: present / recent weather token validity + membership.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (r3_weather)
-    2
 
     Parameters
     ----------
@@ -200,10 +192,6 @@ def r4_cloud(tac_text: str, product: str) -> list[Issue]:
     """
     R4: cloud / VV tokens + CB/TCU info.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (r4_cloud)
-    2
 
     Parameters
     ----------
@@ -288,10 +276,6 @@ def r5_remarks(tac_text: str, product: str) -> list[Issue]:
     """
     R5: US REMARKS malformed + iwxxm_us extension awareness.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (r5_remarks)
-    2
 
     Parameters
     ----------
@@ -320,10 +304,6 @@ def r8_nil_gate(tac_text: str, product: str) -> list[Issue] | None:
     """
     If NIL is report content, return R8 NIL issues; else ``None`` (continue body).
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (r8_nil_gate)
-    2
 
     Parameters
     ----------
@@ -389,10 +369,6 @@ def r8_modifiers(tac_text: str, product: str) -> list[Issue]:
     """
     R8 non-NIL: AUTO/COR/NOSIG/TEMPO/RVR/wind diagnostics.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (r8_modifiers)
-    2
 
     Parameters
     ----------
@@ -422,10 +398,6 @@ def hatch_r1(tac_text: str, product: str) -> list[Issue]:
     """
     Detector hatch for R1 pack.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (hatch_r1)
-    2
 
     Parameters
     ----------

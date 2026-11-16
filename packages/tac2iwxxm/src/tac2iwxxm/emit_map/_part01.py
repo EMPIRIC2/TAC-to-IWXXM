@@ -218,11 +218,6 @@ def load_emit_map_catalog() -> dict[str, EmitMap]:
     -------
     dict[str, EmitMap]
         Built-in emit maps, plus overlays from ``TAC2IWXXM_EMIT_MAP_DIR`` when that directory is set.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (load_emit_map_catalog)
-    2
     """
     overlay_key = os.environ.get(ENV_EMIT_MAP_DIR, "").strip()
     cached = _CATALOG_CACHE.get(overlay_key)
@@ -284,11 +279,6 @@ def resolve_emit_map(
     -------
     EmitMap
         The emit map matching profile x product x pin.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (resolve_emit_map)
-    2
     """
     maps = catalog if catalog is not None else load_emit_map_catalog()
     product_u = product.upper()
@@ -337,11 +327,6 @@ def emit_plugin_sentinel(
     -------
     str
         Marker text that is not an IWXXM document.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (emit_plugin_sentinel)
-    2
     """
     del ir
     return f"sentinel:{product}:{iwxxm_version}"
@@ -379,11 +364,6 @@ def emit_with_map(
     -------
     str
         XML returned by the mapped plugin.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (emit_with_map)
-    2
     """
     mapped = resolve_emit_map(
         profile=profile,
@@ -400,11 +380,6 @@ def emit_with_map(
 def clear_emit_map_catalog_cache() -> None:
     """
     Drop cached catalogs (tests / overlay env changes).
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (clear_emit_map_catalog_cache)
-    2
     """
     _CATALOG_CACHE.clear()
     _PLUGIN_CACHE.clear()
@@ -418,11 +393,6 @@ def check_emit_map_overlay_dir(directory: Path | str) -> None:
     ----------
     directory : Path | str
         Directory of overlay files.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (check_emit_map_overlay_dir)
-    2
     """
     path = Path(directory)
     if not path.is_dir():

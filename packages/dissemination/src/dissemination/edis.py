@@ -165,11 +165,6 @@ def format_wmo_ahl(
     -------
     str
         Format a WMO abbreviated heading line (Manual on the GTS / WMO-No. 386 shape).
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (format_wmo_ahl)
-    2
     """
     from tac2iwxxm import (
         AhlParts,
@@ -229,11 +224,6 @@ def build_edis_message(params: EdisParams, *, tac_body: str) -> str:
     -------
     str
         Build an ASCII EDIS bulletin body: AHL line, blank line, TAC text.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (build_edis_message)
-    2
     """
     ahl = format_wmo_ahl(
         tt=params.tt,
@@ -316,11 +306,6 @@ async def edis_preflight(
     -------
     PreflightResponse
         Check allowlist + SMTP connect/login (no message send).
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (edis_preflight)
-    2
     """
     _validate_edis_egress(params, allowlist)
     try:
@@ -372,11 +357,6 @@ async def edis_submit(
     -------
     EdisSubmitResult
         Format an ASCII EDIS message and submit via SMTP.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (edis_submit)
-    2
     """
     _validate_edis_egress(params, allowlist)
     bulletin = build_edis_message(params, tac_body=tac_body)

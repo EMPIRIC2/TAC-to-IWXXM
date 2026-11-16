@@ -43,10 +43,6 @@ def run_detector_pack(
     budget : int, optional
         Max regex match steps across finditer rules; fail closed when exceeded. By default ``DEFAULT_LINT_BUDGET``.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (run_detector_pack)
-    2
 
     Returns
     -------
@@ -155,10 +151,6 @@ def issue_keys(issues: Sequence[Issue]) -> frozenset[tuple[str, int | None, int 
     """
     Shadow-compare keys: code + span.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (issue_keys)
-    2
 
     Parameters
     ----------
@@ -182,10 +174,6 @@ def compare_shadow(
     """
     Compare legacy vs detector issues filtered to ``codes``.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (compare_shadow)
-    2
 
     Parameters
     ----------
@@ -210,10 +198,6 @@ def run_r2_visibility_detectors(tac_text: str, product: str) -> list[Issue]:
     """
     Convenience: run builtin R2 visibility pack.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (run_r2_visibility_detectors)
-    2
 
     Parameters
     ----------
@@ -246,10 +230,6 @@ def run_theme_pack(pack_id: str, tac_text: str, product: str) -> list[Issue]:
     """
     Run one builtin/overlay detector pack by id (empty if missing or product mismatch).
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (run_theme_pack)
-    2
 
     Parameters
     ----------
@@ -308,10 +288,6 @@ def example_python_hatch(tac_text: str, product: str) -> list[Issue]:
     """
     No-op python hatch used by unit tests.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (example_python_hatch)
-    2
 
     Parameters
     ----------
@@ -333,10 +309,6 @@ def example_python_hatch_emit(tac_text: str, product: str) -> list[Issue]:
     """
     Python hatch that emits INVALID_VISIBILITY for skip_if / emitted_codes coverage.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (example_python_hatch_emit)
-    2
 
     Parameters
     ----------

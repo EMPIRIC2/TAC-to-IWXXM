@@ -216,11 +216,6 @@ class DisseminationOpsService:
         ------
         HTTPException
             If the payload contains disallowed secret-like fields or the database write fails.
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (create_plan)
-        2
         """
         _reject_secrets(payload.model_dump())
         row: dict[str, Any] = {
@@ -259,11 +254,6 @@ class DisseminationOpsService:
         ------
         HTTPException
             If the plan does not exist for the owner or the database lookup fails.
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (get_plan)
-        2
         """
         t = _table(PLANS_TABLE)
         result: Any | None
@@ -299,11 +289,6 @@ class DisseminationOpsService:
         HTTPException
             If the plan is missing, the update payload contains secret-like fields,
             or the database write fails.
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (update_plan)
-        2
         """
         data = payload.model_dump(exclude_unset=True)
         _reject_secrets(data)
@@ -370,11 +355,6 @@ class DisseminationOpsService:
         HTTPException
             If destination metadata contains disallowed secret-like fields or the
             database write fails.
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (record_audit)
-        2
         """
         dest = destinations or {}
         _reject_secrets(dest)
@@ -436,11 +416,6 @@ class DisseminationOpsService:
         ------
         HTTPException
             If the database query fails.
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (list_audit)
-        2
         """
         t = _table(AUDIT_TABLE)
         stmt = select(t).where(t.c.user_id == self.user_id)
@@ -485,11 +460,6 @@ class DisseminationOpsService:
         ------
         HTTPException
             If the record does not exist for the owner or the database lookup fails.
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (get_audit)
-        2
         """
         t = _table(AUDIT_TABLE)
         result: Any | None
@@ -522,11 +492,6 @@ class DisseminationOpsService:
         ------
         HTTPException
             If the payload contains disallowed secret-like fields or the database write fails.
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (create_mapping)
-        2
         """
         _reject_secrets(payload.model_dump())
         row: dict[str, Any] = {
@@ -563,11 +528,6 @@ class DisseminationOpsService:
         ------
         HTTPException
             If the mapping does not exist for the owner or the database lookup fails.
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (get_mapping)
-        2
         """
         t = _table(MAPPINGS_TABLE)
         result: Any | None
@@ -603,11 +563,6 @@ class DisseminationOpsService:
         HTTPException
             If the mapping is missing, the update payload contains secret-like fields,
             or the database write fails.
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (update_mapping)
-        2
         """
         data = payload.model_dump(exclude_unset=True)
         _reject_secrets(data)

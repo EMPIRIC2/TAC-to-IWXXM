@@ -286,11 +286,6 @@ def parse_vaa(tac: str, *, product: str = "VAA") -> dict[str, Any]:
     -------
     dict[str, Any]
         A Volcanic Ash Advisory TAC into IR.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (parse_vaa)
-    2
     """
     if product.upper() != "VAA":
         raise ValueError(f"product mismatch: expected VAA, found {product}")

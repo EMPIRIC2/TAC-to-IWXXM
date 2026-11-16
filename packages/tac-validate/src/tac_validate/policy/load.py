@@ -169,10 +169,6 @@ def load_policy(path: Path | str) -> PolicyDocument:
     PolicyDocument
         Parsed policy (not yet resolved / activated).
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (load_policy)
-    2
     """
     file_path = Path(path)
     return _load_yaml_mapping(
@@ -189,10 +185,6 @@ def load_policy_catalog(profile: str | None = None) -> dict[str, PolicyDocument]
     its header. Omitting ``profile`` leaves those layers off. A new policy id
     with no ``extends`` is added for every profile.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (load_policy_catalog)
-    2
 
     Parameters
     ----------
@@ -390,10 +382,6 @@ def _chain_docs(
         PolicyError
             When a parent id is missing from ``policies``.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (symbol: depth_of)
-        2
         """
         if current.id in seen:
             msg = f"extends cycle involving {current.id!r}"
@@ -430,10 +418,6 @@ def _chain_docs(
         list[PolicyDocument]
             Parents in extend order, with ``current`` last.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (symbol: walk)
-        2
         """
         out: list[PolicyDocument] = []
         for parent_id in current.extends:

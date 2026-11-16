@@ -263,10 +263,6 @@ def load_lint_profiles() -> dict[str, LintProfileSpec]:
     dict[str, LintProfileSpec]
         Catalog rows from ``lint_profiles.yaml``.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (load_lint_profiles)
-    2
     """
     return _specs_from_document(yaml.safe_load(_CATALOG_PATH.read_text(encoding="utf-8")))
 
@@ -285,10 +281,6 @@ def lint_profile_spec(profile: str) -> LintProfileSpec | None:
     LintProfileSpec | None
         The row, or ``None``.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (lint_profile_spec)
-    2
     """
     return load_lint_profiles().get(canonical_lint_profile_id(profile))
 
@@ -307,10 +299,6 @@ def profile_inherit_chain(profile_id: str) -> tuple[str, ...]:
     tuple[str, ...]
         Inherit chain from root to leaf.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (profile_inherit_chain)
-    2
     """
     rows = load_lint_profiles()
     leaf = canonical_lint_profile_id(profile_id)

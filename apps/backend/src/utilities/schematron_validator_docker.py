@@ -42,10 +42,6 @@ class SchematronValidationResult:
         """
         Return the validation result as a plain dictionary.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (to_dict)
-        2
 
         Returns
         -------
@@ -58,10 +54,6 @@ class SchematronValidationResult:
         """
         Return the validation result as a formatted JSON string.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (to_json)
-        2
 
         Returns
         -------
@@ -120,11 +112,6 @@ class SchematronValidatorDocker:
         -------
         object
             SchematronValidationResult with validation details
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (validate)
-        2
         """
         try:
             self.logger.debug(f"Validating XML ({len(xml_content)} bytes)")
@@ -228,10 +215,6 @@ class SchematronValidatorDocker:
         """
         Check if Docker image exists and is ready.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (check_docker_image)
-        2
 
         Returns
         -------
@@ -279,11 +262,6 @@ def validate_against_schematron(
     -------
     object
         SchematronValidationResult
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (validate_against_schematron)
-    2
     """
     validator = SchematronValidatorDocker(schema_path, version)
     return validator.validate(xml_content)

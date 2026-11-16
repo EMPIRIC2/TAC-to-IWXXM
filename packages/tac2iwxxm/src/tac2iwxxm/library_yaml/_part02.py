@@ -27,11 +27,6 @@ def validate_library_yaml(
     -------
     LibraryYamlReport
         YAML, enforce kind/name, and collect regex diagnostics.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (validate_library_yaml)
-    2
     """
     stripped = raw.strip()
     if not stripped:

@@ -372,11 +372,6 @@ def trace_emitted_groups(tac: str, product: str) -> list[GroupTraceRow]:
     list[GroupTraceRow]
         Rows the preview can use to mark XML. Empty when this product has no
         emit map or the report does not match.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (trace_emitted_groups)
-    2
     """
     product_u = product.strip().upper()
     if not tac.strip():
@@ -432,11 +427,6 @@ def trace_entries(entries: list[tuple[str, int]], product: str) -> list[GroupTra
     -------
     list[GroupTraceRow]
         Rows whose offsets refer to the original text.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (trace_entries)
-    2
     """
     shifted: list[GroupTraceRow] = []
     for text, offset in entries:

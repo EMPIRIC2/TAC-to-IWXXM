@@ -11,10 +11,6 @@ def hatch_r1_order(tac_text: str, product: str) -> list[Issue]:
     """
     Declarative R1 residual: field-order only (CCCC / time via YAML).
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (hatch_r1_order)
-    2
 
     Parameters
     ----------
@@ -37,10 +33,6 @@ def hatch_r3(tac_text: str, product: str) -> list[Issue]:
     """
     Detector hatch for R3 pack.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (hatch_r3)
-    2
 
     Parameters
     ----------
@@ -61,10 +53,6 @@ def hatch_r4(tac_text: str, product: str) -> list[Issue]:
     """
     Detector hatch for R4 pack.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (hatch_r4)
-    2
 
     Parameters
     ----------
@@ -85,10 +73,6 @@ def hatch_r4_membership(tac_text: str, product: str) -> list[Issue]:
     """
     Declarative R4 residual: WMO membership only (shape/CB via YAML).
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (hatch_r4_membership)
-    2
 
     Parameters
     ----------
@@ -145,10 +129,6 @@ def hatch_r5(tac_text: str, product: str) -> list[Issue]:
     """
     Detector hatch for R5 pack.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (hatch_r5)
-    2
 
     Parameters
     ----------
@@ -169,10 +149,6 @@ def hatch_r5_pk_and_extension(tac_text: str, product: str) -> list[Issue]:
     """
     Declarative R5 residual: PK WND + iwxxm_us extension (SLP/P/T shape via YAML).
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (hatch_r5_pk_and_extension)
-    2
 
     Parameters
     ----------
@@ -272,10 +248,6 @@ def hatch_r8(tac_text: str, product: str) -> list[Issue]:
     """
     Detector hatch for R8 pack (NIL gate + modifiers).
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (hatch_r8)
-    2
 
     Parameters
     ----------
@@ -299,10 +271,6 @@ def hatch_taf(tac_text: str, product: str) -> list[Issue]:
     """
     Detector hatch for TAF core checklist (A5-1 + F20 gates).
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (hatch_taf)
-    2
 
     Parameters
     ----------
@@ -326,10 +294,6 @@ def hatch_sigmet(tac_text: str, product: str) -> list[Issue]:
     """
     Detector hatch for SIGMET A6 / F23 checklist.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (hatch_sigmet)
-    2
 
     Parameters
     ----------
@@ -352,10 +316,6 @@ def hatch_airmet(tac_text: str, product: str) -> list[Issue]:
     """
     Detector hatch for AIRMET A6 / F24 checklist.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (hatch_airmet)
-    2
 
     Parameters
     ----------

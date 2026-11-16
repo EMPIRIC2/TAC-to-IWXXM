@@ -33,10 +33,6 @@ def resolved_lint_profile(profile_id: str) -> LintProfileSpec | None:
     LintProfileSpec | None
         Merged row, or ``None`` when absent.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (resolved_lint_profile)
-    2
     """
     rows = load_lint_profiles()
     leaf = canonical_lint_profile_id(profile_id)
@@ -124,10 +120,6 @@ def apply_profile_deltas(report: LintReport, *, profile: str, product: str) -> L
     LintReport
         Findings for ``profile``. The ``profile`` field is the requested id.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (apply_profile_deltas)
-    2
     """
     spec = resolved_lint_profile(profile)
     issues = list(report.issues)

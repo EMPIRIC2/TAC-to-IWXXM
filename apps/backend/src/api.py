@@ -259,10 +259,6 @@ class ConvertRequestLoggingMiddleware:
             """
             Log preflight response status before forwarding ASGI messages.
 
-            Examples
-            --------
-            >>> 1 + 1  # docstring smoke (send_wrapper)
-            2
 
             Parameters
             ----------
@@ -334,10 +330,6 @@ async def add_translation_centre_headers(
     """
     Add ICAO Translation Centre identification headers to all responses.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (add_translation_centre_headers)
-    2
 
     Parameters
     ----------
@@ -423,11 +415,6 @@ def custom_openapi() -> dict[str, Any]:
     -------
     dict
         Cached OpenAPI document for the FastAPI application.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (custom_openapi)
-    2
     """
     if app.openapi_schema:
         return app.openapi_schema

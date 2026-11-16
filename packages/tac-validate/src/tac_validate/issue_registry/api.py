@@ -130,10 +130,6 @@ def catalog_entries(*, product: str | None = None) -> tuple[IssueSpec, ...]:
     tuple[IssueSpec, ...]
         Frozen catalog rows in registry order.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (catalog_entries)
-    2
     """
     if product is None or not str(product).strip():
         return ISSUES
@@ -167,10 +163,6 @@ def by_code(code: str) -> IssueSpec:
     KeyError
         If ``code`` is not registered.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (by_code)
-    2
     """
     try:
         return _BY_CODE[code]
@@ -217,10 +209,6 @@ def issue_from(
     KeyError
         If ``code`` is not registered.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (issue_from)
-    2
     """
     spec = by_code(code)
     text = message if message is not None else format_operator_message(spec.message_template, **kwargs)

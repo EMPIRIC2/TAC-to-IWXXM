@@ -16,11 +16,6 @@ def get_first_party_template(template_id: str) -> ConversionTemplate | None:
     -------
     ConversionTemplate | None
         A first-party template by id, or ``None``.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (get_first_party_template)
-    2
     """
     return FIRST_PARTY_TEMPLATES.get(template_id)
 
@@ -49,11 +44,6 @@ def fork_first_party(template_id: str, *, new_id: str, name: str | None = None) 
     ------
     KeyError
         If ``template_id`` is not a known first-party id.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (fork_first_party)
-    2
     """
     base = FIRST_PARTY_TEMPLATES.get(template_id)
     if base is None:

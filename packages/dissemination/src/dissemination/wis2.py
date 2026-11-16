@@ -185,11 +185,6 @@ def build_wis2_notification(
     -------
     dict[str, object]
         Build a minimal WIS Notification Message-shaped JSON dict.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (build_wis2_notification)
-    2
     """
     centre = params.centre_id or "unknown"
     data_id = f"wis2/{centre}/{uuid4().hex}"
@@ -242,11 +237,6 @@ async def wis2_preflight(
     -------
     PreflightResponse
         Check allowlist + MQTT connect + HTTP dataset reachability.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (wis2_preflight)
-    2
     """
     _validate_wis2_egress(params, allowlist)
     try:
@@ -311,11 +301,6 @@ async def wis2_publish(
     -------
     Wis2PublishResult
         PUT IWXXM dataset over HTTP, then publish MQTT notification with canonical link.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (wis2_publish)
-    2
     """
     _validate_wis2_egress(params, allowlist)
     body = iwxxm_xml.encode("utf-8") if isinstance(iwxxm_xml, str) else iwxxm_xml

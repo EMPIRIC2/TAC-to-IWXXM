@@ -3,11 +3,6 @@
 Select/ignore apply to Schematron assert ids only. XSD, well-formed, and
 ``SCHEMATRON_SKIPPED`` are engine behavior and are not a select surface.
 
-Examples
---------
-    >>> 1 + 1  # docstring smoke
-    2
-
 """
 
 from __future__ import annotations
@@ -47,10 +42,6 @@ def _as_str_tuple(value: object, *, field: str) -> tuple[str, ...]:
     field : object
         Argument ``field``.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke
-    2
 
     Returns
     -------
@@ -82,10 +73,6 @@ def _parse_document(data: Mapping[str, Any], *, source_path: str | None) -> Outp
     source_path : object
         Argument ``source_path``.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke
-    2
 
     Returns
     -------
@@ -133,10 +120,6 @@ def _load_yaml_mapping(text: str, *, source_path: str | None) -> OutputPolicyDoc
     source_path : object
         Argument ``source_path``.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke
-    2
 
     Returns
     -------
@@ -154,10 +137,6 @@ def load_output_policy(path: Path | str) -> OutputPolicyDocument:
     """
     Load one IWXXM output policy YAML file.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (load_output_policy)
-    2
 
     Parameters
     ----------
@@ -187,10 +166,6 @@ def _layer_output_policy(
     child : object
         Argument ``child``.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke
-    2
 
     Returns
     -------
@@ -233,10 +208,6 @@ def _take_output_overlay(
     profile : object
         Argument ``profile``.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke
-    2
 
     Returns
     -------
@@ -271,10 +242,6 @@ def load_output_policy_catalog(profile: str | None = None) -> dict[str, OutputPo
     its header. Omitting ``profile`` leaves those layers off. A new policy id
     with no ``extends`` is added for every profile.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (load_output_policy_catalog)
-    2
 
     Parameters
     ----------
@@ -321,10 +288,6 @@ def _merged_lists(
     policies : object
         Argument ``policies``.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke
-    2
 
     Returns
     -------
@@ -351,11 +314,6 @@ def _merged_lists(
         ------
         PolicyError
             When ``extends`` cycles or names an unknown parent.
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (symbol: walk)
-        2
         """
         if current.id in seen:
             msg = f"extends cycle involving {current.id!r}"
@@ -397,10 +355,6 @@ def resolve_output_policy(
     activate : bool or None, optional
         When true (or lifecycle is activated), unknown ids fail closed. By default ``None``.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (resolve_output_policy)
-    2
 
     Returns
     -------
@@ -452,10 +406,6 @@ def apply_output_policy_to_report(
     profile : str or None, optional
         Profile id. By default ``None``.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke
-    2
 
     Returns
     -------

@@ -309,10 +309,6 @@ def get_validation_service() -> ValidationService:
     """
     Get or create validation service.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (get_validation_service)
-    2
 
     Returns
     -------
@@ -347,11 +343,6 @@ async def validate_content(
     -------
     object
         Return value.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (validate_content)
-    2
     """
     try:
         return _validate_one(request)
@@ -385,11 +376,6 @@ async def validate_multiple(
     -------
     object
         Return value.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (validate_multiple)
-    2
     """
     try:
         results: list[AggregatedValidationResult] = []
@@ -436,11 +422,6 @@ async def get_validation_layers() -> object:
     -------
     object
         Return value.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (get_validation_layers)
-    2
     """
     layers_info = [
         ValidationLayerInfo(

@@ -206,11 +206,6 @@ def load_dictionary_meta() -> dict[str, DictionaryTokenFields]:
     -------
     dict[str, DictionaryTokenFields]
         Token → override fields.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (load_dictionary_meta)
-    2
     """
     return _tokens_dictionary_from_mapping(_load_raw_catalog_meta_doc())
 
@@ -223,11 +218,6 @@ def reload_dictionary_meta() -> dict[str, DictionaryTokenFields]:
     -------
     dict[str, DictionaryTokenFields]
         Fresh overrides.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (reload_dictionary_meta)
-    2
     """
     load_dictionary_meta.cache_clear()
     dictionary_entries.cache_clear()
@@ -279,11 +269,6 @@ def dictionary_entries() -> tuple[dict[str, Any], ...]:
     tuple[dict[str, Any], ...]
         Immutable sequence of rows with ``id``, ``code``, ``meaning``,
         ``products``, ``countries``, ``wmo_amendment``.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (dictionary_entries)
-    2
     """
     glossary = load_glossary()
     meta = load_dictionary_meta()
@@ -316,11 +301,6 @@ def dictionary_facets(rows: list[dict[str, Any]] | None = None) -> dict[str, lis
     -------
     dict[str, list[str]]
         ``products``, ``countries``, ``wmo_amendments`` sorted lists.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (dictionary_facets)
-    2
     """
     source = rows if rows is not None else list(dictionary_entries())
     products: set[str] = set()
@@ -365,11 +345,6 @@ def filter_dictionary_entries(
     -------
     list[dict[str, Any]]
         Matching rows (copies).
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (filter_dictionary_entries)
-    2
     """
     query = (q or "").strip().lower()
     product_key = (product or "").strip().upper()

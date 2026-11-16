@@ -16,11 +16,6 @@ def obs_timestamp(ir: dict[str, Any]) -> str:
     -------
     str
         Observation/issue time matching annex3 golden fixtures.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (obs_timestamp)
-    2
     """
     from tac2iwxxm.time_anchor import iso_stamp
 

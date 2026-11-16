@@ -14,10 +14,6 @@ def get_generated_xml_path(test_case: str, amendment: str) -> Path | None:
     """
     Find a generated XML file for a test case.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (get_generated_xml_path)
-    2
 
     Parameters
     ----------
@@ -61,11 +57,6 @@ def validate_with_schematron(xml_path: Path) -> dict:
     -------
     object
         Return value.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (validate_with_schematron)
-    2
     """
     try:
         # Try to use the Docker validator if available
@@ -97,10 +88,6 @@ def check_test_case_validation(test_case: str, amendment: str = "Amd79-80-2023")
     """
     Check if a specific test case's generated XML is valid per Schematron.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (check_test_case_validation)
-    2
 
     Parameters
     ----------
@@ -159,11 +146,6 @@ def check_test_case_validation(test_case: str, amendment: str = "Amd79-80-2023")
 def main():
     """
     Main analysis.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (main)
-    2
     """
     print("\n" + "=" * 70)
     print("SCHEMATRON VALIDATION TEST")

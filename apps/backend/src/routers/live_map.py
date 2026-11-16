@@ -23,11 +23,6 @@ def get_live_map_cache() -> LiveMapCache:
     -------
     LiveMapCache
         Cache shared by this API process.
-
-    Examples
-    --------
-    >>> 1 + 1
-    2
     """
     global _cache
     if _cache is None:
@@ -42,11 +37,6 @@ def set_live_map_cache(cache: LiveMapCache | None) -> None:
     ----------
     cache : LiveMapCache | None
         Cache to use, or None to clear it.
-
-    Examples
-    --------
-    >>> 1 + 1
-    2
     """
     global _cache
     _cache = cache
@@ -89,11 +79,6 @@ def read_live_map(
     -------
     dict[str, object]
         A ``places`` list for the box.
-
-    Examples
-    --------
-    >>> 1 + 1
-    2
     """
     south = min(90.0, max(-90.0, south))
     north = min(90.0, max(-90.0, north))
@@ -152,11 +137,6 @@ def _places_for_browser(
     list[dict[str, object]]
         The same places, with each report reduced to time, TAC, and optional
         validity stamps.
-
-    Examples
-    --------
-    >>> 1 + 1
-    2
     """
     slim: list[dict[str, object]] = []
     for place in places:

@@ -64,11 +64,6 @@ def match_tac(
     -------
     MatchResult
         Match ``tac`` with ``pack``.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (match_tac)
-    2
     """
     require_locale(locale)
     ctx = context or MatchContext()

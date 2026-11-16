@@ -39,10 +39,6 @@ def resolve_policy(
     ResolvedPolicy
         Merged view with warnings / activation status.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (resolve_policy)
-    2
     """
     chain = _chain_docs(doc, policies)
     select: list[str] = []
@@ -110,10 +106,6 @@ def apply_policy_to_report(
     profile : str or None, optional
         Profile id. By default ``None``.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (apply_policy_to_report)
-    2
 
     Returns
     -------
