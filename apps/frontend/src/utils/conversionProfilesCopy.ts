@@ -347,13 +347,13 @@ export const PROFILES_DRAFT_SAMPLE_PLACEHOLDER =
 
 export const PROFILES_TAC_RULES_HEADING = 'TAC validation rules';
 export const PROFILES_TAC_RULES_HELP =
-  'Search mined lint rules, set issue levels, and add custom regex with optional numeric bounds. Built-in catalogs stay read-only until you fork.';
+  'Search mined lint rules, set severity levels, and add custom regex with optional numeric bounds. Built-in catalogs stay read-only until you fork.';
 export const PROFILES_TAC_RULES_SEARCH = 'Search rules';
 export const PROFILES_TAC_RULES_SEARCH_PLACEHOLDER = 'Filter by id, code, or label…';
 export const PROFILES_TAC_RULES_SELECT = 'Rule catalog';
 export const PROFILES_TAC_RULES_IDENTITY = 'Rule id';
 export const PROFILES_TAC_RULES_LABEL = 'Label';
-export const PROFILES_TAC_RULES_SEVERITY = 'Issue level';
+export const PROFILES_TAC_RULES_SEVERITY = 'Severity';
 export const PROFILES_TAC_RULES_PATTERN = 'Regex pattern';
 export const PROFILES_TAC_RULES_SAMPLE = 'Sample match';
 export const PROFILES_TAC_RULES_ENABLED = 'Enabled';

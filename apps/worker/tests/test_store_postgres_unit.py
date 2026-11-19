@@ -90,8 +90,9 @@ def test_postgres_store_insert_executes_against_engine() -> None:
         )
 
     create.assert_called_once()
-    assert engine.begin.call_count == 2
-    assert conn.execute.call_count == 2
+    # Results insert + station-health begin + quarantine insert (BAD TAC skips health).
+    assert engine.begin.call_count == 3
+    assert conn.execute.call_count >= 3
     first_params = conn.execute.call_args_list[0].args[1]
     assert first_params["job_id"] == "j1"
     assert '"stage"' in first_params["issues"] or "lint" in first_params["issues"]

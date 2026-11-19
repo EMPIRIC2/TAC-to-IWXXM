@@ -76,11 +76,6 @@ def check_parse_gate(
     tuple[list[Issue], list[Fix]]
         Structured findings and optional repairs. Issues include ``start``/``end``
         character offsets when the rule can locate a span in ``tac_text``.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (check_parse_gate)
-    2
     """
     issues: list[Issue] = []
     fixes: list[Fix] = []
@@ -162,10 +157,6 @@ def check_product_rules(
     Delegates to ``product_rules`` after parse-gate success.
     ``profile`` is reserved for L5 gating (EV-050); L3 membership is shared.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (check_product_rules)
-    2
 
     Parameters
     ----------

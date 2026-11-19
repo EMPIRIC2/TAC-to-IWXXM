@@ -58,11 +58,6 @@ def repo_root() -> Path:
     -------
     Path
         Monorepo root containing ``vendor/schemas``.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (repo_root)
-    2
     """
     env = os.environ.get("TAC2IWXXM_REPO_ROOT")
     if env:
@@ -146,11 +141,6 @@ def load_aviation_colour_members(
         When the pin RDF is missing.
     ValueError
         When ``register`` is unknown or RDF has no concepts.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (load_aviation_colour_members)
-    2
     """
     key = "iwxxm-colour" if register == "iwxxm" else "49-2-colour" if register == "49-2" else ""
     if not key:
@@ -182,11 +172,6 @@ def load_nil_members(
     -------
     frozenset[str]
         Nil concept notations (11 members per pin).
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (load_nil_members)
-    2
     """
     key = "common-nil" if family == "common" else "iwxxm-nil" if family == "iwxxm" else ""
     if not key:
@@ -250,11 +235,6 @@ def aviation_colour_href(
     ------
     ValueError
         When the resolved notation is not in the offline register.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (aviation_colour_href)
-    2
     """
     reg: ColourRegister
     reg = register if register is not None else "iwxxm" if iwxxm_version == "2025-2" else "49-2"
@@ -301,11 +281,6 @@ def nil_reason_href(
     ------
     ValueError
         When ``notation`` is not a member of the offline register.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (nil_reason_href)
-    2
     """
     members = load_nil_members(family, iwxxm_version=iwxxm_version)
     if notation not in members:
@@ -317,11 +292,6 @@ def nil_reason_href(
 def clear_codelist_caches() -> None:
     """
     Clear cached RDF member loads (tests / after vendor sync).
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (clear_codelist_caches)
-    2
     """
     load_aviation_colour_members.cache_clear()
     load_nil_members.cache_clear()

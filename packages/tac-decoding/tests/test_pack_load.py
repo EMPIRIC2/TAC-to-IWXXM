@@ -1,7 +1,4 @@
-"""T1.1 — pack directory unset uses built-ins; unknown keys fail closed.
-
-[Corpus: adr/ADR-045]
-"""
+"""T1.1 — pack directory unset uses built-ins; unknown keys fail closed."""
 
 from __future__ import annotations
 

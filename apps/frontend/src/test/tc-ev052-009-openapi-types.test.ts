@@ -34,12 +34,16 @@ describe('TC-EV052-009 OpenAPI typed FE client', () => {
 
   it('wires convert/validate types through openapiTypes → generated schemas', () => {
     const bridge = readFileSync(OPENAPI_TYPES, 'utf8');
-    expect(bridge).toMatch(/from ['"]\.\.\/generated\/openapi['"]/);
+    expect(bridge).toMatch(/from ['"]\.\.\/models\/openapi['"]/);
     expect(bridge).toContain('ConversionResponse');
     expect(bridge).toContain('ValidateResponse');
 
+    const models = readFileSync(join(FRONTEND_ROOT, 'src/models/openapi.ts'), 'utf8');
+    expect(models).toMatch(/from ['"]\.\.\/generated\/openapi['"]/);
+
     const api = readFileSync(API_TS, 'utf8');
-    expect(api).toMatch(/from ['"]\.\/openapiTypes['"]/);
+    // Split modules may import models directly; openapiTypes remains the bridge.
+    expect(api).toMatch(/from ['"](?:\.\/openapiTypes|@\/models\/openapi)['"]/);
     expect(api).toContain('validateIwxxm');
     expect(api).toContain('ConversionResponse');
     expect(api).toContain('ValidateResponse');

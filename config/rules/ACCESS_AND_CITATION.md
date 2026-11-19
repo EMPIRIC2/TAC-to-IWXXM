@@ -47,7 +47,7 @@ Schema: https://schemas.wmo.int/iwxxm/2025-2/metarSpeci.xsd
 - Paste multi-page excerpts from Annex 3 / Doc 8896 / Manual on Codes into git
 - Scrape ICAO Store PDFs into `docs/` or fixtures
 - Treat unofficial mirror PDFs (third-party sites) as normative SoT
-- Treat GIFTs sources as ongoing SoT (ADR-014)
+- Treat GIFTs sources as ongoing SoT ()
 - Leave two conflicting statements as equal SoT in standing catalogs after a refresh pass
 
 ---

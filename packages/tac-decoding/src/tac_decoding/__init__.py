@@ -1,4 +1,4 @@
-"""TAC → natural-language decode + glossary (F9 / ADR-044).
+"""TAC → natural-language decode + glossary (F9).
 
 Publishable PyPI package ``tac-decoding``. No FastAPI or Supabase imports.
 """

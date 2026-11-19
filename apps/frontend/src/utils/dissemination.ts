@@ -2,8 +2,8 @@
  * Dissemination (F16–F19) client helpers — sink enums + preflight/send API.
  *
  * Aligns with packages/dissemination DRAWER_SINK_TYPES and api-contract
- * POST /api/v1/dissemination/preflight|send (ADR-030 / E14-03).
- * F21: public API — no Bearer JWT (ADR-031).
+ * POST /api/v1/dissemination/preflight|send (E14-03).
+ * F21: public API — no Bearer JWT ().
  */
 
 import { apiUrl } from './apiBase';

@@ -5,133 +5,33 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
 from functools import lru_cache
 from pathlib import Path
-from typing import Final, cast
+from typing import cast
 
 import yaml
+
+from iwxxm_validate.models.code_list import (
+    CodeListDeviation,
+    CodeListEntryRaw,
+    CodeListPolicy,
+    CodeListPolicyRaw,
+)
 
 _PACKAGE_ROOT = Path(__file__).resolve().parents[2]
 _DEFAULT_REPO_ROOT = _PACKAGE_ROOT.parents[1]
 _PROFILES_DIR = "config/profiles/semantic"
-_EMIT_KINDS: Final = frozenset({"replace", "override", "extend"})
-_DISALLOW_KINDS: Final = frozenset({"replace", "override"})
-
-
-@dataclass(frozen=True, slots=True)
-class CodeListDeviation:
-    """
-    One global→national code-list deviation row.
-
-    Attributes
-    ----------
-    id : str
-        Stable row id from the YAML matrix.
-    area : str
-        Code-list area (lowercased).
-    token : str
-        TAC / IWXXM token the row applies to.
-    kind : str
-        ``replace``, ``override``, ``extend``, or ``none``.
-    global_uri : str or None
-        WMO / ICAO global URI when present.
-    ca_uri : str or None
-        National Canadian URI when present.
-    disallow_global : bool
-        When true, the global URI must not appear under the profile.
-    products : tuple[str, ...]
-        Product ids this row covers (empty = all).
-    """
-
-    id: str
-    area: str
-    token: str
-    kind: str
-    global_uri: str | None
-    ca_uri: str | None
-    disallow_global: bool
-    products: tuple[str, ...]
-
-
-@dataclass(frozen=True, slots=True)
-class CodeListPolicy:
-    """
-    Loaded ``code_list_policy`` matrix for one semantic profile.
-
-    Attributes
-    ----------
-    profile : str
-        Semantic profile id (uppercased).
-    entries : tuple[CodeListDeviation, ...]
-        Parsed deviation rows.
-    """
-
-    profile: str
-    entries: tuple[CodeListDeviation, ...]
-
-    def disallowed_global_uris(self) -> frozenset[str]:
-        """
-        Return global URIs that must not appear under this profile.
-
-        Returns
-        -------
-        frozenset[str]
-            Normalized global URIs with ``disallow_global``.
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (disallowed_global_uris)
-        2
-        """
-        return frozenset(
-            entry.global_uri
-            for entry in self.entries
-            if entry.disallow_global and entry.global_uri and entry.kind in _DISALLOW_KINDS
-        )
-
-    def resolve_ca_uri(self, *, area: str, token: str) -> str | None:
-        """
-        Return national URI for ``area``/``token`` when policy requires it.
-
-        Parameters
-        ----------
-        area : str
-            Code-list area key.
-        token : str
-            TAC / IWXXM token.
-
-        Returns
-        -------
-        str or None
-            National ``ca_uri`` when an emit kind matches; otherwise ``None``.
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (resolve_ca_uri)
-        2
-        """
-        token_u = token.strip().upper()
-        area_l = area.strip().lower()
-        for entry in self.entries:
-            if entry.area == area_l and entry.token.upper() == token_u and entry.kind in _EMIT_KINDS and entry.ca_uri:
-                return entry.ca_uri
-        return None
 
 
 def _repo_root() -> Path:
     """
-    Resolve the monorepo root that holds ``config/profiles``.
+    Resolve the repository root that holds ``config/profiles``.
+
 
     Returns
     -------
     Path
-        Directory that contains ``config/profiles``, or the package default.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (_repo_root)
-    2
+        Repo root path.
     """
     candidate = _DEFAULT_REPO_ROOT
     if (candidate / "config" / "profiles").is_dir():
@@ -149,39 +49,31 @@ def deviations_path(profile: str) -> Path:
     Parameters
     ----------
     profile : str
-        Semantic profile id (case-insensitive).
+        Semantic profile id.
+
 
     Returns
     -------
     Path
-        Absolute path under ``config/profiles/semantic/``.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (deviations_path)
-    2
+        Absolute path to ``{PROFILE}.code-list-deviations.yaml``.
     """
     return _repo_root() / _PROFILES_DIR / f"{profile.upper()}.code-list-deviations.yaml"
 
 
-def _parse_entry(raw: dict[str, object]) -> CodeListDeviation:
+def _parse_entry(raw: CodeListEntryRaw | dict[str, object]) -> CodeListDeviation:
     """
-    Parse one YAML deviation row into :class:`CodeListDeviation`.
+    Build one ``CodeListDeviation`` from a YAML mapping.
 
     Parameters
     ----------
-    raw : dict[str, object]
-        One ``entries[]`` object from the matrix YAML.
+    raw : CodeListEntryRaw or dict[str, object]
+        One matrix entry.
+
 
     Returns
     -------
     CodeListDeviation
-        Normalized frozen row.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (_parse_entry)
-    2
+        Normalized deviation row.
     """
     products_raw = raw.get("products")
     products: tuple[str, ...] = ()
@@ -209,17 +101,13 @@ def load_code_list_policy(profile: str) -> CodeListPolicy:
     Parameters
     ----------
     profile : str
-        Semantic profile id (for example ``CA_ECCC``).
+        Semantic profile id.
+
 
     Returns
     -------
     CodeListPolicy
-        Loaded matrix, or an empty policy when the YAML is missing.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (load_code_list_policy)
-    2
+        Parsed policy (empty entries when the matrix file is missing).
     """
     path = deviations_path(profile)
     if not path.is_file():
@@ -227,12 +115,12 @@ def load_code_list_policy(profile: str) -> CodeListPolicy:
     loaded_raw: object = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
     if not isinstance(loaded_raw, dict):
         return CodeListPolicy(profile=profile.upper(), entries=())
-    loaded = cast(dict[str, object], loaded_raw)
+    loaded = cast(CodeListPolicyRaw, cast(dict[str, object], loaded_raw))
     raw_entries = loaded.get("entries")
     entries: tuple[CodeListDeviation, ...] = ()
     if isinstance(raw_entries, list):
         entries = tuple(
-            _parse_entry(cast(dict[str, object], item))
+            _parse_entry(cast(CodeListEntryRaw, item))
             for item in cast(list[object], raw_entries)
             if isinstance(item, dict)
         )

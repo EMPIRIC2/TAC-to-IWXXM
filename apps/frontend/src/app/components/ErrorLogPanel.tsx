@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { ChevronDown, ChevronUp, AlertCircle } from 'lucide-react';
-import type { ConversionIssue } from '/utils/api';
+import type { ConversionIssue } from '@/utils/api';
 import type { LintIssueCatalogEntry } from '@/utils/api';
 import { IssueDetailDialog } from '@/app/components/IssueDetailDialog';
 import { buildIssueDetail, type IssueDetailModel } from '@/utils/issueDetail';
@@ -19,18 +19,16 @@ import {
   issueLevelPasses,
   issueSeverityRank,
   type ConvertLogLevel,
-} from '/utils/convertParams';
-import { isErrorSeverity } from '/utils/resultCard';
+} from '@/utils/convertParams';
+import { isErrorSeverity } from '@/utils/resultCard';
 
 /**
  * Type `ConversionLog`.
  * @example
  * const _ = true;
  */
-export interface ConversionLog {
-  errors: string[];
-  issues: ConversionIssue[];
-}
+import type { ConversionLog } from '@/models/fileConverter';
+export type { ConversionLog };
 
 interface ErrorLogPanelProps {
   log: ConversionLog;

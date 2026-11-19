@@ -2,7 +2,7 @@
 
 Asserts WMO ``airmet-A6-1a-TS`` is in the annex3 pack, root ``iwxxm:AIRMET``,
 geometry is not nil-only, convert → M-xsd/M-sch, and ``canonicalize_xml`` equals
-vendor golden under default convert settings (ADR-032 / E20-D3).
+vendor golden under default convert settings (E20-D3).
 """
 
 from __future__ import annotations

@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { TacLintJumps } from './TacLintJumps';
-import type { JumpableLintIssue } from '/utils/lintIssueJump';
+import type { JumpableLintIssue } from '@/utils/lintIssueJump';
 
 const issues: JumpableLintIssue[] = [
   { start: 0, end: 5, message: 'Wind group is incomplete', severity: 'error' },

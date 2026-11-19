@@ -15,7 +15,7 @@ from typing import Any
 from sqlalchemy import Integer, and_, func, select
 
 from ..config.icao_opmet import get_icao_region, should_log_statistics
-from ..models import TranslationStatisticsModel
+from ..models.orm import TranslationStatisticsModel
 from ..schemas.icao_opmet import TranslationStatus, ValidationLayer
 from ..schemas.validation import ValidationLayer as RuntimeValidationLayer
 from ..utilities.observability import record_translation_metric
@@ -130,11 +130,6 @@ class StatisticsService:
         -------
         object
             Translation UUID if logged successfully, None otherwise
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (log_translation)
-        2
         """
         if not should_log_statistics():
             logger.debug("Statistics logging disabled")
@@ -249,11 +244,6 @@ class StatisticsService:
         -------
         object
             Dictionary with aggregated statistics
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (get_statistics)
-        2
         """
         try:
             async with get_db_session() as session:
@@ -436,11 +426,6 @@ class StatisticsService:
         -------
         object
             Dictionary mapping region codes to statistics
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (get_statistics_by_region)
-        2
         """
         try:
             async with get_db_session() as session:

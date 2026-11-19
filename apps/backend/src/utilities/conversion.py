@@ -1,4 +1,4 @@
-"""METAR TAC → IWXXM conversion utilities (tac2iwxxm cutover - ADR-014 / T4.7)."""
+"""METAR TAC → IWXXM conversion utilities (tac2iwxxm cutover - T4.7)."""
 
 from __future__ import annotations
 
@@ -168,10 +168,6 @@ def convert_metar_tac(tac_text: str, iwxxm_version: str | None = None) -> str:
 
     Deprecated: prefer ``convert_metar_tac_with_metadata``.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (convert_metar_tac)
-    2
 
     Parameters
     ----------
@@ -305,7 +301,7 @@ def convert_metar_tac_with_metadata(
     profile :
         ``annex3`` or ``iwxxm_us``.
     preview :
-        Soft-preview mode (ADR-022): return best-effort XML instead of raising on
+        Soft-preview mode (): return best-effort XML instead of raising on
         parse/convert failure.
     soft_preview_out :
         Optional mutable dict. When ``preview=True``, filled with ``ok`` and
@@ -333,11 +329,6 @@ def convert_metar_tac_with_metadata(
     ------
     ConversionError
         When conversion (or requested validation) fails and ``preview`` is False.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (convert_metar_tac_with_metadata)
-    2
     """
     _ = use_test_overrides  # gifts-era knob; no-op after cutover
     bulletin_date = _bulletin_date_arg(reference_time)

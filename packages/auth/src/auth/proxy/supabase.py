@@ -88,11 +88,6 @@ class SupabaseAuthProxy:
     def close(self) -> None:
         """
         Close the owned HTTP client.
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (close)
-        2
         """
         if self._owns_client and self._client is not None:
             self._client.close()
@@ -133,11 +128,6 @@ class SupabaseAuthProxy:
         -------
         dict[str, Any]
             Normalized ``user`` + ``session`` payload.
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (sign_in)
-        2
         """
         url = f"{self.supabase_url}/auth/v1/token?grant_type=password"
         response = self._http().post(
@@ -168,11 +158,6 @@ class SupabaseAuthProxy:
         -------
         dict[str, Any]
             Normalized ``user`` + ``session`` payload.
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (verify_email)
-        2
         """
         url = f"{self.supabase_url}/auth/v1/verify"
         response = self._http().post(
@@ -205,11 +190,6 @@ class SupabaseAuthProxy:
         dict[str, Any]
             Normalized ``user`` + optional ``session`` (null when email confirm
             is required).
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (sign_up)
-        2
         """
         url = f"{self.supabase_url}/auth/v1/signup"
         response = self._http().post(
@@ -243,11 +223,6 @@ class SupabaseAuthProxy:
         -------
         dict[str, str]
             Success message payload for the API response.
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (sign_out)
-        2
         """
         url = f"{self.supabase_url}/auth/v1/logout"
         params: dict[str, str] = {}
@@ -279,11 +254,6 @@ class SupabaseAuthProxy:
         -------
         dict[str, Any]
             User dict with ``id`` / ``email`` / ``metadata``.
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (get_user)
-        2
         """
         url = f"{self.supabase_url}/auth/v1/user"
         headers = self._headers()

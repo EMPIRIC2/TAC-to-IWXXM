@@ -39,6 +39,7 @@ import {
   LIVE_MAP_REFRESHING,
   LIVE_MAP_PRODUCTS,
   LIVE_MAP_VIEWS,
+  type LivePlace,
 } from './liveMap';
 
 const bounds = { west: -80, south: 40, east: -70, north: 41 };
@@ -485,6 +486,11 @@ describe('live map helpers', () => {
       'sigmet-old',
     ]);
     expect(
+      filterPlaces(loaded, { ...base, time: 'latest' }).map((place) => place.place_key),
+    ).toEqual(
+      filterPlaces(loaded, { ...base, time: '1h' }).map((place) => place.place_key),
+    );
+    expect(
       filterPlaces(loaded, { ...base, time: '3h' }).map((place) => place.place_key),
     ).toContain('sigmet-ifr');
     expect(
@@ -550,5 +556,67 @@ describe('live map helpers', () => {
         layers.has('precip') && /\bRA\b|\bDZ\b|\bSN\b/.test(tac),
     });
     expect(withTac.every((place) => place.reports[0]?.tac)).toBe(true);
+    const emptyTacPlace: LivePlace = {
+      place_key: 'EMPTY-TAC',
+      product: 'metar',
+      latitude: 1,
+      longitude: 2,
+      reports: [{ observed_at: 'now', tac: '' }],
+    };
+    const emptyFiltered = filterPlaces([emptyTacPlace], {
+      ...base,
+      tacLayers: new Set(['precip']),
+      passesTacLayers: (tac, layers) =>
+        layers.has('precip') && tac.length > 0 && /\bRA\b/.test(tac),
+    });
+    expect(emptyFiltered).toEqual([]);
+    const noReportPlace: LivePlace = {
+      place_key: 'NO-REPORT',
+      product: 'metar',
+      latitude: 1,
+      longitude: 2,
+      reports: [],
+    };
+    const missingTacFiltered = filterPlaces([noReportPlace], {
+      ...base,
+      tacLayers: new Set(['precip']),
+      passesTacLayers: (tac, layers) => layers.has('precip') && tac.length > 0,
+    });
+    expect(missingTacFiltered).toEqual([]);
+    expect(
+      filterPlaces([emptyTacPlace], {
+        ...base,
+        tacLayers: new Set(),
+        passesTacLayers: () => false,
+      }),
+    ).toEqual([emptyTacPlace]);
+    expect(
+      filterPlaces([emptyTacPlace], {
+        ...base,
+        tacLayers: new Set(['precip']),
+      }),
+    ).toEqual([emptyTacPlace]);
+    expect(filterPlaces(loaded, { ...base, tacLayers: new Set() })).toEqual(
+      filterPlaces(loaded, base),
+    );
+
+    const emptyReports: LivePlace = {
+      place_key: 'KEMPTY',
+      product: 'metar',
+      latitude: 40,
+      longitude: -74,
+      geometry: { kind: 'point' },
+      reports: [],
+    };
+    const seenTac: string[] = [];
+    filterPlaces([emptyReports], {
+      ...base,
+      tacLayers: new Set(['precip']),
+      passesTacLayers: (tac) => {
+        seenTac.push(tac);
+        return false;
+      },
+    });
+    expect(seenTac).toEqual(['']);
   });
 });

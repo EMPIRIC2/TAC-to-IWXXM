@@ -1,4 +1,4 @@
-# ADR-056 — grandfather FE complexity/max-lines until splits
+# — grandfather FE complexity/max-lines until splits
 src/app/App.tsx
 src/app/components/AirportDetailsCard.tsx
 src/app/components/DecodePanel.tsx

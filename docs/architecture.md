@@ -3,7 +3,7 @@
 > **Project**: TAC to IWXXM 
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM 
 > **Version**: monorepo + `tac2iwxxm` + operator UI (Quality metrics on stage) 
-> **Last updated**: 2026-11-10
+> **Last updated**: 2026-11-13
 
 ## Overview
 
@@ -426,12 +426,12 @@ with aliases during one CalVer window. DX tests: ``…``.
 
 ### live TAC map
 
-- **Purpose**: Guest-visible Leaflet map of current aviation weather on Decode visuals. The API timer pulls Aviation Weather Center feeds, stores every fetched location, translates at most 40 reports per tick, and serves the cache. 
-- **Home**: `apps/frontend` shell **Decode visuals** full page (primary) and Convert Results → Map tab (embedded twin). Backend: live-map router plus the existing database. The ingest worker stays at 0 replicas.
+- **Purpose**: Guest-visible Leaflet map of current aviation weather on the Live map page. The API timer pulls Aviation Weather Center feeds, stores every fetched location, translates at most 40 reports per tick, and serves the cache. 
+- **Home**: `apps/frontend` shell **Live map** full page (only map surface). Convert Results has IWXXM / Console / Decoder / Downloads — no Map tab. Backend: live-map router plus the existing database. The ingest worker stays at 0 replicas.
 - **Read path**: `GET /api/v1/live-map` is public. It returns places already in the cache for the requested box and families. It does not call a feed.
 - **Write path**: About every 5 minutes the API process stores every fetched location and text. It translates and lints at most 40 reports. A stored place is drawn before IWXXM exists. Three reports per place, newest first.
 - **Map**: Leaflet with the current tiles. World zoom draws one marker per continent that has reports. The next zoom draws sub-region markers. A closer zoom draws each station and shape on its own product layer. Colors are fixed: METAR `#1d4ed8`, SPECI `#0369a1`, TAF `#0f766e`, AIRMET `#c2410c`, G-AIRMET `#a16207`, SIGMET `#b91c1c`, volcanic ash `#6d28d9`, tropical cyclone `#be185d`, volcano notice `#4338ca`. Fills and outlines differ. The newest report is solid. The two earlier reports are faded. Hover highlights the shape. Co-located airport reports are offset and each has a type chip. 
-- **Hover**: The card shows the product, issue time, and station, or Area when there is no airport. Scrollable TAC sits to the right on a wide screen and below the metadata on a narrow screen. The card opens on the newest stored report. A control selects an earlier copy. Send loads that copy into Convert (from Decode visuals or the Results Map tab). Stored IWXXM stays off the map list.
+- **Hover**: The card shows the product, issue time, and station, or Area when there is no airport. Scrollable TAC sits to the right on a wide screen and below the metadata on a narrow screen. The card opens on the newest stored report. A control selects an earlier copy. Send loads that copy into Convert from Live map. Stored IWXXM stays off the map list.
 - **Filters**: Group headings stay. Each product is its own checkbox and layer, including `gairmet` under Hazards. Space weather is a list, never a pin. The list uses `#0e7490` when it has rows. This cycle does not add a space-weather feed. Country, region, issue time, and hazard phenomenon filter the loaded view in the browser. They are not `GET /api/v1/live-map` parameters. Country defaults to all countries and uses the existing airport country for ICAO stations. Area reports stay. Region defaults to all regions and uses the existing continent and sub-region names. Time defaults to all reports, with presets for the last hour, last 6 hours, and last 24 hours, judged from the newest report. Phenomenon checkboxes start off. IFR, Turbulence, Icing, and Thunderstorms apply only to AIRMET, G-AIRMET, and SIGMET. A hazard stays when its newest TAC matches any checked phenomenon. 
 - **Must not change**: Convert and validate response bodies, guest access, station search, continent and sub-region zoom, the tile source, and the live-map query parameters.
 
@@ -513,6 +513,45 @@ with aliases during one CalVer window. DX tests: ``…``.
 - **Source**: . **platform independence**. [AGENTS.md](../AGENTS.md) ingest worker.
 - : Cut over to `packages/workflows.execute` + `workflows/f8-metar-ingest-default.yaml`
  . See Context: workflows-runtime-1132 (archived. see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`. not a design document set design gate).
+
+
+### Station health dashboard
+
+- **Purpose**: Track station TAC issuance over time. Grade availability and quality for
+ operators on a public shell tab. Deepens airport data services, near-realtime ingest,
+ TAC quality bars, and the multi-product operator shell.
+- **Design choice**: Dedicated product-Postgres tables, not a derive-only view of
+ `tac_work_sessions`. Work sessions are operator drafts. They are not a station
+ issuance clock and they omit guest and ingest traffic. Ingest store rows alone also
+ lack station ICAO and quality signals. The pipeline and convert path write observation
+ rows; the API reads grades from product Postgres (`DATABASE_URL`), computing window
+ grades from `station_tac_records` (in-memory store remains for unit tests only).
+- **Tables**: `station_registry`, `station_tac_records`, `station_metric_definitions`,
+ `station_health_grades` (Alembic on `DATABASE_URL`).
+- **Windows**: last 6 hours, last 1 day, last 1 month (30 days), last 3 months
+ (90 days). Grades are computed from live `station_tac_records` (or the in-memory
+ store in unit tests), not from static example fixtures.
+- **Products**: METAR, SPECI, TAF, and other station-scoped products when the ICAO
+ can be parsed.
+- **WMO regions**: each station is assigned a WMO Regional Association (I–VI) from
+ its ISO country (airport catalog / `station_registry.country`). Unmapped countries
+ fail closed as **Unknown region**. List queries accept an optional `region` filter
+ and raise the row cap when a region is selected so operators can load all stations
+ in that association.
+- **Retention**: rolling 90-day purge; aggregates ignore older observation rows.
+- **Quality signals**: solidus (`/`) counts, missing-digit patterns, lint severity
+ counts when stored. Overall letter grade blends availability and quality.
+- **Maintenance tags**: `$` and sensor-outage tokens (for example FZRANO, TSNO)
+ counted per station window.
+- **File formats**: counts of stored payload formats (`tac`, `bulletin`, `iwxxm_xml`).
+- **Issue ids**: lint and validation catalog codes counted per station window.
+- **Centennial proxies**: continuity, metadata completeness, and observation-quality
+ proxies from live aggregates; other recognition criteria return insufficient data.
+- **Metrics registry**: `station_metric_definitions` lists dashboard cards so new
+ metrics can ship without a new API shape.
+- **Auth**: public GET for aggregates and grades. Writes come only from ingest or
+ convert services (no public write route).
+- **UI**: shell tab **Station health** (plain language; no planning ids).
 
 ### packages/workflows
 

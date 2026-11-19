@@ -39,11 +39,6 @@ def list_sqlserver_odbc_drivers() -> list[str]:
     list[str]
         Empty when ``pyodbc`` is missing or no SQL Server-capable driver is
         registered with the system ODBC manager.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (list_sqlserver_odbc_drivers)
-    2
     """
     try:
         import pyodbc
@@ -56,10 +51,6 @@ def odbc_sqlserver_available() -> bool:
     """
     Return True when at least one SQL Server ODBC driver is installed.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (odbc_sqlserver_available)
-    2
 
     Returns
     -------
@@ -77,11 +68,6 @@ def preferred_sqlserver_odbc_driver() -> str | None:
     -------
     str | None
         Driver name for a SQLAlchemy ``driver=`` query parameter, or ``None``.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (preferred_sqlserver_odbc_driver)
-    2
     """
     drivers = list_sqlserver_odbc_drivers()
     if not drivers:

@@ -27,10 +27,6 @@ def get_openaip_api_key() -> str:
     """
     Get OpenAIP API key from environment or .env file.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (get_openaip_api_key)
-    2
 
     Returns
     -------
@@ -72,11 +68,6 @@ def fetch_from_openaip(api_key: str, limit: int = 10000) -> dict[str, dict]:
     -------
     object
         Dictionary keyed by ICAO code with airport data
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (fetch_from_openaip)
-    2
     """
     try:
         import requests
@@ -138,10 +129,6 @@ def load_cached_openaip(cache_file: Path) -> dict[str, dict] | None:
     """
     Load OpenAIP data from cache file.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (load_cached_openaip)
-    2
 
     Parameters
     ----------
@@ -170,10 +157,6 @@ def save_cached_openaip(airports: dict[str, dict], cache_file: Path) -> None:
     """
     Save OpenAIP data to cache file.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (save_cached_openaip)
-    2
 
     Parameters
     ----------
@@ -214,11 +197,6 @@ def merge_with_special_overrides(airports: dict[str, dict]) -> dict[str, dict]:
     -------
     object
         Merged airport dictionary with special cases overridden
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (merge_with_special_overrides)
-    2
     """
     # ENFB: Fornebu Airport (closed 1998) - OpenAIP erroneously has it as Statfjord B
     special_cases = {
@@ -249,11 +227,6 @@ def merge_with_special_overrides(airports: dict[str, dict]) -> dict[str, dict]:
 def main():
     """
     Main entry point.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (main)
-    2
     """
     import argparse
 

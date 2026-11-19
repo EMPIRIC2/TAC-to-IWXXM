@@ -1,7 +1,7 @@
 """Ordered Dissemination library transforms (EV-bridge AC8 / TC-EVBRIDGE-008).
 
 Apply only on Disseminate / Convert & Send paths — never on Convert-only.
-Transforms carry no destination secrets (ADR-021 / ADR-029).
+Transforms carry no destination secrets ().
 """
 
 from __future__ import annotations
@@ -73,10 +73,6 @@ def normalize_transform_steps(raw: object) -> list[TransformStep]:
     Accepts ``list[str]`` (type ids) or ``list[dict]`` with ``type`` / ``id``.
     Unknown shapes are skipped. Empty / None → empty list.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (normalize_transform_steps)
-    2
 
     Parameters
     ----------
@@ -147,11 +143,6 @@ def apply_dissemination_transforms(
     ------
     ValueError
         When a step type is unknown (fail closed).
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (apply_dissemination_transforms)
-    2
     """
     steps = normalize_transform_steps(transforms)
     if not steps:

@@ -19,17 +19,13 @@ _EMIT_KINDS = frozenset({"replace", "override", "extend"})
 
 def _repo_root() -> Path:
     """
-    Resolve the monorepo root that holds ``config/profiles``.
+    Resolve the repository root that holds ``config/profiles``.
+
 
     Returns
     -------
     Path
-        Directory that contains ``config/profiles``, or the package default.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (_repo_root)
-    2
+        Repo root path.
     """
     candidate = _DEFAULT_REPO_ROOT
     if (candidate / "config" / "profiles").is_dir():
@@ -43,17 +39,13 @@ def _repo_root() -> Path:
 @lru_cache(maxsize=1)
 def _entries() -> tuple[dict[str, object], ...]:
     """
-    Load raw CA_ECCC deviation matrix rows.
+    Load CA_ECCC deviation rows from the semantic matrix YAML.
+
 
     Returns
     -------
     tuple[dict[str, object], ...]
-        YAML ``entries`` objects, or empty when the matrix is missing.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (_entries)
-    2
+        Raw YAML entry mappings (empty when the matrix is missing).
     """
     path = _repo_root() / _MATRIX
     if not path.is_file():
@@ -77,17 +69,13 @@ def resolve_national_href(*, area: str, token: str) -> str | None:
     area : str
         Code-list area key.
     token : str
-        TAC / IWXXM token.
+        TAC / code token.
+
 
     Returns
     -------
     str or None
-        National URI without a trailing slash, or ``None`` when unset.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (resolve_national_href)
-    2
+        National URI when an emit kind matches, otherwise ``None``.
     """
     area_l = area.strip().lower()
     token_u = token.strip().upper()

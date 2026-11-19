@@ -123,6 +123,25 @@
     },
     {
       "method": "GET",
+      "path": "/api/v1/code-name-dictionary",
+      "status": 200,
+      "request_fields": [],
+      "response_fields": [
+        "facets",
+        "items"
+      ],
+      "covered_by": "apps/backend/tests/unit/test_code_name_dictionary_integration.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/code-name-dictionary",
+      "status": 422,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_code_name_dictionary_integration.py"
+    },
+    {
+      "method": "GET",
       "path": "/api/v1/dissemination/audit",
       "status": 200,
       "request_fields": [],
@@ -288,6 +307,38 @@
       "request_fields": [],
       "response_fields": [],
       "covered_by": "apps/backend/tests/integration/test_e2e_full_stack.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/exchange-admin/allowlist",
+      "status": 200,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_exchange_admin.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/exchange-admin/invitation-groups",
+      "status": 200,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_exchange_admin.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/exchange-admin/prefs",
+      "status": 200,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_exchange_admin.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/exchange-admin/templates",
+      "status": 200,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_exchange_admin.py"
     },
     {
       "method": "GET",
@@ -590,25 +641,6 @@
       "request_fields": [],
       "response_fields": [],
       "covered_by": "tests/bugs/qa_gap/test_qa_gap_2026_10_19_openapi_path_templates.py"
-    },
-    {
-      "method": "GET",
-      "path": "/api/v1/code-name-dictionary",
-      "status": 200,
-      "request_fields": [],
-      "response_fields": [
-        "facets",
-        "items"
-      ],
-      "covered_by": "apps/backend/tests/unit/test_code_name_dictionary_integration.py"
-    },
-    {
-      "method": "GET",
-      "path": "/api/v1/code-name-dictionary",
-      "status": 422,
-      "request_fields": [],
-      "response_fields": [],
-      "covered_by": "apps/backend/tests/unit/test_code_name_dictionary_integration.py"
     },
     {
       "method": "GET",
@@ -1751,6 +1783,121 @@
       ],
       "response_fields": [],
       "covered_by": "tests/bugs/qa_gap/test_qa_gap_2026_10_19_openapi_path_templates.py"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/exchange-admin/invitation-group",
+      "status": 200,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_exchange_admin.py"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/exchange-admin/invitation-group",
+      "status": 422,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_exchange_admin.py"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/exchange-admin/prefs/national-remarks",
+      "status": 200,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_exchange_admin.py"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/exchange-admin/prefs/national-remarks",
+      "status": 422,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_exchange_admin.py"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/exchange-admin/templates",
+      "status": 200,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_exchange_admin.py"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/exchange-admin/templates",
+      "status": 422,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_exchange_admin.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/station-health",
+      "status": 200,
+      "request_fields": [],
+      "response_fields": [
+        "window",
+        "computed_at",
+        "stations",
+        "summary"
+      ],
+      "covered_by": "apps/backend/tests/unit/test_station_health_api.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/station-health",
+      "status": 422,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_station_health_api.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/station-health/{icao}",
+      "status": 200,
+      "request_fields": [],
+      "response_fields": [
+        "icao",
+        "windows",
+        "record_count"
+      ],
+      "covered_by": "apps/backend/tests/unit/test_station_health_api.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/station-health/{icao}",
+      "status": 422,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_station_health_api.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/station-health/metrics",
+      "status": 200,
+      "request_fields": [],
+      "response_fields": [
+        "metrics"
+      ],
+      "covered_by": "apps/backend/tests/unit/test_station_health_api.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/station-health",
+      "status": 400,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_station_health_api.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/station-health/{icao}",
+      "status": 404,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_station_health_api.py"
     }
   ],
   "source": "consumer-tests"

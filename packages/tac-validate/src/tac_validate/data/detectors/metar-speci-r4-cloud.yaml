@@ -1,4 +1,4 @@
-# R4 cloud detectors for METAR/SPECI (ADR-046 / #1228 M2).
+# R4 cloud detectors for METAR/SPECI (#1228 M2).
 # Declarative token_scan + finditer; membership residual stays python.
 schema_version: 1
 id: metar-speci-r4-cloud

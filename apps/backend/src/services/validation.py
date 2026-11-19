@@ -66,11 +66,6 @@ class ValidationService:
         -------
         object
             ValidationResult with pass/fail status
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (validate_airport_icao)
-        2
         """
         start_time = time.time()
         result = ValidationResult(
@@ -162,11 +157,6 @@ class ValidationService:
         -------
         object
             ValidationResult with syntax issues
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (validate_tac_syntax)
-        2
         """
         start_time = time.time()
         result = ValidationResult(
@@ -234,10 +224,6 @@ class ValidationService:
 
         XML / IWXXM content must be routed through ``ValidationOrchestrator``.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (validate)
-        2
 
         Parameters
         ----------
@@ -287,11 +273,6 @@ class ValidationService:
         -------
         AggregatedValidationResult
             Aggregated TAC layer results.
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (validate_all_layers)
-        2
         """
         results: list[Any] = []
         wanted = (
@@ -372,10 +353,6 @@ def get_validation_service() -> ValidationService:
     """
     Get or create the global ValidationService instance.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (get_validation_service)
-    2
 
     Returns
     -------

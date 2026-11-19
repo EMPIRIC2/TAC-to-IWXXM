@@ -1,4 +1,4 @@
-"""TC-EVYRY-002: YAML ICAO name table (ADR-049 / #1255)."""
+"""TC-EVYRY-002: YAML ICAO name table (#1255)."""
 
 from __future__ import annotations
 

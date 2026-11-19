@@ -3,7 +3,7 @@
 Decode asks for the station in the report. The process keeps only the
 stations it has already resolved. It does not load the airport catalog.
 
-[Corpus: product §F3] [Corpus: product §F9] [Corpus: adr/ADR-049]
+[Corpus: product §F3] [Corpus: product §F9]
 """
 
 from __future__ import annotations
@@ -21,11 +21,6 @@ _cache: dict[str, str | None] = {}
 def clear_airport_name_cache() -> None:
     """
     Drop remembered station names.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (clear_airport_name_cache)
-    2
     """
     _cache.clear()
 
@@ -47,11 +42,6 @@ def lookup_airport_name(icao: str) -> str | None:
     -------
     str | None
         Airport name, or None when the code is unknown or the request fails.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (lookup_airport_name)
-    2
     """
     code = icao.strip().upper()
     if len(code) != 4 or not code.isalnum() or not code[0].isalpha():
@@ -77,11 +67,6 @@ def _fetch_name(code: str) -> tuple[str | None, bool]:
     -------
     tuple[str | None, bool]
         Name and whether that answer should be remembered.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (_fetch_name)
-    2
     """
     api_key = os.environ.get("OPENAIP_API_KEY", "").strip()
     if not api_key:
@@ -117,11 +102,6 @@ def _name_from_payload(payload: object, icao: str) -> str | None:
     -------
     str | None
         Matching airport name, or None.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (_name_from_payload)
-    2
     """
     if not isinstance(payload, dict):
         return None

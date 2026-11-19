@@ -907,12 +907,186 @@ paths:
       security:
         -
                     HTTPBearer: []
+  /api/v1/exchange-admin/allowlist:
+    get:
+      tags:
+        - Exchange Admin
+      summary: Read-only egress allowlist (GitOps)
+      description: Return the configured egress allowlist. Editing is GitOps-only.
+      operationId: get_allowlist_api_v1_exchange_admin_allowlist_get
+      responses:
+        200:
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                additionalProperties: true
+                type: object
+                title: Response Get Allowlist Api V1 Exchange Admin Allowlist Get
+      security:
+        -
+                    HTTPBearer: []
+  /api/v1/exchange-admin/invitation-groups:
+    get:
+      tags:
+        - Exchange Admin
+      summary: Invitation groups for login
+      description: List multi-tenant invitation groups offered at login.
+      operationId: get_invitation_groups_api_v1_exchange_admin_invitation_groups_get
+      responses:
+        200:
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                additionalProperties: true
+                type: object
+                title: Response Get Invitation Groups Api V1 Exchange Admin Invitation Groups Get
+      security:
+        -
+                    HTTPBearer: []
+  /api/v1/exchange-admin/invitation-group:
+    put:
+      tags:
+        - Exchange Admin
+      summary: Select invitation group at login
+      description: Bind the signed-in operator to one invitation group.
+      operationId: put_invitation_group_api_v1_exchange_admin_invitation_group_put
+      requestBody:
+        content:
+          application/json:
+            schema:
+              additionalProperties: true
+              type: object
+              title: Body
+        required: true
+      responses:
+        200:
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                additionalProperties: true
+                type: object
+                title: Response Put Invitation Group Api V1 Exchange Admin Invitation Group Put
+        422:
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+      security:
+        -
+                    HTTPBearer: []
+  /api/v1/exchange-admin/prefs:
+    get:
+      tags:
+        - Exchange Admin
+      summary: Operator exchange preferences
+      description: Return national-remarks toggle and selected invitation group.
+      operationId: get_operator_prefs_api_v1_exchange_admin_prefs_get
+      responses:
+        200:
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                additionalProperties: true
+                type: object
+                title: Response Get Operator Prefs Api V1 Exchange Admin Prefs Get
+      security:
+        -
+                    HTTPBearer: []
+  /api/v1/exchange-admin/prefs/national-remarks:
+    put:
+      tags:
+        - Exchange Admin
+      summary: Toggle national remarks on WIS2 publish
+      description: "Operator toggle: include national remarks when publishing to WIS2."
+      operationId: put_national_remarks_api_v1_exchange_admin_prefs_national_remarks_put
+      requestBody:
+        content:
+          application/json:
+            schema:
+              additionalProperties: true
+              type: object
+              title: Body
+        required: true
+      responses:
+        200:
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                additionalProperties: true
+                type: object
+                title: Response Put National Remarks Api V1 Exchange Admin Prefs National Remarks Put
+        422:
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+      security:
+        -
+                    HTTPBearer: []
+  /api/v1/exchange-admin/templates:
+    get:
+      tags:
+        - Exchange Admin
+      summary: List non-secret WIS2 templates
+      description: List memory-only non-secret destination templates (no vault).
+      operationId: get_templates_api_v1_exchange_admin_templates_get
+      responses:
+        200:
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                additionalProperties: true
+                type: object
+                title: Response Get Templates Api V1 Exchange Admin Templates Get
+      security:
+        -
+                    HTTPBearer: []
+    put:
+      tags:
+        - Exchange Admin
+      summary: Upsert non-secret WIS2 template
+      description: Create or replace a non-secret template. Secrets must be pasted at send time.
+      operationId: put_template_api_v1_exchange_admin_templates_put
+      requestBody:
+        content:
+          application/json:
+            schema:
+              additionalProperties: true
+              type: object
+              title: Body
+        required: true
+      responses:
+        200:
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                additionalProperties: true
+                type: object
+                title: Response Put Template Api V1 Exchange Admin Templates Put
+        422:
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+      security:
+        -
+                    HTTPBearer: []
   /api/v1/profiles/catalog:
     get:
       tags:
         - Conversion Profiles
       summary: Get Catalog
-      description: "Read-only ConversionProfile catalog for the authenticated Profiles inspector.\n\nRequires JWT so the inspector stays on the authenticated Profiles surface."
+      description: Read-only ConversionProfile catalog for the authenticated Profiles inspector.
       operationId: get_catalog_api_v1_profiles_catalog_get
       responses:
         200:
@@ -1283,6 +1457,33 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HTTPValidationError"
+    delete:
+      tags:
+        - Conversion Profiles
+      summary: Delete Template
+      description: Delete an owned dissemination template.
+      operationId: delete_template_api_v1_profiles_templates__template_id__delete
+      security:
+        -
+                    HTTPBearer: []
+      parameters:
+        -
+                    name: template_id
+                    in: path
+                    required: true
+                    schema:
+                      type: string
+                      format: uuid
+                      title: Template Id
+      responses:
+        204:
+          description: Successful Response
+        422:
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
     patch:
       tags:
         - Conversion Profiles
@@ -1314,33 +1515,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/DisseminationTemplateOut"
-        422:
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/HTTPValidationError"
-    delete:
-      tags:
-        - Conversion Profiles
-      summary: Delete Template
-      description: Delete an owned dissemination template.
-      operationId: delete_template_api_v1_profiles_templates__template_id__delete
-      security:
-        -
-                    HTTPBearer: []
-      parameters:
-        -
-                    name: template_id
-                    in: path
-                    required: true
-                    schema:
-                      type: string
-                      format: uuid
-                      title: Template Id
-      responses:
-        204:
-          description: Successful Response
         422:
           description: Validation Error
           content:
@@ -1655,6 +1829,99 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HTTPValidationError"
+  /api/v1/profiles/library-assets/{asset_id}:
+    get:
+      tags:
+        - Conversion Profiles
+      summary: Get Library Asset
+      description: Fetch one library asset (first-party id or custom UUID).
+      operationId: get_library_asset_api_v1_profiles_library_assets__asset_id__get
+      security:
+        -
+                    HTTPBearer: []
+      parameters:
+        -
+                    name: asset_id
+                    in: path
+                    required: true
+                    schema:
+                      type: string
+                      title: Asset Id
+      responses:
+        200:
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LibraryAssetOut"
+        422:
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+    patch:
+      tags:
+        - Conversion Profiles
+      summary: Update Library Asset
+      description: Library authoring is no longer available.
+      operationId: update_library_asset_api_v1_profiles_library_assets__asset_id__patch
+      security:
+        -
+                    HTTPBearer: []
+      parameters:
+        -
+                    name: asset_id
+                    in: path
+                    required: true
+                    schema:
+                      type: string
+                      title: Asset Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LibraryAssetUpdate"
+      responses:
+        200:
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LibraryAssetOut"
+        422:
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+    delete:
+      tags:
+        - Conversion Profiles
+      summary: Delete Library Asset
+      description: Library authoring is no longer available.
+      operationId: delete_library_asset_api_v1_profiles_library_assets__asset_id__delete
+      security:
+        -
+                    HTTPBearer: []
+      parameters:
+        -
+                    name: asset_id
+                    in: path
+                    required: true
+                    schema:
+                      type: string
+                      title: Asset Id
+      responses:
+        204:
+          description: Successful Response
+        422:
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
   /api/v1/profiles/library-assets:
     get:
       tags:
@@ -1776,99 +2043,6 @@ paths:
       security:
         -
                     HTTPBearer: []
-  /api/v1/profiles/library-assets/{asset_id}:
-    get:
-      tags:
-        - Conversion Profiles
-      summary: Get Library Asset
-      description: Fetch one library asset (first-party id or custom UUID).
-      operationId: get_library_asset_api_v1_profiles_library_assets__asset_id__get
-      security:
-        -
-                    HTTPBearer: []
-      parameters:
-        -
-                    name: asset_id
-                    in: path
-                    required: true
-                    schema:
-                      type: string
-                      title: Asset Id
-      responses:
-        200:
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/LibraryAssetOut"
-        422:
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/HTTPValidationError"
-    patch:
-      tags:
-        - Conversion Profiles
-      summary: Update Library Asset
-      description: Library authoring is no longer available.
-      operationId: update_library_asset_api_v1_profiles_library_assets__asset_id__patch
-      security:
-        -
-                    HTTPBearer: []
-      parameters:
-        -
-                    name: asset_id
-                    in: path
-                    required: true
-                    schema:
-                      type: string
-                      title: Asset Id
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/LibraryAssetUpdate"
-      responses:
-        200:
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/LibraryAssetOut"
-        422:
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/HTTPValidationError"
-    delete:
-      tags:
-        - Conversion Profiles
-      summary: Delete Library Asset
-      description: Library authoring is no longer available.
-      operationId: delete_library_asset_api_v1_profiles_library_assets__asset_id__delete
-      security:
-        -
-                    HTTPBearer: []
-      parameters:
-        -
-                    name: asset_id
-                    in: path
-                    required: true
-                    schema:
-                      type: string
-                      title: Asset Id
-      responses:
-        204:
-          description: Successful Response
-        422:
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/HTTPValidationError"
   /api/v1/ingest/mass:
     post:
       tags:
@@ -2304,6 +2478,31 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HTTPValidationError"
+  /api/v1/decode-tac:
+    post:
+      tags:
+        - Validation
+        - Conversion
+      summary: Decode TAC
+      description: Decode TAC into annotated segments and a plain-language summary.
+      operationId: decode_tac_endpoint_api_v1_decode_tac_post
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/Body_decode_tac_endpoint_api_v1_decode_tac_post"
+        required: true
+      responses:
+        200:
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DecodeTacResponse"
+        415:
+          description: Unsupported Media Type - multipart/form-data required
+        422:
+          description: Missing required product field
   /api/v1/lint-tac:
     post:
       tags:
@@ -2331,31 +2530,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HTTPValidationError"
-  /api/v1/decode-tac:
-    post:
-      tags:
-        - Validation
-        - Conversion
-      summary: Decode TAC
-      description: Decode TAC into annotated segments and a plain-language summary.
-      operationId: decode_tac_endpoint_api_v1_decode_tac_post
-      requestBody:
-        content:
-          multipart/form-data:
-            schema:
-              $ref: "#/components/schemas/Body_decode_tac_endpoint_api_v1_decode_tac_post"
-        required: true
-      responses:
-        200:
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/DecodeTacResponse"
-        415:
-          description: Unsupported Media Type - multipart/form-data required
-        422:
-          description: Missing required product field
   /api/v1/stations/{icao}:
     get:
       tags:
@@ -2706,6 +2880,134 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HTTPValidationError"
+  /api/v1/station-health/metrics:
+    get:
+      tags:
+        - Station health
+      summary: List station health metric definitions
+      description: Serve the extensible metrics registry for dashboard cards.
+      operationId: list_station_health_metrics_api_v1_station_health_metrics_get
+      responses:
+        200:
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StationHealthMetricsResponse"
+  /api/v1/station-health:
+    get:
+      tags:
+        - Station health
+      summary: List station health grades
+      description: Serve station report cards for one availability window.
+      operationId: list_station_health_api_v1_station_health_get
+      parameters:
+        -
+                    name: window
+                    in: query
+                    required: false
+                    schema:
+                      type: string
+                      description: "Time window: 6h, 1d, 30d, or 90d"
+                      default: 6h
+                      title: Window
+                    description: "Time window: 6h, 1d, 30d, or 90d"
+        -
+                    name: product
+                    in: query
+                    required: false
+                    schema:
+                      anyOf:
+                        -
+                                          type: string
+                        -
+                                          type: null
+                      description: Optional product filter
+                      title: Product
+                    description: Optional product filter
+        -
+                    name: grade
+                    in: query
+                    required: false
+                    schema:
+                      anyOf:
+                        -
+                                          type: string
+                        -
+                                          type: null
+                      description: Optional letter grade filter
+                      title: Grade
+                    description: Optional letter grade filter
+        -
+                    name: region
+                    in: query
+                    required: false
+                    schema:
+                      anyOf:
+                        -
+                                          type: string
+                        -
+                                          type: null
+                      description: "Optional WMO region filter: I, II, III, IV, V, VI, or unknown"
+                      title: Region
+                    description: "Optional WMO region filter: I, II, III, IV, V, VI, or unknown"
+        -
+                    name: limit
+                    in: query
+                    required: false
+                    schema:
+                      type: integer
+                      maximum: 5000
+                      minimum: 1
+                      description: Max stations to return (higher when filtering by region)
+                      default: 100
+                      title: Limit
+                    description: Max stations to return (higher when filtering by region)
+      responses:
+        200:
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StationHealthListResponse"
+        400:
+          description: Invalid window
+        422:
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+  /api/v1/station-health/{icao}:
+    get:
+      tags:
+        - Station health
+      summary: Station health detail
+      description: Serve one station report card across windows and products.
+      operationId: get_station_health_api_v1_station_health__icao__get
+      parameters:
+        -
+                    name: icao
+                    in: path
+                    required: true
+                    schema:
+                      type: string
+                      title: Icao
+      responses:
+        200:
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StationHealthDetailResponse"
+        404:
+          description: Unknown station
+        422:
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
 components:
   schemas:
     AggregatedValidationResult:
@@ -2716,7 +3018,7 @@ components:
           description: Whether all layers passed
         layers_validated:
           items:
-            $ref: "#/components/schemas/src__schemas__validation__ValidationLayer"
+            $ref: "#/components/schemas/src__models__validation_part_1__ValidationLayer"
           type: array
           title: Layers Validated
           description: Layers validated
@@ -3766,9 +4068,7 @@ components:
             - 0
             - 1
         metadata:
-          additionalProperties: true
-          type: object
-          title: Metadata
+          $ref: "#/components/schemas/ConversionResponseMetadata"
           description: "Echoed request metadata such as bulletin_id, issuing_center, and validation options"
         ok:
           anyOf:
@@ -3820,6 +4120,28 @@ components:
                         source: EGLL.txt
         successful: 2
         total_processed: 2
+    ConversionResponseMetadata:
+      properties:
+        bulletin_id:
+          anyOf:
+            -
+                            type: string
+            -
+                            type: null
+          title: Bulletin Id
+          description: Optional bulletin identifier
+        product:
+          anyOf:
+            -
+                            type: string
+            -
+                            type: null
+          title: Product
+          description: Optional product family
+      additionalProperties: true
+      type: object
+      title: ConversionResponseMetadata
+      description: Nested convert response metadata (extra keys allowed for wire stability).
     ConversionResult:
       properties:
         name:
@@ -7124,6 +7446,301 @@ components:
         - options
       title: SelectionOptionsResponse
       description: Response for GET /selection-options.
+    StationCentennialMetricModel:
+      properties:
+        id:
+          type: string
+          title: Id
+        label:
+          type: string
+          title: Label
+        status:
+          type: string
+          title: Status
+          description: available or insufficient_data
+        score:
+          anyOf:
+            -
+                            type: number
+            -
+                            type: null
+          title: Score
+        detail:
+          type: string
+          title: Detail
+          default: ""
+      type: object
+      required:
+        - id
+        - label
+        - status
+      title: StationCentennialMetricModel
+      description: One Centennial recognition-criteria proxy or insufficient-data row.
+    StationHealthDetailResponse:
+      properties:
+        icao:
+          type: string
+          title: Icao
+        name:
+          anyOf:
+            -
+                            type: string
+            -
+                            type: null
+          title: Name
+        wmo_region:
+          type: string
+          title: Wmo Region
+          description: WMO Regional Association id (I-VI) or unknown
+          default: unknown
+        windows:
+          additionalProperties:
+            $ref: "#/components/schemas/StationWindowModel"
+          type: object
+          title: Windows
+        record_count:
+          type: integer
+          title: Record Count
+          default: 0
+        maintenance_tag_counts:
+          additionalProperties:
+            type: integer
+          type: object
+          title: Maintenance Tag Counts
+        file_format_counts:
+          additionalProperties:
+            type: integer
+          type: object
+          title: File Format Counts
+        issue_code_counts:
+          additionalProperties:
+            type: integer
+          type: object
+          title: Issue Code Counts
+        centennial_metrics:
+          items:
+            $ref: "#/components/schemas/StationCentennialMetricModel"
+          type: array
+          title: Centennial Metrics
+      type: object
+      required:
+        - icao
+      title: StationHealthDetailResponse
+      description: "Response for GET /api/v1/station-health/{icao}."
+    StationHealthListResponse:
+      properties:
+        window:
+          type: string
+          title: Window
+        computed_at:
+          type: string
+          title: Computed At
+        stations:
+          items:
+            $ref: "#/components/schemas/StationListItemModel"
+          type: array
+          title: Stations
+        summary:
+          $ref: "#/components/schemas/StationHealthSummaryModel"
+      type: object
+      required:
+        - window
+        - computed_at
+      title: StationHealthListResponse
+      description: Response for GET /api/v1/station-health.
+    StationHealthMetricsResponse:
+      properties:
+        metrics:
+          items:
+            $ref: "#/components/schemas/StationMetricDefinitionModel"
+          type: array
+          title: Metrics
+      type: object
+      title: StationHealthMetricsResponse
+      description: Response for GET /api/v1/station-health/metrics.
+    StationHealthSummaryModel:
+      properties:
+        station_count:
+          type: integer
+          title: Station Count
+          default: 0
+        grade_counts:
+          additionalProperties:
+            type: integer
+          type: object
+          title: Grade Counts
+      type: object
+      title: StationHealthSummaryModel
+      description: Rollup counts for the list response.
+    StationListItemModel:
+      properties:
+        icao:
+          type: string
+          title: Icao
+        name:
+          anyOf:
+            -
+                            type: string
+            -
+                            type: null
+          title: Name
+        wmo_region:
+          type: string
+          title: Wmo Region
+          description: WMO Regional Association id (I-VI) or unknown
+          default: unknown
+        overall_grade:
+          type: string
+          title: Overall Grade
+        overall_score:
+          type: number
+          title: Overall Score
+          default: 0.0
+        products:
+          items:
+            $ref: "#/components/schemas/StationProductGradeModel"
+          type: array
+          title: Products
+        maintenance_tag_counts:
+          additionalProperties:
+            type: integer
+          type: object
+          title: Maintenance Tag Counts
+        file_format_counts:
+          additionalProperties:
+            type: integer
+          type: object
+          title: File Format Counts
+        issue_code_counts:
+          additionalProperties:
+            type: integer
+          type: object
+          title: Issue Code Counts
+        centennial_metrics:
+          items:
+            $ref: "#/components/schemas/StationCentennialMetricModel"
+          type: array
+          title: Centennial Metrics
+      type: object
+      required:
+        - icao
+        - overall_grade
+      title: StationListItemModel
+      description: One station row on the dashboard list.
+    StationMetricDefinitionModel:
+      properties:
+        id:
+          type: string
+          title: Id
+        label:
+          type: string
+          title: Label
+        description:
+          type: string
+          title: Description
+        unit:
+          anyOf:
+            -
+                            type: string
+            -
+                            type: null
+          title: Unit
+        higher_is_better:
+          type: boolean
+          title: Higher Is Better
+          default: true
+      type: object
+      required:
+        - id
+        - label
+        - description
+      title: StationMetricDefinitionModel
+      description: One extensible dashboard metric card.
+    StationProductGradeModel:
+      properties:
+        product:
+          type: string
+          title: Product
+        grade:
+          type: string
+          title: Grade
+        overall_score:
+          type: number
+          title: Overall Score
+          default: 0.0
+        availability_score:
+          type: number
+          title: Availability Score
+          default: 0.0
+        actual_count:
+          type: integer
+          title: Actual Count
+          default: 0
+        expected_count:
+          type: integer
+          title: Expected Count
+          default: 0
+        solidus_rate:
+          type: number
+          title: Solidus Rate
+          default: 0.0
+        missing_digit_rate:
+          type: number
+          title: Missing Digit Rate
+          default: 0.0
+        lint_severity_score:
+          type: number
+          title: Lint Severity Score
+          default: 100.0
+        lint_error_count:
+          type: integer
+          title: Lint Error Count
+          default: 0
+      type: object
+      required:
+        - product
+        - grade
+      title: StationProductGradeModel
+      description: One product grade inside a station window.
+    StationWindowModel:
+      properties:
+        overall_grade:
+          type: string
+          title: Overall Grade
+        overall_score:
+          type: number
+          title: Overall Score
+          default: 0.0
+        products:
+          items:
+            $ref: "#/components/schemas/StationProductGradeModel"
+          type: array
+          title: Products
+        maintenance_tag_counts:
+          additionalProperties:
+            type: integer
+          type: object
+          title: Maintenance Tag Counts
+        file_format_counts:
+          additionalProperties:
+            type: integer
+          type: object
+          title: File Format Counts
+        issue_code_counts:
+          additionalProperties:
+            type: integer
+          type: object
+          title: Issue Code Counts
+        centennial_metrics:
+          items:
+            $ref: "#/components/schemas/StationCentennialMetricModel"
+          type: array
+          title: Centennial Metrics
+      type: object
+      required:
+        - overall_grade
+      title: StationWindowModel
+      description: One window block on the station detail page.
     TranslationCentreInfo:
       properties:
         centre_name:
@@ -7281,7 +7898,7 @@ components:
           additionalProperties:
             type: number
           propertyNames:
-            $ref: "#/components/schemas/src__schemas__icao_opmet__ValidationLayer"
+            $ref: "#/components/schemas/src__models__icao_opmet__ValidationLayer"
           type: object
           title: Validation Layer Success Rates
           description: Success rate per validation layer (percentage)
@@ -7690,7 +8307,7 @@ components:
     ValidationIssue:
       properties:
         layer:
-          $ref: "#/components/schemas/src__schemas__validation__ValidationLayer"
+          $ref: "#/components/schemas/src__models__validation_part_1__ValidationLayer"
           description: Validation layer that found this issue
         level:
           $ref: "#/components/schemas/ValidationLevel"
@@ -7752,7 +8369,7 @@ components:
     ValidationLayerInfo:
       properties:
         layer:
-          $ref: "#/components/schemas/src__schemas__validation__ValidationLayer"
+          $ref: "#/components/schemas/src__models__validation_part_1__ValidationLayer"
           description: Layer identifier
         description:
           type: string
@@ -7874,7 +8491,7 @@ components:
           title: Passed
           description: Whether validation passed
         layer:
-          $ref: "#/components/schemas/src__schemas__validation__ValidationLayer"
+          $ref: "#/components/schemas/src__models__validation_part_1__ValidationLayer"
           description: Validation layer
         issues:
           items:
@@ -8162,7 +8779,7 @@ components:
       type: object
       title: WorkSessionUpdate
       description: "Body for PATCH /api/v1/work-sessions/{id}."
-    src__schemas__icao_opmet__ValidationLayer:
+    src__models__icao_opmet__ValidationLayer:
       type: string
       enum:
         - AIRPORT_ICAO
@@ -8174,7 +8791,7 @@ components:
         - WMO_CODELISTS
       title: ValidationLayer
       description: 7-layer IWXXM validation stages.
-    src__schemas__validation__ValidationLayer:
+    src__models__validation_part_1__ValidationLayer:
       type: string
       enum:
         - airport_icao

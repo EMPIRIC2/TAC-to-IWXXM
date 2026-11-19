@@ -1,6 +1,6 @@
 """Pack IR projection from a match.
 
-[Corpus: adr/ADR-045] [Corpus: tests]
+[Corpus: tests]
 """
 
 from __future__ import annotations

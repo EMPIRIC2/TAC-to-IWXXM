@@ -1,6 +1,6 @@
 """TC-EV031-003 - public convert/lint/validate/decode stay JWT-free after Auth restore.
 
-Spec: docs/test-plan.md TC-EV031-003; F21 Amended; F31 / ADR-033.
+Spec: docs/test-plan.md TC-EV031-003; F21 Amended; F31 .
 """
 
 from __future__ import annotations

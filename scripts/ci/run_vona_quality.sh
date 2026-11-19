@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # EV-032 / E32-T7 / T2.8 — VONA quality pack (M2 / TC-F32 + F32 deepen / #741).
-# Long pack: lint → convert → XSD+SCH/ADR-032 + API enum smoke.
+# Long pack: lint → convert → XSD+SCH/ + API enum smoke.
 # Fast canary: scripts/ci/run_ev032_vona_canary.sh (path-filtered pre-commit).
 set -euo pipefail
 

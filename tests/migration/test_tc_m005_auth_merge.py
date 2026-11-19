@@ -77,7 +77,7 @@ class TestTcM005AuthRestoredStructure:
         assert (ROOT / "packages" / "auth").is_dir()
 
     def test_compose_has_two_app_services_without_auth_deployable(self) -> None:
-        """Compose is backend + frontend only (ADR-002); Auth is a library."""
+        """Compose is backend + frontend only ; Auth is a library."""
         compose = (ROOT / "docker-compose.yml").read_text(encoding="utf-8")
         assert "backend:" in compose
         assert "frontend:" in compose
