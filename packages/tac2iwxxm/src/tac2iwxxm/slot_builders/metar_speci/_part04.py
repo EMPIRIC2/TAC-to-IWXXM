@@ -128,7 +128,7 @@ def parse_metar_speci(tac: str, *, product: str) -> dict[str, Any]:
         ir["visibility_not_observable"] = True
     else:
         if not _assign_reported_visibility(ir, rest):
-            raise ValueError("missing visibility (SM/m/KM/CAVOK) group")
+            raise ValueError("missing visibility (SM/m/CAVOK) group")
 
     if _TEMP_NOT_OBS.search(rest):
         ir["temp_not_observable"] = True
