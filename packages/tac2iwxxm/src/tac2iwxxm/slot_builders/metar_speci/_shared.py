@@ -9,6 +9,7 @@ from typing import Any
 from tac2iwxxm.recent_weather import accept_recent_code
 from tac2iwxxm.visibility_measure import (
     METAR_STATUTE_MILE_GROUP,
+    prevailing_from_kilometres,
     prevailing_from_metre_group,
     prevailing_from_statute_miles,
 )
@@ -39,6 +40,9 @@ _WIND = re.compile(r"\b(?P<dir>\d{3}|VRB)(?P<spd>\d{2,3})(?:G(?P<gust>\d{2,3}))?
 _VIS_SM = METAR_STATUTE_MILE_GROUP
 
 _VIS_M = re.compile(r"\b(?P<vis>\d{4})\b")
+
+# Regional / non-Annex-3 kilometre form (e.g. Papua New Guinea ``10KM``) → metres.
+_VIS_KM = re.compile(r"\b(?P<vis>\d{1,3})KM\b", re.IGNORECASE)
 
 _VIS_SM_NOT_OBS = re.compile(r"(?<![A-Z0-9/])////SM(?![A-Z0-9/])")
 
