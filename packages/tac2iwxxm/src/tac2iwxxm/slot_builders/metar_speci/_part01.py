@@ -85,12 +85,35 @@ def _assign_metre_visibility(target: dict[str, Any], metres: int) -> None:
     target["visibility_above"] = above
 
 
+def _assign_kilometre_visibility(target: dict[str, Any], kilometres: int) -> None:
+    """
+    Store a kilometre visibility token (``10KM``) as prevailing metres.
+
+    Parameters
+    ----------
+    target : dict[str, Any]
+        Observation or trend map to update.
+
+    kilometres : int
+        Integer kilometres from the TAC group.
+
+    Returns
+    -------
+    None
+    """
+    value, above = prevailing_from_kilometres(kilometres)
+    target["visibility_km"] = kilometres
+    target["visibility_m"] = value
+    target["visibility_above"] = above
+
+
 def _assign_reported_visibility(target: dict[str, Any], text: str) -> bool:
     """
     Store prevailing visibility from the observation text.
 
     A compass group such as ``2000E`` is the visibility when no bare metre
-    group or statute-mile group is present.
+    group or statute-mile group is present. Kilometre groups (``10KM``) map
+    to metres (#1477).
 
     Parameters
     ----------
@@ -108,6 +131,10 @@ def _assign_reported_visibility(target: dict[str, Any], text: str) -> bool:
     vis_sm = _VIS_SM.search(text)
     if vis_sm is not None:
         _assign_statute_visibility(target, vis_sm.group("vis"))
+        return True
+    vis_km = _VIS_KM.search(text)
+    if vis_km is not None:
+        _assign_kilometre_visibility(target, int(vis_km.group("vis")))
         return True
     vis_m = _VIS_M.search(text)
     if vis_m is not None:

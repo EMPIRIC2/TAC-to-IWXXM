@@ -455,8 +455,8 @@ rules:
   code: INVALID_VISIBILITY
   label: Invalid Visibility
   severity: error
-  message_template: This {product} has an invalid visibility token. Use statute miles (SM), meters, or
-    CAVOK.
+  message_template: This {product} has an invalid visibility token. Use statute miles (SM), meters,
+    kilometres (KM), or CAVOK.
   product: null
   tags:
   - visibility

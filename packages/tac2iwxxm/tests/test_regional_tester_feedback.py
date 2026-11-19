@@ -118,7 +118,7 @@ def test_incomplete_tac_from_the_packet_still_fails_closed() -> None:
         _METAR_TYPO_WIND: ("METAR", "missing wind group"),
         _METAR_BAD_WIND: ("METAR", "missing wind group"),
         _METAR_NO_DEWPOINT: ("METAR", "missing temperature/dewpoint group"),
-        _METAR_NO_VIS: ("METAR", "missing visibility (SM/m/CAVOK) group"),
+        _METAR_NO_VIS: ("METAR", "missing visibility (SM/m/KM/CAVOK) group"),
     }
     for tac, (product, message) in cases.items():
         result = convert(tac, product=product)

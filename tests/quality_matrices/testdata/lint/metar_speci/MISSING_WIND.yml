@@ -168,7 +168,7 @@ cases:
 - bucket: edge_fail
   case_id: '01'
   status: ready
-  tac: METAR KJFK 231751Z 18012KT 10KM FEW250 22/12 A3012=
+  tac: METAR KJFK 231751Z 18012KT 10MILES FEW250 22/12 A3012=
   expect:
     accept: false
     codes:
