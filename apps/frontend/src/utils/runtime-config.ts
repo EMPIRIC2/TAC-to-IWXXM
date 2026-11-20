@@ -42,6 +42,23 @@ function configFromViteEnv(): MetarRuntimeConfig {
 }
 
 /**
+ * Fill Auth bootstrap gaps when ``/config.json`` has URL but omits the
+ * publishable key (DOKS ConfigMap drift). Prefer config.json values; merge
+ * bake-time Vite env only for empty fields. [Corpus: api] [Corpus: env]
+ */
+function mergeViteAuthBootstrap(config: MetarRuntimeConfig): MetarRuntimeConfig {
+  const vite = configFromViteEnv();
+  const supabase = { ...(config.supabase || { url: '' }) };
+  if (!String(supabase.url || '').trim() && vite.supabase.url) {
+    supabase.url = vite.supabase.url;
+  }
+  if (!String(supabase.publishableKey || '').trim() && vite.supabase.publishableKey) {
+    supabase.publishableKey = vite.supabase.publishableKey;
+  }
+  return { ...config, supabase };
+}
+
+/**
  * Load runtime config once per session (network fetch then Vite env fallback).
  * @example
  * const _ = true;
@@ -54,7 +71,9 @@ export async function initRuntimeConfig(): Promise<MetarRuntimeConfig> {
   try {
     const response = await fetch('/config.json', { cache: 'no-store' });
     if (response.ok) {
-      cachedConfig = (await response.json()) as MetarRuntimeConfig;
+      cachedConfig = mergeViteAuthBootstrap(
+        (await response.json()) as MetarRuntimeConfig,
+      );
       return cachedConfig;
     }
   } catch {
