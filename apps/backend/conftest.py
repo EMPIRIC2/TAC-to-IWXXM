@@ -27,11 +27,6 @@ def ensure_airport_data():
     This fixture runs once per test session and ensures the AirportValidator
     singleton has loaded the airports.json data file. This is required for
     METAR conversion tests that need airport metadata.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (ensure_airport_data)
-    2
     """
     # Get the validator singleton (will initialize and load data if needed)
     validator = get_airport_validator()

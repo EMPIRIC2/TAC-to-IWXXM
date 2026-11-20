@@ -1,6 +1,6 @@
 """TC-F10-002 §1-2 - MISSING_TERMINATOR is info-level with add_terminator fix (S013 / EV-009).
 
-Spec: docs/test-plan.md TC-F10-002; ADR-025 §2; api-contract §lint-tac.
+Spec: docs/test-plan.md TC-F10-002; §2; api-contract §lint-tac.
 ``ok`` stays keyed to error-severity only - an otherwise-clean single report without
 ``=`` must lint ``ok: true``.
 """
@@ -10,7 +10,7 @@ from __future__ import annotations
 from tac_validate import lint
 
 CLEAN_NO_EQ = "METAR KJFK 101851Z 24008KT 10SM FEW250 15/07 A3034"
-EXPECTED_COPY = "Reports in bulletins end with '=' - add it before publishing"
+EXPECTED_COPY = "Bulletin reports should end with '='. Add the terminator before you publish."
 
 
 def test_missing_terminator_severity_info() -> None:

@@ -21,11 +21,6 @@ def check_and_regenerate_airports() -> bool:
     -------
     object
         True if regeneration occurred, False otherwise
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (check_and_regenerate_airports)
-    2
     """
     try:
         backend_root = Path(__file__).parent.parent.parent

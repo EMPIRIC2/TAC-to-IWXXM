@@ -123,6 +123,25 @@
     },
     {
       "method": "GET",
+      "path": "/api/v1/code-name-dictionary",
+      "status": 200,
+      "request_fields": [],
+      "response_fields": [
+        "facets",
+        "items"
+      ],
+      "covered_by": "apps/backend/tests/unit/test_code_name_dictionary_integration.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/code-name-dictionary",
+      "status": 422,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_code_name_dictionary_integration.py"
+    },
+    {
+      "method": "GET",
       "path": "/api/v1/dissemination/audit",
       "status": 200,
       "request_fields": [],
@@ -291,6 +310,38 @@
     },
     {
       "method": "GET",
+      "path": "/api/v1/exchange-admin/allowlist",
+      "status": 200,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_exchange_admin.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/exchange-admin/invitation-groups",
+      "status": 200,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_exchange_admin.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/exchange-admin/prefs",
+      "status": 200,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_exchange_admin.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/exchange-admin/templates",
+      "status": 200,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_exchange_admin.py"
+    },
+    {
+      "method": "GET",
       "path": "/api/v1/lint-issue-catalog",
       "status": 200,
       "request_fields": [],
@@ -304,6 +355,30 @@
       "request_fields": [],
       "response_fields": [],
       "covered_by": "apps/backend/tests/unit/test_td3b_router_extraction_unit.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/live-check",
+      "status": 200,
+      "request_fields": [],
+      "response_fields": [
+        "cached",
+        "convert_ok",
+        "icao",
+        "product",
+        "profile",
+        "provider",
+        "source_tac"
+      ],
+      "covered_by": "apps/backend/tests/unit/test_live_check_router.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/live-check",
+      "status": 422,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_live_check_router.py"
     },
     {
       "method": "GET",
@@ -593,25 +668,6 @@
     },
     {
       "method": "GET",
-      "path": "/api/v1/code-name-dictionary",
-      "status": 200,
-      "request_fields": [],
-      "response_fields": [
-        "facets",
-        "items"
-      ],
-      "covered_by": "apps/backend/tests/unit/test_code_name_dictionary_integration.py"
-    },
-    {
-      "method": "GET",
-      "path": "/api/v1/code-name-dictionary",
-      "status": 422,
-      "request_fields": [],
-      "response_fields": [],
-      "covered_by": "apps/backend/tests/unit/test_code_name_dictionary_integration.py"
-    },
-    {
-      "method": "GET",
       "path": "/api/v1/rule-catalogs",
       "status": 200,
       "request_fields": [],
@@ -655,6 +711,73 @@
       "request_fields": [],
       "response_fields": [],
       "covered_by": "apps/backend/tests/unit/test_tc_evrpc_rule_catalogs.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/station-health",
+      "status": 200,
+      "request_fields": [],
+      "response_fields": [
+        "window",
+        "computed_at",
+        "stations",
+        "summary"
+      ],
+      "covered_by": "apps/backend/tests/unit/test_station_health_api.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/station-health",
+      "status": 400,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_station_health_api.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/station-health",
+      "status": 422,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_station_health_api.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/station-health/metrics",
+      "status": 200,
+      "request_fields": [],
+      "response_fields": [
+        "metrics"
+      ],
+      "covered_by": "apps/backend/tests/unit/test_station_health_api.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/station-health/{icao}",
+      "status": 200,
+      "request_fields": [],
+      "response_fields": [
+        "icao",
+        "windows",
+        "record_count"
+      ],
+      "covered_by": "apps/backend/tests/unit/test_station_health_api.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/station-health/{icao}",
+      "status": 404,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_station_health_api.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/station-health/{icao}",
+      "status": 422,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_station_health_api.py"
     },
     {
       "method": "GET",
@@ -1751,6 +1874,54 @@
       ],
       "response_fields": [],
       "covered_by": "tests/bugs/qa_gap/test_qa_gap_2026_10_19_openapi_path_templates.py"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/exchange-admin/invitation-group",
+      "status": 200,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_exchange_admin.py"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/exchange-admin/invitation-group",
+      "status": 422,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_exchange_admin.py"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/exchange-admin/prefs/national-remarks",
+      "status": 200,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_exchange_admin.py"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/exchange-admin/prefs/national-remarks",
+      "status": 422,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_exchange_admin.py"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/exchange-admin/templates",
+      "status": 200,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_exchange_admin.py"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/exchange-admin/templates",
+      "status": 422,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_exchange_admin.py"
     }
   ],
   "source": "consumer-tests"

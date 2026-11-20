@@ -87,7 +87,7 @@ describe('ErrorLogPanel', () => {
               source: 'parser',
               message: 'Schema failed - TC-F7-002 / EV-040',
               severity: 'error',
-              hint: 'See ADR-022',
+              hint: 'See ',
               code: 'XML_SCHEMA',
             },
             {

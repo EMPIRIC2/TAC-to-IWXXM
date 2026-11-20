@@ -1,7 +1,7 @@
 """H0i connectivity gate - in-process cross-package integration (test-plan.md §H0i).
 
 Verifies apps/backend wires packages/tac2iwxxm and CORS on one host with
-merged Auth (F31 / ADR-033) and public convert (F21 Amended). No docker-compose
+merged Auth (F31) and public convert (F21 Amended). No docker-compose
 required.
 """
 

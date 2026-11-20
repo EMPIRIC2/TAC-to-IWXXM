@@ -386,6 +386,130 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/exchange-admin/allowlist": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Read-only egress allowlist (GitOps)
+         * @description Return the configured egress allowlist. Editing is GitOps-only.
+         */
+        get: operations["get_allowlist_api_v1_exchange_admin_allowlist_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/exchange-admin/invitation-group": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Select invitation group at login
+         * @description Bind the signed-in operator to one invitation group.
+         */
+        put: operations["put_invitation_group_api_v1_exchange_admin_invitation_group_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/exchange-admin/invitation-groups": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Invitation groups for login
+         * @description List multi-tenant invitation groups offered at login.
+         */
+        get: operations["get_invitation_groups_api_v1_exchange_admin_invitation_groups_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/exchange-admin/prefs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Operator exchange preferences
+         * @description Return national-remarks toggle and selected invitation group.
+         */
+        get: operations["get_operator_prefs_api_v1_exchange_admin_prefs_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/exchange-admin/prefs/national-remarks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Toggle national remarks on WIS2 publish
+         * @description Operator toggle: include national remarks when publishing to WIS2.
+         */
+        put: operations["put_national_remarks_api_v1_exchange_admin_prefs_national_remarks_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/exchange-admin/templates": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List non-secret WIS2 templates
+         * @description List memory-only non-secret destination templates (no vault).
+         */
+        get: operations["get_templates_api_v1_exchange_admin_templates_get"];
+        /**
+         * Upsert non-secret WIS2 template
+         * @description Create or replace a non-secret template. Secrets must be pasted at send time.
+         */
+        put: operations["put_template_api_v1_exchange_admin_templates_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/ingest-collect": {
         parameters: {
             query?: never;
@@ -468,6 +592,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/live-check": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Live check for one airport and product
+         * @description Fetch an allowlisted open feed for one airport, convert with the station profile, and return source TAC, our IWXXM, and provider IWXXM when the feed included a pair. Providers: noaa, met_no, knmi.
+         */
+        get: operations["live_check_api_v1_live_check_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/live-map": {
         parameters: {
             query?: never;
@@ -498,8 +642,6 @@ export interface paths {
         /**
          * Get Catalog
          * @description Read-only ConversionProfile catalog for the authenticated Profiles inspector.
-         *
-         *     Requires JWT so the inspector stays on the authenticated Profiles surface.
          */
         get: operations["get_catalog_api_v1_profiles_catalog_get"];
         put?: never;
@@ -982,6 +1124,66 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/station-health": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List station health grades
+         * @description Serve station report cards for one availability window.
+         */
+        get: operations["list_station_health_api_v1_station_health_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/station-health/metrics": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List station health metric definitions
+         * @description Serve the extensible metrics registry for dashboard cards.
+         */
+        get: operations["list_station_health_metrics_api_v1_station_health_metrics_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/station-health/{icao}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Station health detail
+         * @description Serve one station report card across windows and products.
+         */
+        get: operations["get_station_health_api_v1_station_health__icao__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/stations/{icao}": {
         parameters: {
             query?: never;
@@ -1389,7 +1591,7 @@ export interface components {
              * Layers Validated
              * @description Layers validated
              */
-            layers_validated: components["schemas"]["src__schemas__validation__ValidationLayer"][];
+            layers_validated: components["schemas"]["src__models__validation_part_1__ValidationLayer"][];
             /**
              * Passed
              * @description Whether all layers passed
@@ -2252,13 +2454,8 @@ export interface components {
              * @description Structured issues (errors/warnings/info) for failed or partial conversions
              */
             issues?: components["schemas"]["ConversionIssue"][];
-            /**
-             * Metadata
-             * @description Echoed request metadata such as bulletin_id, issuing_center, and validation options
-             */
-            metadata?: {
-                [key: string]: unknown;
-            };
+            /** @description Echoed request metadata such as bulletin_id, issuing_center, and validation options */
+            metadata?: components["schemas"]["ConversionResponseMetadata"];
             /**
              * Ok
              * @description Soft-preview envelope flag; set when preview=true
@@ -2288,6 +2485,24 @@ export interface components {
              * @example 5
              */
             total_processed: number;
+        };
+        /**
+         * ConversionResponseMetadata
+         * @description Nested convert response metadata (extra keys allowed for wire stability).
+         */
+        ConversionResponseMetadata: {
+            /**
+             * Bulletin Id
+             * @description Optional bulletin identifier
+             */
+            bulletin_id?: string | null;
+            /**
+             * Product
+             * @description Optional product family
+             */
+            product?: string | null;
+        } & {
+            [key: string]: unknown;
         };
         /**
          * ConversionResult
@@ -3636,6 +3851,67 @@ export interface components {
             product?: string | null;
         };
         /**
+         * LiveCheckResponse
+         * @description GET /api/v1/live-check payload.
+         */
+        LiveCheckResponse: {
+            /**
+             * Attribution
+             * @description License attribution for CC BY sources.
+             */
+            attribution?: string | null;
+            /**
+             * Cached
+             * @description True when served from the short server cache.
+             */
+            cached: boolean;
+            /**
+             * Convert Issues
+             * @description Non-fatal or fatal convert issue messages.
+             */
+            convert_issues?: string[];
+            /**
+             * Convert Ok
+             * @description True when conversion produced IWXXM.
+             */
+            convert_ok: boolean;
+            /**
+             * Icao
+             * @description ICAO airport code.
+             */
+            icao: string;
+            /**
+             * Our Iwxxm
+             * @description IWXXM produced by this service from source_tac.
+             */
+            our_iwxxm?: string | null;
+            /**
+             * Product
+             * @description Product id: METAR or TAF.
+             */
+            product: string;
+            /**
+             * Profile
+             * @description Conversion profile used for this station.
+             */
+            profile: string;
+            /**
+             * Provider
+             * @description Allowlisted feed id: noaa, met_no, or knmi.
+             */
+            provider: string;
+            /**
+             * Provider Iwxxm
+             * @description Provider IWXXM when the feed returned a pair.
+             */
+            provider_iwxxm?: string | null;
+            /**
+             * Source Tac
+             * @description Traditional alphanumeric report from the feed.
+             */
+            source_tac: string;
+        };
+        /**
          * MappingConfigCreate
          * @description Create a field mapping. Connection secrets are not stored.
          */
@@ -4359,6 +4635,240 @@ export interface components {
             options: components["schemas"]["SelectionOption"][];
         };
         /**
+         * StationCentennialMetricModel
+         * @description One Centennial recognition-criteria proxy or insufficient-data row.
+         */
+        StationCentennialMetricModel: {
+            /**
+             * Detail
+             * @default
+             */
+            detail: string;
+            /** Id */
+            id: string;
+            /** Label */
+            label: string;
+            /** Score */
+            score?: number | null;
+            /**
+             * Status
+             * @description available or insufficient_data
+             */
+            status: string;
+        };
+        /**
+         * StationHealthDetailResponse
+         * @description Response for GET /api/v1/station-health/{icao}.
+         */
+        StationHealthDetailResponse: {
+            /** Centennial Metrics */
+            centennial_metrics?: components["schemas"]["StationCentennialMetricModel"][];
+            /** File Format Counts */
+            file_format_counts?: {
+                [key: string]: number;
+            };
+            /** Icao */
+            icao: string;
+            /** Issue Code Counts */
+            issue_code_counts?: {
+                [key: string]: number;
+            };
+            /** Maintenance Tag Counts */
+            maintenance_tag_counts?: {
+                [key: string]: number;
+            };
+            /** Name */
+            name?: string | null;
+            /**
+             * Record Count
+             * @default 0
+             */
+            record_count: number;
+            /** Windows */
+            windows?: {
+                [key: string]: components["schemas"]["StationWindowModel"];
+            };
+            /**
+             * Wmo Region
+             * @description WMO Regional Association id (I-VI) or unknown
+             * @default unknown
+             */
+            wmo_region: string;
+        };
+        /**
+         * StationHealthListResponse
+         * @description Response for GET /api/v1/station-health.
+         */
+        StationHealthListResponse: {
+            /** Computed At */
+            computed_at: string;
+            /** Stations */
+            stations?: components["schemas"]["StationListItemModel"][];
+            summary?: components["schemas"]["StationHealthSummaryModel"];
+            /** Window */
+            window: string;
+        };
+        /**
+         * StationHealthMetricsResponse
+         * @description Response for GET /api/v1/station-health/metrics.
+         */
+        StationHealthMetricsResponse: {
+            /** Metrics */
+            metrics?: components["schemas"]["StationMetricDefinitionModel"][];
+        };
+        /**
+         * StationHealthSummaryModel
+         * @description Rollup counts for the list response.
+         */
+        StationHealthSummaryModel: {
+            /** Grade Counts */
+            grade_counts?: {
+                [key: string]: number;
+            };
+            /**
+             * Station Count
+             * @default 0
+             */
+            station_count: number;
+        };
+        /**
+         * StationListItemModel
+         * @description One station row on the dashboard list.
+         */
+        StationListItemModel: {
+            /** Centennial Metrics */
+            centennial_metrics?: components["schemas"]["StationCentennialMetricModel"][];
+            /** File Format Counts */
+            file_format_counts?: {
+                [key: string]: number;
+            };
+            /** Icao */
+            icao: string;
+            /** Issue Code Counts */
+            issue_code_counts?: {
+                [key: string]: number;
+            };
+            /** Maintenance Tag Counts */
+            maintenance_tag_counts?: {
+                [key: string]: number;
+            };
+            /** Name */
+            name?: string | null;
+            /** Overall Grade */
+            overall_grade: string;
+            /**
+             * Overall Score
+             * @default 0
+             */
+            overall_score: number;
+            /** Products */
+            products?: components["schemas"]["StationProductGradeModel"][];
+            /**
+             * Wmo Region
+             * @description WMO Regional Association id (I-VI) or unknown
+             * @default unknown
+             */
+            wmo_region: string;
+        };
+        /**
+         * StationMetricDefinitionModel
+         * @description One extensible dashboard metric card.
+         */
+        StationMetricDefinitionModel: {
+            /** Description */
+            description: string;
+            /**
+             * Higher Is Better
+             * @default true
+             */
+            higher_is_better: boolean;
+            /** Id */
+            id: string;
+            /** Label */
+            label: string;
+            /** Unit */
+            unit?: string | null;
+        };
+        /**
+         * StationProductGradeModel
+         * @description One product grade inside a station window.
+         */
+        StationProductGradeModel: {
+            /**
+             * Actual Count
+             * @default 0
+             */
+            actual_count: number;
+            /**
+             * Availability Score
+             * @default 0
+             */
+            availability_score: number;
+            /**
+             * Expected Count
+             * @default 0
+             */
+            expected_count: number;
+            /** Grade */
+            grade: string;
+            /**
+             * Lint Error Count
+             * @default 0
+             */
+            lint_error_count: number;
+            /**
+             * Lint Severity Score
+             * @default 100
+             */
+            lint_severity_score: number;
+            /**
+             * Missing Digit Rate
+             * @default 0
+             */
+            missing_digit_rate: number;
+            /**
+             * Overall Score
+             * @default 0
+             */
+            overall_score: number;
+            /** Product */
+            product: string;
+            /**
+             * Solidus Rate
+             * @default 0
+             */
+            solidus_rate: number;
+        };
+        /**
+         * StationWindowModel
+         * @description One window block on the station detail page.
+         */
+        StationWindowModel: {
+            /** Centennial Metrics */
+            centennial_metrics?: components["schemas"]["StationCentennialMetricModel"][];
+            /** File Format Counts */
+            file_format_counts?: {
+                [key: string]: number;
+            };
+            /** Issue Code Counts */
+            issue_code_counts?: {
+                [key: string]: number;
+            };
+            /** Maintenance Tag Counts */
+            maintenance_tag_counts?: {
+                [key: string]: number;
+            };
+            /** Overall Grade */
+            overall_grade: string;
+            /**
+             * Overall Score
+             * @default 0
+             */
+            overall_score: number;
+            /** Products */
+            products?: components["schemas"]["StationProductGradeModel"][];
+        };
+        /**
          * TranslationCentreInfo
          * @description Translation Centre identification metadata.
          * @example {
@@ -4784,7 +5294,7 @@ export interface components {
              */
             code?: string | null;
             /** @description Validation layer that found this issue */
-            layer: components["schemas"]["src__schemas__validation__ValidationLayer"];
+            layer: components["schemas"]["src__models__validation_part_1__ValidationLayer"];
             /** @description Severity level */
             level: components["schemas"]["ValidationLevel"];
             /**
@@ -4833,7 +5343,7 @@ export interface components {
              */
             description: string;
             /** @description Layer identifier */
-            layer: components["schemas"]["src__schemas__validation__ValidationLayer"];
+            layer: components["schemas"]["src__models__validation_part_1__ValidationLayer"];
             /**
              * Supported Content Types
              * @description Content types this layer supports (tac/xml)
@@ -4940,7 +5450,7 @@ export interface components {
              */
             issues?: components["schemas"]["ValidationIssue"][];
             /** @description Validation layer */
-            layer: components["schemas"]["src__schemas__validation__ValidationLayer"];
+            layer: components["schemas"]["src__models__validation_part_1__ValidationLayer"];
             /**
              * Metadata
              * @description Layer-specific metadata
@@ -5111,13 +5621,13 @@ export interface components {
          * @description 7-layer IWXXM validation stages.
          * @enum {string}
          */
-        src__schemas__icao_opmet__ValidationLayer: "AIRPORT_ICAO" | "TAC_SYNTAX" | "XML_WELLFORMED" | "XML_SCHEMA" | "SCHEMATRON" | "GML_REFERENCES" | "WMO_CODELISTS";
+        src__models__icao_opmet__ValidationLayer: "AIRPORT_ICAO" | "TAC_SYNTAX" | "XML_WELLFORMED" | "XML_SCHEMA" | "SCHEMATRON" | "GML_REFERENCES" | "WMO_CODELISTS";
         /**
          * ValidationLayer
          * @description Validation layer identifiers.
          * @enum {string}
          */
-        src__schemas__validation__ValidationLayer: "airport_icao" | "tac_syntax" | "xml_wellformed" | "xml_schema" | "schematron" | "gml_references" | "wmo_codelists";
+        src__models__validation_part_1__ValidationLayer: "airport_icao" | "tac_syntax" | "xml_wellformed" | "xml_schema" | "schematron" | "gml_references" | "wmo_codelists";
     };
     responses: never;
     parameters: never;
@@ -5807,6 +6317,205 @@ export interface operations {
             };
         };
     };
+    get_allowlist_api_v1_exchange_admin_allowlist_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
+    put_invitation_group_api_v1_exchange_admin_invitation_group_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    [key: string]: unknown;
+                };
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_invitation_groups_api_v1_exchange_admin_invitation_groups_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
+    get_operator_prefs_api_v1_exchange_admin_prefs_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
+    put_national_remarks_api_v1_exchange_admin_prefs_national_remarks_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    [key: string]: unknown;
+                };
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_templates_api_v1_exchange_admin_templates_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
+    put_template_api_v1_exchange_admin_templates_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    [key: string]: unknown;
+                };
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     ingest_collect_api_v1_ingest_collect_post: {
         parameters: {
             query?: never;
@@ -5946,6 +6655,42 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    live_check_api_v1_live_check_get: {
+        parameters: {
+            query: {
+                /** @description ICAO airport code. */
+                icao: string;
+                /** @description METAR or TAF. */
+                product?: string;
+                /** @description Allowlisted feed: noaa, met_no, or knmi. */
+                provider?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LiveCheckResponse"];
+                };
             };
             /** @description Validation Error */
             422: {
@@ -7154,6 +7899,111 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["SelectionOptionsResponse"];
                 };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_station_health_api_v1_station_health_get: {
+        parameters: {
+            query?: {
+                /** @description Time window: 6h, 1d, 30d, or 90d */
+                window?: string;
+                /** @description Optional product filter */
+                product?: string | null;
+                /** @description Optional letter grade filter */
+                grade?: string | null;
+                /** @description Optional WMO region filter: I, II, III, IV, V, VI, or unknown */
+                region?: string | null;
+                /** @description Max stations to return (higher when filtering by region) */
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StationHealthListResponse"];
+                };
+            };
+            /** @description Invalid window */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_station_health_metrics_api_v1_station_health_metrics_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StationHealthMetricsResponse"];
+                };
+            };
+        };
+    };
+    get_station_health_api_v1_station_health__icao__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                icao: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StationHealthDetailResponse"];
+                };
+            };
+            /** @description Unknown station */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
             /** @description Validation Error */
             422: {

@@ -2,12 +2,12 @@
  * Display F2 validate results for validate-only IWXXM mode (F7.s / #838).
  */
 import { useState } from 'react';
-import { outputLayerStatus, type LayerRunStatus } from '/utils/checkLayers';
+import { outputLayerStatus, type LayerRunStatus } from '@/utils/checkLayers';
 import type { LintIssueCatalogEntry } from '@/utils/api';
 import { IssueDetailDialog } from '@/app/components/IssueDetailDialog';
 import { buildIssueDetail, type IssueDetailModel } from '@/utils/issueDetail';
 import { ISSUE_DETAIL_OPEN } from '@/utils/issueDetailCopy';
-import type { ValidateResponse } from '/utils/openapiTypes';
+import type { ValidateResponse } from '@/utils/openapiTypes';
 import { DecodePanel } from './DecodePanel';
 
 /** Plain result for XML schema or Schematron. */

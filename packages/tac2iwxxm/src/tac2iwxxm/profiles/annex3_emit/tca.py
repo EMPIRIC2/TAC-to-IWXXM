@@ -86,11 +86,6 @@ def emit_tca_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
     -------
     str
         An IWXXM ``TropicalCycloneAdvisory`` document (F6.f / F27 themes T2-T3).
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (emit_tca_annex3)
-    2
     """
     product = str(ir.get("product", "TCA")).upper()
     if product != "TCA":

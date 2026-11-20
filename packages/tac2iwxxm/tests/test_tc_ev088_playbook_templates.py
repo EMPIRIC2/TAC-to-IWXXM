@@ -65,7 +65,7 @@ def test_tc_ev088_004_readme_and_adr_link_playbook() -> None:
     assert "NATIONAL_PROFILE_PLAYBOOK.md" in readme
     domain = (_REPO / "docs" / "domain-contract.md").read_text(encoding="utf-8")
     assert "config/profiles" in domain
-    adr = _REPO / "docs" / "adr" / "ADR-036-semantic-vs-exchange-profiles.md"
+    adr = _REPO / "docs" / "adr" / "-semantic-vs-exchange-profiles.md"
     if not adr.is_file():
         pytest.skip("local docs/adr tree not in git")
     text = adr.read_text(encoding="utf-8")

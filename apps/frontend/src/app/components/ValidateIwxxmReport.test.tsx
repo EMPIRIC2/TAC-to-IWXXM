@@ -6,7 +6,7 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { ValidateIwxxmReport } from './ValidateIwxxmReport';
 import type { LintIssueCatalogEntry } from '@/utils/api';
-import type { ValidateResponse } from '/utils/openapiTypes';
+import type { ValidateResponse } from '@/utils/openapiTypes';
 
 /**
  *

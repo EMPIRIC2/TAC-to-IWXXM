@@ -1,16 +1,21 @@
-"""Standalone backend API module for Docker deployment."""
+"""Standalone backend API module for Docker deployment.
+
+TD-3b routers use conversion_api_surface to avoid import cycles.
+Public convert remains at ``/api/v1/convert`` (router-mounted).
+"""
 
 from __future__ import annotations
 
 import logging
 import os
 import pathlib
-import re
 import sys
 from collections.abc import Awaitable, Callable
-from typing import Any, cast
 
-from starlette.types import Message, Receive, Scope, Send
+try:
+    from .api_http_helpers import ConvertRequestLoggingMiddleware, make_custom_openapi
+except ImportError:  # pragma: no cover - standalone script load
+    from api_http_helpers import ConvertRequestLoggingMiddleware, make_custom_openapi
 
 # Add src directory to path for imports (for local uvicorn execution)
 sys.path.insert(0, str(pathlib.Path(__file__).parent))
@@ -131,12 +136,15 @@ try:
         dissemination,
         dissemination_ops,
         evaluation,
+        exchange_admin,
         health,
         icao_opmet,
+        live_check,
         live_map,
         mass_ingest,
         quality_metrics,
         rule_catalogs,
+        station_health,
         tac_quality,
         validation,
         work_sessions,
@@ -150,12 +158,15 @@ except ImportError:
         dissemination,
         dissemination_ops,
         evaluation,
+        exchange_admin,
         health,
         icao_opmet,
+        live_check,
         live_map,
         mass_ingest,
         quality_metrics,
         rule_catalogs,
+        station_health,
         tac_quality,
         validation,
         work_sessions,
@@ -192,90 +203,6 @@ app = FastAPI(
 
 install_fastapi_observability(app=app, service_name="backend")
 install_abuse_controls(app)
-
-
-class ConvertRequestLoggingMiddleware:
-    """
-    Log request/response details for convert flow, including OPTIONS preflight.
-
-    Attributes
-    ----------
-    _ : object
-        See implementation.
-    """
-
-    def __init__(self, app: Callable[[Scope, Receive, Send], Awaitable[None]]) -> None:
-        """
-        Internal helper ``__init__``.
-
-        Parameters
-        ----------
-        app : object
-            Argument ``app``.
-        """
-        self.app = app
-
-    async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
-        """
-        Internal helper ``__call__``.
-
-        Parameters
-        ----------
-        scope : object
-            Argument ``scope``.
-        receive : object
-            Argument ``receive``.
-        send : object
-            Argument ``send``.
-        """
-        if scope.get("type") != "http":
-            await self.app(scope, receive, send)
-            return
-
-        path = scope.get("path", "")
-        method = scope.get("method", "")
-
-        if path != "/api/v1/convert":
-            await self.app(scope, receive, send)
-            return
-
-        headers = {key.decode("latin1").lower(): value.decode("latin1") for key, value in scope.get("headers", [])}
-
-        logger.info(
-            "[PREFLIGHT] %s %s origin=%s acr_method=%s acr_headers=%s content_type=%s",
-            method,
-            path,
-            headers.get("origin", "none"),
-            headers.get("access-control-request-method", "none"),
-            headers.get("access-control-request-headers", "none"),
-            headers.get("content-type", "none"),
-        )
-
-        async def send_wrapper(message: Message) -> None:
-            """
-            Log preflight response status before forwarding ASGI messages.
-
-            Examples
-            --------
-            >>> 1 + 1  # docstring smoke (send_wrapper)
-            2
-
-            Parameters
-            ----------
-            message : object
-                Argument ``message``.
-            """
-            if message.get("type") == "http.response.start":
-                status_code = message.get("status")
-                logger.info(
-                    "[PREFLIGHT] %s %s -> status=%s",
-                    method,
-                    path,
-                    status_code,
-                )
-            await send(message)
-
-        await self.app(scope, receive, send_wrapper)
 
 
 allowed_origins = get_cors_origins()
@@ -330,11 +257,6 @@ async def add_translation_centre_headers(
     """
     Add ICAO Translation Centre identification headers to all responses.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (add_translation_centre_headers)
-    2
-
     Parameters
     ----------
     request : object
@@ -363,89 +285,7 @@ async def add_translation_centre_headers(
     return response
 
 
-_NUMPY_SECTION = re.compile(
-    "\n(?:Examples|Parameters|Returns|Raises|Attributes|Notes|Warnings|See Also|References)\n-+"
-)
-
-
-def _operator_description(text: str) -> str:
-    """Keep the prose before a NumPy section or a form feed.
-
-    Parameters
-    ----------
-    text : str
-        OpenAPI description copied from a docstring.
-
-    Returns
-    -------
-    str
-        Operator-facing description.
-    """
-    head = text.split("\f", 1)[0]
-    match = _NUMPY_SECTION.search(head)
-    if match:
-        head = head[: match.start()]
-    return head.strip()
-
-
-def _trim_operator_descriptions(node: object) -> None:
-    """Apply :func:`_operator_description` to every OpenAPI description.
-
-    Parameters
-    ----------
-    node : object
-        OpenAPI object, array, or scalar.
-    """
-    if isinstance(node, dict):
-        mapping = cast(dict[str, Any], node)
-        description = mapping.get("description")
-        if isinstance(description, str):
-            trimmed = _operator_description(description)
-            if trimmed != description:
-                mapping["description"] = trimmed
-        for value in mapping.values():
-            _trim_operator_descriptions(value)
-    elif isinstance(node, list):
-        items = cast(list[Any], node)
-        for item in items:
-            _trim_operator_descriptions(item)
-
-
-def custom_openapi() -> dict[str, Any]:
-    """
-    Build OpenAPI schema without security schemes for public API docs.
-
-    Returns
-    -------
-    dict
-        Cached OpenAPI document for the FastAPI application.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (custom_openapi)
-    2
-    """
-    if app.openapi_schema:
-        return app.openapi_schema
-
-    from fastapi.openapi.utils import get_openapi
-
-    openapi_schema = get_openapi(
-        title=app.title,
-        version=app.version,
-        description=app.description,
-        routes=app.routes,
-        tags=app.openapi_tags,
-    )
-    _trim_operator_descriptions(openapi_schema)
-    components = openapi_schema.setdefault("components", {})
-    components.pop("securitySchemes", None)
-    openapi_schema.pop("security", None)
-
-    app.openapi_schema = openapi_schema
-    return app.openapi_schema
-
-
+custom_openapi = make_custom_openapi(app)
 app.openapi = custom_openapi
 
 logger.info(f"DEBUG: validation module = {validation}")
@@ -488,6 +328,12 @@ except Exception as e:  # pragma: no cover - defensive
     logger.error(f"DEBUG: Failed to include dissemination_ops router: {e}", exc_info=True)
 
 try:
+    app.include_router(exchange_admin.router)
+    logger.info("DEBUG: included exchange_admin router successfully")
+except Exception as e:  # pragma: no cover - defensive
+    logger.error(f"DEBUG: Failed to include exchange_admin router: {e}", exc_info=True)
+
+try:
     app.include_router(conversion_profiles.router)
     logger.info("DEBUG: included conversion_profiles router successfully")
 except Exception as e:  # pragma: no cover - defensive
@@ -519,11 +365,13 @@ try:
     app.include_router(conversion.router)
     app.include_router(comprehensive_validation.router)
     app.include_router(live_map.router)
+    app.include_router(live_check.router)
+    app.include_router(station_health.router)
     logger.info("DEBUG: included TD-3b routers successfully")
 except Exception as e:  # pragma: no cover - defensive
     logger.error(f"DEBUG: Failed to include TD-3b routers: {e}", exc_info=True)
 
-# F31 / ADR-033 amend: FE-direct Supabase Auth; packages/auth is JWKS + proxy only.
+# F31 amend: FE-direct Supabase Auth; packages/auth is JWKS + proxy only.
 # Ensure SUPABASE_URL is available for JWKS verification on work-sessions.
 try:
     from metar_shared.supabase_env import get_supabase_url

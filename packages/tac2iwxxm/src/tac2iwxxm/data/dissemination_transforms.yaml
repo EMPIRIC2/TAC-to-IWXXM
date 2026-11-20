@@ -1,5 +1,5 @@
 schema_version: 1
-source: first-party pattern-only transforms (ADR-021/029/030)
+source: first-party pattern-only transforms (/029/030)
 transforms:
 - id: envelope
   type: envelope

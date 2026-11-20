@@ -1,4 +1,4 @@
-"""Allowlist / SSRF helpers - fail-closed + private/metadata deny (T1.3 / ADR-029)."""
+"""Allowlist SSRF helpers - fail-closed + private/metadata deny (T1.3)."""
 
 from __future__ import annotations
 

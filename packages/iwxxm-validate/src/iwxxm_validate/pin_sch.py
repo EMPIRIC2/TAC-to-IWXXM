@@ -7,9 +7,7 @@ declare the namespace URI for that pin.
 
 from __future__ import annotations
 
-from dataclasses import dataclass
-from pathlib import Path
-
+from iwxxm_validate.models.pin_sch import PinSchBundle, PinSchError
 from iwxxm_validate.paths import schematron_path, version_dir, xsd_path
 
 # Directory pin → Schematron ``iwxxm`` namespace URI fragment after ``…/iwxxm/``.
@@ -20,43 +18,6 @@ _PIN_NS_FRAGMENT: dict[str, str] = {
 }
 
 
-class PinSchError(ValueError):
-    """
-    IWXXM pin and Schematron bundle do not match.
-
-    Attributes
-    ----------
-    args : tuple
-        Arguments passed to the exception constructor.
-    """
-
-
-@dataclass(frozen=True, slots=True)
-class PinSchBundle:
-    """
-    Resolved XSD + Schematron paths for one IWXXM pin.
-
-    Attributes
-    ----------
-    pin : str
-        Pin.
-    version_root : Path
-        Version root.
-    xsd : Path
-        XSD.
-    schematron : Path
-        Schematron.
-    namespace_uri : str
-        Namespace URI.
-    """
-
-    pin: str
-    version_root: Path
-    xsd: Path
-    schematron: Path
-    namespace_uri: str
-
-
 # Process-local cache — pin trees are immutable at runtime; avoids re-reading SCH
 # on every convert (converter PR gate / hot path).
 _BUNDLE_CACHE: dict[str, PinSchBundle] = {}
@@ -65,11 +26,6 @@ _BUNDLE_CACHE: dict[str, PinSchBundle] = {}
 def clear_pin_sch_cache() -> None:
     """
     Drop cached pin↔SCH bundles (tests / path monkeypatches).
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (clear_pin_sch_cache)
-    2
     """
     _BUNDLE_CACHE.clear()
 
@@ -78,10 +34,6 @@ def expected_iwxxm_namespace(iwxxm_version: str) -> str:
     """
     Return the ICAO IWXXM namespace URI expected for ``iwxxm_version``.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (expected_iwxxm_namespace)
-    2
 
     Parameters
     ----------
@@ -120,11 +72,6 @@ def assert_pin_schematron_match(iwxxm_version: str) -> PinSchBundle:
     PinSchError
         When the pin is unknown, files are missing, SCH is outside the pin tree,
         or the SCH namespace URI does not match the pin.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (assert_pin_schematron_match)
-    2
     """
     pin = iwxxm_version.strip()
     cached = _BUNDLE_CACHE.get(pin)

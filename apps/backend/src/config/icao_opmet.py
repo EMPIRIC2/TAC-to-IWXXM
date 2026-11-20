@@ -312,11 +312,6 @@ def get_icao_region(airport_code: str) -> str:
     -------
     object
         ICAO region code (AFI, APAC, EUR, MID, NAM, SAM, NAT, WAFR, ESAF)
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (get_icao_region)
-    2
     """
     if not airport_code or len(airport_code) != 4:
         raise ValueError(f"Invalid ICAO airport code: {airport_code}")
@@ -410,11 +405,6 @@ def get_translation_centre_info() -> dict[str, Any]:
     -------
     object
         Dictionary with Translation Centre information
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (get_translation_centre_info)
-    2
     """
     return {
         "translationCentreName": TRANSLATION_CENTRE_NAME,
@@ -431,10 +421,6 @@ def should_log_statistics() -> bool:
     """
     Check if statistics logging is enabled.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (should_log_statistics)
-    2
 
     Returns
     -------
@@ -448,10 +434,6 @@ def should_send_webhooks() -> bool:
     """
     Check if webhook notifications are enabled.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (should_send_webhooks)
-    2
 
     Returns
     -------

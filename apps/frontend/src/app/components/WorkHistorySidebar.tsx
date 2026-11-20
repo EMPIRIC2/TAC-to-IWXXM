@@ -2,8 +2,8 @@
 import { useEffect, useState } from 'react';
 import type { WorkSession } from '@metar/shared';
 import { ChevronDown, ChevronRight, History, Loader2 } from 'lucide-react';
-import { listLocalWorkSessions } from '/utils/localWorkSessionStore';
-import { listWorkSessions } from '/utils/workSessionApi';
+import { listLocalWorkSessions } from '@/utils/localWorkSessionStore';
+import { listWorkSessions } from '@/utils/workSessionApi';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
 

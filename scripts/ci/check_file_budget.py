@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fail when hand-written apps/packages files exceed the line budget (ADR-056).
+"""Fail when hand-written apps/packages files exceed the line budget ().
 
 Rules:
   - Budget: 500 physical lines (newline count).
@@ -11,7 +11,7 @@ Usage:
   python3 scripts/ci/check_file_budget.py
   python3 scripts/ci/check_file_budget.py --bootstrap  # print sorted oversize paths
 
-[Corpus: adr/ADR-056] [Corpus: product §M5]
+ [Corpus: product §M5]
 """
 
 from __future__ import annotations

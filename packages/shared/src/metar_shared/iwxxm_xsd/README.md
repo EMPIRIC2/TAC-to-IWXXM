@@ -1,7 +1,7 @@
 # iwxxm_xsd (generated)
 
 Pydantic models from pinned `vendor/schemas/iwxxm` via
-`scripts/codegen/iwxxm_xsd.py` (ADR-027 / E10-40).
+`scripts/codegen/iwxxm_xsd.py` (E10-40).
 
 ```bash
 make codegen-iwxxm-xsd
@@ -30,4 +30,4 @@ Optional deps: `metar-shared[xsd]` (`pydantic`, `xsdata-pydantic`).
 ## Adapt follow-on
 
 `adapt.pydantic_to_msgspec` / `adapt.pydantic_to_rust_hint` are placeholders
-(ADR-027). Validate hot path remains Rust (`iwxxm-validate`).
+(). Validate hot path remains Rust (`iwxxm-validate`).

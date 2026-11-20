@@ -57,11 +57,6 @@ def validate_ca_exchange_packaging(
     -------
     list[Issue]
         Advisory-free errors for missing operational attributes or header mismatch.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (validate_ca_exchange_packaging)
-    2
     """
     try:
         root = etree.fromstring(xml_content.encode("utf-8"))

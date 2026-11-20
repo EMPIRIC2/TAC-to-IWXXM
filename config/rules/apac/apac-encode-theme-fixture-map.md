@@ -21,7 +21,7 @@ translation suite XML = **informative** only.
 | F23–F25 WMO packs | S025/S026 |
 | F26/F27 VAA/TCA | S027 |
 
-Do **not** treat `*-translation-failed.*` as happy-path goldens (ADR-032 / prior quality bars).
+Do **not** treat `*-translation-failed.*` as happy-path goldens (prior quality bars).
 
 ---
 

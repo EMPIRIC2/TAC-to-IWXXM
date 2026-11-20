@@ -42,10 +42,6 @@ class HttpxDatasetClient:
 
         A missing object (404) still proves HTTP reachability for preflight.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (ping)
-        2
 
         Parameters
         ----------
@@ -70,10 +66,6 @@ class HttpxDatasetClient:
         """
         PUT dataset bytes; return HTTP status code.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (put_dataset)
-        2
 
         Parameters
         ----------
@@ -97,10 +89,6 @@ class HttpxDatasetClient:
         """
         GET dataset bytes; raise on non-2xx.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (get_dataset)
-        2
 
         Parameters
         ----------
@@ -166,11 +154,6 @@ class AiomqttClient:
     async def connect(self) -> None:
         """
         Open an MQTT connection to the configured broker.
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (connect)
-        2
         """
         if self._client is not None:
             return
@@ -190,10 +173,6 @@ class AiomqttClient:
         """
         Publish ``payload`` to ``topic`` (QoS 0).
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (publish)
-        2
 
         Parameters
         ----------
@@ -210,10 +189,6 @@ class AiomqttClient:
         """
         Subscribe to ``topic`` (for harness verification).
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (subscribe)
-        2
 
         Parameters
         ----------
@@ -233,10 +208,6 @@ class AiomqttClient:
         timeout_s : float, optional
             Seconds to wait before raising ``TimeoutError``. By default ``15.0``.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (recv)
-        2
 
         Returns
         -------
@@ -271,11 +242,6 @@ class AiomqttClient:
     async def disconnect(self) -> None:
         """
         Close the MQTT connection if open.
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (disconnect)
-        2
         """
         if self._cm is None:
             self._client = None
@@ -373,11 +339,6 @@ class AiosmtpClient:
     async def connect(self) -> None:
         """
         Open an SMTP connection (STARTTLS or implicit TLS per port).
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (connect)
-        2
         """
         if self._client is not None and self._client.is_connected:
             return
@@ -394,10 +355,6 @@ class AiosmtpClient:
         """
         Authenticate with the SMTP server.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (login)
-        2
 
         Parameters
         ----------
@@ -414,10 +371,6 @@ class AiosmtpClient:
         """
         Submit ``message`` via SMTP DATA.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (send_message)
-        2
 
         Parameters
         ----------
@@ -436,11 +389,6 @@ class AiosmtpClient:
     async def quit(self) -> None:
         """
         Close the SMTP connection if open.
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (quit)
-        2
         """
         client = self._client
         self._client = None

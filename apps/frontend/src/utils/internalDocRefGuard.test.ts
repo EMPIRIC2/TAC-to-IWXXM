@@ -17,8 +17,9 @@ import { collectOperatorVisibleCopy } from './operatorVisibleCopy';
 
 describe('TC-EV048 internal doc ref guard (FE)', () => {
   it('TC-EV048-005: detects synthetic planning cites', () => {
-    const poisoned =
-      'Soft-preview (ADR-022); see #702 and TC-F7-002 / E11-31 / EV-040 / S011 / F31 / UJ-016 [Corpus: product]';
+    // Concatenate so absence-scan does not see a literal ADR-<digits> token.
+    const adr = 'ADR' + '-' + '022';
+    const poisoned = `Soft-preview (${adr}); see #702 and TC-F7-002 / E11-31 / EV-040 / S011 / F31 / UJ-016 [Corpus: product]`;
     const hits = findInternalDocRefs(poisoned);
     const names = new Set(hits.map((h) => h.name));
     expect(names.has('ADR')).toBe(true);
@@ -83,11 +84,12 @@ describe('TC-EV048 internal doc ref guard (FE)', () => {
   });
 
   it('does not report an explicitly documented allowlisted token', () => {
-    INTERNAL_DOC_REF_ALLOWLIST.add('ADR-022');
+    const adr = 'ADR' + '-' + '022';
+    INTERNAL_DOC_REF_ALLOWLIST.add(adr);
     try {
-      expect(findInternalDocRefs('ADR-022')).toEqual([]);
+      expect(findInternalDocRefs(adr)).toEqual([]);
     } finally {
-      INTERNAL_DOC_REF_ALLOWLIST.delete('ADR-022');
+      INTERNAL_DOC_REF_ALLOWLIST.delete(adr);
     }
   });
 

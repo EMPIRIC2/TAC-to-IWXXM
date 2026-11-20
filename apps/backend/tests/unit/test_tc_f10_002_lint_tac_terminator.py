@@ -1,6 +1,6 @@
 """T2.3 / TC-F10-002: lint-tac HTTP passthrough for MISSING_TERMINATOR info + fix.
 
-Spec: docs/api-contract.md §lint-tac; ADR-025 §2.
+Spec: docs/api-contract.md §lint-tac; §2.
 """
 
 from __future__ import annotations
@@ -11,7 +11,7 @@ from src import api as api_module
 from src.utilities.security import verify_supabase_token
 
 CLEAN_NO_EQ = "METAR KJFK 101851Z 24008KT 10SM FEW250 15/07 A3034"
-EXPECTED_COPY = "Reports in bulletins end with '=' - add it before publishing"
+EXPECTED_COPY = "Bulletin reports should end with '='. Add the terminator before you publish."
 
 
 @pytest.fixture

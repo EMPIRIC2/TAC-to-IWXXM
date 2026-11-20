@@ -4,8 +4,9 @@ from __future__ import annotations
 
 from fastapi import APIRouter
 
-from src import api as api_surface
 from src.schemas.conversion import HealthResponse
+
+from .conversion_api_surface import api_surface
 
 router = APIRouter(tags=["Health"])
 
@@ -16,10 +17,6 @@ def health() -> HealthResponse:
     Check API health and conversion availability.
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (health)
-    2
 
     Returns
     -------

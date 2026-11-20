@@ -91,11 +91,6 @@ def get_coordinate_decimals(version: str) -> int:
     -------
     object
         Number of decimal places (2-8)
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (get_coordinate_decimals)
-    2
     """
     rule = COORDINATE_PRECISION.get(version)
     if rule is None:
@@ -120,11 +115,6 @@ def get_elevation_rounding(version: str) -> int:
     -------
     object
         Number of decimal places to round to (0 = round to integer)
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (get_elevation_rounding)
-    2
     """
     rule = ELEVATION_FORMAT.get(version)
     if rule is None:
@@ -153,11 +143,6 @@ def format_coordinates(lat: float, lon: float, version: str) -> str:
     -------
     object
         Formatted coordinate string for gml:pos
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (format_coordinates)
-    2
     """
     decimals = get_coordinate_decimals(version)
     return f"{lat:.{decimals}f} {lon:.{decimals}f}"
@@ -182,11 +167,6 @@ def format_elevation(elevation_m: float, version: str) -> float:
     -------
     object
         Formatted elevation value
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (format_elevation)
-    2
     """
     rounding = get_elevation_rounding(version)
     return round(elevation_m, rounding)

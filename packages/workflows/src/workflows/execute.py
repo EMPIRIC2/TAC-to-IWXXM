@@ -1,4 +1,4 @@
-"""``execute(message, workflow)`` — ADR-042."""
+"""``execute(message, workflow)`` — ."""
 
 from __future__ import annotations
 
@@ -52,11 +52,6 @@ def execute(
     -------
     WorkflowResult
         Aggregate outcome; first failing stage halts the pipeline.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (execute)
-    2
     """
     if isinstance(workflow, str):
         try:

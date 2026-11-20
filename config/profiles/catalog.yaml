@@ -1,5 +1,5 @@
 # Profile source catalog — machine index (EV-063 / #913)
-# Corpus: domain-profiles · ADR-036 §7
+# Corpus: domain-profiles · §7
 # Human stubs: semantic/*.md · exchange/*.md
 schema_version: 2
 cycle: EV-M1-five-remaining
@@ -303,8 +303,15 @@ profiles:
         status: implemented
         ev_cycle: EV-072
         pin_date: "2026-08-24"
-        harvest_script: scripts/iwxxm/harvest_ca_eccc_ops.py
+        harvest_script: scripts/iwxxm/harvest_ops_corpus.py
+        harvest_script_ca_alias: scripts/iwxxm/harvest_ca_eccc_ops.py
+        datamart_probe: packages/tac2iwxxm/tests/fixtures/profiles/CA_ECCC/ops_datamart_probe.json
+        drift_workflow: .github/workflows/msc-datamart-drift.yml
         manifest: packages/tac2iwxxm/tests/fixtures/profiles/CA_ECCC/ops_manifest.json
+        metar_speci_datamart: blocked_http_404
+        note: >
+          METAR/SPECI IWXXM trees absent on MSC datamart; paired encoder_reference
+          TAC+IWXXM under ops/; TAF/AIRMET/SIGMET from recorded COLLECT samples.
       translation_metadata:
         issue: "#1040"
         required_when_profile: true

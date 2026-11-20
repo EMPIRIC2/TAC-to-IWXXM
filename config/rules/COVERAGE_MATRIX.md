@@ -152,7 +152,7 @@ Inventory + soft-path status (S046 / #860 / **TC-EV038-009**):
 [t3.2-translation-failed-inventory.md](../../sessions/S046-iwxxm-corpus-residuals/reports/t3.2-translation-failed-inventory.md);
 METAR/TAF convert covered (TC-EV023-003); other product convert quarantine **deferred**.
 
-**Sample-menu tiers (UJ-039 / ADR-032 amend · S031):** `wmoPass` = default-golden equality; `wmoReference` = loadable official TAC (may not equal encoder). **VONA** `vona-A7-1` is **`wmoPass`** (EV-032 / #741 / F32). **QVACI / WAFS / SIGWX** stay OOS (durable table below). **TC SIGMET** `sigmet-A6-2-TC` is **`wmoPass`** (EV-032 / #835); **VA-EGGX** `sigmet-VA-EGGX` is **`wmoPass`** (S046 / EV-038 / #856); **SWXA** `spacewx-A7-3/4/5` are **`wmoReference`** (#740 + S046/#857). Shape inventory: [example-inventory.md](../../sessions/S036-eight-family-ahl-rules-823/reports/mining/example-inventory.md).
+**Sample-menu tiers (UJ-039 amend · S031):** `wmoPass` = default-golden equality; `wmoReference` = loadable official TAC (may not equal encoder). **VONA** `vona-A7-1` is **`wmoPass`** (EV-032 #741 F32). **QVACI WAFS SIGWX** stay OOS (durable table below). **TC SIGMET** `sigmet-A6-2-TC` is **`wmoPass`** (EV-032 #835); **VA-EGGX** `sigmet-VA-EGGX` is **`wmoPass`** (S046 EV-038 #856); **SWXA** `spacewx-A7-3/4/5` are **`wmoReference`** (#740 + S046/#857). Shape inventory: [example-inventory.md](../../sessions/S036-eight-family-ahl-rules-823/reports/mining/example-inventory.md).
 
 ### XML-only products — permanent OOS for F6 convert (corpus G5)
 
@@ -167,7 +167,7 @@ Vendor XSD/examples may exist for validate/smoke; **no encode** in this issue.
 | **QVACI** (Quantitative Volcanic Ash) | `qvaci.xsd` · `qvaci-Example` | ❌ none | ❌ | **OOS** — IWXXM-only; future Fn only via evolve |
 | **SIGWX** (significant weather / WAFS SIGWX family) | Package/roadmap cites; no F6 TAC path | ❌ none | ❌ | **OOS** — do not treat as F6 product convert |
 
-**Do not:** add workbench catalog stems, lint packs, or ADR-032 equality work for these
+**Do not:** add workbench catalog stems, lint packs, or equality work for these
 without a new approved Fn. Cite this table from epic #846 roll-ups.
 
 ---
@@ -283,7 +283,7 @@ Hard themes from [taf-speci-research-catalog.md](../../sessions/S020-aerodrome-q
 (E15-13; #735 / #734 exceptional-rule tables + WMO `TAC-to-XML-Guidance.txt` + 2025-2
 corrections; no `runwayState`). Paywalled Annex 3 / FMH / FM 205 prose: **cite-only** via
 mining notes (see catalog Sources). Codes extend [ISSUE_CATALOG.md](./ISSUE_CATALOG.md) /
-ADR-028 registry.
+ registry.
 
 | Theme | Lint (F12/F20) | Convert (F6) | Validate / goldens | Status |
 |-------|----------------|--------------|--------------------|--------|
@@ -306,7 +306,7 @@ Hard themes from #733 / #739 exceptional-rule tables + WMO `TAC-to-XML-Guidance.
 2025-2 corrections + [EUR Doc 014](../mining/icao-eur-doc-14-sigmet-airmet-2023-mining-notes.md)
 (public TAC shape). Paywalled Annex 3 / FM 205 prose: **cite-only** via mining notes.
 Research catalog: [`docs/sessions/S025-sigmet-quality/reports/sigmet-research-catalog.md`](../../sessions/S025-sigmet-quality/reports/sigmet-research-catalog.md)
-(T0.1 · E19-16). Codes extend [ISSUE_CATALOG.md](./ISSUE_CATALOG.md) / ADR-028 registry.
+(T0.1 · E19-16). Codes extend [ISSUE_CATALOG.md](./ISSUE_CATALOG.md) registry.
 API: `product=sigmet`; root `iwxxm:SIGMET` vs `iwxxm:VolcanicAshSIGMET` from TAC content
 (E19-13=A). TC SIGMET (#738), AIRMET, VAA, TCA OOS this cycle.
 
@@ -365,7 +365,7 @@ Hard themes from #731 + WMO `TAC-to-XML-Guidance.txt` + vendor `airmet-A6-1a-TS`
 | **A4** Negatives + translation-failed adjacency | Negatives | Not happy-path | — | ✅ Closed (S026 T2.4) — TC-F24-004 registry codes + translation-failed root guard |
 | **C1** Common rules (shared with SIGMET family) | ✅ where TAC | Deferred convert-only per F23 C1 pattern | — | Cite F23 |
 
-**A3 residuals (documented, not deferred themes):** vendor XML labels MWO as `YUDD` while TAC uses `YUSO`; encoder follows TAC; STNR encodes `#731` shared motion nils (vendor omits motion). Golden is encoder-shaped under `canonicalize_xml` (ADR-032 / F23 pattern), not byte-identical vendor UUIDs.
+**A3 residuals (documented, not deferred themes):** vendor XML labels MWO as `YUDD` while TAC uses `YUSO`; encoder follows TAC; STNR encodes `#731` shared motion nils (vendor omits motion). Golden is encoder-shaped under `canonicalize_xml` (F23 pattern), not byte-identical vendor UUIDs.
 
 ## METAR / SPECI / TAF — F25 WMO official example parity (S026 / EV-020)
 
@@ -429,7 +429,7 @@ S045/EV-037). Encode **SoT** = ICAO → FM205 → XSD/SCH → AHL → A7-1 →
 |-------|----------------|--------------|--------------------|--------|
 | **N1** Labels / colour / activity registry | Registry + accept/negatives (T2.2–T2.3; TC-F32-001) | Parse IR | — | ✅ Closed |
 | **N2** MetFeature volcano/ash + bounding + AviationColourCode | — | Encode plugin (T2.4–T2.5; TC-F32-002/003) | — | ✅ Closed |
-| **N3** Golden convert + XSD+SCH | — | `vona-A7-1` ADR-032 equality (T2.6; TC-F32-004) | M-xsd / M-sch / M-golden | ✅ Closed |
+| **N3** Golden convert + XSD+SCH | — | `vona-A7-1` equality (T2.6; TC-F32-004) | M-xsd M-sch M-golden | ✅ Closed |
 | **N4** F7 surface + `product=vona` | — | API enum + FE picker / Examples `wmoPass` (T2.7; TC-F32-005/006; UJ-045) | — | ✅ Closed |
 | **C1** Common / guidance-silent gaps | ✅ where TAC | Cookbook + AHL `WM`→`LM`; residuals → children | translation-failed not happy-path | ✅ Closed (T2.9); deepen filed |
 
@@ -456,10 +456,10 @@ Discovery-first cycle: mine → promote durable rows → wire sample menu / vali
 | Pin `IWXXM/` folder×relevancy + stem×surface (V/C/U/D) | [tree dig](../mining/wmo-im-iwxxm-IWXXM-tree-mining-notes.md) · example table above · UJ-039 catalog | ✅ M1 |
 | Org / sibling refresh; explicit #806 WIS2 skip | [org dig](../mining/wmo-im-org-mining-notes.md) | ✅ M2 |
 | US METAR/SPECI.pdf + modelling + VLab URL rows | [RULE_SOURCE_URLS §5](./RULE_SOURCE_URLS.md) · [PDF dig](../mining/iwxxm-us-metar-speci-pdf-mining-notes.md) | ✅ M3 |
-| `wmoReference` catalog tier + VA EGGX / multi-location menu | ADR-032 amend · `examplesCatalog.ts` · FIXTURE_GAPS | ✅ M5 |
+| `wmoReference` catalog tier + VA EGGX multi-location menu | amend · `examplesCatalog.ts` · FIXTURE_GAPS | ✅ M5 |
 | In-scope stems on validate CI (XML well-formed/XSD/GML) | `test_wmo_canonical_examples` + loader inventory (M6) | ✅ / wire |
 | Multi-location VA **convert** equality | [#809](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/809) — **closed**; catalog **wmoPass** (S033/EV-026) | ✅ |
-| TC SIGMET A6-2 menu / encode bar | [#738](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/738) **closed**; [#829](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/829) **closed**; [#835](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/835) **closed** (EV-032 M1 ADR-032 → `wmoPass`) | ✅ menu **`wmoPass`** |
+| TC SIGMET A6-2 menu encode bar | [#738](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/738) **closed**; [#829](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/829) **closed**; [#835](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/835) **closed** (EV-032 M1 → `wmoPass`) | ✅ menu **`wmoPass`** |
 | SWXA sample menu / encode bar | [#740](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/740) **closed** (F28 / M11); A7-3 unlocked; A7-4/5 deferred; WAFS/QVACI OOS | ✅ / ❌ OOS |
 | VONA sample menu / encode bar | [#741](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/741) **closed** (F32 / EV-032 M2); `vona-A7-1` **`wmoPass`**; guidance-silent cookbook SoT | ✅ menu **`wmoPass`** |
 | US Variable RVR / Lightning / SnowIncrease+sensors | [#810](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/810) · [#811](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/811) · [#812](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/812) | #810/#811/#812 ✅ encode (S032 T1–T3) |
@@ -553,7 +553,7 @@ Umbrella [#823](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/823) **closed** 
 | Per-family body `split_bulletin` (non-METAR/SPECI) | product packs M2–M11 | in-cycle packs landed |
 | TC SIGMET quality bar | #738 **closed** | M7 |
 | TC SIGMET lint pack / STNR / menu unlock | [#829](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/829) | **closed** (EV-030 M2) — lint pack + STNR; exceptional geometry **OOS**; catalog was `wmoReference` until [#835](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/835) **closed** (EV-032 M1) → **`wmoPass`**; F9 TC decode residual allowlisted |
-| TC SIGMET A6-2 ADR-032 equality → `wmoPass` | [#835](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/835) | **closed** (EV-032 M1) — see [t1.6-835-closeout.md](../../sessions/S040-iwxxm-corpus-quality/reports/t1.6-835-closeout.md) |
+| TC SIGMET A6-2 equality → `wmoPass` | [#835](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/835) | **closed** (EV-032 M1) — see [t1.6-835-closeout.md](../../sessions/S040-iwxxm-corpus-quality/reports/t1.6-835-closeout.md) |
 | VONA F32 quality bar / A7-1 `wmoPass` | [#741](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/741) | **closed** (EV-032 M2) — see [t2.9-741-closeout.md](../../sessions/S040-iwxxm-corpus-quality/reports/t2.9-741-closeout.md) |
 | VAA/TCA decode residual deepen | [#820](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/820) | **closed** (EV-030 M3) — structured `LABEL:` + AHL decode; official peers `residuals == []` |
 | SWXA F28 product path | #740 **closed** | M11 / F28 Done |

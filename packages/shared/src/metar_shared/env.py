@@ -16,11 +16,6 @@ def parse_comma_separated_origins(raw: str | None) -> list[str]:
     -------
     list[str]
         ``METAR_CORS_ORIGINS`` style comma-separated origin lists.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (parse_comma_separated_origins)
-    2
     """
     if raw is None:
         return []

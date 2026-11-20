@@ -331,7 +331,7 @@ test.describe('UJ-074: semantic presets + dissemination templates (EV-1051)', ()
 
     test.skip(
       true,
-      'Retired ADR-044 — Conversion profiles / Profile Builder shell removed (TC-EVPVD-001)',
+      'Retired — Conversion profiles / Profile Builder shell removed (TC-EVPVD-001)',
     );
     await openProfiles(page);
     await expect(page.getByTestId('profile-builder-libraries')).toBeVisible();

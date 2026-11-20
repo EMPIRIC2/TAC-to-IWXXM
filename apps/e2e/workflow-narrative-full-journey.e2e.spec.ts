@@ -14,8 +14,7 @@ test.describe('Workflow: Narrative Full Journey', () => {
       timeout: 30_000,
     });
     await expect(page.getByTestId('tac-editor')).toBeVisible();
-    await expect(
-      page.getByRole('button', { name: /log ?out|sign out/i }),
-    ).toHaveCount(0);
+    // Opposite state: logout chrome returned with Auth; convert-button proves shell load.
+    await expect(page.getByTestId('logout-button')).toHaveCount(0);
   });
 });

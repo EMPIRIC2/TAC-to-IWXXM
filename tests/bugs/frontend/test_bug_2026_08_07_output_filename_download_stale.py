@@ -11,8 +11,11 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
 OUTPUT_FILENAME = ROOT / "apps" / "frontend" / "src" / "utils" / "outputFilename.ts"
+DOWNLOAD_NAME = (
+    ROOT / "apps" / "frontend" / "src" / "hooks" / "fileConverterDownloadName.ts"
+)
 FILE_CONVERTER = (
-    ROOT / "apps" / "frontend" / "src" / "app" / "components" / "FileConverter.tsx"
+    ROOT / "apps" / "frontend" / "src" / "hooks" / "useFileConverterPart4.ts"
 )
 
 
@@ -24,7 +27,10 @@ def test_bug_2026_08_07_manual_download_helper_exported() -> None:
 
 def test_bug_2026_08_07_fileconverter_download_uses_current_field() -> None:
     """Single + ZIP download paths must call the current-field helper for manuals."""
-    src = FILE_CONVERTER.read_text(encoding="utf-8")
-    assert "manualDownloadXmlName" in src
+    helper = DOWNLOAD_NAME.read_text(encoding="utf-8")
+    part4 = FILE_CONVERTER.read_text(encoding="utf-8")
+    assert "manualDownloadXmlName" in helper
+    assert "resolveConvertedDownloadXmlName" in part4
     # Stale pattern: download attribute from convert-time originalName alone.
-    assert "a.download = file.originalName.replace" not in src
+    assert "a.download = file.originalName.replace" not in part4
+    assert "a.download = file.originalName.replace" not in helper

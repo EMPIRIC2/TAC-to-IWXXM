@@ -1,0 +1,442 @@
+"""Part 2 of ``aviation_weather_client.py`` (line-cap split)."""
+
+import asyncio
+import random
+from types import TracebackType
+from typing import Any, Self, cast
+
+import httpx
+
+from .aviation_weather_client_part_1 import AviationWeatherAPIError
+from .aviation_weather_client_part_2_mixin_1 import _AviationWeatherClientMethodsMixin
+
+
+class AviationWeatherClient(_AviationWeatherClientMethodsMixin):
+    """
+    Client for fetching METAR data from aviationweather.gov.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
+
+    BASE_URL = "https://aviationweather.gov/api/data"
+
+    BATCH_SIZE = 50  # Max stations per request to be respectful
+
+    RATE_LIMIT_DELAY = 0.5  # Seconds between batches
+
+    def __init__(self, timeout: float = 30.0) -> None:
+        """
+        Internal helper ``__init__``.
+
+        Parameters
+        ----------
+        timeout : object
+            Argument ``timeout``.
+        """
+        self.timeout = timeout
+        self._client: httpx.AsyncClient | None = None
+
+    async def __aenter__(self) -> Self:
+        """
+        Internal helper ``__aenter__``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
+        self._client = httpx.AsyncClient(timeout=self.timeout)
+        return self
+
+    async def __aexit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc_val: BaseException | None,
+        exc_tb: TracebackType | None,
+    ) -> None:
+        """
+        Internal helper ``__aexit__``.
+
+        Parameters
+        ----------
+        exc_type : object
+            Argument ``exc_type``.
+        exc_val : object
+            Argument ``exc_val``.
+        exc_tb : object
+            Argument ``exc_tb``.
+        """
+        if self._client:
+            await self._client.aclose()
+
+    async def fetch_metar_batch(
+        self,
+        station_ids: list[str],
+        hours: float = 1.5,
+    ) -> dict[str, tuple[str | None, str | None]]:
+        """
+        Fetch METAR data for multiple stations.
+
+        Returns
+        -------
+            Dict mapping station_id -> (raw_tac, iwxxm_xml)
+            Both values may be None if data unavail
+
+        Parameters
+        ----------
+        station_ids : object
+            List of ICAO station identifiers
+        hours : object
+            Hours back to search (default: 1.5)
+
+        Returns
+        -------
+        object
+            Dict mapping station_id -> (raw_tac, iwxxm_xml) Both values may be None if data unavailable
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (fetch_metar_batch)
+        2
+        """
+        if not self._client:
+            raise RuntimeError("Client not initialized. Use 'async with' context manager.")
+
+        results: dict[str, tuple[str | None, str | None]] = {}
+
+        # Process in batches to be respectful of the API
+        for i in range(0, len(station_ids), self.BATCH_SIZE):
+            batch = station_ids[i : i + self.BATCH_SIZE]
+
+            # Fetch both raw TAC and IWXXM in parallel
+            raw_result, iwxxm_result = await asyncio.gather(
+                self._fetch_format(batch, "raw", hours),
+                self._fetch_format(batch, "iwxxm", hours),
+                return_exceptions=True,
+            )
+
+            raw_data: dict[str, Any] = raw_result if isinstance(raw_result, dict) else {}
+            iwxxm_data: dict[str, Any] = iwxxm_result if isinstance(iwxxm_result, dict) else {}
+
+            # Combine results
+            for station_id in batch:
+                raw_entry = raw_data.get(station_id)
+                iwxxm_entry = iwxxm_data.get(station_id)
+                results[station_id] = (raw_entry, iwxxm_entry)
+
+            # Rate limiting between batches
+            if i + self.BATCH_SIZE < len(station_ids):
+                await asyncio.sleep(self.RATE_LIMIT_DELAY)
+
+        return results
+
+    async def _fetch_format(self, station_ids: list[str], format_type: str, hours: float) -> dict[str, str]:
+        """
+        Internal helper ``_fetch_format``.
+
+        Parameters
+        ----------
+        station_ids : object
+            Argument ``station_ids``.
+        format_type : object
+            Argument ``format_type``.
+        hours : object
+            Argument ``hours``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
+        if not self._client:
+            raise RuntimeError("Client not initialized")
+
+        ids_param = ",".join(station_ids)
+
+        try:
+            response = await self._client.get(
+                f"{self.BASE_URL}/metar",
+                params={
+                    "ids": ids_param,
+                    "format": format_type,
+                    "hours": hours,
+                },
+            )
+            response.raise_for_status()
+
+            # Parse the response - format depends on format_type
+            return self._parse_response(response.text, format_type, station_ids)
+
+        except httpx.HTTPStatusError as e:
+            if e.response.status_code == 404:
+                # No data found - return empty dict
+                return {}
+            raise AviationWeatherAPIError(f"HTTP {e.response.status_code}: {e.response.text}") from e
+        except httpx.RequestError as e:
+            raise AviationWeatherAPIError(f"Request failed: {e!s}") from e
+
+    def _parse_response(self, content: str, format_type: str, requested_stations: list[str]) -> dict[str, str]:
+        """
+        Internal helper ``_parse_response``.
+
+        Parameters
+        ----------
+        content : object
+            Argument ``content``.
+        format_type : object
+            Argument ``format_type``.
+        requested_stations : object
+            Argument ``requested_stations``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
+        results: dict[str, Any] = {}
+
+        if format_type == "raw":
+            # Raw format returns one METAR per line
+            for line in content.strip().split("\n"):
+                line = line.strip()
+                if not line:
+                    continue
+                # Extract station ID from METAR (4th token usually)
+                parts = line.split()
+                if len(parts) >= 2:
+                    # Format is usually: METAR KJFK 101851Z ...
+                    station_id = parts[1] if parts[0] in ["METAR", "SPECI"] else parts[0]
+                    if station_id in requested_stations:
+                        results[station_id] = line
+
+        elif format_type == "iwxxm":
+            # IWXXM format returns XML - may be wrapped or individual reports
+            # For simplicity, if multiple stations, we try to split by XML declarations
+            if "<?xml" in content:
+                # Split by XML declarations for multiple reports
+                xml_parts = content.split("<?xml")
+                for part in xml_parts:
+                    if not part.strip():
+                        continue
+                    xml_doc = "<?xml" + part if not part.startswith("<?xml") else part
+                    # Try to extract station ID from XML
+                    station_id = self._extract_station_from_xml(xml_doc)
+                    if station_id and station_id in requested_stations:
+                        results[station_id] = xml_doc.strip()
+            else:
+                # Single report or no data
+                if content.strip():
+                    station_id = self._extract_station_from_xml(content)
+                    if station_id and station_id in requested_stations:
+                        results[station_id] = content.strip()
+
+        return results
+
+    def _extract_station_from_xml(self, xml_content: str) -> str | None:
+        """
+        Internal helper ``_extract_station_from_xml``.
+
+        Parameters
+        ----------
+        xml_content : object
+            Argument ``xml_content``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
+        import re
+
+        # Look for designator="KJFK" or similar patterns
+        match = re.search(r'designator="([A-Z]{4})"', xml_content)
+        if match:
+            return match.group(1)
+
+        # Fallback: look for <icaoId> tags
+        match = re.search(r"<.*?icaoId.*?>([A-Z]{4})</.*?icaoId.*?>", xml_content, re.IGNORECASE)
+        if match:
+            return match.group(1)
+
+        return None
+
+    async def fetch_metars_by_bbox(
+        self, bbox: tuple[float, float, float, float], hours: int = 2, format_type: str = "json"
+    ) -> list[dict[str, Any]]:
+        """
+        Fetch all METARs in a bounding box.
+
+        Returns
+        -------
+            List of METAR records
+
+        Parameters
+        ----------
+        bbox : object
+            (min_lon, min_lat, max_lon, max_lat)
+        hours : object
+            Hours back to search
+        format_type : object
+            'json' or 'raw'
+
+        Returns
+        -------
+        object
+            List of METAR records
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (fetch_metars_by_bbox)
+        2
+        """
+        if not self._client:
+            raise RuntimeError("Client not initialized")
+
+        # Callers pass minLon, minLat, maxLon, maxLat. The feed wants minLat, minLon, maxLat, maxLon.
+        bbox_str = f"{bbox[1]},{bbox[0]},{bbox[3]},{bbox[2]}"
+
+        try:
+            response = await self._client.get(
+                f"{self.BASE_URL}/metar",
+                params={
+                    "bbox": bbox_str,
+                    "format": format_type,
+                    "hours": hours,
+                },
+            )
+            response.raise_for_status()
+
+            if format_type == "json":
+                # Handle empty responses
+                if not response.text or response.text.strip() in ["", "[]", "{}"]:
+                    return []
+                try:
+                    return response.json()
+                except Exception as e:
+                    print(f"Warning: Failed to parse JSON response for bbox {bbox_str}: {e!s}")
+                    return []
+            else:
+                # Parse raw format
+                metars: list[Any] = []
+                metars.extend({"rawOb": line.strip()} for line in response.text.strip().split("\n") if line.strip())
+                return metars
+
+        except httpx.HTTPStatusError as e:
+            if e.response.status_code == 404:
+                return []
+            raise AviationWeatherAPIError(f"HTTP {e.response.status_code}: {e.response.text}") from e
+        except httpx.RequestError as e:
+            raise AviationWeatherAPIError(f"Request failed: {e!s}") from e
+
+    async def fetch_map_rows(self, bbox: tuple[float, float, float, float]) -> list[dict[str, Any]]:
+        """Read METAR, TAF, AIRMET, international SIGMET, and G-AIRMET for one box.
+
+        Parameters
+        ----------
+        bbox : tuple[float, float, float, float]
+            Min longitude, min latitude, max longitude, and max latitude.
+
+        Returns
+        -------
+        list[dict[str, Any]]
+            Rows tagged with ``_feed``. An empty product does not drop the others.
+
+        Examples
+        --------
+        >>> 1 + 1
+        2
+        """
+        if not self._client:
+            raise RuntimeError("Client not initialized")
+        bbox_str = f"{bbox[1]},{bbox[0]},{bbox[3]},{bbox[2]}"
+        collected: list[dict[str, Any]] = []
+        for path in ("metar", "taf", "airsigmet", "isigmet", "gairmet"):
+            params: dict[str, str] = {"bbox": bbox_str, "format": "json"}
+            if path == "metar":
+                params["hours"] = "24"
+            try:
+                response = await self._client.get(
+                    f"{self.BASE_URL}/{path}",
+                    params=params,
+                )
+            except httpx.RequestError:
+                continue
+            if response.status_code == 204 or not response.text or not response.text.strip():
+                continue
+            if response.status_code >= 400:
+                continue
+            try:
+                payload = cast(object, response.json())
+            except Exception:
+                continue
+            if not isinstance(payload, list):
+                continue
+            for row in cast("list[object]", payload):
+                if not isinstance(row, dict):
+                    continue
+                raw = cast("dict[object, object]", row)
+                tagged: dict[str, Any] = {}
+                for key, value in raw.items():
+                    tagged[str(key)] = value
+                tagged["_feed"] = path
+                collected.append(tagged)
+        return collected
+
+    async def fetch_random_sample(
+        self, count: int = 100, regions: list[tuple[float, float, float, float]] | None = None, hours: int = 2
+    ) -> list[dict[str, Any]]:
+        """
+        Fetch random sample of METARs for testing.
+
+        Returns
+        -------
+            List of METAR records
+
+        Parameters
+        ----------
+        count : object
+            Number of METARs to fetch
+        regions : object
+            List of bounding boxes to sample from
+        hours : object
+            Hours back to search
+
+        Returns
+        -------
+        object
+            List of METAR records
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (fetch_random_sample)
+        2
+        """
+        if regions is None:
+            # Default regions covering diverse areas
+            regions = [
+                (-130, 25, -65, 50),  # North America
+                (-10, 35, 30, 70),  # Europe
+                (100, -45, 180, 10),  # Asia-Pacific
+                (-80, -55, -30, 15),  # South America
+                (15, -35, 52, 38),  # Africa
+            ]
+
+        all_metars: list[Any] = []
+
+        # Fetch from each region
+        for bbox in regions:
+            try:
+                metars = await self.fetch_metars_by_bbox(bbox, hours=hours, format_type="json")
+                all_metars.extend(metars)
+            except Exception:
+                # Continue even if one region fails
+                continue
+
+        # Random sample if we have more than requested
+        if len(all_metars) > count:
+            return random.sample(all_metars, count)
+
+        return all_metars

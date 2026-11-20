@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { render, screen } from '@testing-library/react';
 
 import { ConvertResultStatus } from './ConvertResultStatus';
-import { assessResultCard } from '/utils/resultCard';
+import { assessResultCard } from '@/utils/resultCard';
 
 describe('ConvertResultStatus', () => {
   it('leads with Valid and hides publish and message sections', () => {
