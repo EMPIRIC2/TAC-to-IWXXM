@@ -28,6 +28,8 @@ from tac_decoding.decode_patterns import *
 from tac_decoding.decode_tokens import _iter_tokens, _spaced_cavok_span, _whole_miles
 from tac_decoding.models.bulletin import _BulletinSplit
 from tac_decoding.models.decode_result import DecodeResidual, DecodeResult, DecodeSegment
+from tac_decoding.models.remarks import RemarkGroup
+from tac_decoding.remarks_decode import decode_remarks, shift_remark_groups
 
 _bulletin_splitter: Callable[[str, str], object] | None = None
 
@@ -92,6 +94,7 @@ def _shift_decode(result: DecodeResult, offset: int) -> DecodeResult:
             if r.text.strip()
         ],
         summary=result.summary,
+        remarks=shift_remark_groups(result.remarks, offset),
     )
 
 
@@ -139,6 +142,7 @@ def _decode_bulletin(tac: str, *, product: str) -> DecodeResult | None:
         segments.append(DecodeSegment(start=start, end=end, code=code, explanation=explanation))
 
     residuals: list[DecodeResidual] = []
+    remarks: list[RemarkGroup] = []
     summaries: list[str] = []
     search_from = 0
     for report in split.reports:
@@ -150,6 +154,7 @@ def _decode_bulletin(tac: str, *, product: str) -> DecodeResult | None:
         inner = _shift_decode(_decode_single_report(report, product=product), pos)
         segments.extend(inner.segments)
         residuals.extend(inner.residuals)
+        remarks.extend(inner.remarks)
         if inner.summary:
             summaries.append(inner.summary.rstrip("."))
         search_from = pos + len(report)
@@ -158,7 +163,13 @@ def _decode_bulletin(tac: str, *, product: str) -> DecodeResult | None:
     n = split.meta.report_count
     numbered = " ".join(f"{i + 1}) {clause}." for i, clause in enumerate(summaries))
     summary = f"Bulletin {split.meta.ahl} ({n} report{'s' if n != 1 else ''}). {numbered}".strip()
-    return DecodeResult(product=product, segments=segments, residuals=residuals, summary=summary)
+    return DecodeResult(
+        product=product,
+        segments=segments,
+        residuals=residuals,
+        summary=summary,
+        remarks=remarks,
+    )
 
 
 def _decode_single_report(tac: str, *, product: str) -> DecodeResult:
@@ -308,7 +319,16 @@ def _decode_single_report(tac: str, *, product: str) -> DecodeResult:
     segments.sort(key=lambda s: (s.start, s.end))
     residuals = _coalesce_residuals(tokens, explained, tac)
     summary = _build_summary(product, segments, residuals)
-    return DecodeResult(product=product, segments=segments, residuals=residuals, summary=summary)
+    remarks: list[RemarkGroup] = []
+    if product in {"METAR", "SPECI"}:
+        remarks = decode_remarks(tac).groups
+    return DecodeResult(
+        product=product,
+        segments=segments,
+        residuals=residuals,
+        summary=summary,
+        remarks=remarks,
+    )
 
 
 def decode_single_report(tac: str, *, product: str) -> DecodeResult:

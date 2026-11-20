@@ -121,6 +121,34 @@ def _precip_amount(token: str) -> str | None:
     return f"Precipitation {hundredths / 100:.2f} inches in the past hour"
 
 
+def _us_precip_addenda(token: str) -> str | None:
+    """US precip addenda: ``P####``, truncated ``P###``, or ``PP###`` (mm).
+
+    These may appear with or without an explicit ``RMK`` keyword on live TAC.
+
+    Parameters
+    ----------
+    token : str
+        One TAC group that may be a precip addendum.
+
+    Returns
+    -------
+    str | None
+        The amount in plain language, or None when the group is not precip addenda.
+    """
+    if phrase := _precip_amount(token):
+        return phrase
+    if match := _SHORT_PRECIP.match(token):
+        hundredths = int(match.group("amt"))
+        if hundredths == 0:
+            return "Precipitation trace in the past hour"
+        return f"Precipitation {hundredths / 100:.2f} inches in the past hour"
+    if match := _PP_PRECIP_MM.match(token):
+        tenths = int(match.group("amt"))
+        return f"Precipitation {tenths / 10:.1f} mm"
+    return None
+
+
 def _okta_phrase(kind: str, amount: str) -> str:
     """One Canadian remark cloud type and its coverage in oktas.
 
