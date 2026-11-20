@@ -1,6 +1,6 @@
 """Server-side live check against allowlisted open aviation feeds.
 
-Egress hosts are fixed — callers never supply a URL. Short cache + per-provider
+Egress hosts are fixed. Callers never supply a URL. Short cache and per-provider
 pacing stay inside published feed limits.
 
 [Corpus: product §F6] [Corpus: tests §TC-LIVE-FEEDS]

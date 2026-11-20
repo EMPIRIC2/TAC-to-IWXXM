@@ -1,4 +1,4 @@
-"""Unit tests for live-check feed fetcher — no network.
+"""Unit tests for live-check feed fetcher (no network).
 
 [Corpus: product §F6] [Corpus: tests §TC-LIVE-FEEDS] [Corpus: api]
 """
