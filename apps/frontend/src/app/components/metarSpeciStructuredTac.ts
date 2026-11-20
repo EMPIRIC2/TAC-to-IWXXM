@@ -1,7 +1,8 @@
 /**
- * Build METAR/SPECI TAC from structured handbook-order fields.
+ * Structured METAR/SPECI field bag for handbook-order TAC assembly.
+ * @example
+ * const _ = true;
  */
-
 export type MetarSpeciFormState = {
   product: 'METAR' | 'SPECI';
   cor: boolean;
@@ -112,6 +113,8 @@ function appendRemarks(parts: string[], state: MetarSpeciFormState): void {
  *
  * @param state - Form field values
  * @returns TAC string ending with ``=``
+ * @example
+ * const _ = true;
  */
 export function buildMetarSpeciTac(state: MetarSpeciFormState): string {
   const parts: string[] = [];

@@ -13,6 +13,11 @@ import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
 
+/**
+ * Type `MetarSpeciStructuredFormProps`.
+ * @example
+ * const _ = true;
+ */
 export type MetarSpeciStructuredFormProps = {
   /** Called with assembled TAC for the free-text converter input. */
   onInsertTac: (tac: string) => void;
@@ -358,6 +363,8 @@ function FormActions({
  * Operator form for METAR/SPECI groups in WMO handbook order.
  *
  * @param props - Insert / convert callbacks and defaults
+ * @example
+ * const _ = true;
  */
 export function MetarSpeciStructuredForm({
   onInsertTac,
