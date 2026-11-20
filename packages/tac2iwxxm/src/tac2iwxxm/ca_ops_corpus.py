@@ -150,11 +150,6 @@ def ops_fixture_root(repo_root: Path | None = None, *, profile: str = "CA_ECCC")
     -------
     Path
         ``packages/tac2iwxxm/tests/fixtures/profiles/<profile>``.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (ops_fixture_root)
-    2
     """
     root = repo_root or Path(__file__).resolve().parents[4]
     return root / "packages" / "tac2iwxxm" / "tests" / "fixtures" / "profiles" / profile

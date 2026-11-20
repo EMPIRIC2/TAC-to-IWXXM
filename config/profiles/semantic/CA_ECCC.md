@@ -169,12 +169,11 @@ extensions, independent of the app default **2025-2** SoT line ([](../../../adr/
 
 ### Ops corpus harvest runbook (#1036)
 
-Canonical profile stub path: `config/profiles/semantic/CA_ECCC.md` (tracked). Do not put
-operator-facing secrets in harvest scripts.
+Tracked stub: `config/profiles/semantic/CA_ECCC.md`. Harvest scripts take no operator secrets.
 
 | Step | Command / artifact |
 |------|-------------------|
-| Parameterized harvest | `uv run python scripts/iwxxm/harvest_ops_corpus.py --profile CA_ECCC --product ALL` |
+| Harvest (profile + product) | `uv run python scripts/iwxxm/harvest_ops_corpus.py --profile CA_ECCC --product ALL` |
 | Offline regenerate | add `--skip-network` (committed datamart XML + paired encoder METAR/SPECI) |
 | Product filter | `--product TAF` (or METAR/SPECI/AIRMET/SIGMET) |
 | CA-only alias | `scripts/iwxxm/harvest_ca_eccc_ops.py` (same flags) |
@@ -183,10 +182,10 @@ operator-facing secrets in harvest scripts.
 | Drift CI | `.github/workflows/msc-datamart-drift.yml` (offline on PR; `--live` weekly) |
 
 **Blocker (METAR/SPECI datamart):** `today/aviation/iwxxm/metar/` and `…/speci/` return
-HTTP 404 (pin 2026-08-24 and probe 2026-11-13). Acceptance ≥5 METAR ops fixtures uses
-**paired** encoder-reference TAC+IWXXM under `METAR/ops/` (`ops_tac` + `ops_xml`).
-TAF/AIRMET/SIGMET remain IWXXM-only from datamart (no public TAC twin feed). Re-run
-`--live` drift when MSC publishes METAR/SPECI trees, then re-harvest.
+HTTP 404 (pin 2026-08-24 and probe 2026-11-13). The ≥5 METAR ops fixtures are
+encoder-reference TAC+IWXXM pairs under `METAR/ops/` (`ops_tac` + `ops_xml`).
+TAF/AIRMET/SIGMET stay IWXXM-only from datamart (no public TAC twin feed). When MSC
+publishes METAR/SPECI trees, re-run `--live` drift, then re-harvest.
 
 ### EV-072 deferred (follow-on)
 

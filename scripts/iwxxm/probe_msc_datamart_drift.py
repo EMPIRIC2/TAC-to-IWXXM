@@ -183,9 +183,11 @@ def main(argv: list[str] | None = None) -> int:
 
     mode = "live" if args.live else "offline"
     print(f"MSC datamart drift OK ({mode})")
-    print(
-        f"probe={args.probe_json.relative_to(_REPO)} probed_at={probe.get('probed_at')}"
-    )
+    try:
+        shown = args.probe_json.relative_to(_REPO)
+    except ValueError:
+        shown = args.probe_json
+    print(f"probe={shown} probed_at={probe.get('probed_at')}")
     return 0
 
 
