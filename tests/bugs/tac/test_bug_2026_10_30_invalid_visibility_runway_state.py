@@ -6,8 +6,8 @@ state field after ``/``. Annex-3 visibility remains 4-digit metres / SM / CAVOK;
 kilometre forms like ``10KM`` are accepted separately (#1477).
 
 Lint-only surface: mutation modes N/A (no create/update/delete of persisted
-state). Matrix covers success (CIS group ignored) × failure (true bad vis) and
-validation pass/fail on METAR and SPECI.
+state). Matrix covers success (CIS group ignored) and failure (true bad vis)
+plus validation pass/fail on METAR and SPECI.
 
 [Corpus: product §F15] [Corpus: tests]
 """
