@@ -2,7 +2,7 @@
 name = "iwxxm_validate_rust"
 version = "2026.11.5+1"
 edition = "2021"
-description = "PyO3 native core for iwxxm-validate (F13 / E10-36 / D-S014-T33-crates)"
+description = "PyO3 native core for iwxxm-validate (native IWXXM validation crate)"
 license = "MIT"
 rust-version = "1.74"
 

@@ -13,9 +13,7 @@ import pytest
 pytestmark = pytest.mark.migration
 
 ROOT = Path(__file__).resolve().parents[2]
-ANNEX3_GOLDEN = (
-    ROOT / "packages" / "tac2iwxxm" / "tests" / "fixtures" / "annex3_golden"
-)
+ANNEX3_GOLDEN = ROOT / "packages" / "tac2iwxxm" / "tests" / "fixtures" / "annex3_golden"
 
 
 def test_tc_m003_superseded_by_tac2iwxxm_goldens() -> None:

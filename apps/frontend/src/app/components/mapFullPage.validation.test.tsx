@@ -1,9 +1,9 @@
 /**
- * Decode visuals station input guard rails (full-page map).
+ * Live map published-station guard rails (full-page map).
  *
- * Incomplete codes must not open the heading / WindCue path. Complete codes
- * matching STATION_ID (/^[A-Z][A-Z0-9]{3}$/) still take that path even when
- * the station is unknown — heading falls back to the typed code.
+ * Incomplete Convert stations must not open the heading / WindCue path. Complete
+ * codes matching STATION_ID (/^[A-Z][A-Z0-9]{3}$/) still take that path even when
+ * the station is unknown — heading falls back to the code.
  */
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
@@ -79,7 +79,12 @@ vi.mock('@/app/components/LiveWorldMap', () => ({
   ),
 }));
 
-import { publishDecodeVisuals, writeStationDraft } from '@/utils/decodeVisualsStore';
+import { publishDecodeVisuals } from '@/utils/decodeVisualsStore';
+
+function expectNoStationFinder(): void {
+  expect(screen.queryByTestId('decode-visuals-station')).not.toBeInTheDocument();
+  expect(document.getElementById('decode-visuals-station-input')).toBeNull();
+}
 
 /** Mirror App handleMapOpenPlace: empty / whitespace TAC is a no-op. */
 function openPlaceGuard(
@@ -96,12 +101,12 @@ function openPlaceGuard(
 
 describe('DecodeVisualsPage station validation', () => {
   beforeEach(() => {
-    writeStationDraft(null);
     publishDecodeVisuals({ station: '', segments: [] });
   });
 
-  it('shows decode-visuals-empty when the station field is empty', () => {
+  it('shows decode-visuals-empty when Convert has no complete station', () => {
     render(<DecodeVisualsPage />);
+    expectNoStationFinder();
     expect(screen.getByTestId('decode-visuals-empty')).toBeInTheDocument();
     expect(screen.queryByTestId('decode-visuals-heading')).not.toBeInTheDocument();
     expect(screen.queryByTestId('wind-cue')).not.toBeInTheDocument();
@@ -111,37 +116,40 @@ describe('DecodeVisualsPage station validation', () => {
     );
   });
 
-  it('does not show heading or WindCue for an incomplete ICAO (KJ)', async () => {
-    const user = userEvent.setup();
+  it('does not show heading or WindCue for an incomplete published ICAO (KJ)', () => {
+    publishDecodeVisuals({ station: 'KJ', segments: [] });
     render(<DecodeVisualsPage />);
-    await user.type(screen.getByTestId('decode-visuals-station'), 'KJ');
-    expect(screen.getByTestId('decode-visuals-station')).toHaveValue('KJ');
+    expectNoStationFinder();
+    expect(screen.getByTestId('decode-visuals-empty')).toBeInTheDocument();
     expect(screen.queryByTestId('decode-visuals-heading')).not.toBeInTheDocument();
     expect(screen.queryByTestId('wind-cue')).not.toBeInTheDocument();
     expect(screen.getByTestId('live-world-map')).toHaveAttribute(
       'data-focus-station',
       '',
     );
+    publishDecodeVisuals({ station: '', segments: [] });
   });
 
-  it('shows heading path for invalid/unknown complete codes (STATION_ID match)', async () => {
+  it('shows heading path for invalid/unknown complete published codes', () => {
     // Unknown but complete: /^[A-Z][A-Z0-9]{3}$/ — DecodeVisualsPage still renders
     // decode-visuals-heading (display name falls back to the code) and WindCue.
-    const user = userEvent.setup();
+    publishDecodeVisuals({ station: 'QXZX', segments: [] });
     render(<DecodeVisualsPage />);
-    await user.type(screen.getByTestId('decode-visuals-station'), 'QXZX');
+    expectNoStationFinder();
     expect(screen.getByTestId('decode-visuals-heading')).toHaveTextContent('QXZX');
     expect(screen.getByTestId('wind-cue')).toBeInTheDocument();
     expect(screen.getByTestId('live-world-map')).toHaveAttribute(
       'data-focus-station',
       'QXZX',
     );
+    publishDecodeVisuals({ station: '', segments: [] });
   });
 
   it('no-ops Send when the place has empty TAC reports', async () => {
     const user = userEvent.setup();
     const accepted = vi.fn();
     render(<DecodeVisualsPage onOpenPlace={openPlaceGuard(accepted)} />);
+    expectNoStationFinder();
     await user.click(screen.getByTestId('mock-send-empty-reports'));
     expect(accepted).not.toHaveBeenCalled();
     await user.click(screen.getByTestId('mock-send-blank-tac'));

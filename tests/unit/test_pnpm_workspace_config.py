@@ -11,7 +11,7 @@ ROOT = Path(__file__).resolve().parents[2]
 
 @pytest.mark.unit
 class TestPnpmWorkspaceConfig:
-    """pnpm-workspace.yaml satisfies spec.md §Repository and ADR-005."""
+    """pnpm-workspace.yaml satisfies spec.md §Repository and ."""
 
     def test_pnpm_workspace_file_exists(self) -> None:
         assert (ROOT / "pnpm-workspace.yaml").exists()

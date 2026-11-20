@@ -1,4 +1,4 @@
-"""TC-F28-001 - SWXA registry completeness (UJ-043 / ADR-028).
+"""TC-F28-001 - SWXA registry completeness (UJ-043 ).
 
 Pass criteria (docs/test-plan.md §TC-F28-001):
 
@@ -102,7 +102,7 @@ def test_swxa_product_registry_rows_appear_in_fixtures() -> None:
 
 
 def test_catalog_includes_swxa_registry_rows() -> None:
-    """ISSUE_CATALOG export lists every swxa-tagged registry code (ADR-028)."""
+    """ISSUE_CATALOG export lists every swxa-tagged registry code ."""
     assert CATALOG_JSON.is_file(), "missing ISSUE_CATALOG.json - run make catalog-regen"
     assert CATALOG_MD.is_file(), "missing ISSUE_CATALOG.md - run make catalog-regen"
 

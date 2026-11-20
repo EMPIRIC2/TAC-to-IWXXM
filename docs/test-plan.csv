@@ -729,9 +729,9 @@ TC-EVYFC-006,auth in API TAF matrix row lock,,,UJ-DEV-011,,,,,documented,heading
 TC-EVYFC-007,auth in API SIGMET matrix row lock,,,UJ-DEV-011,,,,,documented,heading_level=3
 TC-EVYFC-008,auth in API AIRMET/VAA/TCA matrix row lock,,,UJ-DEV-011,,,,,documented,heading_level=3
 TC-EVDOC-001,Presence gate (PY/TS/Rust),,,UJ-DEV-012,,,,,documented,heading_level=3
-TC-EVDOC-002,Required Examples / `@example` / `# Examples`,,,UJ-DEV-012,,,,,documented,heading_level=3
+TC-EVDOC-002,Meaningful Examples when present (ban >>> 1+1 smoke) / `@example` / `# Examples`,,,UJ-DEV-012,,,,,documented,heading_level=3
 TC-EVDOC-003,NumPy / TSDoc / rustdoc shape,,,UJ-DEV-012,,,,,documented,heading_level=3
-TC-EVDOC-004,Python doctest Examples,,,UJ-DEV-012,,,,,documented,heading_level=3
+TC-EVDOC-004,Python doctest Examples (real only; no placeholder smoke),,,UJ-DEV-012,,,,,documented,heading_level=3
 TC-EVDOC-005,TypeScript executable `@example`,,,UJ-DEV-012,,,,,documented,heading_level=3
 TC-EVDOC-006,Rust rustdoc + doctest,,,UJ-DEV-006,,,,,documented,heading_level=3
 TC-EVDOC-007,Monorepo warn/info-clean quality pass,,,UJ-DEV-012,,apps/backend/tests/unit/test_tc_1271_reference_lookup_http.py,,,documented,heading_level=3
@@ -894,3 +894,19 @@ TC-QV-010,OSV-Scanner lockfile vulnerability scan,coverage,F34,,No unwaived know
 TC-QV-011,Gitleaks secret scan,coverage,F34,,No secrets found using config/tooling/gitleaks.toml,config/tooling/gitleaks.toml,,quality-tooling,documented,TR-Q08; Wave 2; command and CI job planned
 TC-QV-012,Actionlint workflow lint,coverage,F34,,No errors in .github/workflows,scripts/security/install-tools.sh,,quality-tooling,documented,TR-Q08; Wave 2; command and CI job planned
 TC-F37-TAC-001,Live map TAC weather layers + station cluster picker,,,UJ-MAP,,apps/frontend/src/utils/liveMapTacLayers.test.ts,,,documented,heading_level=3
+TC-WIS2-ADMIN-001,Public WIS2 preflight/send wired (no 501),,,UJ-DISS,,apps/backend/tests/unit/test_dissemination_api.py,,,documented,heading_level=3
+TC-WIS2-ADMIN-002,Exchange-admin allowlist read-only + role gate,,,UJ-DISS,,apps/backend/tests/unit/test_exchange_admin.py,,,documented,heading_level=3
+TC-WIS2-ADMIN-003,Invitation groups + national remarks toggle,,,UJ-DISS,,apps/backend/tests/unit/test_exchange_admin.py,,,documented,heading_level=3
+TC-SH-001,Station health list API returns grades,,,UJ-096,,test_station_health_api.py,,,documented,window=6h
+TC-SH-002,Station health detail and unknown ICAO,,,UJ-096,,test_station_health_api.py,,,documented,
+TC-SH-003,Solidus and missing-digit counters,,,UJ-096,,test_station_health_metrics.py,,,documented,
+TC-SH-004,Grade letter thresholds and availability,,,UJ-096,,test_station_health_metrics.py,,,documented,
+TC-SH-005,Station health shell tab and empty state,,,UJ-096,,StationHealthPage.test.tsx,,,documented,heading_level=3
+TC-SH-006,Station health API success/failure/validation matrix,,,UJ-096,,test_station_health_api.py,,,documented,parametrized
+TC-SH-007,Station health Postgres store routing,,,UJ-096,,test_station_health_postgres.py,,,documented,
+TC-SH-008,Convert path station health recorder wire,,,UJ-096,,test_station_health_convert_wire.py,,,documented,
+TC-SH-009,Station health 90d window and WMO region grades,,,UJ-096,,test_station_health_live_window_region_matrix.py,,,documented,window=90d
+TC-SH-010,Station health WMO region map and unknown fail-closed,,,UJ-096,,test_station_health_wmo_region.py,,,documented,
+TC-SH-011,Station health window×product×region permutations,,,UJ-096,,test_station_health_live_window_region_matrix.py,,,documented,parametrized
+TC-SH-012,Station health maintenance formats issues retention centennial matrix,,,UJ-096,,test_station_health_signals_matrix.py,,,documented,parametrized
+

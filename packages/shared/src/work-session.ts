@@ -1,4 +1,4 @@
-/** F5/F7 TAC work session types — parity with apps/backend work_session schemas (ADR-020). */
+/** F5/F7 TAC work session types — parity with apps/backend work_session schemas . */
 
 export type WorkSessionStatus = 'draft' | 'wip' | 'finished' | 'failed';
 

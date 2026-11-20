@@ -11,8 +11,6 @@ from typing import Any
 from fastapi import APIRouter, Depends, File, Form, HTTPException, Request, UploadFile, status
 from fastapi.responses import JSONResponse
 
-from src import api as api_surface
-
 from ..services.mass_ingest import (
     MassIngestCaps,
     MassIngestFileResult,
@@ -27,6 +25,7 @@ from ..utilities.abuse_controls import (
     mass_ingest_limit,
 )
 from ..utilities.security import verify_supabase_token
+from .conversion_api_surface import api_surface
 
 logger = logging.getLogger(__name__)
 
@@ -97,11 +96,6 @@ async def mass_ingest(
     -------
     JSONResponse
         Per-file accept/reject list and summary counts.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (mass_ingest)
-    2
     """
     uploads = files
     if not uploads:
@@ -177,10 +171,6 @@ async def ingest_collect(
     Member extraction is not available.
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (ingest_collect)
-    2
 
     Parameters
     ----------

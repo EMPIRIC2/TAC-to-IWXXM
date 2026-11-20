@@ -11,7 +11,7 @@ ROOT = Path(__file__).resolve().parents[2]
 
 @pytest.mark.unit
 class TestT13AuthWorkspaceWire:
-    """Config gates for Auth package restore wiring (env-contract / ADR-033)."""
+    """Config gates for Auth package restore wiring (env-contract)."""
 
     def test_dockerfile_copies_packages_auth(self) -> None:
         text = (ROOT / "apps/backend/docker/Dockerfile").read_text(encoding="utf-8")

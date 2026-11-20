@@ -1,4 +1,4 @@
-"""Compatibility shim — decode implementation lives in ``tac_decoding`` (ADR-044).
+"""Compatibility shim — decode implementation lives in ``tac_decoding`` .
 
 Replaces this module object with ``tac_decoding.decode`` so private helpers remain
 importable for one release. Prefer ``from tac_decoding import decode_tac``.

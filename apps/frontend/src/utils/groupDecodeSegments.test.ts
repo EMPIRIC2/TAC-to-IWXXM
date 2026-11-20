@@ -148,6 +148,55 @@ describe('groupDecodeSegments', () => {
     expect(phrases).toHaveLength(2);
   });
 
+  it('groups multi-word FIR name segment with oceanic FIR', () => {
+    const phrases = groupDecodeSegments([
+      seg(46, 54, 'NEW YORK', 'FIR name (NEW YORK)'),
+      seg(55, 62, 'OCEANIC', 'Oceanic FIR qualifier'),
+      seg(63, 66, 'FIR', 'Flight information region'),
+    ]);
+    expect(phrases).toEqual([
+      {
+        start: 46,
+        end: 66,
+        code: 'NEW YORK OCEANIC FIR',
+        explanation: 'NEW YORK oceanic flight information region',
+      },
+    ]);
+  });
+
+  it('merges split FIR name tokens then groups with FIR', () => {
+    const phrases = groupDecodeSegments([
+      seg(46, 49, 'NEW', 'FIR name (NEW)'),
+      seg(50, 54, 'YORK', 'FIR name (YORK)'),
+      seg(55, 58, 'FIR', 'Flight information region'),
+    ]);
+    expect(phrases).toEqual([
+      {
+        start: 46,
+        end: 58,
+        code: 'NEW YORK FIR',
+        explanation: 'NEW YORK flight information region',
+      },
+    ]);
+  });
+
+  it('merges split FIR name tokens without a FIR follow-on', () => {
+    const phrases = groupDecodeSegments([
+      seg(0, 3, 'NEW', 'FIR name (NEW)'),
+      seg(4, 8, 'YORK', 'FIR name (YORK)'),
+      seg(9, 12, 'OBS', 'Observed'),
+    ]);
+    expect(phrases).toEqual([
+      {
+        start: 0,
+        end: 8,
+        code: 'NEW YORK',
+        explanation: 'FIR name (NEW YORK)',
+      },
+      seg(9, 12, 'OBS', 'Observed'),
+    ]);
+  });
+
   it('groups MOV + direction + speed', () => {
     const phrases = groupDecodeSegments([
       seg(172, 175, 'MOV', 'Moving'),

@@ -2,7 +2,7 @@
 
 Run with ``make test-live-feeds``. This is not part of CI.
 
-[Corpus: tests §TC-LIVE-FEEDS] [Corpus: product §F6] [Corpus: adr/ADR-009]
+[Corpus: tests §TC-LIVE-FEEDS] [Corpus: product §F6]
 """
 
 from __future__ import annotations

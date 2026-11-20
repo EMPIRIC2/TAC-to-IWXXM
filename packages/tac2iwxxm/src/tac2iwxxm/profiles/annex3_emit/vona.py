@@ -49,7 +49,7 @@ def _fmt_coord(value: float) -> str:
     return text
 
 
-# WMO vona-A7-1 peer stamps (ADR-032 / S02.M1 example-specific; not default API).
+# WMO vona-A7-1 peer stamps (S02.M1 example-specific; not default API).
 # Official XML uses degrees.minutes display (54.03 159.27) rather than true decimal
 # degrees from N5403 E15927 (54.05 159.45), plus fixed gml:identifier UUIDs.
 _VONA_A7_1_COLLECTIVE_ID = "a9d53294-7fcf-4a73-9dd2-63df64041800"
@@ -176,7 +176,7 @@ def emit_vona_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
 
     Matches A7-1 field shape (MetFeature volcano + ash, ``iwxxm/AviationColourCode``).
     Official ``vona-A7-1`` peer uses example-specific identifier/coord stamps for
-    ADR-032 ``canonicalize_xml`` equality (TC-F32-004 / T2.6). Ash
+     ``canonicalize_xml`` equality (TC-F32-004 T2.6). Ash
     ``phenomenonProperty`` uses ``iwxxm/nil/inapplicable`` on the A7-1 peer; non-peer
     TAC with ``HGT SOURCE`` / ``MOV`` encodes ``VolcanicAshCloudVerticalExtent``
     (G-VONA-1 / TC-EV038-011 / #849).
@@ -193,11 +193,6 @@ def emit_vona_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
     -------
     str
         An IWXXM ``VolcanoObservatoryNoticeForAviation`` document (F32 / EV-032).
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (emit_vona_annex3)
-    2
     """
     from tac2iwxxm.codelists import aviation_colour_href
 

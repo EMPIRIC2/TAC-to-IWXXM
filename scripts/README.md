@@ -5,7 +5,7 @@ for the TAC to IWXXM monorepo.
 
 ## Coverage gate (EV-080 / #1077)
 
-Per [ADR-007](../docs/adr/ADR-007-universal-coverage-gate.md): every `scripts/**/*.py` is
+Per [](../docs/adr/-universal-coverage-gate.md): every `scripts/**/*.py` is
 measured under a dedicated **100%** line+branch coverage job; every `scripts/**/*.sh` has
 ≥1 **bats-core** test in CI (`tests/bats/`). Local entrypoints (EV-080 tech-tooling):
 

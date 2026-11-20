@@ -12,10 +12,10 @@ dependencies = []
 
 [tool.uv]
 package = false
-# Python floor: requires-python >=3.12 (ADR-005); basedpyright pythonVersion and ruff
+# Python floor: requires-python >=3.12 (); basedpyright pythonVersion and ruff
 # target-version stay at 3.12 so type-check and lint match the oldest supported runtime.
-# CI/dev interpreters may be newer; do not raise these without superseding ADR-005.
-# S008 F6 members: tac2iwxxm, iwxxm-validate, tac-validate.
+# CI/dev interpreters may be newer; do not raise these without superseding .
+# Workspace F6 members: tac2iwxxm, iwxxm-validate, tac-validate.
 
 [dependency-groups]
 dev = [
@@ -91,8 +91,26 @@ exclude = [
   "vendor",
   "apps/frontend/dist",
   "frontend/dist",
-  # ADR-027 generated xsdata trees (T3.7)
+  # generated xsdata trees (T3.7)
   "packages/shared/src/metar_shared/iwxxm_xsd/v*",
+  # tac2iwxxm split parts/shared/loaders exec'd into package ns (EV-tac2iwxxm-models-split)
+  # Public types come from sibling __init__.pyi stubs.
+  "packages/tac2iwxxm/src/tac2iwxxm/**/_part*.py",
+  "packages/tac2iwxxm/src/tac2iwxxm/**/_shared.py",
+  "packages/tac2iwxxm/src/tac2iwxxm/bulletin/__init__.py",
+  "packages/tac2iwxxm/src/tac2iwxxm/conversion_templates/__init__.py",
+  "packages/tac2iwxxm/src/tac2iwxxm/convert/__init__.py",
+  "packages/tac2iwxxm/src/tac2iwxxm/emit_map/__init__.py",
+  "packages/tac2iwxxm/src/tac2iwxxm/exchange_output/__init__.py",
+  "packages/tac2iwxxm/src/tac2iwxxm/library_yaml/__init__.py",
+  "packages/tac2iwxxm/src/tac2iwxxm/profiles/annex3/__init__.py",
+  "packages/tac2iwxxm/src/tac2iwxxm/profiles/annex3_emit/sigmet/__init__.py",
+  "packages/tac2iwxxm/src/tac2iwxxm/profiles/ca_eccc/__init__.py",
+  "packages/tac2iwxxm/src/tac2iwxxm/profiles/iwxxm_us/__init__.py",
+  "packages/tac2iwxxm/src/tac2iwxxm/slot_builders/metar_speci/__init__.py",
+  "packages/tac2iwxxm/src/tac2iwxxm/slot_builders/sigmet_airmet/__init__.py",
+  "packages/tac2iwxxm/src/tac2iwxxm/slot_builders/taf/__init__.py",
+  "packages/tac2iwxxm/src/tac2iwxxm/slot_builders/vaa_tca/__init__.py",
 ]
 reportMissingTypeStubs = false
 reportUnknownMemberType = "error"
@@ -127,13 +145,11 @@ markers = [
   "edge_case: conversion/validation edge-case corpus (filter with -m edge_case)",
   "schemathesis: OpenAPI property tests (make test-schemathesis)",
 ]
-# ADR-048 / TC-EVDOC-007: warnings are errors. Narrow third-party-only ignore for
-# passlib's crypt deprecation (stdlib path; not a product suppression).
+# TC-EVDOC-007: warnings are errors. No product-wide ignore filters.
 # The pytest-gremlins "Coverage collection returned no data" warning is NOT ignored here;
 # it is passed only via -W in scripts/ci/run_mutation_python.sh (mutation chunks).
 filterwarnings = [
   "error",
-  "ignore:'crypt' is deprecated and slated for removal in Python 3.13:DeprecationWarning:passlib.utils",
 ]
 
 [tool.coverage.run]
@@ -141,7 +157,7 @@ branch = true
 source = ["apps", "packages"]
 omit = [
   "**/tests/**",
-  # ADR-027 generated xsdata trees (T3.7)
+  # generated xsdata trees (T3.7)
   "*/iwxxm_xsd/v*/**",
 ]
 
@@ -168,8 +184,8 @@ report = ["console", "json"]
 workers = 2
 cache = true
 
-# Ruff configuration — root workspace (ADR-005, ADR-053).
-# ADR-048: pydocstyle (D) fail-closed with NumPy convention.
+# Ruff configuration — root workspace (,).
+# : pydocstyle (D) fail-closed with NumPy convention.
 [tool.ruff]
 target-version = "py312"
 line-length = 88
@@ -185,7 +201,7 @@ src = [
   "tests",
 ]
 extend-exclude = [
-  # ADR-027 generated xsdata output (only exclusion) — regenerate via make codegen-iwxxm-xsd
+  # generated xsdata output (only exclusion) — regenerate via make codegen-iwxxm-xsd
   "packages/shared/src/metar_shared/iwxxm_xsd",
   "packages/shared/src/metar_shared/iwxxm_xsd/v*",
 ]
@@ -203,11 +219,11 @@ select = [
   "ASYNC", # flake8-async
   "PT",    # flake8-pytest-style
   "ANN",   # flake8-annotations (src only; tests ignored below)
-  "D",     # pydocstyle — ADR-048 / TC-EVDOC-008
+  "D", # pydocstyle — TC-EVDOC-008
 ]
 ignore = [
   "E501", # line length handled by formatter
-  # NumPy / ADR-048 backfill style: summary on second line; D203 conflicts with D211
+  # NumPy backfill style: summary on second line; D203 conflicts with D211
   "D203",
   "D212",
   # Descriptive summaries (not imperative verbs) are intentional in this corpus
@@ -223,17 +239,27 @@ ignore = [
 [tool.ruff.lint.pydocstyle]
 convention = "numpy"
 
-# ADR-056: max-complexity documented here; CI enforces via
+# : max-complexity documented here; CI enforces via
 # config/ruff-complexity.toml + make file-complexity.
 [tool.ruff.lint.mccabe]
 max-complexity = 10
 
 [tool.ruff.lint.per-file-ignores]
+
+"apps/backend/src/routers/conversion_convert_continue.py" = ["F841", "ANN401", "F811"]
+"apps/backend/src/routers/conversion_convert_continue_part2.py" = ["F841", "ANN401", "F811"]
+"apps/backend/src/routers/conversion_zip_continue.py" = ["F841", "ANN401", "F811"]
+"apps/backend/src/routers/conversion_routes_io.py" = ["ANN401"]
+"apps/backend/src/routers/conversion_routes_zip.py" = ["ANN401"]
 "**/tests/**" = ["ANN", "D"]
 "**/test_*.py" = ["ANN", "D"]
 "**/conftest.py" = ["ANN", "D"]
 # lxml / PyO3 boundaries — third-party handles without complete stubs (typing-policy)
 "packages/iwxxm-validate/src/iwxxm_validate/{canonical_xml,c14n,native,schematron,xsd}.py" = ["ANN401"]
+# tac2iwxxm exec-namespace splits: _shared imports feed _part bodies via package globals
+"packages/tac2iwxxm/src/tac2iwxxm/**/_shared.py" = ["F401", "F403", "I001", "E402"]
+"packages/tac2iwxxm/src/tac2iwxxm/**/_part*.py" = ["F401", "F403", "F405", "F821", "E402", "I001", "D"]
+"packages/tac2iwxxm/src/tac2iwxxm/**/__init__.py" = ["F401", "F403", "F405", "F821", "E402", "I001", "S102"]
 
 [tool.ruff.lint.isort]
 known-first-party = ["gifts", "auth", "shared", "metar_shared"]

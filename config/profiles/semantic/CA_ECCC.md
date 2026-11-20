@@ -2,7 +2,7 @@
 
 > **Profile id**: `CA_ECCC` · **Kind**: semantic · **Priority**: P1 · **Status**: implemented (EV-064–067 / #916, #1039 P1)  
 > **Implementation**: [#916](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/916), [#1039](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1039)  
-> **Catalog row**: [`catalog.yaml`](../catalog.yaml) · **ADR**: [ADR-036](../../../adr/ADR-036-semantic-vs-exchange-profiles.md)
+> **Catalog row**: [`catalog.yaml`](../catalog.yaml) · **ADR**: [](../../../adr/-semantic-vs-exchange-profiles.md)
 
 Environment and Climate Change Canada (ECCC / MSC) national semantic overlay: MANOBS
 surface observations, MANAIR aviation forecasts, and Canadian IWXXM extension schemas.
@@ -37,7 +37,7 @@ defined in MANOBS §11.3; SAWR is a **Canadian national product** modeled in
 
 ### Why LWIS/SAWR use `product=METAR` in the API
 
-Per [ADR-036](../../../adr/ADR-036-semantic-vs-exchange-profiles.md), three layers stay separate:
+Per [](../../../adr/-semantic-vs-exchange-profiles.md), three layers stay separate:
 
 1. **`semanticProfile`** (`CA_ECCC`) — national parse/emit overlay (MANOBS + `*-ca.xsd`).
 2. **`product`** — converter dispatch family (`METAR` \| `SPECI` \| `TAF` \| …). LWIS/SAWR are
@@ -104,7 +104,7 @@ Template: [`_template/code-list-deviations.yaml`](../_template/code-list-deviati
 ## IWXXM version line
 
 MSC operational practice pins **IWXXM 3.0.0** core (`http://icao.int/iwxxm/3.0`) plus CA
-extensions, independent of the app default **2025-2** SoT line ([ADR-036](../../../adr/ADR-036-semantic-vs-exchange-profiles.md)).
+extensions, independent of the app default **2025-2** SoT line ([](../../../adr/-semantic-vs-exchange-profiles.md)).
 
 ## Implementation
 
@@ -166,6 +166,26 @@ extensions, independent of the app default **2025-2** SoT line ([ADR-036](../../
   (TC-EV072-007..010)
 - **Note:** METAR/SPECI IWXXM not published on MSC datamart at pin_date 2026-08-24;
   encoder-reference fixtures with documented waiver; TAF/AIRMET from live COLLECT envelopes
+
+### Ops corpus harvest runbook (#1036)
+
+Tracked stub: `config/profiles/semantic/CA_ECCC.md`. Harvest scripts take no operator secrets.
+
+| Step | Command / artifact |
+|------|-------------------|
+| Harvest (profile + product) | `uv run python scripts/iwxxm/harvest_ops_corpus.py --profile CA_ECCC --product ALL` |
+| Offline regenerate | add `--skip-network` (committed datamart XML + paired encoder METAR/SPECI) |
+| Product filter | `--product TAF` (or METAR/SPECI/AIRMET/SIGMET) |
+| CA-only alias | `scripts/iwxxm/harvest_ca_eccc_ops.py` (same flags) |
+| Manifest | `packages/tac2iwxxm/tests/fixtures/profiles/CA_ECCC/ops_manifest.json` |
+| Recorded probe | `…/CA_ECCC/ops_datamart_probe.json` (product tree + schema listing) |
+| Drift CI | `.github/workflows/msc-datamart-drift.yml` (offline on PR; `--live` weekly) |
+
+**Blocker (METAR/SPECI datamart):** `today/aviation/iwxxm/metar/` and `…/speci/` return
+HTTP 404 (pin 2026-08-24 and probe 2026-11-13). The ≥5 METAR ops fixtures are
+encoder-reference TAC+IWXXM pairs under `METAR/ops/` (`ops_tac` + `ops_xml`).
+TAF/AIRMET/SIGMET stay IWXXM-only from datamart (no public TAC twin feed). When MSC
+publishes METAR/SPECI trees, re-run `--live` drift, then re-harvest.
 
 ### EV-072 deferred (follow-on)
 

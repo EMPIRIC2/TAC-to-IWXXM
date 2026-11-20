@@ -124,3 +124,4 @@ UJ-DEV-006,Rust crate CI (fmt/clippy/test + maturin),`make rust-check` / CI,"IWX
 UJ-DEV-007,Slim husky — lint commit + fast-unit push,husky / make install-hooks,workspace tooling deepen,T0,TC-EV047-001..004,Slim husky lint commit + fast-unit push,active,live_e2e=—
 UJ-DEV-008,Converter perf regression blocks PR,CI perf gate,general TAC conversion deepen,T0 / CI,TC-EV047-005..008,Converter perf regression blocks PR,active,live_e2e=CI
 UJ-OPS-001,Deploy DOKS stack (API + static + worker),config/deploy/doks,"auth in API, ingest worker",T3 (staging),,,active,
+UJ-096,Browse station health dashboard,apps/frontend / API,station health dashboard (airport data + ingest + TAC quality + operator shell),T0 / T2,"TC-SH-001, TC-SH-002, TC-SH-003, TC-SH-004, TC-SH-005",apps/backend/tests/unit/test_station_health_*.py; apps/frontend/src/app/components/StationHealthPage.test.tsx,active,public read aggregates; writes from ingest/convert only

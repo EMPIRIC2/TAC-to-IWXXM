@@ -1,4 +1,4 @@
-"""In-memory per-user rate limiter for dissemination preflight/send (ADR-029)."""
+"""In-memory per-user rate limiter for dissemination preflight/send ()."""
 
 from __future__ import annotations
 
@@ -63,11 +63,6 @@ class DisseminationRateLimiter:
         ------
         RateLimitExceeded
             When the sliding one-minute window is full.
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (check)
-        2
         """
         ts = time.time() if now is None else now
         window_start = ts - 60.0
@@ -83,10 +78,6 @@ class DisseminationRateLimiter:
         """
         Clear counters for one user or all users (tests).
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (reset)
-        2
 
         Parameters
         ----------

@@ -1,5 +1,5 @@
 /**
- * Split Issue details Source lines into plain text and http(s) URL segments.
+ * Split Lint details Source lines into plain text and http(s) URL segments.
  */
 
 /**

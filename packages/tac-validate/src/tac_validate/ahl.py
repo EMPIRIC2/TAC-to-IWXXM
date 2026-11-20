@@ -33,10 +33,6 @@ def looks_like_ahl(text: str) -> bool:
     """
     Return True when the first non-empty line looks like a WMO AHL.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (looks_like_ahl)
-    2
 
     Parameters
     ----------
@@ -231,11 +227,6 @@ def lint_ahl_bulletin(
     -------
     LintReport
         Flattened issues with offsets relative to ``text``.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (lint_ahl_bulletin)
-    2
     """
     first = _first_nonempty_line(text)
     assert first is not None

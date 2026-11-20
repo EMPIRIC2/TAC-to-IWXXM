@@ -64,7 +64,7 @@ def mine_dissemination() -> dict[str, Any]:
     """Build dissemination transform catalog."""
     return {
         "schema_version": 1,
-        "source": "first-party pattern-only transforms (ADR-021/029/030)",
+        "source": "first-party pattern-only transforms (/029/030)",
         "transforms": list(FIRST_PARTY_TRANSFORMS),
         "annotations": [],
     }

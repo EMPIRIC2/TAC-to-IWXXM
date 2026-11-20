@@ -1,6 +1,6 @@
 """TC-EV055-002: match_status uses C14N equality (generator path).
 
-Spec: docs/test-plan.md TC-EV055-002; AC2; ADR-035; D-S064-c14n=1;
+Spec: docs/test-plan.md TC-EV055-002; AC2; ; D-S064-c14n=1;
 D-S064-c14n-volatile=1.
 """
 
@@ -21,7 +21,7 @@ def test_tc_ev055_002_c14n_equality_for_formatting_only_peers() -> None:
 
 
 def test_tc_ev055_002_c14n_equality_despite_volatile_ids() -> None:
-    """gml:id churn alone must not yield match_status unequal (ADR-035 amend)."""
+    """gml:id churn alone must not yield match_status unequal ( amend)."""
     official = (
         '<root xmlns="urn:x" xmlns:gml="http://www.opengis.net/gml/3.2">'
         '<child gml:id="uuid.11111111-1111-1111-1111-111111111111"><v>ok</v></child>'
@@ -42,5 +42,5 @@ def test_tc_ev055_002_generator_imports_c14n_not_adr032_for_match() -> None:
     src = Path(__file__).resolve().parents[3] / "scripts" / "ci" / "generate_quality_metrics.py"
     text = src.read_text(encoding="utf-8")
     assert "canonical_xml_equal" in text or "to_canonical_xml" in text or "c14n_equal" in text or "c14n_xml" in text
-    # Match branch must not still depend on ADR-032 canonicalize for equality
+    # Match branch must not still depend on canonicalize for equality
     assert "canonicalize_xml(converted_xml) == canonicalize_xml(official_xml)" not in text

@@ -3,9 +3,9 @@
  *
  * Canonical wire values are uppercase OpenAPI ids. Legacy aliases `annex3` /
  * `iwxxm_us` remain selectable through the #1025 deprecation window so alias
- * metrics still fire when chosen. Separate from exchange profiles (ADR-036).
+ * metrics still fire when chosen. Separate from exchange profiles ().
  *
- * [Corpus: product §F35] [Corpus: product §F36] [Corpus: adr/ADR-036] [Corpus: api]
+ * [Corpus: product §F35] [Corpus: product §F36] [Corpus: api]
  */
 
 /** Registered canonical semantic profile ids (uppercase OpenAPI). */

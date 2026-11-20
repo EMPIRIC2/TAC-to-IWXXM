@@ -1,4 +1,4 @@
-"""Versioned IWXXM writer-contract DDL and schema-diff (F16 / ADR-030).
+"""Versioned IWXXM writer-contract DDL and schema-diff (F16).
 
 Contract version ``1`` targets table ``iwxxm_reports`` used by multi-DB upload sinks.
 """
@@ -71,11 +71,6 @@ def writer_contract_ddl(dialect: str) -> str:
     -------
     str
         Dialect-specific DDL statement(s).
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (writer_contract_ddl)
-    2
     """
     d = dialect.lower()
     if d in {"postgresql", "postgres"}:
@@ -108,11 +103,6 @@ async def diff_writer_contract(
     -------
     list[SchemaDiff]
         Empty when the schema matches the contract.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (diff_writer_contract)
-    2
     """
     name = (dialect or engine.dialect.name).lower()
     if name == "postgres":
@@ -130,10 +120,6 @@ async def apply_writer_contract(
     """
     Create the writer-contract table if missing (create-if-missing path).
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (apply_writer_contract)
-    2
 
     Parameters
     ----------

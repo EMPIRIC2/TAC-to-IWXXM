@@ -64,7 +64,11 @@ ROW = {
 def test_work_session_service_uses_sqlalchemy_not_supabase_client() -> None:
     """F30/EV-031: persist path is SQLAlchemy; fixture row stays for error mapping."""
     source = SERVICE_FILE.read_text(encoding="utf-8")
-    assert "sqlalchemy" in source.lower() or "Session" in source or "sessionmaker" in source
+    assert (
+        "sqlalchemy" in source.lower()
+        or "Session" in source
+        or "sessionmaker" in source
+    )
     assert ROW["id"] == str(SESSION_ID)
     assert ROW["user_id"] == USER_ID
     assert NOW.tzinfo is not None

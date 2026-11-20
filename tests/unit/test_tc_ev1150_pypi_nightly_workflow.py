@@ -1,4 +1,4 @@
-"""TC-EV1150 / ADR-043: PyPI nightly TestPyPI workflow structural gate."""
+"""TC-EV1150 / : PyPI nightly TestPyPI workflow structural gate."""
 
 from __future__ import annotations
 

@@ -32,7 +32,8 @@ def test_sigmet_a6_1a_decode_covers_former_residuals() -> None:
     by_code = {seg.code: seg.explanation for seg in result.segments}
     assert "Sequence number" in by_code["2"]
     assert "Validity" in by_code["VALID"]
-    assert "meteorological watch office" in by_code["YUSO-"].lower()
+    assert "Originating watch office" in by_code["YUSO-"]
+    assert "meteorological watch office" not in by_code["YUSO-"].lower()
     assert "FIR name" in by_code["SHANLON"]
     assert "Flight level 390" in by_code["FL390"]
     assert "Movement direction" in by_code["E"]
@@ -47,7 +48,8 @@ def test_airmet_a6_decode_covers_geometry_and_fl() -> None:
     result = decode_tac(AIRMET_A6_1A, product="AIRMET")
     by_code = {seg.code: seg.explanation for seg in result.segments}
     assert "Sequence number" in by_code["1"]
-    assert "meteorological watch office" in by_code["YUSO-"].lower()
+    assert "Originating watch office" in by_code["YUSO-"]
+    assert "meteorological watch office" not in by_code["YUSO-"].lower()
     assert "Flight level 100" in by_code["FL100"]
     assert "Latitude" in by_code["S50"]
     assert result.residuals == []

@@ -63,11 +63,6 @@ class CatalogGenerator:
         -------
         object
             Path to generated catalog.xml file
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (generate_catalog)
-        2
         """
         if local_schema_dir is None:
             local_schema_dir = self.schemas_base_path / version
@@ -168,11 +163,6 @@ class CatalogGenerator:
         -------
         object
             List of paths to generated catalog files
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (generate_all_catalogs)
-        2
         """
         catalog_paths: list[Any] = []
 
@@ -223,11 +213,6 @@ class CatalogGenerator:
         -------
         object
             True if catalog is valid, False otherwise
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (validate_catalog)
-        2
         """
         try:
             tree = lxml_etree.parse(str(catalog_path))
@@ -273,11 +258,6 @@ def generate_catalog_for_version(version: str, remote_base_url: str, schemas_bas
     -------
     object
         Path to generated catalog.xml
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (generate_catalog_for_version)
-    2
     """
     generator = CatalogGenerator(schemas_base_path)
     return generator.generate_catalog(version, remote_base_url)
@@ -300,11 +280,6 @@ def generate_all_catalogs(schemas_base_path: Path) -> list[Path]:
     -------
     object
         List of paths to generated catalogs
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (generate_all_catalogs)
-    2
     """
     generator = CatalogGenerator(schemas_base_path)
     return generator.generate_all_catalogs()

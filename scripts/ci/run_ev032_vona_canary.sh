@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# EV-032 / E32-T7 / T2.8 — fast pre-commit canary for F32 VONA (ADR-032 + product enum).
+# EV-032 / E32-T7 / T2.8 — fast pre-commit canary for F32 VONA ( + product enum).
 # Path-filtered companion to make test-vona-quality; do not dump full XSD+SCH here.
 set -euo pipefail
 

@@ -141,6 +141,8 @@ def test_live_http_error_and_timeout() -> None:
 
 
 def test_default_client_downloads_once(monkeypatch: pytest.MonkeyPatch) -> None:
+    import reference_lookup.sources as sources_mod
+
     calls: list[str] = []
 
     class FakeClient:
@@ -160,7 +162,7 @@ def test_default_client_downloads_once(monkeypatch: pytest.MonkeyPatch) -> None:
                 return _response(url, 200, NAVAIDS)
             return _response(url, 200, AIRPORTS)
 
-    monkeypatch.setattr(lookup_mod.httpx, "Client", FakeClient)
+    monkeypatch.setattr(sources_mod.httpx, "Client", FakeClient)
     source = LiveOurAirportsSource()
     assert source.lookup("SRQ")[1] == pytest.approx(-82.5542984008789)
     assert calls[-1] == "closed"
@@ -168,6 +170,8 @@ def test_default_client_downloads_once(monkeypatch: pytest.MonkeyPatch) -> None:
 
 
 def test_read_wraps_csv_and_unicode_errors() -> None:
+    import reference_lookup.csv_index as csv_index_mod
+
     class FakeClient:
         def get(self, url: str) -> httpx.Response:
             return _response(url, 200, "ident,latitude_deg,longitude_deg\n")
@@ -178,13 +182,13 @@ def test_read_wraps_csv_and_unicode_errors() -> None:
     def boom(*_args: object, **_kwargs: object) -> csv.DictReader:
         raise csv.Error("bad")
 
-    original = lookup_mod.csv.DictReader
-    lookup_mod.csv.DictReader = boom  # type: ignore[method-assign, assignment]
+    original = csv_index_mod.csv.DictReader
+    csv_index_mod.csv.DictReader = boom  # type: ignore[method-assign, assignment]
     try:
         with pytest.raises(SourceUnavailable):
             lookup_mod._read(FakeClient())  # type: ignore[arg-type]
     finally:
-        lookup_mod.csv.DictReader = original  # type: ignore[method-assign]
+        csv_index_mod.csv.DictReader = original  # type: ignore[method-assign]
 
     class BadText:
         def raise_for_status(self) -> None:

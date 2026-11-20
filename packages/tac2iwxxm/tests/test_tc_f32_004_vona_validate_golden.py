@@ -1,4 +1,4 @@
-"""TC-F32-004 - VONA convert → XSD+SCH + ADR-032 golden (S040 / EV-032 T2.6).
+"""TC-F32-004 - VONA convert → XSD+SCH + golden (S040 / EV-032 T2.6).
 
 Accept path: annex3 convert of ``vona-A7-1`` is M-xsd/M-sch clean and
 ``canonicalize_xml`` equals the official peer / package golden (soft→strict).
@@ -61,7 +61,7 @@ def test_tc_f32_004_vona_m_xsd_sch(case_id: str) -> None:
 @pytest.mark.ev032_smoke
 @pytest.mark.parametrize("case_id", VONA_CASE_IDS)
 def test_tc_f32_004_vona_m_golden_adr032(case_id: str) -> None:
-    """ADR-032: convert equals package golden and vendor peer under canonicalize_xml."""
+    """: convert equals package golden and vendor peer under canonicalize_xml."""
     from tac2iwxxm import convert
 
     case = next(c for c in _load_manifest()["cases"] if c["id"] == case_id)

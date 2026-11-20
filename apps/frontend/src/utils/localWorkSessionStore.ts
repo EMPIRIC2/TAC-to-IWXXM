@@ -1,5 +1,5 @@
 /**
- * Local IndexedDB work-session store (F7.h / F21 / ADR-031).
+ * Local IndexedDB work-session store (F7.h F21).
  *
  * Uses Jake Archibald's ``idb`` wrapper. No JWT / server session calls.
  */

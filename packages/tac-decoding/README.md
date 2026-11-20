@@ -39,7 +39,7 @@ Optional YAML via `TAC_DECODING_GLOSSARY_PATH` (or legacy
 
 ## Pack overlays
 
-Optional directory of pack YAML via `TAC_DECODING_PACK_DIR` (ADR-045). See the
+Optional directory of pack YAML via `TAC_DECODING_PACK_DIR` . See the
 monorepo [Overlay cookbook](https://github.com/EMPIRIC2/TAC-to-IWXXM/blob/stage/docs/domain/overlays/overlay-cookbook.md),
 `examples/overlays/`, and copy-paste `examples/starters/`.
 

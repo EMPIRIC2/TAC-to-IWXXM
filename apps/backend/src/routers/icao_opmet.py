@@ -40,11 +40,6 @@ async def get_centre_info() -> TranslationCentreInfo:
     -------
     object
         Return value.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (get_centre_info)
-    2
     """
     info = get_translation_centre_info()
 
@@ -83,11 +78,6 @@ async def get_translation_statistics(
     -------
     object
         Return value.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (get_translation_statistics)
-    2
     """
     # Validate date range
     if request.end_date < request.start_date:
@@ -145,11 +135,6 @@ async def get_recent_statistics(
     -------
     object
         Return value.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (get_recent_statistics)
-    2
     """
     end_date = datetime.now(UTC).replace(tzinfo=None)
     start_date = end_date - timedelta(hours=hours)
@@ -200,11 +185,6 @@ async def get_statistics_by_region(
     -------
     object
         Return value.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (get_statistics_by_region)
-    2
     """
     # Query region-grouped statistics from database
     logger.info(f"Region statistics query: {start_date} to {end_date}")
@@ -232,11 +212,6 @@ async def get_airport_region(airport_code: str) -> dict[str, Any]:
     -------
     object
         Return value.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (get_airport_region)
-    2
     """
     try:
         region = get_icao_region(airport_code)
@@ -278,11 +253,6 @@ async def statistics_health() -> object:
     -------
     object
         Return value.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (statistics_health)
-    2
     """
     from ..config.icao_opmet import (
         ENABLE_STATISTICS,

@@ -77,11 +77,6 @@ class VersionDetector:
         -------
         object
             List of git tags (e.g., ['v2025-2', 'v2023-1', 'v2021-2'])
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (get_available_tags)
-        2
         """
         try:
             # Read repository tags when the vendored snapshot retains git metadata.
@@ -131,11 +126,6 @@ class VersionDetector:
         -------
         object
             Version string (e.g., '2025-2') or None if not found
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (get_latest_version)
-        2
         """
         latest_file = self.iwxxm_path / "LATEST_VERSION"
 
@@ -169,11 +159,6 @@ class VersionDetector:
         -------
         object
             Version string (e.g., '2025-2')
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (tag_to_version)
-        2
         """
         # Remove 'v' prefix
         return tag.lstrip("v")
@@ -195,11 +180,6 @@ class VersionDetector:
         -------
         object
             Git tag (e.g., 'v2025-2')
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (version_to_tag)
-        2
         """
         if not version.startswith("v"):
             return f"v{version}"
@@ -222,11 +202,6 @@ class VersionDetector:
         -------
         object
             Dict with file existence flags
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (check_version_files)
-        2
         """
         iwxxm_dir = self.iwxxm_path / "IWXXM"
 
@@ -245,11 +220,6 @@ class VersionDetector:
         -------
         object
             List of VersionInfo objects with details about each version
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (detect_versions)
-        2
         """
         available_tags = self.get_available_tags()
         latest_version = self.get_latest_version()
@@ -288,11 +258,6 @@ class VersionDetector:
         -------
         object
             List of VersionInfo for unconfigured versions
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (get_unconfigured_versions)
-        2
         """
         all_versions = self.detect_versions()
         return [v for v in all_versions if not v.is_configured]
@@ -314,11 +279,6 @@ class VersionDetector:
         -------
         object
             List of VersionInfo for newer versions
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (get_new_versions_since)
-        2
         """
         all_versions = self.detect_versions()
 
@@ -335,11 +295,6 @@ class VersionDetector:
         -------
         object
             Formatted report string
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (generate_version_report)
-        2
         """
         versions = self.detect_versions()
         latest = self.get_latest_version()
@@ -383,11 +338,6 @@ def detect_available_versions() -> list[VersionInfo]:
     -------
     object
         List of VersionInfo objects
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (detect_available_versions)
-    2
     """
     detector = VersionDetector()
     return detector.detect_versions()
@@ -401,11 +351,6 @@ def check_for_updates() -> bool:
     -------
     object
         True if unconfigured versions exist
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (check_for_updates)
-    2
     """
     detector = VersionDetector()
     unconfigured = detector.get_unconfigured_versions()

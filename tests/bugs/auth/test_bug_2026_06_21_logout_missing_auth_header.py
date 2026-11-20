@@ -4,7 +4,7 @@ User report: console "Logout failed:" (empty statusText) on every logout click i
 production. POST /auth/logout requires Authorization: Bearer per api-contract.md;
 signOutWithScope in apps/frontend must send the stored access token.
 
-F21 / ADR-031 (S023 / EV-017): operator Auth routes and logout UX removed.
+F21 / (S023 / EV-017): operator Auth routes and logout UX removed.
 Historical assertions live in git history; module skipped for ci-prepush.
 """
 
@@ -13,6 +13,6 @@ from __future__ import annotations
 import pytest
 
 pytest.skip(
-    "F21/ADR-031: operator Auth / DISABLE_AUTH dual path removed - bug N/A",
+    "F21/: operator Auth / DISABLE_AUTH dual path removed - bug N/A",
     allow_module_level=True,
 )

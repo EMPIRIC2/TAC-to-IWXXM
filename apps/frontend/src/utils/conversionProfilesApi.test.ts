@@ -646,4 +646,47 @@ describe('conversionProfilesApi', () => {
 
     await expect(listRulePacks('tok')).rejects.toThrow('HTTP 418');
   });
+
+  it('covers library parseJson error and empty-body branches', async () => {
+    vi.spyOn(globalThis, 'fetch')
+      .mockResolvedValueOnce({
+        ok: false,
+        status: 401,
+        statusText: 'Unauthorized',
+        json: async () => ({ detail: 'Library auth' }),
+      } as Response)
+      .mockResolvedValueOnce({
+        ok: false,
+        status: 500,
+        statusText: 'Boom',
+        json: async () => ({ detail: { nested: true } }),
+      } as Response)
+      .mockResolvedValueOnce({
+        ok: false,
+        status: 503,
+        statusText: 'Down',
+        json: async () => {
+          throw new Error('no json');
+        },
+      } as unknown as Response)
+      .mockResolvedValueOnce({
+        ok: false,
+        status: 418,
+        statusText: '',
+        json: async () => ({ detail: '' }),
+      } as Response)
+      .mockResolvedValueOnce({
+        ok: true,
+        status: 204,
+        json: async () => {
+          throw new Error('no body');
+        },
+      } as unknown as Response);
+
+    await expect(listLibraryAssets('bad')).rejects.toThrow('Library auth');
+    await expect(listLibraryAssets('tok')).rejects.toThrow('Boom');
+    await expect(listLibraryAssets('tok')).rejects.toThrow('Down');
+    await expect(listLibraryAssets('tok')).rejects.toThrow('HTTP 418');
+    await expect(listLibraryAssets('tok')).resolves.toBeUndefined();
+  });
 });

@@ -1,6 +1,6 @@
-"""TC-EV080-004 / TC-EV080-005 — Vitest coverage thresholds at 100% (EV-080 / ADR-007).
+"""TC-EV080-004 TC-EV080-005 — Vitest coverage thresholds at 100% (EV-080).
 
-[Corpus: adr/ADR-007] [Corpus: tests]
+[Corpus: tests]
 """
 
 from __future__ import annotations

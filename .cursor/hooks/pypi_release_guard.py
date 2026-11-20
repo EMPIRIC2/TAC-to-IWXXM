@@ -99,13 +99,13 @@ def context_for_file(rel: str) -> str | None:
             f"[pypi-release-guard] Editing '{rel}' — native/maturin path (F13/F14). "
             "Use make build-iwxxm-validate-native or build-tac2iwxxm-native; "
             "see .cursor/rules/optional/rust-maturin-xsdata.mdc. Validate hot path is "
-            "Rust XSD+Schematron — not xsdata bind-on-validate (ADR-027)."
+            "Rust XSD+Schematron — not xsdata bind-on-validate ."
         )
     if "codegen" in rel.lower() and (
         rel.startswith("scripts/") or "xsdata" in rel.lower()
     ):
         return (
-            f"[pypi-release-guard] Editing '{rel}' — XSD codegen path (F11/ADR-027). "
+            f"[pypi-release-guard] Editing '{rel}' — XSD codegen path (F11). "
             "xsdata + xsdata-pydantic → pydantic models; make codegen-iwxxm-xsd; "
             "TAC out of codegen scope."
         )

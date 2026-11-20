@@ -39,10 +39,17 @@ export default defineConfig({
         // Static TAC/XML example bodies + generated SoT — not executable app code
         'src/fixtures/**',
         'src/generated/**',
+        'src/data/**/*.json',
+        // Mechanical re-export barrels from the models/split (no runtime logic).
+        'src/hooks/fileConverterDeps.ts',
+        'src/app/components/fileConverterViewScope.tsx',
+        'src/models/index.ts',
+        'src/utils/operatorVisibleCopyConsts.ts',
+        'src/utils/conversionProfilesApi.ts',
         // EV-080 / #1077 — executable FE modules re-included (T3.1); fill to 100% then flip thresholds.
       ],
       thresholds: {
-        // ADR-007 / EV-080 — 100% line/branch/function/statement after M3 fills.
+        // EV-080 — 100% line/branch/function/statement after M3 fills.
         lines: 100,
         functions: 100,
         branches: 100,

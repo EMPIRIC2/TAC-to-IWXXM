@@ -18,7 +18,7 @@ on:
       - "packages/tac2iwxxm/tests/test_tc_ev029_007_tc_sigmet_gap_fixtures.py"
       - "packages/tac2iwxxm/tests/test_tc_ev029_003_ahl_api.py"
       - "packages/tac2iwxxm/tests/test_tc_ev030_005_sigmet_a6_2_tc_catalog.py"
-      - "packages/tac2iwxxm/tests/test_tc_ev032_002_a6_2_tc_adr032_equality.py"
+      - "packages/tac2iwxxm/tests/test_tc_ev032_002_a6_2_tc_equality.py"
       - "packages/tac2iwxxm/tests/test_tc_ev032_003_a6_2_tc_catalog_wmo_pass.py"
       - "packages/tac2iwxxm/tests/fixtures/tc_sigmet/**"
       - "packages/tac2iwxxm/tests/fixtures/annex3_golden/sigmet_a6_2_tc.tac"

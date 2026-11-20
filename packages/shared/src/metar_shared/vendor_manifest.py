@@ -85,11 +85,6 @@ def load_manifest(manifest_path: Path) -> dict[str, Any]:
     -------
     dict[str, Any]
         Load and parse ``vendor/manifest.json``.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (load_manifest)
-    2
     """
     raw = manifest_path.read_text(encoding="utf-8")
     data = json.loads(raw)
@@ -112,11 +107,6 @@ def compute_tree_sha256(root: Path) -> str:
     -------
     str
         Deterministic SHA-256 over sorted relative file paths and contents.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (compute_tree_sha256)
-    2
     """
     if not root.is_dir():
         msg = f"tree root is not a directory: {root}"
@@ -350,11 +340,6 @@ def validate_manifest_schema(manifest: dict[str, Any]) -> list[str]:
     -------
     list[str]
         Validate manifest structure without touching the vendor tree.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (validate_manifest_schema)
-    2
     """
     errors: list[str] = []
 
@@ -402,11 +387,6 @@ def verify_manifest_integrity(
     -------
     ManifestIntegrityResult
         Ensure manifest pins match the checked-in vendor schema trees.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (verify_manifest_integrity)
-    2
     """
     path = manifest_path or (repo_root / MANIFEST_RELATIVE_PATH)
     errors: list[str] = []

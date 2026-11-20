@@ -122,11 +122,6 @@ def emit_vaa_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
     -------
     str
         An IWXXM ``VolcanicAshAdvisory`` document (F6.f / F26 themes V2-V3).
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (emit_vaa_annex3)
-    2
     """
     product = str(ir.get("product", "VAA")).upper()
     if product != "VAA":

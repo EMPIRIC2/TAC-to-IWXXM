@@ -1,5 +1,5 @@
 /**
- * Strict master checkbox and optional per-step raise toggles (ADR-054).
+ * Strict master checkbox and optional per-step raise toggles ().
  *
  * Plain-language operator copy only — no planning ids.
  */

@@ -12,13 +12,14 @@ import type { LintIssueCatalogEntry } from '@/utils/api';
 import { issueDetailFromConsoleLine, type IssueDetailModel } from '@/utils/issueDetail';
 import { ISSUE_DETAIL_BUTTON, ISSUE_DETAIL_OPEN } from '@/utils/issueDetailCopy';
 import { isPlanningEvolveTag, scrubInternalDocRefs } from '@/utils/internalDocRefGuard';
+import { formatOperatorMessageTemplate } from '@/utils/formatOperatorMessage';
 import {
   filterCatalogByTag,
   formatCatalogEntryCopy,
   maybeOpenCatalogForLintCode,
   resolveLintIssueTooltip,
 } from '@/utils/lintIssueCatalog';
-import { consoleLevelPasses, type ConvertLogLevel } from '/utils/convertParams';
+import { consoleLevelPasses, type ConvertLogLevel } from '@/utils/convertParams';
 
 const CODE_TOKEN = /(\[[A-Z][A-Z0-9_]*\])/g;
 
@@ -276,7 +277,9 @@ export function WorkbenchConsole({
                 {filteredCatalog.slice(0, 80).map((entry) => (
                   <li
                     key={entry.code}
-                    title={entry.message_template}
+                    title={formatOperatorMessageTemplate(entry.message_template, {
+                      product: entry.product,
+                    })}
                     data-testid={`lint-issue-catalog-entry-${entry.code}`}
                   >
                     {formatCatalogEntryCopy(entry)}

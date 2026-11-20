@@ -15,10 +15,6 @@ async def create_job_in_db(user_id: str, mode: str, total_stations: int) -> str:
     """
     Insert a pending evaluation job and return its id.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (create_job_in_db)
-    2
 
     Parameters
     ----------
@@ -64,10 +60,6 @@ async def update_job_status(
     """
     Update evaluation job status and optional fields.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (update_job_status)
-    2
 
     Parameters
     ----------
@@ -108,10 +100,6 @@ async def save_result_to_db(job_id: str, result: EvaluationResultDetail) -> None
     """
     Persist one evaluation result row.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (save_result_to_db)
-    2
 
     Parameters
     ----------
@@ -153,10 +141,6 @@ async def get_job_for_user(job_id: str, user_id: str) -> dict[str, Any] | None:
     """
     Fetch a job row when owned by ``user_id``.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (get_job_for_user)
-    2
 
     Parameters
     ----------
@@ -190,10 +174,6 @@ async def list_jobs_for_user(user_id: str, limit: int, offset: int) -> tuple[lis
     """
     Return paginated jobs and total count for a user.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (list_jobs_for_user)
-    2
 
     Parameters
     ----------
@@ -241,10 +221,6 @@ async def list_results_for_job(
     """
     Return paginated evaluation results for a job.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (list_results_for_job)
-    2
 
     Parameters
     ----------
