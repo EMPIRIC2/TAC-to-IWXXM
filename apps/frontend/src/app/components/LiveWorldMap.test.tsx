@@ -972,6 +972,121 @@ describe('LiveWorldMap', () => {
     expect(screen.getByTestId('live-map-time')).toHaveValue('latest');
   });
 
+  it('shows empty precip overlay when parseable stamps fall outside the window', async () => {
+    const user = userEvent.setup();
+    // Wall-clock far after the fixture date → default latest (1h) drops places.
+    vi.spyOn(Date, 'now').mockReturnValue(Date.parse('2026-11-20T18:30:00Z'));
+    const staleRain: LivePlace = {
+      place_key: 'KJFK',
+      product: 'metar',
+      latitude: 40.6,
+      longitude: -73.7,
+      geometry: { kind: 'point' },
+      reports: [
+        {
+          observed_at: '2026-11-13T18:00:00Z',
+          tac: 'METAR KJFK 231851Z 20015G25KT 3SM -RA BR BKN012 12/11 A2998=',
+          iwxxm: null,
+        },
+      ],
+    };
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({ places: [staleRain] }),
+      }),
+    );
+    render(<LiveWorldMap />);
+    await user.click(await screen.findByTestId('live-map-mode-overlays'));
+    expect(await screen.findByTestId('tac-overlay-precip')).toBeInTheDocument();
+    await user.click(screen.getByTestId('tac-overlay-precip'));
+    await waitFor(() => {
+      expect(screen.getByTestId('tac-overlay-precip')).toBeChecked();
+    });
+    expect(await screen.findByTestId('live-map-tac-overlay-empty')).toBeInTheDocument();
+  });
+
+  it('keeps precip empty when in-window TAC has no precip codes', async () => {
+    const user = userEvent.setup();
+    vi.spyOn(Date, 'now').mockReturnValue(Date.parse('2026-11-13T18:30:00Z'));
+    const clearOnly: LivePlace = {
+      place_key: 'KBOS',
+      product: 'metar',
+      latitude: 42.3,
+      longitude: -71.0,
+      geometry: { kind: 'point' },
+      reports: [
+        {
+          observed_at: '2026-11-13T18:00:00Z',
+          tac: 'METAR KBOS 231851Z 18012KT 10SM FEW040 15/07 A3005=',
+          iwxxm: null,
+        },
+      ],
+    };
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({ places: [clearOnly] }),
+      }),
+    );
+    render(<LiveWorldMap />);
+    await user.click(await screen.findByTestId('live-map-mode-overlays'));
+    await user.click(await screen.findByTestId('tac-overlay-precip'));
+    await waitFor(() => {
+      expect(screen.getByTestId('tac-overlay-precip')).toBeChecked();
+    });
+    expect(await screen.findByTestId('live-map-tac-overlay-empty')).toBeInTheDocument();
+  });
+
+  it('paints precip when observed_at is unreadable (skips issue window)', async () => {
+    const user = userEvent.setup();
+    // Real wall-clock; non-parseable stamp stays in the filter.
+    const rainy: LivePlace = {
+      place_key: 'KJFK',
+      product: 'metar',
+      latitude: 40.6,
+      longitude: -73.7,
+      geometry: { kind: 'point' },
+      reports: [
+        {
+          observed_at: 'rainy-now',
+          tac: 'METAR KJFK 231851Z 20015G25KT 3SM -RA BR BKN012 12/11 A2998=',
+          iwxxm: null,
+        },
+      ],
+    };
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({ places: [rainy] }),
+      }),
+    );
+    vi.mocked(L.divIcon).mockClear();
+    render(<LiveWorldMap />);
+    await user.click(await screen.findByTestId('live-map-mode-overlays'));
+    await user.click(await screen.findByTestId('tac-overlay-precip'));
+    await waitFor(() => {
+      expect(screen.getByTestId('tac-overlay-precip')).toBeChecked();
+    });
+    const onZoom = map.on.mock.calls
+      .filter((call) => call[0] === 'zoomend')
+      .at(-1)?.[1] as (() => void) | undefined;
+    act(() => {
+      onZoom?.();
+    });
+    await waitFor(() => {
+      expect(L.divIcon).toHaveBeenCalledWith(
+        expect.objectContaining({
+          className: expect.stringContaining('live-map-tac-overlay'),
+        }),
+      );
+    });
+    expect(screen.queryByTestId('live-map-tac-overlay-empty')).not.toBeInTheDocument();
+  });
+
   it('opens an empty-report area without a card and loads on area keydown', async () => {
     const emptyArea: LivePlace = {
       place_key: 'sigmet-empty',

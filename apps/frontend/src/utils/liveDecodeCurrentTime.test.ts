@@ -211,6 +211,21 @@ describe('formatLiveDecodeCurrentTime', () => {
     globalThis.Intl = saved;
     vi.restoreAllMocks();
   });
+
+  it('formats fallback with positive local offset (east of UTC)', () => {
+    const saved = globalThis.Intl;
+    // @ts-expect-error deliberate removal for fallback path
+    delete globalThis.Intl;
+    const fixed = new Date('2026-11-13T18:00:00.000Z');
+    vi.spyOn(fixed, 'getTimezoneOffset').mockReturnValue(-120); // UTC+2
+    vi.spyOn(fixed, 'getHours').mockReturnValue(20);
+    vi.spyOn(fixed, 'getMinutes').mockReturnValue(0);
+    const parts = formatLiveDecodeCurrentTime(fixed);
+    expect(parts.localZone).toBe('UTC+02:00');
+    expect(parts.label).toContain('(UTC+02:00)');
+    globalThis.Intl = saved;
+    vi.restoreAllMocks();
+  });
 });
 
 describe('live decode current-time prefs', () => {
