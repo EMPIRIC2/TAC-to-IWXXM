@@ -241,7 +241,7 @@ async def test_test_db_connection_success_and_failure(monkeypatch) -> None:
 
 
 @pytest.mark.asyncio
-async def test_get_db_stats_and_create_tables_paths(monkeypatch) -> None:
+async def test_get_db_stats_and_create_tables_paths(monkeypatch, caplog) -> None:
     db._engine = None
     assert await db.get_db_stats() == {"status": "not_initialized", "pool_size": 0}
 
@@ -261,8 +261,11 @@ async def test_get_db_stats_and_create_tables_paths(monkeypatch) -> None:
     class _Base:
         metadata = _Meta()
 
-    monkeypatch.setattr("src.models.Base", _Base)
-    await db.create_tables()
+    # create_tables imports Base from src.models.orm (not src.models).
+    monkeypatch.setattr("src.models.orm.Base", _Base)
+    with caplog.at_level("INFO"):
+        await db.create_tables()
+    assert "Database tables initialized successfully" in caplog.text
 
 
 @pytest.mark.asyncio
