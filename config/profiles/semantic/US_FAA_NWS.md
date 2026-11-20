@@ -2,7 +2,7 @@
 
 > **Profile id**: `US_FAA_NWS` · **Legacy alias**: `iwxxm_us` (deprecation window → [#1025](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1025))  
 > **Kind**: semantic · **Priority**: P0 · **Status**: implemented — #919 closed (EV-085)  
-> **Catalog row**: [`catalog.yaml`](../catalog.yaml) · **ADR**: [ADR-036](../../../adr/ADR-036-semantic-vs-exchange-profiles.md)
+> **Catalog row**: [`catalog.yaml`](../catalog.yaml) · **ADR**: [](../../../adr/-semantic-vs-exchange-profiles.md)
 
 United States national semantic overlay on the ICAO baseline: FMH-1 METAR/SPECI body and RMK
 grammar, encoded with **IWXXM-US** extension XSDs alongside core IWXXM.

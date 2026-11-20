@@ -29,10 +29,6 @@ def declared_release_line(xml_content: str) -> str | None:
     """
     Return the release line declared by an ICAO IWXXM namespace, if one is present.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (declared_release_line)
-    2
 
     Parameters
     ----------
@@ -77,11 +73,6 @@ def apply_declared_package(
         The requested line, and a plain-language error when the file declares
         a different package or a package this profile does not allow. A
         document with no IWXXM namespace keeps the requested line.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (apply_declared_package)
-    2
     """
     declared = declared_release_line(xml_content)
     if declared is None or (declared == iwxxm_version and declared in _ALLOWED_LINES[profile]):

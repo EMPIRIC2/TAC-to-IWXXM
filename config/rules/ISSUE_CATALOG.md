@@ -2,7 +2,7 @@
 
 > **Source**: generated from tac_validate.issue_registry + PROVENANCE_MAP  
 > **Generated**: 2026-11-13 via `make catalog-regen`  
-> **ADR**: ADR-028 / F15 / EV-011 / F20 / EV-015 / F23 / EV-019 / EV-040
+> **ADR**: F15 EV-011 F20 EV-015 F23 EV-019 EV-040
 
 Public `code` values are stable. Default severities may tighten in minor releases.
 Do not invent ad-hoc `severity=` literals in rule bodies — import from the registry.
@@ -51,7 +51,7 @@ Source attribution joins `PROVENANCE_MAP` (WMO / ICAO / IWXXM citations — no A
 | `INVALID_STNR_MOVEMENT` | `error` | This SIGMET/AIRMET has STNR together with MOV. Remove one of the conflicting movement groups. | sigmet | stnr, movement, sigmet, airmet | icao-eur-doc-014 - https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf - EUR Doc 014 public; Annex 3 paywall companion |
 | `INVALID_TX_TN` | `error` | This {product} places TX/TN outside the base forecast. Move TX/TN to the base forecast only. | taf | temperature, taf | icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - App 5 / Table A5-1 |
 | `INVALID_VALIDITY_DURATION` | `error` | This SIGMET VALID period is longer than 4 hours (WS). Shorten the validity period. | sigmet | valid, sigmet | icao-eur-doc-014 - https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf - EUR Doc 014 public; Annex 3 paywall companion |
-| `INVALID_VISIBILITY` | `error` | This {product} has an invalid visibility token. Use statute miles (SM), meters, or CAVOK. | — | visibility, metar, speci | codes-wmo-int - https://codes.wmo.int/ui/resources/WMO-Codes-Registry_user-guide-v1.0.pdf - Vis grammar vs WeatherCausingVisibilityReduction for AIRMET obscurations |
+| `INVALID_VISIBILITY` | `error` | This {product} has an invalid visibility token. Use statute miles (SM), meters, kilometres (KM), or CAVOK. | — | visibility, metar, speci | codes-wmo-int - https://codes.wmo.int/ui/resources/WMO-Codes-Registry_user-guide-v1.0.pdf - Vis grammar vs WeatherCausingVisibilityReduction for AIRMET obscurations |
 | `INVALID_WEATHER` | `error` | This {product} has an invalid present-weather token {token!r}. Correct the weather group. | — | weather, metar, speci | codes-wmo-int - https://codes.wmo.int/ui/resources/WMO-Codes-Registry_user-guide-v1.0.pdf - Prefer register landing + 306/4678 concept pattern over bare root |
 | `INVALID_WIND` | `error` | This {product} has an invalid wind token {token!r}. Correct the wind group. | — | wind, metar, speci | codes-wmo-int - https://codes.wmo.int/ui/resources/WMO-Codes-Registry_user-guide-v1.0.pdf - Wind not in AerodromePresentWeather list |
 | `IN_TAF_TX_TN_OMITTED` | `info` | This {product} omits TX/TN temperature extremes. India Meteorological Department TAFs often do this. Conversion can continue. | TAF | taf, in_imd, temperature, tx_tn | imd-mausam - https://mausam.imd.gov.in/ - India IMD TAF often omits TX/TN temperature extremes |

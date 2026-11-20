@@ -1,4 +1,4 @@
-"""Coverage fills for tac-decoding (ADR-044 / ADR-007)."""
+"""Coverage fills for tac-decoding ()."""
 
 from __future__ import annotations
 

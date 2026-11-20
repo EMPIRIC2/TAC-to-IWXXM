@@ -1,7 +1,7 @@
 # BYOC test candidates — all drawer sinks
 
 Paste-ready destinations for every DisseminationDrawer option.
-**Not real credentials.** Memory-only on preflight/send (ADR-021 / ADR-029).
+**Not real credentials.** Memory-only on preflight/send ().
 
 ## Bring up all mocks
 

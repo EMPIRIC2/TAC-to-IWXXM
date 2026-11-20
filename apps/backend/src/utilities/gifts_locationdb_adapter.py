@@ -73,11 +73,6 @@ class GiftsLocationDBAdapter:
         -------
         object
             String in format "name|iata|designator|lat,lon" or None if not found
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (get)
-        2
         """
         icao = icao_code.upper().strip() if icao_code else None
         if not icao:
@@ -118,11 +113,6 @@ class GiftsLocationDBAdapter:
         -------
         object
             True if airport found in any data source
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (validate_airport)
-        2
         """
         return self.get(icao_code) is not None
 
@@ -130,10 +120,6 @@ class GiftsLocationDBAdapter:
         """
         Get all cached airports from OpenAIP.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (get_cached_airports)
-        2
 
         Returns
         -------

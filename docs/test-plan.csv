@@ -729,9 +729,9 @@ TC-EVYFC-006,auth in API TAF matrix row lock,,,UJ-DEV-011,,,,,documented,heading
 TC-EVYFC-007,auth in API SIGMET matrix row lock,,,UJ-DEV-011,,,,,documented,heading_level=3
 TC-EVYFC-008,auth in API AIRMET/VAA/TCA matrix row lock,,,UJ-DEV-011,,,,,documented,heading_level=3
 TC-EVDOC-001,Presence gate (PY/TS/Rust),,,UJ-DEV-012,,,,,documented,heading_level=3
-TC-EVDOC-002,Required Examples / `@example` / `# Examples`,,,UJ-DEV-012,,,,,documented,heading_level=3
+TC-EVDOC-002,Meaningful Examples when present (ban >>> 1+1 smoke) / `@example` / `# Examples`,,,UJ-DEV-012,,,,,documented,heading_level=3
 TC-EVDOC-003,NumPy / TSDoc / rustdoc shape,,,UJ-DEV-012,,,,,documented,heading_level=3
-TC-EVDOC-004,Python doctest Examples,,,UJ-DEV-012,,,,,documented,heading_level=3
+TC-EVDOC-004,Python doctest Examples (real only; no placeholder smoke),,,UJ-DEV-012,,,,,documented,heading_level=3
 TC-EVDOC-005,TypeScript executable `@example`,,,UJ-DEV-012,,,,,documented,heading_level=3
 TC-EVDOC-006,Rust rustdoc + doctest,,,UJ-DEV-006,,,,,documented,heading_level=3
 TC-EVDOC-007,Monorepo warn/info-clean quality pass,,,UJ-DEV-012,,apps/backend/tests/unit/test_tc_1271_reference_lookup_http.py,,,documented,heading_level=3
@@ -905,3 +905,8 @@ TC-SH-005,Station health shell tab and empty state,,,UJ-096,,StationHealthPage.t
 TC-SH-006,Station health API success/failure/validation matrix,,,UJ-096,,test_station_health_api.py,,,documented,parametrized
 TC-SH-007,Station health Postgres store routing,,,UJ-096,,test_station_health_postgres.py,,,documented,
 TC-SH-008,Convert path station health recorder wire,,,UJ-096,,test_station_health_convert_wire.py,,,documented,
+TC-SH-009,Station health 90d window and WMO region grades,,,UJ-096,,test_station_health_live_window_region_matrix.py,,,documented,window=90d
+TC-SH-010,Station health WMO region map and unknown fail-closed,,,UJ-096,,test_station_health_wmo_region.py,,,documented,
+TC-SH-011,Station health window×product×region permutations,,,UJ-096,,test_station_health_live_window_region_matrix.py,,,documented,parametrized
+TC-SH-012,Station health maintenance formats issues retention centennial matrix,,,UJ-096,,test_station_health_signals_matrix.py,,,documented,parametrized
+

@@ -8,18 +8,26 @@ from datetime import UTC, datetime
 from threading import Lock
 from typing import Any
 
-from src.services.station_health_aggregate import grade_products_from_records, overall_from_products
+from src.services.station_health_aggregate import enrich_station_window
 from src.services.station_health_metrics import (
+    RETENTION_SECONDS,
     WINDOW_SECONDS,
     count_solidus_signals,
     window_timedelta,
 )
+from src.services.station_health_signals import (
+    detect_file_format,
+    extract_maintenance_tags,
+    normalize_issue_codes,
+)
+from src.services.station_health_store_rows import region_filter_key, station_list_row
 from src.services.station_health_types import (
     DEFAULT_METRICS,
     StationHealthStoreProtocol,
     StationMeta,
     StationRecord,
 )
+from src.services.station_health_wmo_region import wmo_region_for_icao
 
 logger = logging.getLogger(__name__)
 
@@ -49,11 +57,6 @@ class StationHealthStore:
     def reset(self) -> None:
         """
         Clear stations and records (tests).
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (StationHealthStore.reset)
-        2
         """
         with self._lock:
             self._stations.clear()
@@ -67,11 +70,6 @@ class StationHealthStore:
         -------
         list[dict[str, Any]]
             Enabled metric rows.
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (StationHealthStore.list_metrics)
-        2
         """
         with self._lock:
             rows = [dict(row) for row in self._metrics if row.get("enabled", True)]
@@ -90,40 +88,22 @@ class StationHealthStore:
         lint_error_count: int = 0,
         lint_warning_count: int = 0,
         convert_ok: bool | None = None,
+        issue_codes: list[str] | tuple[str, ...] | None = None,
     ) -> StationRecord | None:
         """
         Append one observation and refresh station metadata.
 
+        Applies rolling 90-day retention after each write.
+
         Parameters
         ----------
-        icao : object
-            Station ICAO.
-        product : object
-            Product family.
-        tac_text : object
-            Raw TAC text.
-        source : object
-            Ingest source label.
-        observed_at : object
-            Optional observation time.
-        name : object
-            Optional station name.
-        lint_error_count : object
-            Lint error count.
-        lint_warning_count : object
-            Lint warning count.
-        convert_ok : object
-            Conversion success flag.
+        args
+            See function signature.
 
         Returns
         -------
         StationRecord | None
             Stored row, or ``None`` when ICAO is invalid.
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (StationHealthStore.record_observation)
-        2
         """
         code = (icao or "").strip().upper()
         if len(code) != 4 or not code.isalpha():
@@ -133,27 +113,48 @@ class StationHealthStore:
         observed = observed_at or now
         if observed.tzinfo is None:
             observed = observed.replace(tzinfo=UTC)
+        # Reject observations older than retention (ignore tip-drift history).
+        if observed < now - window_timedelta("90d"):
+            return None
         signals = count_solidus_signals(tac_text)
+        body = tac_text or ""
+        source_l = (source or "unknown").strip().lower() or "unknown"
+        codes = normalize_issue_codes(issue_codes)
         row = StationRecord(
             icao=code,
             product=product_l,
             observed_at=observed,
             ingested_at=now,
-            tac_text=tac_text or "",
-            source=(source or "unknown").strip().lower() or "unknown",
+            tac_text=body,
+            source=source_l,
             solidus_count=signals.solidus_count,
             missing_digit_count=signals.missing_digit_count,
             lint_error_count=max(0, int(lint_error_count)),
             lint_warning_count=max(0, int(lint_warning_count)),
             convert_ok=convert_ok,
             character_count=signals.character_count,
+            file_format=detect_file_format(body, source=source_l),
+            maintenance_tags=extract_maintenance_tags(body),
+            issue_codes=codes,
         )
+        country: str | None = None
+        try:
+            from src.schemas.airport import get_airport_validator
+
+            airport = get_airport_validator().get_airport(code)
+            if airport is not None and getattr(airport, "country", None):
+                raw_country = str(airport.country).strip().upper()
+                # WMO region map keys are ISO 3166-1 alpha-2 only.
+                country = raw_country if len(raw_country) == 2 else None
+        except Exception:
+            logger.exception("station health country lookup failed for %s", code)
         with self._lock:
             meta = self._stations.get(code)
             if meta is None:
                 self._stations[code] = StationMeta(
                     icao=code,
                     name=name,
+                    country=country,
                     first_seen_at=observed,
                     last_seen_at=observed,
                 )
@@ -161,9 +162,13 @@ class StationHealthStore:
                 meta.last_seen_at = observed
                 if name and not meta.name:
                     meta.name = name
+                if country and not meta.country:
+                    meta.country = country
                 if meta.first_seen_at is None or observed < meta.first_seen_at:
                     meta.first_seen_at = observed
             self._records.append(row)
+            retention_cutoff = now - window_timedelta("90d")
+            self._records[:] = [item for item in self._records if item.observed_at >= retention_cutoff]
         return row
 
     def list_stations(
@@ -172,6 +177,7 @@ class StationHealthStore:
         window_key: str = "6h",
         product: str | None = None,
         grade: str | None = None,
+        region: str | None = None,
         limit: int = 100,
     ) -> dict[str, Any]:
         """
@@ -185,6 +191,8 @@ class StationHealthStore:
             Optional product filter.
         grade : object
             Optional letter-grade filter.
+        region : object
+            Optional WMO region filter (``I``-``VI`` or ``unknown``).
         limit : object
             Max stations to return.
 
@@ -192,19 +200,18 @@ class StationHealthStore:
         -------
         dict[str, Any]
             List payload with stations and summary.
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (StationHealthStore.list_stations)
-        2
         """
         if window_key not in WINDOW_SECONDS:
             window_key = "6h"
-        limit = max(1, min(int(limit), 500))
+        # Region-scoped loads may need every station in that association.
+        max_limit = 5000 if region else 500
+        limit = max(1, min(int(limit), max_limit))
         now = datetime.now(UTC)
-        cutoff = now - window_timedelta(window_key)
+        retention_cutoff = now - window_timedelta("90d")
+        cutoff = max(now - window_timedelta(window_key), retention_cutoff)
         product_filter = product.strip().lower() if product else None
         grade_filter = grade.strip().upper() if grade else None
+        region_key = region_filter_key(region)
 
         with self._lock:
             stations = dict(self._stations)
@@ -219,27 +226,23 @@ class StationHealthStore:
         station_rows: list[dict[str, Any]] = []
         grade_counts = {"A": 0, "B": 0, "C": 0, "D": 0, "F": 0}
         for icao, meta in sorted(stations.items()):
-            icao_rows = by_icao.get(icao, [])
-            products = grade_products_from_records(icao_rows, window_key)
-            if product_filter:
-                products = [item for item in products if item["product"] == product_filter]
-                if not products:
-                    continue
-            overall = overall_from_products(products)
-            if grade_filter and overall["overall_grade"] != grade_filter:
+            wmo_region = wmo_region_for_icao(icao, country=meta.country)
+            if region_key is not None and wmo_region != region_key:
                 continue
-            grade_counts[overall["overall_grade"]] = grade_counts.get(overall["overall_grade"], 0) + 1
-            station_rows.append(
-                {
-                    "icao": icao,
-                    "name": meta.name,
-                    "overall_grade": overall["overall_grade"],
-                    "overall_score": overall["overall_score"],
-                    "products": products,
-                }
+            row = station_list_row(
+                icao=icao,
+                meta=meta,
+                icao_rows=by_icao.get(icao, []),
+                window_key=window_key,
+                product_filter=product_filter,
+                grade_filter=grade_filter,
             )
+            if row is None:
+                continue
+            grade_counts[row["overall_grade"]] = grade_counts.get(row["overall_grade"], 0) + 1
+            station_rows.append(row)
 
-        station_rows.sort(key=lambda row: (-float(row["overall_score"]), row["icao"]))
+        station_rows.sort(key=lambda item: (-float(item["overall_score"]), item["icao"]))
         truncated = station_rows[:limit]
         return {
             "window": window_key,
@@ -264,11 +267,6 @@ class StationHealthStore:
         -------
         dict[str, Any] | None
             Detail payload, or ``None`` when unknown.
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (StationHealthStore.get_station)
-        2
         """
         code = (icao or "").strip().upper()
         with self._lock:
@@ -279,22 +277,45 @@ class StationHealthStore:
 
         windows: dict[str, Any] = {}
         now = datetime.now(UTC)
+        retention_cutoff = now - window_timedelta("90d")
+        records = [row for row in records if row.observed_at >= retention_cutoff]
         for window_key in WINDOW_SECONDS:
-            cutoff = now - window_timedelta(window_key)
+            cutoff = max(now - window_timedelta(window_key), retention_cutoff)
             window_rows = [row for row in records if row.observed_at >= cutoff]
-            products = grade_products_from_records(window_rows, window_key)
-            overall = overall_from_products(products)
-            windows[window_key] = {
-                "overall_grade": overall["overall_grade"],
-                "overall_score": overall["overall_score"],
-                "products": products,
-            }
+            windows[window_key] = enrich_station_window(
+                meta=meta,
+                rows=window_rows,
+                window_key=window_key,
+            )
         return {
             "icao": code,
             "name": meta.name,
+            "wmo_region": wmo_region_for_icao(code, country=meta.country),
             "windows": windows,
             "record_count": len(records),
+            "maintenance_tag_counts": windows.get("90d", {}).get("maintenance_tag_counts", {}),
+            "file_format_counts": windows.get("90d", {}).get("file_format_counts", {}),
+            "issue_code_counts": windows.get("90d", {}).get("issue_code_counts", {}),
+            "centennial_metrics": windows.get("90d", {}).get("centennial_metrics", []),
         }
+
+    def purge_expired(self) -> int:
+        """
+        Delete in-memory observations older than 90 days.
+
+        Returns
+        -------
+        object
+            Return value.
+
+        """
+        now = datetime.now(UTC)
+        cutoff = now - window_timedelta("90d")
+        _ = RETENTION_SECONDS
+        with self._lock:
+            before = len(self._records)
+            self._records[:] = [row for row in self._records if row.observed_at >= cutoff]
+            return before - len(self._records)
 
 
 _memory_store = StationHealthStore()
@@ -314,11 +335,6 @@ def get_station_health_store() -> StationHealthStoreProtocol:
     -------
     StationHealthStoreProtocol
         Active store implementation.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (get_station_health_store)
-    2
     """
     global _pg_store, _pg_url
     if _override is not None:
@@ -364,11 +380,6 @@ def set_station_health_store(store: StationHealthStoreProtocol | None) -> None:
     ----------
     store : object
         Override store, or ``None`` to clear.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (set_station_health_store)
-    2
     """
     global _override, _memory_store
     _dispose_postgres_store()

@@ -14,7 +14,7 @@ import {
   type CalmExampleChip,
 } from './CalmConvertEmptyAffordances';
 import { Button } from './ui/button';
-import { CALM_CONVERT_PRIMARY_LABEL } from '/utils/convertCalmState';
+import { CALM_CONVERT_PRIMARY_LABEL } from '@/utils/convertCalmState';
 
 export type { CalmExampleChip };
 

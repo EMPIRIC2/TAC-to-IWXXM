@@ -1,6 +1,6 @@
 """TC-EV063-006 - profile id metrics + alias counters (EV-063 / F35).
 
-Spec: docs/test-plan.md §TC-EV063-006; ADR-036 §6.
+Spec: docs/test-plan.md §TC-EV063-006; §6.
 """
 
 from __future__ import annotations

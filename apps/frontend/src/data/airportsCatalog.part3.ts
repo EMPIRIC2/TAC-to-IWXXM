@@ -1,0 +1,216 @@
+/** Airport catalog part 3. */
+import type { Airport } from '@/models/airport';
+
+export const airportsDataPart3: Airport[] = [
+  {
+    icao: 'ZUUU',
+    iata: 'CTU',
+    name: 'Chengdu Shuangliu International Airport',
+    city: 'Chengdu',
+    country: 'China',
+  },
+  {
+    icao: 'VIDP',
+    iata: 'DEL',
+    name: 'Indira Gandhi International Airport',
+    city: 'New Delhi',
+    country: 'India',
+  },
+  {
+    icao: 'VABB',
+    iata: 'BOM',
+    name: 'Chhatrapati Shivaji Maharaj International Airport',
+    city: 'Mumbai',
+    country: 'India',
+  },
+  {
+    icao: 'VOBL',
+    iata: 'BLR',
+    name: 'Kempegowda International Airport',
+    city: 'Bangalore',
+    country: 'India',
+  },
+  {
+    icao: 'OMDB',
+    iata: 'DXB',
+    name: 'Dubai International Airport',
+    city: 'Dubai',
+    country: 'United Arab Emirates',
+  },
+  {
+    icao: 'OTHH',
+    iata: 'DOH',
+    name: 'Hamad International Airport',
+    city: 'Doha',
+    country: 'Qatar',
+  },
+
+  // Australia & Oceania
+  {
+    icao: 'YSSY',
+    iata: 'SYD',
+    name: 'Sydney Airport',
+    city: 'Sydney',
+    country: 'Australia',
+  },
+  {
+    icao: 'YMML',
+    iata: 'MEL',
+    name: 'Melbourne Airport',
+    city: 'Melbourne',
+    country: 'Australia',
+  },
+  {
+    icao: 'YBBN',
+    iata: 'BNE',
+    name: 'Brisbane Airport',
+    city: 'Brisbane',
+    country: 'Australia',
+  },
+  {
+    icao: 'YPPH',
+    iata: 'PER',
+    name: 'Perth Airport',
+    city: 'Perth',
+    country: 'Australia',
+  },
+  {
+    icao: 'NZAA',
+    iata: 'AKL',
+    name: 'Auckland Airport',
+    city: 'Auckland',
+    country: 'New Zealand',
+  },
+  {
+    icao: 'NZCH',
+    iata: 'CHC',
+    name: 'Christchurch International Airport',
+    city: 'Christchurch',
+    country: 'New Zealand',
+  },
+
+  // South America
+  {
+    icao: 'SBGR',
+    iata: 'GRU',
+    name: 'São Paulo/Guarulhos International Airport',
+    city: 'São Paulo',
+    country: 'Brazil',
+  },
+  {
+    icao: 'SBGL',
+    iata: 'GIG',
+    name: 'Rio de Janeiro/Galeão International Airport',
+    city: 'Rio de Janeiro',
+    country: 'Brazil',
+  },
+  {
+    icao: 'SCEL',
+    iata: 'SCL',
+    name: 'Arturo Merino Benítez International Airport',
+    city: 'Santiago',
+    country: 'Chile',
+  },
+  {
+    icao: 'SAEZ',
+    iata: 'EZE',
+    name: 'Ministro Pistarini International Airport',
+    city: 'Buenos Aires',
+    country: 'Argentina',
+  },
+  {
+    icao: 'SKBO',
+    iata: 'BOG',
+    name: 'El Dorado International Airport',
+    city: 'Bogotá',
+    country: 'Colombia',
+  },
+  {
+    icao: 'SPIM',
+    iata: 'LIM',
+    name: 'Jorge Chávez International Airport',
+    city: 'Lima',
+    country: 'Peru',
+  },
+
+  // Africa
+  {
+    icao: 'FACT',
+    iata: 'CPT',
+    name: 'Cape Town International Airport',
+    city: 'Cape Town',
+    country: 'South Africa',
+  },
+  {
+    icao: 'FAOR',
+    iata: 'JNB',
+    name: 'O. R. Tambo International Airport',
+    city: 'Johannesburg',
+    country: 'South Africa',
+  },
+  {
+    icao: 'HECA',
+    iata: 'CAI',
+    name: 'Cairo International Airport',
+    city: 'Cairo',
+    country: 'Egypt',
+  },
+  {
+    icao: 'GMMN',
+    iata: 'CAS',
+    name: 'Mohammed V International Airport',
+    city: 'Casablanca',
+    country: 'Morocco',
+  },
+  {
+    icao: 'HAAB',
+    iata: 'ADD',
+    name: 'Addis Ababa Bole International Airport',
+    city: 'Addis Ababa',
+    country: 'Ethiopia',
+  },
+
+  // Mexico & Central America
+  {
+    icao: 'MMMX',
+    iata: 'MEX',
+    name: 'Mexico City International Airport',
+    city: 'Mexico City',
+    country: 'Mexico',
+  },
+  {
+    icao: 'MMUN',
+    iata: 'CUN',
+    name: 'Cancún International Airport',
+    city: 'Cancún',
+    country: 'Mexico',
+  },
+  {
+    icao: 'MMGL',
+    iata: 'GDL',
+    name: 'Guadalajara International Airport',
+    city: 'Guadalajara',
+    country: 'Mexico',
+  },
+  {
+    icao: 'MMMY',
+    iata: 'MTY',
+    name: 'Monterrey International Airport',
+    city: 'Monterrey',
+    country: 'Mexico',
+  },
+  {
+    icao: 'MROC',
+    iata: 'SJO',
+    name: 'Juan Santamaría International Airport',
+    city: 'San José',
+    country: 'Costa Rica',
+  },
+  {
+    icao: 'MPTO',
+    iata: 'PTY',
+    name: 'Tocumen International Airport',
+    city: 'Panama City',
+    country: 'Panama',
+  },
+];

@@ -259,10 +259,6 @@ function App() {
     setCurrentView(view);
   };
 
-  const handleOpenVisuals = () => {
-    setCurrentView('visuals');
-  };
-
   const handleOpenGlossaryEntry = useCallback((entryId: string) => {
     setGlossaryFocusTermId(entryId);
     setCurrentView('glossary');
@@ -363,7 +359,6 @@ function App() {
                   isGuest={isGuest}
                   onRequestLogin={handleRequestLogin}
                   onOpenHistory={handleOpenHistory}
-                  onOpenVisuals={handleOpenVisuals}
                   onLoadWorkSession={handleLoadWorkSession}
                   onNewMetar={handleNewMetar}
                   onSessionUpdated={handleSessionUpdated}

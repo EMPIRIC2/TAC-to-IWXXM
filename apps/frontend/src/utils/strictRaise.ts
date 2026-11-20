@@ -1,5 +1,5 @@
 /**
- * Strict raise policy for workbench issue chrome (ADR-054).
+ * Strict raise policy for workbench issue chrome ().
  *
  * Server returns all issues; the client raises attention chrome only for the
  * raised severity set. Strict OFF → critical + error. Strict ON → full ladder.

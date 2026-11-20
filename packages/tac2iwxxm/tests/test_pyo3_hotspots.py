@@ -1,4 +1,4 @@
-"""T4.4: PyO3 hotspot API contract (ADR-017).
+"""T4.4: PyO3 hotspot API contract .
 
 Enabled when ``TAC2IWXXM_REQUIRE_RUST=1`` (CI maturin job / ``make test-tac2iwxxm-native``).
 Hotspot implementations land in T4.5.

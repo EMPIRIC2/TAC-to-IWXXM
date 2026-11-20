@@ -23,6 +23,19 @@ export interface StationProductGrade {
 }
 
 /**
+ * Centennial recognition-criteria proxy row.
+ * @example
+ * const _ = true;
+ */
+export interface StationCentennialMetric {
+  id: string;
+  label: string;
+  status: string;
+  score?: number | null;
+  detail: string;
+}
+
+/**
  * One station row in the health list payload.
  * @example
  * const _ = true;
@@ -30,9 +43,14 @@ export interface StationProductGrade {
 export interface StationHealthListItem {
   icao: string;
   name?: string | null;
+  wmo_region?: string | null;
   overall_grade: string;
   overall_score: number;
   products: StationProductGrade[];
+  maintenance_tag_counts?: Record<string, number>;
+  file_format_counts?: Record<string, number>;
+  issue_code_counts?: Record<string, number>;
+  centennial_metrics?: StationCentennialMetric[];
 }
 
 /**
@@ -72,6 +90,7 @@ export interface StationHealthListParams {
   window?: string;
   product?: string;
   grade?: string;
+  region?: string;
   limit?: number;
   signal?: AbortSignal;
 }
@@ -86,14 +105,17 @@ export interface StationHealthListParams {
  */
 function listQuerySuffix(params: StationHealthListParams): string {
   const query = new URLSearchParams();
-  if (params.window?.trim()) {
-    query.set('window', params.window.trim());
-  }
-  if (params.product?.trim()) {
-    query.set('product', params.product.trim());
-  }
-  if (params.grade?.trim()) {
-    query.set('grade', params.grade.trim());
+  const stringFilters: Array<[string, string | undefined]> = [
+    ['window', params.window],
+    ['product', params.product],
+    ['grade', params.grade],
+    ['region', params.region],
+  ];
+  for (const [key, value] of stringFilters) {
+    const trimmed = value?.trim();
+    if (trimmed) {
+      query.set(key, trimmed);
+    }
   }
   if (params.limit != null) {
     query.set('limit', String(params.limit));

@@ -1,0 +1,454 @@
+"""Split part body (exec'd into package namespace)."""
+
+from __future__ import annotations
+
+
+def _us_gml_id(ir: dict[str, Any], product: str) -> str:
+    """
+    Internal helper ``_us_gml_id``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    product : str
+        Argument ``product``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
+    root = product.lower()
+    station = str(ir["station"]).lower()
+    rvr_raw = ir.get("rvr")
+    if isinstance(rvr_raw, dict):
+        rvr = cast(dict[str, Any], rvr_raw)
+        if rvr.get("variable"):
+            return f"{root}.us.var.rvr.{station}"
+    if ir.get("observed_lightning"):
+        return f"{root}.us.ltg.{station}"
+    if ir.get("snow_increase"):
+        return f"{root}.us.snincr.{station}"
+    if ir.get("inoperative_sensor_hrefs"):
+        return f"{root}.us.sensor.{station}"
+    if ir.get("peak_wind_dir_deg") is not None:
+        return f"{root}.us.pk.wnd.{station}"
+    if ir.get("wind_shift_hour") is not None:
+        return f"{root}.us.wshft.{station}"
+    if ir.get("sea_level_pressure_hpa") is not None:
+        return f"{root}.us.ao2.slp.{station}"
+    if ir.get("nil"):
+        return f"{root}.us.nil.{station}"
+    if ir.get("cavok"):
+        return f"{root}.us.cavok.{station}"
+    if ir.get("nosig"):
+        return f"{root}.us.nosig.{station}"
+    if ir.get("auto") and product.upper() == "SPECI" and not ir.get("correction"):
+        return f"{root}.us.auto.{station}"
+    return f"{root}.us.ao2.{station}"
+
+
+def _peak_timestamp(ir: dict[str, Any]) -> str:
+    """
+    Internal helper ``_peak_timestamp``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
+    day = int(ir["day"])
+    hour = int(ir["peak_wind_hour"])
+    minute = int(ir["peak_wind_minute"])
+    from tac2iwxxm.time_anchor import iso_stamp
+
+    legacy = "2012-08" if str(ir.get("station")) == "YUDO" else "2023-06"
+    return iso_stamp(ir, day, hour, minute, legacy=legacy)
+
+
+def _wind_shift_timestamp(ir: dict[str, Any]) -> str:
+    """
+    Internal helper ``_wind_shift_timestamp``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
+    day = int(ir["day"])
+    hour = int(ir["wind_shift_hour"])
+    minute = int(ir["wind_shift_minute"])
+    from tac2iwxxm.time_anchor import iso_stamp
+
+    legacy = "2012-08" if str(ir.get("station")) == "YUDO" else "2023-06"
+    return iso_stamp(ir, day, hour, minute, legacy=legacy)
+
+
+def _fmt_deg(value: float) -> str:
+    """
+    Internal helper ``_fmt_deg``.
+
+    Parameters
+    ----------
+    value : float
+        Argument ``value``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
+    if float(value).is_integer():
+        return str(int(value))
+    return f"{value:g}"
+
+
+def _observed_lightning_xml(lightning: dict[str, Any]) -> str:
+    """
+    Internal helper ``_observed_lightning_xml``.
+
+    Parameters
+    ----------
+    lightning : dict[str, Any]
+        Argument ``lightning``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
+    parts: list[str] = ["              <iwxxm-us:ObservedLightning>"]
+    dist = lightning.get("qualitative_distance_href")
+    if dist:
+        parts.append(f'                <iwxxm-us:qualitativeDistance xlink:href="{escape(str(dist))}"/>')
+    freq = lightning.get("frequency_href")
+    if freq:
+        parts.append(f'                <iwxxm-us:frequency xlink:href="{escape(str(freq))}"/>')
+    typ = lightning.get("type_href")
+    if typ:
+        parts.append(f'                <iwxxm-us:type xlink:href="{escape(str(typ))}"/>')
+    sector_raw = lightning.get("sector")
+    if isinstance(sector_raw, dict):
+        sector = cast(dict[str, Any], sector_raw)
+        if sector.get("in_all_quadrants"):
+            parts.append("                <iwxxm-us:sector>")
+            parts.append('                  <iwxxm-us:Sector inAllQuadrants="true"/>')
+            parts.append("                </iwxxm-us:sector>")
+        elif "ccw_deg" in sector and "cw_deg" in sector:
+            ccw = _fmt_deg(float(str(sector["ccw_deg"])))
+            cw = _fmt_deg(float(str(sector["cw_deg"])))
+            parts.append("                <iwxxm-us:sector>")
+            parts.append("                  <iwxxm-us:Sector>")
+            parts.append(
+                f'                    <iwxxm-us:extremeCCWDirection uom="deg">{ccw}</iwxxm-us:extremeCCWDirection>'
+            )
+            parts.append(
+                f'                    <iwxxm-us:extremeCWDirection uom="deg">{cw}</iwxxm-us:extremeCWDirection>'
+            )
+            parts.append("                  </iwxxm-us:Sector>")
+            parts.append("                </iwxxm-us:sector>")
+    parts.append("              </iwxxm-us:ObservedLightning>")
+    return "\n".join(parts)
+
+
+def _cloud_character_elem(tag: str, href: str | None, nil_reason: str | None) -> str:
+    """
+    Internal helper ``_cloud_character_elem``.
+
+    Parameters
+    ----------
+    tag : str
+        Argument ``tag``.
+
+    href : str | None
+        Argument ``href``.
+
+    nil_reason : str | None
+        Argument ``nil_reason``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
+    if href:
+        return f'              <iwxxm-us:{tag} xlink:href="{escape(href)}"/>'
+    if nil_reason:
+        return f'              <iwxxm-us:{tag} nilReason="{escape(nil_reason)}"/>'
+    return ""
+
+
+def _character_of_the_sky_xml(sky: dict[str, Any]) -> str:
+    """
+    Internal helper ``_character_of_the_sky_xml``.
+
+    Parameters
+    ----------
+    sky : dict[str, Any]
+        Argument ``sky``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
+    low = _cloud_character_elem(
+        "lowCloudCharacter",
+        sky.get("low_href") if isinstance(sky.get("low_href"), str) else None,
+        sky.get("low_nil_reason") if isinstance(sky.get("low_nil_reason"), str) else None,
+    )
+    mid = _cloud_character_elem(
+        "middleCloudCharacter",
+        sky.get("middle_href") if isinstance(sky.get("middle_href"), str) else None,
+        sky.get("middle_nil_reason") if isinstance(sky.get("middle_nil_reason"), str) else None,
+    )
+    high = _cloud_character_elem(
+        "highCloudCharacter",
+        sky.get("high_href") if isinstance(sky.get("high_href"), str) else None,
+        sky.get("high_nil_reason") if isinstance(sky.get("high_nil_reason"), str) else None,
+    )
+    return f"""              <iwxxm-us:CharacterOfTheSky>
+{low}
+{mid}
+{high}
+              </iwxxm-us:CharacterOfTheSky>"""
+
+
+def _convective_cloud_xml(conv: dict[str, Any]) -> str:
+    """
+    Internal helper ``_convective_cloud_xml``.
+
+    Parameters
+    ----------
+    conv : dict[str, Any]
+        Argument ``conv``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
+    parts: list[str] = ["              <iwxxm-us:ConvectiveCloudLocation>"]
+    ctype = conv.get("cloud_type_href")
+    if ctype:
+        parts.append(f'                <iwxxm-us:cloudType xlink:href="{escape(str(ctype))}"/>')
+    dist = conv.get("qualitative_distance_href")
+    if dist:
+        parts.append(f'                <iwxxm-us:qualitativeDistance xlink:href="{escape(str(dist))}"/>')
+    sector_raw = conv.get("sector")
+    if isinstance(sector_raw, dict):
+        sector = cast(dict[str, Any], sector_raw)
+        if sector.get("in_all_quadrants"):
+            parts.append("                <iwxxm-us:sector>")
+            parts.append('                  <iwxxm-us:Sector inAllQuadrants="true"/>')
+            parts.append("                </iwxxm-us:sector>")
+        elif "ccw_deg" in sector and "cw_deg" in sector:
+            ccw = _fmt_deg(float(str(sector["ccw_deg"])))
+            cw = _fmt_deg(float(str(sector["cw_deg"])))
+            parts.append("                <iwxxm-us:sector>")
+            parts.append("                  <iwxxm-us:Sector>")
+            parts.append(
+                f'                    <iwxxm-us:extremeCCWDirection uom="deg">{ccw}</iwxxm-us:extremeCCWDirection>'
+            )
+            parts.append(
+                f'                    <iwxxm-us:extremeCWDirection uom="deg">{cw}</iwxxm-us:extremeCWDirection>'
+            )
+            parts.append("                  </iwxxm-us:Sector>")
+            parts.append("                </iwxxm-us:sector>")
+    motion = conv.get("direction_of_motion_deg")
+    if motion is not None:
+        motion_txt = _fmt_deg(float(str(motion)))
+        parts.append(f'                <iwxxm-us:directionOfMotion uom="deg">{motion_txt}</iwxxm-us:directionOfMotion>')
+    parts.append("              </iwxxm-us:ConvectiveCloudLocation>")
+    return "\n".join(parts)
+
+
+def _vop_addendum_inner(ir: dict[str, Any]) -> str:
+    """
+    Internal helper ``_vop_addendum_inner``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
+    lightning_raw = ir.get("observed_lightning")
+    has_lightning = isinstance(lightning_raw, dict)
+    convective_raw = ir.get("convective_cloud")
+    has_convective = isinstance(convective_raw, dict)
+    sky_raw = ir.get("character_of_the_sky")
+    has_sky = isinstance(sky_raw, dict)
+    obscuration_raw = ir.get("obscuration")
+    has_obscuration = isinstance(obscuration_raw, dict)
+    if not has_lightning and not has_convective and not has_sky and not has_obscuration:
+        return ""
+
+    inner_parts: list[str] = [
+        "          <iwxxm-us:visuallyObservablePhenomena>",
+        "            <iwxxm-us:VisuallyObservablePhenomena>",
+    ]
+    if has_lightning:
+        lightning = cast(dict[str, Any], lightning_raw)
+        ol = _observed_lightning_xml(lightning)
+        inner_parts.append("              <iwxxm-us:lightning>")
+        inner_parts.append(ol)
+        inner_parts.append("              </iwxxm-us:lightning>")
+    if has_convective:
+        convective = cast(dict[str, Any], convective_raw)
+        conv_xml = _convective_cloud_xml(convective)
+        inner_parts.append("              <iwxxm-us:convection>")
+        inner_parts.append(conv_xml)
+        inner_parts.append("              </iwxxm-us:convection>")
+    if has_sky:
+        sky = cast(dict[str, Any], sky_raw)
+        sky_xml = _character_of_the_sky_xml(sky)
+        inner_parts.append("              <iwxxm-us:characterOfTheSky>")
+        inner_parts.append(sky_xml)
+        inner_parts.append("              </iwxxm-us:characterOfTheSky>")
+    if has_obscuration:
+        obsc = cast(dict[str, Any], obscuration_raw)
+        height = int(str(obsc["height_ft"]))
+        amt = escape(str(obsc["amount_href"]))
+        wx = escape(str(obsc["weather_href"]))
+        inner_parts.append("              <iwxxm-us:obscuration>")
+        inner_parts.append("                <iwxxm-us:Obscurations>")
+        inner_parts.append(
+            f'                  <iwxxm-us:heightOfWeatherPhenomenon uom="[ft_i]">{height}</iwxxm-us:heightOfWeatherPhenomenon>'
+        )
+        inner_parts.append(f'                  <iwxxm-us:obscurationAmount xlink:href="{amt}"/>')
+        inner_parts.append(f'                  <iwxxm-us:weatherCausingObscuration xlink:href="{wx}"/>')
+        inner_parts.append("                </iwxxm-us:Obscurations>")
+        inner_parts.append("              </iwxxm-us:obscuration>")
+    inner_parts.extend(
+        [
+            "            </iwxxm-us:VisuallyObservablePhenomena>",
+            "          </iwxxm-us:visuallyObservablePhenomena>",
+        ]
+    )
+    return "\n".join(inner_parts) + "\n"
+
+
+def _hailstone_size_addendum_inner(ir: dict[str, Any]) -> str:
+    """
+    Internal helper ``_hailstone_size_addendum_inner``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
+    hail_raw = ir.get("hailstone_size")
+    if not isinstance(hail_raw, dict):
+        return ""
+    hail = cast(dict[str, Any], hail_raw)
+    diam = hail.get("maximum_diameter_in")
+    if diam is None:
+        return ""
+    diam_txt = _fmt_deg(float(str(diam)))  # reuse compact float formatting
+    op = hail.get("size_operator")
+    op_xml = f"\n                <iwxxm-us:sizeOperator>{escape(str(op))}</iwxxm-us:sizeOperator>" if op else ""
+    return f"""          <iwxxm-us:hailstoneSize>
+            <iwxxm-us:HailstoneSize>
+              <iwxxm-us:maximumDiameter uom="[in_i]">{diam_txt}</iwxxm-us:maximumDiameter>{op_xml}
+            </iwxxm-us:HailstoneSize>
+          </iwxxm-us:hailstoneSize>
+"""
+
+
+def _snow_increase_addendum_inner(ir: dict[str, Any]) -> str:
+    """
+    Internal helper ``_snow_increase_addendum_inner``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
+    snow_raw = ir.get("snow_increase")
+    if not isinstance(snow_raw, dict):
+        return ""
+    snow = cast(dict[str, Any], snow_raw)
+    incr = int(str(snow["increase_in"]))
+    depth = int(str(snow["depth_in"]))
+    elem = escape(str(snow["processed_weather_element_href"]))
+    vtype = escape(str(snow["value_type_href"]))
+    period = escape(str(snow.get("value_period") or "PT1H"))
+    return f"""          <iwxxm-us:snowIncrease>
+            <iwxxm-us:SnowIncrease>
+              <iwxxm-us:snowDepthIncrease>
+                <iwxxm-us:ProcessedProperty>
+                  <iwxxm-us:processedWeatherElement xlink:href="{elem}"/>
+                  <iwxxm-us:valueType xlink:href="{vtype}"/>
+                  <iwxxm-us:valuePeriod>{period}</iwxxm-us:valuePeriod>
+                  <iwxxm-us:processedValue uom="[in_i]">{incr}</iwxxm-us:processedValue>
+                </iwxxm-us:ProcessedProperty>
+              </iwxxm-us:snowDepthIncrease>
+              <iwxxm-us:snowDepth uom="[in_i]">{depth}</iwxxm-us:snowDepth>
+            </iwxxm-us:SnowIncrease>
+          </iwxxm-us:snowIncrease>
+"""
+
+
+def _inoperative_sensors_extension(ir: dict[str, Any]) -> str:
+    """
+    Internal helper ``_inoperative_sensors_extension``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
+    hrefs_raw = ir.get("inoperative_sensor_hrefs")
+    if not isinstance(hrefs_raw, list) or not hrefs_raw:
+        return ""
+    hrefs = [f"{item}" for item in cast(list[object], hrefs_raw)]
+    failed_parts: list[str] = [
+        "          <iwxxm-us:failedSensors>",
+        "            <iwxxm-us:FailedSensors>",
+    ]
+    failed_parts.extend(f'              <iwxxm-us:parameter xlink:href="{escape(href)}"/>' for href in hrefs)
+    failed_parts.extend(
+        [
+            "            </iwxxm-us:FailedSensors>",
+            "          </iwxxm-us:failedSensors>",
+        ]
+    )
+    body = "\n".join(failed_parts)
+    return f"""      <iwxxm:extension>
+        <iwxxm-us:InoperativeSensors>
+{body}
+        </iwxxm-us:InoperativeSensors>
+      </iwxxm:extension>
+"""

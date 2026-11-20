@@ -1,4 +1,4 @@
-"""TC-F16-OPS-001..003 — DisseminationGateway façade, health, plan execute (EV-936 / ADR-041)."""
+"""TC-F16-OPS-001..003 — DisseminationGateway façade, health, plan execute (EV-936 )."""
 
 from __future__ import annotations
 

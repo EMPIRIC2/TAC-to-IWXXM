@@ -44,10 +44,6 @@ def run_once(settings: WorkerSettings, store: StoreClient | None = None) -> int:
     int
         Number of jobs processed (skips already-seen ``job_id`` values in-process).
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (run_once)
-    2
 
     Parameters
     ----------
@@ -99,11 +95,6 @@ def main() -> None:
 
     Validates ``INGEST_POLLER_URL``, initializes observability hooks, and exits on
     SIGTERM/SIGINT after the current poll completes.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (main)
-    2
     """
     logging.basicConfig(
         level=logging.INFO,

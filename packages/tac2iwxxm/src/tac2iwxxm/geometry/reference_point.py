@@ -76,11 +76,6 @@ def load_vor_reference_points() -> dict[str, dict[str, Any]]:
     -------
     dict[str, dict[str, Any]]
         Bundled VOR reference coordinates.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (load_vor_reference_points)
-    2
     """
     data = json.loads(_vor_table_path().read_text(encoding="utf-8"))
     return {k.upper(): v for k, v in data.get("points", {}).items()}
@@ -107,11 +102,6 @@ def resolve_vor(vor_id: str, table: dict[str, dict[str, Any]] | None = None) -> 
     ------
     UnknownVOR
         When the public source and the reference table both miss ``vor_id``.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (resolve_vor)
-    2
     """
     key = vor_id.upper()
     try:
@@ -148,11 +138,6 @@ def offset_nm(lat: float, lon: float, distance_nm: float, cardinal: str) -> tupl
     -------
     tuple[float, float]
         A point ``distance_nm`` along ``cardinal`` from ``(lat, lon)``.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (offset_nm)
-    2
     """
     bearing_deg = _CARDINAL_BEARING_DEG.get(cardinal.upper())
     if bearing_deg is None:
@@ -203,11 +188,6 @@ class ReferencePointGeometryParser:
         -------
         dict[str, Any] | None
             Geometry IR dict when a ``FROM`` chain is present, else ``None``.
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (parse_from_body)
-        2
         """
         match = _FROM_CHAIN.search(body)
         if match is None:
@@ -271,10 +251,5 @@ def parse_vor_reference_geometry(body: str) -> dict[str, Any] | None:
     -------
     dict[str, Any] | None
         Geometry IR when a ``FROM`` chain is present, else ``None``.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (parse_vor_reference_geometry)
-    2
     """
     return ReferencePointGeometryParser().parse_from_body(body)

@@ -30,10 +30,6 @@ def pkg_issue_to_backend(issue: Issue, *, layer: ValidationLayer | None = None) 
     """
     Map ``iwxxm_validate.Issue`` onto backend ``ValidationIssue``.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (pkg_issue_to_backend)
-    2
 
     Parameters
     ----------
@@ -96,10 +92,6 @@ def call_validate_iwxxm(
     """
     Invoke ``validate_iwxxm`` - single package entrypoint for backend IWXXM checks.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (call_validate_iwxxm)
-    2
 
     Parameters
     ----------
@@ -132,10 +124,6 @@ def validate_wellformed(xml_content: str) -> ValidationResult:
     """
     Layer 3 - XML well-formedness via package lxml check (stable operator messages).
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (validate_wellformed)
-    2
 
     Parameters
     ----------
@@ -168,10 +156,6 @@ def validate_xml_schema(
     """
     Layer 4 - XSD validation via package.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (validate_xml_schema)
-    2
 
     Parameters
     ----------
@@ -210,10 +194,6 @@ def validate_schematron(
     """
     Layer 5 - Schematron validation via package.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (validate_schematron)
-    2
 
     Parameters
     ----------
@@ -253,10 +233,6 @@ def validate_gml_references(
     """
     Layer 6 - GML reference validation via package.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (validate_gml_references)
-    2
 
     Parameters
     ----------
@@ -292,10 +268,6 @@ def validate_wmo_codelists(
     """
     Layer 7 - WMO codelist validation via package.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (validate_wmo_codelists)
-    2
 
     Parameters
     ----------

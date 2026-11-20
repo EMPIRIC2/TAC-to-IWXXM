@@ -40,11 +40,6 @@ def load_corpus_metrics(path: str | None = None) -> dict[str, Any]:
     ------
     QualityMetricsArtifactMissing
         When the artifact file is not present.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (load_corpus_metrics)
-    2
     """
     artifact = Path(path) if path else _DEFAULT_ARTIFACT
     if not artifact.is_file():
@@ -55,11 +50,6 @@ def load_corpus_metrics(path: str | None = None) -> dict[str, Any]:
 def clear_corpus_metrics_cache() -> None:
     """
     Clear the cached artifact (tests / regenerate).
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (clear_corpus_metrics_cache)
-    2
     """
     load_corpus_metrics.cache_clear()
 
@@ -83,11 +73,6 @@ def list_file_rows(
     -------
     list[dict[str, Any]]
         File rows from ``doc["files"]``.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (list_file_rows)
-    2
     """
     rows = list(doc.get("files") or [])
     if product is None:
@@ -111,11 +96,6 @@ def get_detail(doc: dict[str, Any], stem: str) -> dict[str, Any] | None:
     -------
     dict[str, Any] | None
         Detail blob, or ``None``.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (get_detail)
-    2
     """
     raw_details = doc.get("details")
     if not isinstance(raw_details, dict):

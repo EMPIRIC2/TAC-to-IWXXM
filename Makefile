@@ -80,6 +80,8 @@ PY_LINT := apps/backend/src apps/backend/tests \
 	issue-registry-guard \
 	cursor-no-home-paths-guard \
 	test-file-naming-guard \
+	toml-session-ids-guard \
+	pytest-filterwarnings-guard \
 	pnpm-action-package-manager-guard \
 	supabase-start supabase-stop supabase-reset supabase-status supabase-push supabase-pull \
 
@@ -115,7 +117,7 @@ pre-push-run:
 	# Same as husky pre-push (EV-047): fast units only.
 	$(MAKE) test-unit-fast
 
-# --- F15 issue catalog (ADR-028 / EV-011) ---
+# --- F15 issue catalog (EV-011) ---
 
 catalog-regen:
 	$(UV) run python scripts/tac-validate/regen_issue_catalog.py
@@ -140,7 +142,7 @@ membership-check: membership-regen
 		|| (echo "wmo_membership.json drift — run make membership-regen and commit"; \
 		git diff --stat -- packages/tac-validate/src/tac_validate/data/wmo_membership.json; exit 1)
 
-# ADR-046 / #1216 — mined TAC + IWXXM validation YAML is generated only.
+# #1216 — mined TAC + IWXXM validation YAML is generated only.
 validation-catalog-check:
 	$(UV) run python scripts/iwxxm/mine_validation_library_catalogs.py --check
 
@@ -168,6 +170,14 @@ cursor-no-home-paths-guard:
 test-file-naming-guard:
 	$(UV) run python scripts/ci/check_test_file_naming.py --base origin/stage
 
+# Ban S### session/planning ids inside tracked *.toml comments and strings
+toml-session-ids-guard:
+	$(UV) run python scripts/ci/check_toml_session_ids.py
+
+# TC-EVDOC-007: pytest filterwarnings must be error (no ignore)
+pytest-filterwarnings-guard:
+	$(UV) run python scripts/ci/check_pytest_filterwarnings.py
+
 # EV-096 / #1096: no pnpm/action-setup with.version when packageManager is set
 pnpm-action-package-manager-guard:
 	$(UV) run python scripts/ci/check_pnpm_action_package_manager.py
@@ -182,7 +192,7 @@ format-check:
 	$(UV) run ruff format --check $(PY_TREES)
 	$(PNPM) run format:check
 
-# ADR-048 / EV-docstring-multilang-bar — multi-lang documentation bar
+# EV-docstring-multilang-bar — multi-lang documentation bar
 check-docs:
 	$(UV) run python scripts/docs/check_docs_py.py .
 
@@ -331,7 +341,7 @@ test-unit-auth:
 		--cov-report=term-missing --cov-fail-under=100 -v
 	$(UV) run python scripts/ci/check_per_file_coverage.py packages/auth/coverage.json
 
-# F30 / ADR-033 / TC-EV031-002 — Alembic against DATABASE_URL (idempotent upgrade head).
+# F30 / TC-EV031-002 — Alembic against DATABASE_URL (idempotent upgrade head).
 db-migrate:
 	bash scripts/ci/alembic_upgrade.sh
 
@@ -398,7 +408,7 @@ test-unit-tac-decoding:
 convert-allowlist:
 	$(UV) run python scripts/tac2iwxxm/compose_convert_allowlist.py $(ARGS)
 
-# Build optional PyO3 extension (requires rustc + maturin). ADR-017 / T4.3.
+# Build optional PyO3 extension (requires rustc + maturin). T4.3.
 build-tac2iwxxm-native:
 	cd packages/tac2iwxxm && $(UV) run maturin develop --manifest-path rust/Cargo.toml --uv
 
@@ -452,7 +462,7 @@ bench-validation-stack:
 	fi
 	$(UV) run python scripts/bench/validation_stack.py
 
-# F11 / ADR-027 — xsdata codegen from pinned XSD (T3.6).
+# F11 — xsdata codegen from pinned XSD (T3.6).
 codegen-iwxxm-xsd:
 	$(UV) run python scripts/codegen/iwxxm_xsd.py
 
@@ -472,7 +482,7 @@ sbom:
 sbom-check:
 	bash scripts/ci/check_sbom_drift.sh
 
-# EV-1150 / ADR-043 — bump F12–F14 packages to CalVer (YYYY.MM.DD[.N][.devN])
+# EV-1150 — bump F12–F14 packages to CalVer (YYYY.MM.DD[.N][.devN])
 # Usage: make pypi-calver-bump ARGS='--all'
 #        make pypi-calver-bump ARGS='--package tac-validate --dev 1'
 pypi-calver-bump:
@@ -535,7 +545,7 @@ test-va-sigmet-quality:
 	bash scripts/ci/run_va_sigmet_quality.sh
 
 # EV-029 / E29-T4=2 — TC SIGMET quality pack (M7 / TC-EV029-004 + F23 deepen / #738)
-# EV-032 / E32-T7 — includes #835 A6-2-TC ADR-032 equality + catalog wmoPass (long pack).
+# EV-032 E32-T7 — includes #835 A6-2-TC equality + catalog wmoPass (long pack).
 # Fast canary: scripts/ci/run_ev032_a6_2_tc_canary.sh (path-filtered pre-commit).
 test-tc-sigmet-quality:
 	bash scripts/ci/run_tc_sigmet_quality.sh
@@ -544,7 +554,7 @@ test-tc-sigmet-quality:
 test-ev032-a6-2-canary:
 	bash scripts/ci/run_ev032_a6_2_tc_canary.sh
 
-# EV-032 / E32-T7 / T2.8 — path-filtered pre-commit canary (VONA ADR-032 + product enum)
+# EV-032 E32-T7 T2.8 — path-filtered pre-commit canary (VONA + product enum)
 test-ev032-vona-canary:
 	bash scripts/ci/run_ev032_vona_canary.sh
 
@@ -601,7 +611,7 @@ test-iwxxm-translation-informative:
 test-unit-dissemination:
 	bash scripts/ci/run_dissemination_coverage.sh
 
-# ADR-042 / EV-1132 — packages/workflows coverage 100%.
+# EV-1132 — packages/workflows coverage 100%.
 test-unit-workflows:
 	$(UV) run pytest packages/workflows/tests -m unit \
 		--cov=workflows --cov-config=packages/workflows/pyproject.toml --cov-branch \
@@ -867,7 +877,7 @@ test-live-bulletin:
 	$(UV) run pytest tests/live/test_tc_live_f6_030_bulletin.py -m live_api -v --tb=short --no-cov
 
 # TC-LIVE-FEEDS — NOAA AWC + MET Norway, plus KNMI when KNMI_OPEN_DATA_API_KEY is in .env.
-# Manual only (ADR-009). Not part of test-live.
+# Manual only (). Not part of test-live.
 test-live-feeds:
 	@$(load_dotenv); \
 	$(UV) run pytest tests/live/test_national_feeds.py -m live_api -v --tb=short --no-cov
@@ -977,7 +987,7 @@ validate-yaml:
 overlay-preflight:
 	$(UV) run python scripts/overlays/preflight.py --all-examples
 
-validate-fast: format-check typecheck lint secrets-check validate-yaml catalog-check validation-catalog-check issue-registry-guard cursor-no-home-paths-guard test-file-naming-guard pnpm-action-package-manager-guard overlay-preflight file-budget file-complexity
+validate-fast: format-check typecheck lint secrets-check validate-yaml catalog-check validation-catalog-check issue-registry-guard cursor-no-home-paths-guard test-file-naming-guard toml-session-ids-guard pytest-filterwarnings-guard pnpm-action-package-manager-guard overlay-preflight file-budget file-complexity
 
 # EV-quality-tooling-suite — Wave 1 local gates [Corpus: tech-spec] TR-Q05..Q07
 check-import-linter:
@@ -1071,7 +1081,7 @@ security-scan:
 check-exact-pins:
 	python3 scripts/ci/check-exact-pins.py
 
-# ADR-056 — file line budget + complexity caps
+# — file line budget + complexity caps
 file-budget:
 	python3 scripts/ci/check_file_budget.py
 

@@ -25,11 +25,6 @@ depends_on: str | Sequence[str] | None = None
 def upgrade() -> None:
     """
     Create tac_library_assets.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (upgrade)
-    2
     """
     op.create_table(
         "tac_library_assets",
@@ -83,11 +78,6 @@ def upgrade() -> None:
 def downgrade() -> None:
     """
     Drop tac_library_assets.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (downgrade)
-    2
     """
     op.drop_index("ix_tac_library_assets_kind", table_name="tac_library_assets")
     op.drop_index("ix_tac_library_assets_user_id", table_name="tac_library_assets")

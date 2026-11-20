@@ -1,4 +1,4 @@
-"""Dissemination ops tables (EV-936 / ADR-041 / ADR-040).
+"""Dissemination ops tables (EV-936 /).
 
 Revision ID: 20260903_0001
 Revises: 20260803_0001
@@ -25,11 +25,6 @@ depends_on: str | Sequence[str] | None = None
 def upgrade() -> None:
     """
     Create dissemination ops tables.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (upgrade)
-    2
     """
     op.create_table(
         "tac_dissemination_plans",
@@ -162,11 +157,6 @@ def upgrade() -> None:
 def downgrade() -> None:
     """
     Drop dissemination ops tables.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (downgrade)
-    2
     """
     op.drop_table("tac_mapping_configs")
     op.drop_table("tac_dissemination_audit")

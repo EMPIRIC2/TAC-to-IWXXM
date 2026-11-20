@@ -1,6 +1,6 @@
 """TC-EV030-005 - #829 A6-2-TC catalog unlock (S037) → EV-032 `wmoPass` (#835).
 
-Quality path + ADR-032 equality are green. Catalog tier is ``wmoPass`` after
+Quality path + equality are green. Catalog tier is ``wmoPass`` after
 TC-EV032-003 / T1.4 (was ``wmoReference`` at EV-030 T2.4).
 """
 

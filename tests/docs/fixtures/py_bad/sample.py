@@ -1,4 +1,4 @@
-"""Module with intentional ADR-048 gaps."""
+"""Module with intentional gaps."""
 
 
 def bare(name: str) -> str:

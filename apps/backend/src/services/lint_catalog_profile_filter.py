@@ -37,11 +37,6 @@ def semantic_profiles_from_tags(tags: Sequence[str] | Iterable[str]) -> list[str
     -------
     list[str]
         Sorted unique canonical semantic profile ids.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (semantic_profiles_from_tags)
-    2
     """
     found: set[str] = set()
     for raw in tags:
@@ -67,11 +62,6 @@ def exchange_profiles_from_tags(tags: Sequence[str] | Iterable[str]) -> list[str
     -------
     list[str]
         Sorted unique canonical exchange profile ids.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (exchange_profiles_from_tags)
-    2
     """
     found: set[str] = set()
     for raw in tags:
@@ -95,10 +85,6 @@ def row_matches_profile(
 
     Shared rows (empty applicable) always match.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (row_matches_profile)
-    2
 
     Parameters
     ----------

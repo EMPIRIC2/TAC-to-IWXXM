@@ -46,7 +46,12 @@ vi.mock('@/app/components/LiveWorldMap', () => ({
 }));
 import { RegionSchematic } from './RegionSchematic';
 import { WindCue } from './WindCue';
-import { publishDecodeVisuals, writeStationDraft } from '@/utils/decodeVisualsStore';
+import { publishDecodeVisuals } from '@/utils/decodeVisualsStore';
+
+function expectNoStationFinder(): void {
+  expect(screen.queryByTestId('decode-visuals-station')).not.toBeInTheDocument();
+  expect(document.getElementById('decode-visuals-station-input')).toBeNull();
+}
 
 describe('RegionSchematic', () => {
   it('names the region and the station, or says the sketch is unavailable', () => {
@@ -80,81 +85,58 @@ describe('WindCue', () => {
 
 describe('DecodeVisualsPage', () => {
   beforeEach(() => {
-    writeStationDraft(null);
+    publishDecodeVisuals({ station: '', segments: [] });
   });
 
-  it('starts empty, then shows a typed station without the published wind', async () => {
-    publishDecodeVisuals({ station: '', segments: [] });
-    const user = userEvent.setup();
+  it('renders the map without a station finder when Convert has no station', () => {
     render(<DecodeVisualsPage />);
+    expectNoStationFinder();
     expect(screen.getByTestId('decode-visuals-empty')).toBeInTheDocument();
     expect(screen.getByTestId('live-world-map')).toBeInTheDocument();
-    await user.type(screen.getByTestId('decode-visuals-station'), 'KJFK');
-    expect(screen.queryByTestId('icao-suggestion-KJFK')).not.toBeInTheDocument();
-    expect(screen.getByTestId('decode-visuals-heading')).toHaveTextContent('Kennedy');
-    expect(screen.getByTestId('live-world-map')).toBeInTheDocument();
-    expect(screen.getByTestId('wind-cue')).toHaveTextContent('No wind group');
-    await user.clear(screen.getByTestId('decode-visuals-station'));
-    expect(screen.getByTestId('decode-visuals-station')).toHaveValue('');
-    expect(screen.getByTestId('decode-visuals-empty')).toBeInTheDocument();
+    expect(screen.queryByTestId('decode-visuals-heading')).not.toBeInTheDocument();
   });
 
-  it('suggests stations that start with the typed letters', async () => {
-    publishDecodeVisuals({ station: '', segments: [] });
-    const user = userEvent.setup();
-    render(<DecodeVisualsPage />);
-    await user.type(screen.getByTestId('decode-visuals-station'), 'KJ');
-    expect(screen.getByTestId('icao-suggestion-KJFK')).toHaveTextContent('Kennedy');
-    await user.click(screen.getByTestId('icao-suggestion-KJFK'));
-    expect(screen.queryByTestId('icao-suggestion-KJFK')).not.toBeInTheDocument();
-    expect(screen.getByTestId('decode-visuals-station')).toHaveValue('KJFK');
-    expect(screen.getByTestId('decode-visuals-heading')).toHaveTextContent('Kennedy');
-    publishDecodeVisuals({ station: '', segments: [] });
-  });
-
-  it('lets the operator clear a published station down to an empty field', async () => {
-    publishDecodeVisuals({
-      station: 'T',
-      segments: [{ code: '18010KT', explanation: 'wind' }],
-    });
-    const user = userEvent.setup();
-    render(<DecodeVisualsPage />);
-    const input = screen.getByLabelText('Search');
-    expect(input).toHaveValue('T');
-    await user.clear(input);
-    expect(input).toHaveValue('');
-    expect(screen.getByTestId('decode-visuals-empty')).toBeInTheDocument();
-    publishDecodeVisuals({ station: '', segments: [] });
-  });
-
-  it('uses the published station and its wind until the operator types', () => {
+  it('uses the published Convert station for heading, wind, and map focus', () => {
     publishDecodeVisuals({
       station: 'EGLL',
       segments: [{ code: '27012KT', explanation: 'wind' }],
     });
     render(<DecodeVisualsPage />);
-    expect(screen.getByTestId('decode-visuals-station')).toHaveValue('EGLL');
+    expectNoStationFinder();
+    expect(screen.queryByTestId('decode-visuals-empty')).not.toBeInTheDocument();
+    expect(screen.getByTestId('decode-visuals-heading')).toHaveTextContent('Heathrow');
     expect(screen.getByTestId('wind-cue')).toHaveTextContent('Wind from 270 degrees');
+    expect(screen.getByTestId('live-world-map')).toHaveAttribute(
+      'data-focus-station',
+      'EGLL',
+    );
     publishDecodeVisuals({ station: '', segments: [] });
   });
 
-  it('keeps a typed station after leaving the tab', async () => {
+  it('clears heading when Convert publishes an incomplete station', () => {
+    publishDecodeVisuals({
+      station: 'KJFK',
+      segments: [{ code: '18010KT', explanation: 'wind' }],
+    });
+    const { rerender } = render(<DecodeVisualsPage />);
+    expect(screen.getByTestId('decode-visuals-heading')).toBeInTheDocument();
+    publishDecodeVisuals({
+      station: 'T',
+      segments: [{ code: '18010KT', explanation: 'wind' }],
+    });
+    rerender(<DecodeVisualsPage />);
+    expectNoStationFinder();
+    expect(screen.getByTestId('decode-visuals-empty')).toBeInTheDocument();
+    expect(screen.queryByTestId('decode-visuals-heading')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('wind-cue')).not.toBeInTheDocument();
     publishDecodeVisuals({ station: '', segments: [] });
-    const user = userEvent.setup();
-    const first = render(<DecodeVisualsPage />);
-    await user.type(screen.getByTestId('decode-visuals-station'), 'KJFK');
-    first.unmount();
-    render(<DecodeVisualsPage />);
-    expect(screen.getByTestId('decode-visuals-station')).toHaveValue('KJFK');
-    expect(screen.getByTestId('decode-visuals-heading')).toHaveTextContent('Kennedy');
-    writeStationDraft(null);
   });
 
   it('sends a map place to Convert when Send is used', async () => {
-    publishDecodeVisuals({ station: '', segments: [] });
     const user = userEvent.setup();
     const onOpenPlace = vi.fn();
     render(<DecodeVisualsPage onOpenPlace={onOpenPlace} />);
+    expectNoStationFinder();
     await user.click(screen.getByTestId('mock-send-place'));
     expect(onOpenPlace).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -178,23 +160,9 @@ describe('DecodeVisualsPage', () => {
         span: 'tight',
       }),
     );
-    publishDecodeVisuals({ station: '', segments: [] });
     render(<DecodeVisualsPage />);
+    expectNoStationFinder();
     expect(screen.getByTestId('decode-visuals-page')).toHaveClass('max-w-6xl');
     window.localStorage.clear();
-  });
-
-  it('names the station status with the Station ID label', async () => {
-    publishDecodeVisuals({ station: '', segments: [] });
-    const user = userEvent.setup();
-    render(<DecodeVisualsPage />);
-    await user.type(screen.getByTestId('decode-visuals-station'), 'KJFK');
-    expect(screen.getByLabelText('Valid Search')).toBeInTheDocument();
-    expect(screen.queryByLabelText('Valid ICAO code')).not.toBeInTheDocument();
-    await user.clear(screen.getByTestId('decode-visuals-station'));
-    await user.type(screen.getByTestId('decode-visuals-station'), 'QXZX');
-    expect(screen.getByLabelText('Invalid Search')).toBeInTheDocument();
-    expect(screen.queryByLabelText('Invalid ICAO code')).not.toBeInTheDocument();
-    writeStationDraft(null);
   });
 });

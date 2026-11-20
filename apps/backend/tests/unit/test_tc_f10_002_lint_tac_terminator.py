@@ -1,6 +1,6 @@
 """T2.3 / TC-F10-002: lint-tac HTTP passthrough for MISSING_TERMINATOR info + fix.
 
-Spec: docs/api-contract.md §lint-tac; ADR-025 §2.
+Spec: docs/api-contract.md §lint-tac; §2.
 """
 
 from __future__ import annotations

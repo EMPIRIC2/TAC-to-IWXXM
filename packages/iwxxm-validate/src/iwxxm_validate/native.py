@@ -1,4 +1,4 @@
-"""Optional PyO3 extension loader (F13 / E10-36; mirrors tac2iwxxm ADR-017).
+"""Optional PyO3 extension loader (F13 E10-36; mirrors tac2iwxxm).
 
 The ``iwxxm_validate._rust`` module is built by maturin. Pure-Python lxml paths keep
 working when the extension is absent (local without rustc); CI rust job requires it.
@@ -13,10 +13,6 @@ def rust_available() -> bool:
     """
     Return True when the compiled ``iwxxm_validate._rust`` extension imports.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (rust_available)
-    2
 
     Returns
     -------
@@ -33,11 +29,6 @@ def rust_available() -> bool:
 def clear_schema_caches() -> None:
     """
     Clear process-wide compiled XSD/Schematron caches (native only; no-op if absent).
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (clear_schema_caches)
-    2
     """
     mod = rust_module()
     if mod is None:
@@ -55,11 +46,6 @@ def rust_module() -> Any | None:
     -------
     Any | None
         Extension module or ``None``.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (rust_module)
-    2
     """
     try:
         from iwxxm_validate import _rust  # type: ignore[attr-defined]

@@ -2,8 +2,8 @@
  * Diff the latest successful convert against the previous version.
  */
 
-import { unifiedLineDiff } from '/utils/unifiedLineDiff';
-import type { OutputVersion } from '/utils/outputVersions';
+import { unifiedLineDiff } from '@/utils/unifiedLineDiff';
+import type { OutputVersion } from '@/utils/outputVersions';
 
 /**
  * Type `OutputVersionCompareProps`.

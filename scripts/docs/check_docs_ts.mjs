@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 /**
- * ADR-048 TypeScript documentation checker.
+ * TypeScript documentation checker.
  *
  * Presence: every function/class/method (exported and non-exported) needs TSDoc.
  * Exported symbols also need an executable @example (run via run_ts_examples.mjs).
  * Class methods and interface/type members are included (D-EVDOC-LINT-03).
  *
- * [Corpus: adr/ADR-048]
+ *
  */
 import fs from "node:fs";
 import path from "node:path";

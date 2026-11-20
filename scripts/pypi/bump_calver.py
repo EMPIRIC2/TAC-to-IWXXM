@@ -7,7 +7,7 @@ Usage
   python scripts/pypi/bump_calver.py --all --dev 1
   python scripts/pypi/bump_calver.py --all --date 2026.9.10 --same-day-n 1
 
-Traces to ADR-043 / EV-1150. Does not publish.
+Traces to EV-1150. Does not publish.
 """
 
 from __future__ import annotations
@@ -50,7 +50,7 @@ PACKAGES: dict[str, dict[str, Path]] = {
         / "__init__.py",
         "cargo": REPO_ROOT / "packages" / "tac2iwxxm" / "rust" / "Cargo.toml",
     },
-    # ADR-044 / F9 — decode + Decoding catalog (publish workflow already lists this package).
+    # F9 — decode + Decoding catalog (publish workflow already lists this package).
     "tac-decoding": {
         "pyproject": REPO_ROOT / "packages" / "tac-decoding" / "pyproject.toml",
         "init": REPO_ROOT

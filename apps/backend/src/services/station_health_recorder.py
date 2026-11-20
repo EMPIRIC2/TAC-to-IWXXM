@@ -5,7 +5,7 @@ from __future__ import annotations
 from datetime import datetime
 from typing import Any
 
-from src.services.station_health_store import get_station_health_store
+from .station_health_store import get_station_health_store
 
 try:
     from tac_validate.api import extract_station_icao
@@ -24,6 +24,7 @@ def record_tac_observation(
     lint_error_count: int = 0,
     lint_warning_count: int = 0,
     convert_ok: bool | None = None,
+    issue_codes: list[str] | tuple[str, ...] | None = None,
 ) -> dict[str, Any] | None:
     """
     Record one TAC observation into the station health store when ICAO is known.
@@ -53,11 +54,6 @@ def record_tac_observation(
     -------
     dict[str, Any] | None
         Summary of the stored row, or ``None`` when skipped.
-
-    Examples
-    --------
-    >>> 1 + 1
-    2
     """
     code = (icao or "").strip().upper() or None
     if code is None and extract_station_icao is not None:
@@ -77,6 +73,7 @@ def record_tac_observation(
         lint_error_count=lint_error_count,
         lint_warning_count=lint_warning_count,
         convert_ok=convert_ok,
+        issue_codes=issue_codes,
     )
     if row is None:
         return None
@@ -86,6 +83,9 @@ def record_tac_observation(
         "solidus_count": row.solidus_count,
         "missing_digit_count": row.missing_digit_count,
         "source": row.source,
+        "file_format": row.file_format,
+        "issue_codes": list(row.issue_codes),
+        "maintenance_tags": list(row.maintenance_tags),
     }
 
 

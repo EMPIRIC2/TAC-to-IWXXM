@@ -1,4 +1,4 @@
-# Builtin annex3 IWXXM output policy (ADR-046 / #1216 M4).
+# Builtin annex3 IWXXM output policy (#1216 M4).
 # Empty select = every Schematron pattern id on the pin. XSD and well-formed
 # stay engine errors and are not listed here.
 schema_version: 1
