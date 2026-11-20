@@ -48,6 +48,7 @@ add a doc, waive, or re-scope.
 
 - [user-journeys.csv](user-journeys.csv) owns journey rows.
 - [test-plan.csv](test-plan.csv) owns test-case and coverage rows.
+- [requirements.csv](requirements.csv) owns product intake rows from feedback forms.
 - [risks.csv](risks.csv), [assumptions.csv](assumptions.csv),
  [issues.csv](issues.csv), and [decisions.csv](decisions.csv) own RAID rows.
 

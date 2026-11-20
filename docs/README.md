@@ -22,6 +22,7 @@ Agents start at [AGENTS.md](../AGENTS.md). Writers follow
 | [env-variable.md](env-variable.md) | Environment variable names |
 | [user-journeys.md](user-journeys.md) | Journey schema (matrix in CSV) |
 | [test-plan.md](test-plan.md) | Test schema and test tiers (matrix in CSV) |
+| [requirements.md](requirements.md) | Product intake schema (CMO feedback matrix in CSV) |
 
 ## CSV matrices
 
@@ -29,6 +30,7 @@ Agents start at [AGENTS.md](../AGENTS.md). Writers follow
 |------|------|
 | [user-journeys.csv](user-journeys.csv) | Journey rows tied to tests |
 | [test-plan.csv](test-plan.csv) | Test-case and coverage rows |
+| [requirements.csv](requirements.csv) | Product intake from CMO IWXXM testing feedback |
 | [risks.csv](risks.csv) | Risks log |
 | [assumptions.csv](assumptions.csv) | Assumptions log |
 | [issues.csv](issues.csv) | Issues log |
