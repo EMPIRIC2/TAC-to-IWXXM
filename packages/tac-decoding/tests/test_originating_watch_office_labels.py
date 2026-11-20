@@ -154,3 +154,51 @@ def test_read_query_mwo_map_nonempty_for_valid_header() -> None:
     result = decode_tac(_sigmet("KKCI"), product="SIGMET")
     found = _mwo_explanations(result)
     assert found == {"KKCI-": "Originating watch office (KKCI)"}
+
+
+def test_mutation_location_resolver_create_update_clear() -> None:
+    """M x S / V+: create place enrichment, update it, then clear (delete)."""
+    set_location_name_resolver(lambda icao: "Kansas City" if icao == "KKCI" else None)
+    created = decode_tac(_sigmet("KKCI"), product="SIGMET")
+    assert {seg.code: seg.explanation for seg in created.segments}["KKCI-"] == (
+        "Originating watch office KKCI (Kansas City)"
+    )
+
+    set_location_name_resolver(lambda icao: "KC ARTCC" if icao == "KKCI" else None)
+    updated = decode_tac(_sigmet("KKCI"), product="SIGMET")
+    assert {seg.code: seg.explanation for seg in updated.segments}["KKCI-"] == (
+        "Originating watch office KKCI (KC ARTCC)"
+    )
+
+    set_location_name_resolver(None)
+    cleared = decode_tac(_sigmet("KKCI"), product="SIGMET")
+    assert {seg.code: seg.explanation for seg in cleared.segments}["KKCI-"] == ("Originating watch office (KKCI)")
+
+
+def test_failure_empty_and_garbage_tac_stay_safe() -> None:
+    """F / V-: empty or non-header TAC does not emit the old phrase or crash."""
+    for tac in ("", "NOT A SIGMET", "METAR KJFK 101200Z="):
+        result = decode_tac(tac, product="SIGMET")
+        joined = " ".join(seg.explanation for seg in result.segments)
+        assert _OLD_PHRASE not in joined.lower()
+        assert not any(_NEW_PHRASE in seg.explanation for seg in result.segments)
+
+
+def test_read_query_fault_no_mwo_when_header_missing() -> None:
+    """Read/query fault: helper map is empty when no hyphenated MWO appears."""
+    result = decode_tac("YUDD SIGMET 2 VALID 101200/101600 YUDD FIR TS=", product="SIGMET")
+    assert _mwo_explanations(result) == {}
+
+
+@pytest.mark.parametrize("office", ["KKCI", "YUSO"])
+def test_validation_place_and_designator_forms(office: str) -> None:
+    """V+: designator-only and place-resolved forms both keep the new label."""
+    bare = decode_tac(_sigmet(office), product="SIGMET")
+    bare_expl = {seg.code: seg.explanation for seg in bare.segments}[f"{office}-"]
+    assert bare_expl == f"Originating watch office ({office})"
+
+    set_location_name_resolver(lambda icao: "Named Place" if icao == office else None)
+    named = decode_tac(_sigmet(office), product="SIGMET")
+    named_expl = {seg.code: seg.explanation for seg in named.segments}[f"{office}-"]
+    assert named_expl == f"Originating watch office {office} (Named Place)"
+    assert _OLD_PHRASE not in named_expl.lower()
