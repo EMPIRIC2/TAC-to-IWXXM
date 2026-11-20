@@ -7,7 +7,22 @@
 
 import type { AuthError, EmailOtpType, Session, User } from '@supabase/supabase-js';
 
+import { getSupabasePublishableKey, getSupabaseUrl } from './runtime-config';
 import { getSupabaseClient } from './supabase/client';
+
+/** Operator-facing message when Auth bootstrap is missing (F21 / F31). */
+export const AUTH_BOOTSTRAP_MISSING_MESSAGE =
+  'Sign-in is unavailable: Auth is not configured (missing Supabase publishable key).';
+
+/**
+ * Fail closed when Supabase URL or publishable key is missing.
+ * Prevents empty-apikey 401s that look like credential failures.
+ */
+function assertAuthBootstrap(): void {
+  if (!getSupabaseUrl().trim() || !getSupabasePublishableKey().trim()) {
+    throw new Error(AUTH_BOOTSTRAP_MISSING_MESSAGE);
+  }
+}
 
 /**
  * Type `AuthUser`.
@@ -173,6 +188,7 @@ async function refreshTokenIfNeeded(): Promise<void> {
  * const _ = true;
  */
 export async function register(data: RegisterRequest): Promise<AuthResponse> {
+  assertAuthBootstrap();
   const metadata: Record<string, string> = {};
   if (data.name) metadata.name = data.name;
   if (data.username) metadata.username = data.username;
@@ -223,6 +239,7 @@ export async function confirmEmail(data: {
  * const _ = true;
  */
 export async function login(data: LoginRequest): Promise<AuthResponse> {
+  assertAuthBootstrap();
   const { data: result, error } = await getSupabaseClient().auth.signInWithPassword({
     email: data.email,
     password: data.password,

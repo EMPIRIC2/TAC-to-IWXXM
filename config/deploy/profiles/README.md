@@ -16,3 +16,6 @@ Field reference: [docs/env-variable.md](../../docs/env-variable.md) and
 which copies the selected profile and injects `supabase.publishableKey` from
 `SUPABASE_PUBLISHABLE_KEY` (not committed). Required Auth bootstrap fields:
 `api.baseUrl`, `supabase.url`, plus the injected publishable key.
+`prepare-config` fails closed for `prod`/`staging` when the key is missing.
+The FE also merges bake-time `VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY` when a
+DOKS ConfigMap omits `publishableKey` (HF login/register).

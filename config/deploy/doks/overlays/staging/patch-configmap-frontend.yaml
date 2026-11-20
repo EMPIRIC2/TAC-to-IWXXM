@@ -3,6 +3,8 @@ kind: ConfigMap
 metadata:
   name: metar-frontend-runtime-config
 data:
+  # Auth bootstrap: inject supabase.publishableKey from SUPABASE_PUBLISHABLE_KEY
+  # at apply time (not committed). FE merges bake-time Vite key when omitted (HF login).
   config.json: |
     {
       "environment": "staging",

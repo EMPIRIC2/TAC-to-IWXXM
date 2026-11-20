@@ -7,6 +7,8 @@ metadata:
     app.kubernetes.io/component: frontend
 data:
   # Runtime bootstrap mirrors config/prod.json hosts (Render frontend decommissioned).
+  # Auth: inject supabase.publishableKey from SUPABASE_PUBLISHABLE_KEY at apply time.
+  # FE merges bake-time Vite key when omitted (HF login/register).
   config.json: |
     {
       "environment": "prod",
