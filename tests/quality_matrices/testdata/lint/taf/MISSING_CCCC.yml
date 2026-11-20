@@ -114,13 +114,13 @@ cases:
 - bucket: edge_pass
   case_id: '01'
   status: ready
-  tac: TAF EGLL 231200Z 2312/2418 31008KT 9999 FEW040=
+  tac: TAF K10U 302030Z 3021/3103 23005KT P6SM FEW023=
   expect:
     accept: true
   meta:
     product: TAF
     profile: annex3
-    cite: '#1265 MISSING_CCCC/edge_pass'
+    cite: '#1476 MISSING_CCCC/digit_icao'
 - bucket: edge_pass
   case_id: '02'
   status: ready
@@ -164,7 +164,7 @@ cases:
 - bucket: edge_fail
   case_id: '01'
   status: ready
-  tac: TAF 151800Z 1600/1618 13005MPS 9000 BKN020=
+  tac: TAF 10UK 302030Z 3021/3103 23005KT 9000 FEW023=
   expect:
     accept: false
     codes:
@@ -172,7 +172,7 @@ cases:
   meta:
     product: TAF
     profile: annex3
-    cite: '#1265 MISSING_CCCC/edge_fail'
+    cite: '#1476 MISSING_CCCC/digit_first'
 - bucket: edge_fail
   case_id: '02'
   status: ready

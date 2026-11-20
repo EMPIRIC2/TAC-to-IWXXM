@@ -168,15 +168,15 @@ cases:
 - bucket: edge_fail
   case_id: '01'
   status: ready
-  tac: METAR KJFK 231751Z 18012KT 10MILES FEW250 22/12 A3012=
+  tac: METAR 10UK 302035Z AUTO 23005KT 10SM FEW023 OVC100 12/05 A2989=
   expect:
     accept: false
     codes:
-    - INVALID_VISIBILITY
+    - MISSING_CCCC
   meta:
     product: METAR
     profile: annex3
-    cite: EV-970-S2 MISSING_CCCC/edge_fail
+    cite: '#1476 MISSING_CCCC/digit_first'
 - bucket: edge_fail
   case_id: '02'
   status: ready
