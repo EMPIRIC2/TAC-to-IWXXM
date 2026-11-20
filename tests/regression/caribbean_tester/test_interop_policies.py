@@ -79,13 +79,26 @@ def test_vrb_knots_and_gts_strip_do_not_conflict() -> None:
 
 
 def test_cor_keyword_does_not_bypass_missing_visibility() -> None:
-    """N10: COR is accepted as a keyword; incomplete groups still fail closed."""
+    """N10: COR is accepted; omitted visibility emits nilReason missing (#1562)."""
     tac = (
         "METAR COR MZBZ 261200Z VRB02KT FEW002 FEW010CB SCT020 25/25 A2990 Q1012 NOSIG="
     )
     result = convert(tac, product="METAR", bulletin_date="2026-10-26")
-    assert any("missing visibility" in issue.message for issue in result.issues), (
-        result.issues
+    assert result.ok is True
+    assert result.xml is not None
+    assert (
+        '<iwxxm:visibility xsi:nil="true" nilReason="http://codes.wmo.int/common/nil/missing"/>'
+        in result.xml
+    )
+    assert not any(issue.code == "TRANSLATION_FAILED" for issue in result.issues)
+    from tac_validate.api import lint_with_profile
+
+    lint_report = lint_with_profile(tac, product="METAR", profile="annex3", icao="MZBZ")
+    assert any(issue.code == "MISSING_VISIBILITY" for issue in lint_report.issues)
+    assert all(
+        issue.severity == "error"
+        for issue in lint_report.issues
+        if issue.code == "MISSING_VISIBILITY"
     )
 
 
