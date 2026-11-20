@@ -339,12 +339,14 @@ def decode_collect(xml: str, *, product: str, read: CollectRead | None = None) -
         decode_single_report,
         shift_decode,
     )
+    from tac_decoding.models.remarks import RemarkGroup
 
     collected = read if read is not None else read_collect(xml)
     product_u = product.upper()
     if collected.mode == "tac":
         segments: list[DecodeSegment] = []
         residuals: list[DecodeResidual] = []
+        remarks: list[RemarkGroup] = []
         summaries: list[str] = []
         search_from = 0
         for report in collected.tac_reports:
@@ -352,6 +354,7 @@ def decode_collect(xml: str, *, product: str, read: CollectRead | None = None) -
             inner = shift_decode(decode_single_report(report, product=product_u), pos)
             segments.extend(inner.segments)
             residuals.extend(inner.residuals)
+            remarks.extend(inner.remarks)
             if inner.summary:
                 summaries.append(inner.summary.rstrip("."))
         segments.sort(key=lambda item: (item.start, item.end))
@@ -359,7 +362,13 @@ def decode_collect(xml: str, *, product: str, read: CollectRead | None = None) -
         label = collected.bulletin_identifier or "document"
         numbered = " ".join(f"{index + 1}) {clause}." for index, clause in enumerate(summaries))
         summary = f"COLLECT {label} ({n} report{'s' if n != 1 else ''} with TAC). {numbered}".strip()
-        return DecodeResult(product=product_u, segments=segments, residuals=residuals, summary=summary)
+        return DecodeResult(
+            product=product_u,
+            segments=segments,
+            residuals=residuals,
+            summary=summary,
+            remarks=remarks,
+        )
 
     segments_xml: list[DecodeSegment] = []
     search_from = 0

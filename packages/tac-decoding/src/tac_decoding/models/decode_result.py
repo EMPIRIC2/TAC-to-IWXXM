@@ -7,6 +7,8 @@ from __future__ import annotations
 
 import msgspec
 
+from tac_decoding.models.remarks import RemarkGroup
+
 
 class DecodeSegment(msgspec.Struct, frozen=True):
     """
@@ -63,12 +65,15 @@ class DecodeResult(msgspec.Struct, frozen=True):
         Residuals.
     summary : str
         Summary. Default ``''``.
+    remarks : list[RemarkGroup]
+        Structured RMK code groups for METAR/SPECI (F9). Default empty.
     """
 
     product: str
     segments: list[DecodeSegment] = msgspec.field(default_factory=list)
     residuals: list[DecodeResidual] = msgspec.field(default_factory=list)
     summary: str = ""
+    remarks: list[RemarkGroup] = msgspec.field(default_factory=list)
 
 
 __all__ = ["DecodeResidual", "DecodeResult", "DecodeSegment"]
