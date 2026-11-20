@@ -3,7 +3,7 @@
 > Index: [README.md](README.md) 
 > Machine index: [config/profiles/catalog.yaml](../config/profiles/catalog.yaml) 
 > Rule catalogs: [config/rules/](../config/rules) 
-> Last updated: 2026-11-13
+> Last updated: 2026-11-20
 
 This document states domain rules for TAC lint, TAC to IWXXM conversion, IWXXM
 validation, and conversion profiles. Detailed mining notes may stay in the local
@@ -86,28 +86,27 @@ Machine catalog: [config/profiles/catalog.yaml](../config/profiles/catalog.yaml)
 
 ## Automation gaps (outside live-feed refresh)
 
-Live Traditional Alphanumeric Code (TAC) and ICAO Meteorological Information
-Exchange Model (IWXXM) feed refresh, plus World Meteorological Organization
-(WMO) schema change signals, do **not** close the gaps below. Track them under
-GitHub issue [#884](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/884)
+Live TAC and IWXXM feed refresh, plus WMO schema change signals, do not close
+the gaps below. Track them under GitHub issue
+[#884](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/884)
 (parent epic [#876](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/876)).
-RAID: `docs/issues.csv` **I-003**, `docs/risks.csv` **R-003**.
+RAID: `docs/issues.csv` I-003, `docs/risks.csv` R-003.
 
 ### No public TAC grammar API
 
-There is no known public machine-readable grammar or Application Programming
-Interface (API) that defines TAC form per weather product (for example Extended
-Backus–Naur Form or JSON Schema). Lint and encode rules therefore come from
-human mining of manuals, vendor examples, and licensed International Civil
-Aviation Organization (ICAO) text — not from an automated grammar pull.
+There is no known public machine-readable grammar or API that defines TAC form
+per weather product (for example EBNF or JSON Schema). Lint and encode rules
+come from human mining of manuals, vendor examples, and licensed ICAO text,
+not from an automated grammar pull.
 
-Do not invent an in-repo “grammar API” that claims to be that missing SoT.
+Do not invent an in-repo "grammar API" that pretends to be that missing source
+of truth.
 
 ### Annex 3 and PANS-MET stay licensed PDFs
 
 ICAO Annex 3 and Procedures for Air Navigation Services — Meteorology
-(PANS-MET, Doc 10157) remain licensed Portable Document Format (PDF) files on
-the ICAO Store. There is no Annex 3 / PANS-MET API.
+(PANS-MET, Doc 10157) remain licensed PDFs on the ICAO Store. There is no
+Annex 3 / PANS-MET API.
 
 This repository cites store landings and section numbers only. It does not host
 scraped ICAO text. Access and citation policy:
@@ -126,12 +125,12 @@ URL inventory:
 
 ### Partial proxies (not substitutes)
 
-These public or vendored sources help CI and mining. They do **not** replace
+These public or vendored sources help CI and mining. They do not replace
 Annex 3 or PANS-MET prose.
 
 | Proxy | Useful for | Caveat |
 |-------|------------|--------|
-| WMO Manual on Codes (FM) and [codes.wmo.int](https://codes.wmo.int/) | Alphanumeric templates; weather and nil vocabularies | Not ICAO Standards and Recommended Practices (SARPs) prose |
+| WMO Manual on Codes (FM) and [codes.wmo.int](https://codes.wmo.int/) | Alphanumeric templates; weather and nil vocabularies | Not ICAO SARPs prose |
 | Vendored IWXXM XSD / Schematron and official WMO examples | Encode and validate shape for a pin | Not a TAC grammar source of truth |
 | National Aeronautical Information Publications (AIPs), FMH-1, regional guides | National or regional practice | Must not override Annex 3 |
 | Live public TAC samples | Regression fixtures | Form may be incomplete or national |
