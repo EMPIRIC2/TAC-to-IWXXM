@@ -1810,6 +1810,12 @@ export interface components {
              */
             extensions: string[];
             /**
+             * Include National Remarks
+             * @description When false, omit national remarks after RMK from IWXXM output even for profiles that normally keep remarks.
+             * @default true
+             */
+            include_national_remarks: boolean;
+            /**
              * Include Nil Reasons
              * @description When false, prefer omitting nilReason attributes (engine may still emit NIL report shells)
              * @default true
@@ -1994,6 +2000,12 @@ export interface components {
             /** Files */
             files?: string[] | null;
             /**
+             * Include National Remarks
+             * @description When false, omit national remarks after RMK from IWXXM output even for profiles that normally keep remarks.
+             * @default true
+             */
+            include_national_remarks: boolean;
+            /**
              * Iwxxm Version
              * @description Target IWXXM version
              * @default
@@ -2042,6 +2054,12 @@ export interface components {
              * @default
              */
             bulletin_date: string;
+            /**
+             * Include National Remarks
+             * @description When false, omit national remarks after RMK from IWXXM output even for profiles that normally keep remarks.
+             * @default true
+             */
+            include_national_remarks: boolean;
             /**
              * Iwxxm Version
              * @description Target IWXXM version: 2025-2 (latest), 2023-1 (previous), or 2025-1 (auto-remaps to 2025-2)

@@ -404,6 +404,12 @@
             "title": "Extensions",
             "type": "array"
           },
+          "include_national_remarks": {
+            "default": true,
+            "description": "When false, omit national remarks after RMK from IWXXM output even for profiles that normally keep remarks.",
+            "title": "Include National Remarks",
+            "type": "boolean"
+          },
           "include_nil_reasons": {
             "default": true,
             "description": "When false, prefer omitting nilReason attributes (engine may still emit NIL report shells)",
@@ -614,6 +620,12 @@
             ],
             "title": "Files"
           },
+          "include_national_remarks": {
+            "default": true,
+            "description": "When false, omit national remarks after RMK from IWXXM output even for profiles that normally keep remarks.",
+            "title": "Include National Remarks",
+            "type": "boolean"
+          },
           "iwxxm_version": {
             "default": "",
             "description": "Target IWXXM version",
@@ -675,6 +687,12 @@
             "description": "Optional calendar date (YYYY-MM-DD) used as the year and month for TAC day stamps. When omitted, the current UTC date is used. A day that cannot fall in that month fails conversion, and the message names the day and the month.",
             "title": "Bulletin Date",
             "type": "string"
+          },
+          "include_national_remarks": {
+            "default": true,
+            "description": "When false, omit national remarks after RMK from IWXXM output even for profiles that normally keep remarks.",
+            "title": "Include National Remarks",
+            "type": "boolean"
           },
           "iwxxm_version": {
             "default": "2025-2",
