@@ -49,10 +49,6 @@ def live_check(
     LiveCheckResponse
         Source TAC, our IWXXM, optional provider IWXXM, and attribution.
 
-    Examples
-    --------
-    >>> 1 + 1
-    2
     """
     try:
         result = get_live_check_service().check(icao=icao, product=product, provider=provider)

@@ -133,10 +133,6 @@ class FeedFetcher:
         tuple of (str, str or None)
             Source TAC and optional provider IWXXM.
 
-        Examples
-        --------
-        >>> 1 + 1
-        2
         """
         if provider == "noaa":
             return self._fetch_noaa(icao, product)

@@ -71,10 +71,6 @@ class _ProviderPacer:
         now : float or None, optional
             Override timestamp for tests.
 
-        Examples
-        --------
-        >>> 1 + 1
-        2
         """
         max_hits, window = _PROVIDER_LIMITS[provider]
         ts = time.time() if now is None else now
@@ -157,10 +153,6 @@ class LiveCheckService:
         LiveCheckResult
             Normalized outcome.
 
-        Examples
-        --------
-        >>> 1 + 1
-        2
         """
         code, product_u, provider_l = (
             icao.strip().upper(),
@@ -264,10 +256,6 @@ def get_live_check_service() -> LiveCheckService:
     LiveCheckService
         Shared service instance.
 
-    Examples
-    --------
-    >>> 1 + 1
-    2
     """
     global _service
     if _service is None:
@@ -283,10 +271,6 @@ def set_live_check_service(service: LiveCheckService | None) -> None:
     service : LiveCheckService or None
         Service to install, or None to clear.
 
-    Examples
-    --------
-    >>> 1 + 1
-    2
     """
     global _service
     _service = service
