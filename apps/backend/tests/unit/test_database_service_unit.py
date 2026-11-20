@@ -263,9 +263,12 @@ async def test_get_db_stats_and_create_tables_paths(monkeypatch, caplog) -> None
 
     # create_tables imports Base from src.models.orm (not src.models).
     monkeypatch.setattr("src.models.orm.Base", _Base)
-    with caplog.at_level("INFO"):
-        await db.create_tables()
-    assert "Database tables initialized successfully" in caplog.text
+    try:
+        with caplog.at_level("INFO"):
+            await db.create_tables()
+        assert "Database tables initialized successfully" in caplog.text
+    finally:
+        db._engine = None
 
 
 @pytest.mark.asyncio
