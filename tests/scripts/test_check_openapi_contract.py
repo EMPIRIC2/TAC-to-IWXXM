@@ -12,13 +12,11 @@ from tests.scripts.conftest import REPO_ROOT, load_script
 SPEC = REPO_ROOT / "apps" / "frontend" / "openapi" / "openapi.json"
 INTERACTIONS = REPO_ROOT / "tests" / "contracts" / "openapi-interactions.json"
 
-# 2026-11-13 scan after WIS2 exchange-admin + station-health GET routes:
-# placeholders recomputed after rebase against merged OpenAPI.
-# 2026-11-13 after WIS2 exchange-admin + station-health routes on stage.
-SCAN_OPERATIONS = 94
-SCAN_STATUSES = 174
+# 2026-11-20 scan after GET /api/v1/live-check (200 + 422) on stage rebase.
+SCAN_OPERATIONS = 95
+SCAN_STATUSES = 176
 SCAN_REQUEST_FIELDS = 36
-SCAN_RESPONSE_FIELDS = 329
+SCAN_RESPONSE_FIELDS = 336
 
 
 @pytest.fixture
