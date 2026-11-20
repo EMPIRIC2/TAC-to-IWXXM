@@ -57,6 +57,18 @@ def _restore_iwxxm_validate() -> None:
             "scripts/iwxxm/harvest_ca_eccc_vaac_tac.py",
             ["--skip-network", "--fixtures-root", str(_OPS_ROOT)],
         ),
+        (
+            "scripts/iwxxm/harvest_ops_corpus.py",
+            [
+                "--profile",
+                "CA_ECCC",
+                "--skip-network",
+                "--dry-run",
+                "--fixtures-root",
+                str(_OPS_ROOT),
+            ],
+        ),
+        ("scripts/iwxxm/probe_msc_datamart_drift.py", []),
     ],
 )
 def test_batch_b_main_entrypoint(

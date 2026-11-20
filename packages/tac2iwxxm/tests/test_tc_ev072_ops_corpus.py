@@ -23,6 +23,7 @@ _REPO = Path(__file__).resolve().parents[3]
 FIXTURES = ops_fixture_root(_REPO)
 MANIFEST_PATH = FIXTURES / "ops_manifest.json"
 HARVEST_SCRIPT = _REPO / "scripts" / "iwxxm" / "harvest_ca_eccc_ops.py"
+HARVEST_ENTRYPOINT = _REPO / "scripts" / "iwxxm" / "harvest_ops_corpus.py"
 
 _AHL_FROM_FILENAME = re.compile(
     r"^A_([A-Z]{2})([A-Z]{2})(\d{2})([A-Z]{4})(\d{6})(?:[A-Z0-9]{3})?_C_[A-Z]{4}_\d{14}\.xml$"
@@ -118,10 +119,14 @@ def test_ops_fixture_root_default_resolves_ca_eccc() -> None:
 def test_tc_ev072_007_harvest_script_pin_date_reproducibility() -> None:
     """Harvest script documents pin date + stable manifest checksum (offline)."""
     assert HARVEST_SCRIPT.is_file(), f"missing harvest script: {HARVEST_SCRIPT}"
+    assert HARVEST_ENTRYPOINT.is_file(), f"missing entrypoint: {HARVEST_ENTRYPOINT}"
     text = HARVEST_SCRIPT.read_text(encoding="utf-8")
     assert "rate_limit" in text
     assert "pin_date" in text
     assert "dd.weather.gc.ca" in text or "dd.meteo.gc.ca" in text
+    entry = HARVEST_ENTRYPOINT.read_text(encoding="utf-8")
+    assert "--profile" in entry
+    assert "--product" in entry
 
     manifest = load_ops_manifest(MANIFEST_PATH)
     assert manifest["pin_date"] == "2026-08-24"
