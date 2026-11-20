@@ -39,6 +39,63 @@ _SLP_CODE = re.compile(r"^SLP\d{3}$")
 _SLP_PREFIX = re.compile(r"^SLP")
 
 
+def _classify_slp_temp(upper: str) -> tuple[str, bool] | None:
+    """Classify SLP and temperature coded groups."""
+    if upper == "SLPNO" or _SLP_CODE.match(upper):
+        return "sea_level_pressure", True
+    if _SLP_PREFIX.match(upper):
+        return "sea_level_pressure", False
+    if _T_GROUP.match(upper) or _T_TEMP_ONLY.match(upper):
+        return "temperature_tenths", True
+    if upper.startswith("T") and len(upper) > 1 and upper[1:].isdigit():
+        return "temperature_tenths", False
+    if _SIX_HOUR_MAX.match(upper) or _SIX_HOUR_MIN.match(upper):
+        return "six_hour_temperature", True
+    if _DAY_MAX_MIN.match(upper):
+        return "day_max_min", True
+    return None
+
+
+def _classify_precip_pressure_ice(upper: str) -> tuple[str, bool] | None:
+    """Classify precip, pressure-tendency/rapid, and ice accretion groups."""
+    if _PRECIP_AMOUNT.match(upper) or _SHORT_PRECIP.match(upper):
+        return "precip_hourly", True
+    if upper.startswith("P") and upper[1:].isdigit() and len(upper) in {3, 4, 5}:
+        return "precip_hourly", False
+    if _PRECIP_3_6H.match(upper) or _PRECIP_24H.match(upper):
+        return "precip_period", True
+    if _PRESSURE_TENDENCY.match(upper):
+        return "pressure_tendency", True
+    if upper.startswith("5") and len(upper) == 5 and not upper[1:].isdigit():
+        return "pressure_tendency", False
+    if upper in _PRESSURE_RAPID:
+        return "pressure_rapid", True
+    if _ICE_ACCRETION.match(upper):
+        return "ice_accretion", True
+    if upper.startswith("I") and len(upper) > 1 and upper[1:].isdigit():
+        return "ice_accretion", False
+    return None
+
+
+def _classify_lexicon(upper: str) -> tuple[str, bool] | None:
+    """Classify weather-time, sensor, peak wind, clouds, and prose groups."""
+    if _wx_began_or_ended(upper) is not None:
+        return "wx_begin_end", True
+    if upper in _SENSOR_STATUS:
+        return "sensor_status", True
+    if _PEAK_WIND.match(upper) or upper in {"PK", "WND"}:
+        return "peak_wind", True
+    if _CA_CLOUD_AMOUNTS.match(upper) or (_CA_CLOUD_ONE.match(upper) and upper not in _RMK_WORD):
+        return "canadian_cloud", True
+    if explain_remark_plain(upper) is not None:
+        return "plain_national", True
+    if upper in _RMK_WORD:
+        return "prose", True
+    if upper in _SIG_DIR:
+        return "direction", True
+    return None
+
+
 def classify_remark_token(token: str) -> tuple[str, bool]:
     """
     Map one remarks token to a catalog family and shape-ok flag.
@@ -59,51 +116,10 @@ def classify_remark_token(token: str) -> tuple[str, bool]:
         return "marker", True
     if upper in _SENSOR_AO:
         return "sensor_ao", True
-    if upper == "SLPNO":
-        return "sea_level_pressure", True
-    if _SLP_CODE.match(upper):
-        return "sea_level_pressure", True
-    if _SLP_PREFIX.match(upper):
-        return "sea_level_pressure", False
-    if _T_GROUP.match(upper) or _T_TEMP_ONLY.match(upper):
-        return "temperature_tenths", True
-    if upper.startswith("T") and len(upper) > 1 and upper[1:].isdigit():
-        return "temperature_tenths", False
-    if _SIX_HOUR_MAX.match(upper) or _SIX_HOUR_MIN.match(upper):
-        return "six_hour_temperature", True
-    if _DAY_MAX_MIN.match(upper):
-        return "day_max_min", True
-    if _PRECIP_AMOUNT.match(upper) or _SHORT_PRECIP.match(upper):
-        return "precip_hourly", True
-    if upper.startswith("P") and upper[1:].isdigit() and len(upper) in {3, 4, 5}:
-        # P + digits that miss P#### / P### shapes still flag as precip intent.
-        return "precip_hourly", False
-    if _PRECIP_3_6H.match(upper) or _PRECIP_24H.match(upper):
-        return "precip_period", True
-    if _PRESSURE_TENDENCY.match(upper):
-        return "pressure_tendency", True
-    if upper.startswith("5") and len(upper) == 5 and not upper[1:].isdigit():
-        return "pressure_tendency", False
-    if upper in _PRESSURE_RAPID:
-        return "pressure_rapid", True
-    if _ICE_ACCRETION.match(upper):
-        return "ice_accretion", True
-    if upper.startswith("I") and len(upper) > 1 and upper[1:].isdigit():
-        return "ice_accretion", False
-    if _wx_began_or_ended(upper) is not None:
-        return "wx_begin_end", True
-    if upper in _SENSOR_STATUS:
-        return "sensor_status", True
-    if _PEAK_WIND.match(upper) or upper in {"PK", "WND"}:
-        return "peak_wind", True
-    if _CA_CLOUD_AMOUNTS.match(upper) or (_CA_CLOUD_ONE.match(upper) and upper not in _RMK_WORD):
-        return "canadian_cloud", True
-    if explain_remark_plain(upper) is not None:
-        return "plain_national", True
-    if upper in _RMK_WORD:
-        return "prose", True
-    if upper in _SIG_DIR:
-        return "direction", True
+    for matcher in (_classify_slp_temp, _classify_precip_pressure_ice, _classify_lexicon):
+        hit = matcher(upper)
+        if hit is not None:
+            return hit
     return "unknown", False
 
 
