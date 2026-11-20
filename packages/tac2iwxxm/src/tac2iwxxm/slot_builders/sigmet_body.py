@@ -179,7 +179,7 @@ def flight_information_region_name(body: str, designator: str, watch_office: str
     """
     Return the named flight information region.
 
-    The meteorological watch office and the region designator are not used as
+    The originating watch office and the region designator are not used as
     the name, so an aerodrome indicator is not written into the region name.
 
     Parameters
@@ -191,7 +191,7 @@ def flight_information_region_name(body: str, designator: str, watch_office: str
         Four-letter region indicator.
 
     watch_office : str, optional
-        Originating meteorological watch office, when the header has one.
+        Originating watch office, when the header has one.
 
     Returns
     -------

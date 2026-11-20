@@ -273,7 +273,7 @@ def _body_emits(pack_id: str, rule_id: str, token: str, *, past_header: bool) ->
     """
     Mark a SIGMET or AIRMET body group on the analysis the emitter writes.
 
-    The office token ending in ``-`` is the meteorological watch office. Later
+    The office token ending in ``-`` is the originating watch office. Later
     free tokens share one analysis block.
 
     Parameters
