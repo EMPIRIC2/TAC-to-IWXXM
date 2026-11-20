@@ -113,7 +113,12 @@ describe('PasswordReset', () => {
   });
 
   it('updates password successfully and redirects back after delay', async () => {
-    const user = userEvent.setup();
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    const user = userEvent.setup({
+      advanceTimers: (ms) => {
+        vi.advanceTimersByTime(ms);
+      },
+    });
     const onBackToLogin = vi.fn();
     mockConfirmPasswordReset.mockResolvedValueOnce(undefined);
 
@@ -130,12 +135,8 @@ describe('PasswordReset', () => {
       );
     });
 
-    await waitFor(
-      () => {
-        expect(onBackToLogin).toHaveBeenCalledTimes(1);
-      },
-      { timeout: 3000 },
-    );
+    await vi.advanceTimersByTimeAsync(2000);
+    expect(onBackToLogin).toHaveBeenCalledTimes(1);
   });
 
   it('shows missing token error if resetToken is absent in reset flow', async () => {
