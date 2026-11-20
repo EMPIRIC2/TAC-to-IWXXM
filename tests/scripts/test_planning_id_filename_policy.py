@@ -358,3 +358,26 @@ def test_list_new_paths_sees_added_file(tmp_path: Path) -> None:
     new_paths = policy.list_new_paths(repo, base)
     assert "tests/test_ev_new.py" in new_paths
     assert policy.main(["prog", str(repo), "--base", base]) == 1
+
+
+@pytest.mark.unit
+def test_list_new_paths_falls_back_when_merge_base_fails(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """merge-base failure uses base_ref; diff failure returns no paths."""
+    repo = tmp_path / "repo"
+    repo.mkdir()
+    calls: list[tuple[str, ...]] = []
+
+    def fake_git(_root: Path, *args: str) -> str:
+        calls.append(args)
+        if args[:1] == ("merge-base",):
+            raise subprocess.CalledProcessError(1, args)
+        if args[:1] == ("diff",):
+            raise subprocess.CalledProcessError(1, args)
+        raise AssertionError(args)
+
+    monkeypatch.setattr(policy, "_git_output", fake_git)
+    assert policy.list_new_paths(repo, "origin/stage") == []
+    assert calls[0][0] == "merge-base"
+    assert calls[1][0] == "diff"
