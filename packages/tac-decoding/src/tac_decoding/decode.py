@@ -85,6 +85,7 @@ from tac_decoding.decode_tokens import (
     _rvr_bound,
     _spaced_cavok_span,
     _tenths_c,
+    _us_precip_addenda,
     _varying_rvr,
     _whole_miles,
     _wx_began_or_ended,

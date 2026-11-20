@@ -6,6 +6,19 @@ rules:
   - id: report_type
     pattern: ["METAR"]
     explain: "Routine report {0}"
+  # Before station: P000/P0000 look like ICAO (letter + digits).
+  - id: precip_pp_mm
+    pattern: ["PP\\d{3}"]
+    explain: "Precipitation millimetres addendum {0}"
+  - id: precip_hourly
+    pattern: ["P\\d{3,4}"]
+    explain: "Hourly precipitation addendum {0}"
+  - id: ao2a
+    pattern: ["AO2A"]
+    explain: "Automated station with observer augmentation {0}"
+  - id: ao_sensor
+    pattern: ["(?:AO[12]|A0[12])"]
+    explain: "Automated station sensor type {0}"
   - id: station
     pattern: ["[A-Z][A-Z0-9]{3}"]
     explain: "Station {0}"
@@ -57,9 +70,6 @@ rules:
   - id: visibility
     pattern: ["\\d{4}"]
     explain: "Visibility {0} metres"
-  - id: ao2a
-    pattern: ["AO2A"]
-    explain: "Automated station with observer augmentation {0}"
   - id: sensor_no
     pattern: ["(?:FZRANO|TSNO|RVRNO)"]
     explain: "Sensor not available {0}"
