@@ -52,6 +52,72 @@ describe('MetarSpeciStructuredForm', () => {
     expect(tac).not.toContain('RMK');
   });
 
+  it('prefixes RMK when remarks omit the token', () => {
+    const tac = buildMetarSpeciTac({
+      product: 'METAR',
+      cor: true,
+      auto: true,
+      nil: false,
+      cccc: 'KJFK',
+      dayTime: '211025',
+      wind: '18010KT',
+      visibility: '9999',
+      rvr: '',
+      weather: '',
+      cloud: 'FEW250',
+      temperature: '15/07',
+      qnh: 'Q1013',
+      supplementary: '',
+      rmk: 'AO2 SLP176',
+      includeRmk: true,
+    });
+    expect(tac).toBe(
+      'METAR COR KJFK 211025Z AUTO 18010KT 9999 FEW250 15/07 Q1013 RMK AO2 SLP176=',
+    );
+  });
+
+  it('keeps an existing RMK token and builds NIL reports', () => {
+    const withRmk = buildMetarSpeciTac({
+      product: 'SPECI',
+      cor: false,
+      auto: false,
+      nil: false,
+      cccc: 'KJFK',
+      dayTime: '211025Z',
+      wind: '18010KT',
+      visibility: '9999',
+      rvr: '',
+      weather: '',
+      cloud: '',
+      temperature: '15/07',
+      qnh: 'Q1013',
+      supplementary: '',
+      rmk: 'RMK AO2',
+      includeRmk: true,
+    });
+    expect(withRmk).toBe('SPECI KJFK 211025Z 18010KT 9999 15/07 Q1013 RMK AO2=');
+
+    const nilTac = buildMetarSpeciTac({
+      product: 'METAR',
+      cor: false,
+      auto: false,
+      nil: true,
+      cccc: 'KJFK',
+      dayTime: '211025Z',
+      wind: '',
+      visibility: '',
+      rvr: '',
+      weather: '',
+      cloud: '',
+      temperature: '',
+      qnh: '',
+      supplementary: '',
+      rmk: 'AO2',
+      includeRmk: true,
+    });
+    expect(nilTac).toBe('METAR KJFK 211025Z NIL=');
+  });
+
   it('inserts TAC from the form', async () => {
     const user = userEvent.setup();
     const onInsertTac = vi.fn();
@@ -89,6 +155,44 @@ describe('MetarSpeciStructuredForm', () => {
     await user.click(screen.getByTestId('structured-convert-tac'));
     expect(onConvertWithTac).toHaveBeenCalledWith(
       'METAR KJFK 211025Z 18005KT 9999 15/07 Q1013=',
+    );
+  });
+
+  it('toggles product COR AUTO NIL and RMK include, and shows lint issues', async () => {
+    const user = userEvent.setup();
+    render(
+      <MetarSpeciStructuredForm
+        onInsertTac={vi.fn()}
+        defaultProduct="METAR"
+        lintIssues={[
+          {
+            severity: 'warning',
+            code: 'COR_PRESENT',
+            message: 'COR after product',
+          },
+        ]}
+      />,
+    );
+
+    await user.selectOptions(screen.getByTestId('structured-product'), 'SPECI');
+    await user.click(screen.getByTestId('structured-cor'));
+    await user.click(screen.getByTestId('structured-auto'));
+    await user.type(screen.getByTestId('structured-cccc'), 'KJFK');
+    await user.type(screen.getByTestId('structured-daytime'), '211025Z');
+    await user.type(screen.getByTestId('structured-rmk'), 'AO2');
+    await user.click(screen.getByTestId('structured-include-rmk'));
+    expect(screen.getByTestId('structured-tac-preview')).toHaveTextContent(
+      'SPECI COR KJFK 211025Z AUTO',
+    );
+    expect(screen.getByTestId('structured-tac-preview')).not.toHaveTextContent('RMK');
+
+    await user.click(screen.getByTestId('structured-nil'));
+    expect(screen.getByTestId('structured-tac-preview')).toHaveTextContent(
+      'SPECI COR KJFK 211025Z NIL=',
+    );
+    expect(screen.getByTestId('structured-auto')).toBeDisabled();
+    expect(screen.getByTestId('structured-lint-summary')).toHaveTextContent(
+      'warning: COR after product',
     );
   });
 });
