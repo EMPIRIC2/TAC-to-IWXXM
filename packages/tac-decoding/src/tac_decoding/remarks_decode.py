@@ -40,7 +40,19 @@ _SLP_PREFIX = re.compile(r"^SLP")
 
 
 def _classify_slp_temp(upper: str) -> tuple[str, bool] | None:
-    """Classify SLP and temperature coded groups."""
+    """
+    Classify SLP and temperature coded groups.
+
+    Parameters
+    ----------
+    upper : str
+        One uppercased remarks token.
+
+    Returns
+    -------
+    tuple[str, bool] | None
+        Family and shape-ok flag, or ``None`` when this helper does not match.
+    """
     if upper == "SLPNO" or _SLP_CODE.match(upper):
         return "sea_level_pressure", True
     if _SLP_PREFIX.match(upper):
@@ -57,7 +69,19 @@ def _classify_slp_temp(upper: str) -> tuple[str, bool] | None:
 
 
 def _classify_precip_pressure_ice(upper: str) -> tuple[str, bool] | None:
-    """Classify precip, pressure-tendency/rapid, and ice accretion groups."""
+    """
+    Classify precip, pressure-tendency/rapid, and ice accretion groups.
+
+    Parameters
+    ----------
+    upper : str
+        One uppercased remarks token.
+
+    Returns
+    -------
+    tuple[str, bool] | None
+        Family and shape-ok flag, or ``None`` when this helper does not match.
+    """
     if _PRECIP_AMOUNT.match(upper) or _SHORT_PRECIP.match(upper):
         return "precip_hourly", True
     if upper.startswith("P") and upper[1:].isdigit() and len(upper) in {3, 4, 5}:
@@ -78,7 +102,19 @@ def _classify_precip_pressure_ice(upper: str) -> tuple[str, bool] | None:
 
 
 def _classify_lexicon(upper: str) -> tuple[str, bool] | None:
-    """Classify weather-time, sensor, peak wind, clouds, and prose groups."""
+    """
+    Classify weather-time, sensor, peak wind, clouds, and prose groups.
+
+    Parameters
+    ----------
+    upper : str
+        One uppercased remarks token.
+
+    Returns
+    -------
+    tuple[str, bool] | None
+        Family and shape-ok flag, or ``None`` when this helper does not match.
+    """
     if _wx_began_or_ended(upper) is not None:
         return "wx_begin_end", True
     if upper in _SENSOR_STATUS:
