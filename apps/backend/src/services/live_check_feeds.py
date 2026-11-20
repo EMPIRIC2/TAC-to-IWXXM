@@ -1,6 +1,6 @@
 """Allowlisted feed fetch helpers for live check.
 
-[Corpus: product §F6] [Corpus: adr/ADR-009]
+[Corpus: product §F6] [Corpus: tests §TC-LIVE-FEEDS]
 """
 
 from __future__ import annotations

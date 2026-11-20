@@ -3,7 +3,7 @@
 Egress hosts are fixed — callers never supply a URL. Short cache + per-provider
 pacing stay inside published feed limits.
 
-[Corpus: product §F6] [Corpus: adr/ADR-009] [Corpus: tests §TC-LIVE-FEEDS]
+[Corpus: product §F6] [Corpus: tests §TC-LIVE-FEEDS]
 """
 
 from __future__ import annotations
