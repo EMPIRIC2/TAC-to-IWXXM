@@ -13,7 +13,7 @@ const FRONTEND_ROOT = resolve(HERE, '../..');
 describe('glossary editor exclusion inventory (TC-F38-003)', () => {
   it('FileConverter TAC host sets data-glossary-exclude', () => {
     const src = readFileSync(
-      resolve(FRONTEND_ROOT, 'src/app/components/FileConverter.tsx'),
+      resolve(FRONTEND_ROOT, 'src/app/components/FileConverterBody.tsx'),
       'utf8',
     );
     expect(src).toMatch(

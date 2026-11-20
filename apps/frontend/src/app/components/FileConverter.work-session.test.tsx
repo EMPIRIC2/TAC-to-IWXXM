@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { FileConverter } from './FileConverter';
-import { convertMetarToIwxxm } from '/utils/api';
-import { uploadConvertedFiles } from '/utils/databaseUpload';
+import { convertMetarToIwxxm } from '@/utils/api';
+import { uploadConvertedFiles } from '@/utils/databaseUpload';
 import { toast } from 'sonner';
 
 const mockScheduleAutoSave = vi.fn();
@@ -254,7 +254,6 @@ describe('FileConverter F5 workflow', () => {
   });
 
   it('persists failed status when convert returns partial errors', async () => {
-    const user = userEvent.setup();
     mockConvert.mockResolvedValueOnce({
       results: [{ iwxxm_xml: '<iwxxm/>', name: 'manual.txt' }],
       errors: ['partial failure'],
@@ -263,9 +262,12 @@ describe('FileConverter F5 workflow', () => {
 
     const { container } = render(<FileConverter />);
 
+    // Guest state already seeds TAC; avoid slow per-key user.type under load.
     const textarea = container.querySelector('textarea') as HTMLTextAreaElement;
-    await user.type(textarea, 'METAR KJFK 121251Z 18012KT 10SM');
-    await user.click(screen.getByTestId('convert-button'));
+    fireEvent.change(textarea, {
+      target: { value: 'METAR KJFK 121251Z 18012KT 10SM' },
+    });
+    fireEvent.click(screen.getByTestId('convert-button'));
 
     await waitFor(() => {
       expect(mockPersistSession).toHaveBeenCalledWith(

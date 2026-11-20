@@ -58,7 +58,7 @@ Gates: [COVERAGE_MATRIX.md](./COVERAGE_MATRIX.md) **G1–G7**. Hub E2E: [../READ
 | **normative-examples** | Official paired TAC/XML examples |
 | **normative-exchange** | OPMET exchange / AMHS / Translation Centre guidelines |
 | **informative** | Fixtures / community — not binding |
-| **historical-GIFTs** | Gap baseline only (ADR-014) |
+| **historical-GIFTs** | Gap baseline only () |
 
 ## Vendor pin
 

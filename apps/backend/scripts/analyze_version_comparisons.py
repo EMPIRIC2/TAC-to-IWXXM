@@ -18,10 +18,6 @@ def load_reports(report_dir: Path) -> dict[str, dict]:
     """
     Load all JSON reports from a directory.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (load_reports)
-    2
 
     Parameters
     ----------
@@ -64,11 +60,6 @@ def extract_test_case(report_name: str) -> str:
     -------
     object
         Return value.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (extract_test_case)
-    2
     """
     # Remove version suffix
     parts = report_name.split("_")
@@ -78,11 +69,6 @@ def extract_test_case(report_name: str) -> str:
 def compare_versions():
     """
     Compare local vs live test reports.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (compare_versions)
-    2
     """
     base_dir = Path(__file__).parent.parent / "test-reports"
     local_dir = base_dir / "local-test-failures"

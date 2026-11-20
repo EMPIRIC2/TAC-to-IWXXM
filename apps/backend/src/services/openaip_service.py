@@ -104,11 +104,6 @@ class OpenAIPService:
         -------
         object
             Airport data dict or None if not found
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (get_airport)
-        2
         """
         icao = icao.upper().strip()
 
@@ -186,11 +181,6 @@ class OpenAIPService:
         -------
         object
             True if airport found, False otherwise
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (validate_airport)
-        2
         """
         return self.get_airport(icao) is not None
 
@@ -202,11 +192,6 @@ class OpenAIPService:
         -------
         object
             Dictionary of all cached airports keyed by ICAO
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (get_all_airports)
-        2
         """
         return self._cache or {}
 
@@ -218,11 +203,6 @@ class OpenAIPService:
         -------
         object
             Timedelta of cache age, or None if not loaded
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (cache_freshness)
-        2
         """
         if self._cache_timestamp:
             return datetime.now(UTC).replace(tzinfo=None) - self._cache_timestamp
@@ -245,11 +225,6 @@ class OpenAIPService:
         -------
         object
             True if cache is stale
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (is_cache_stale)
-        2
         """
         if freshness := self.cache_freshness():
             return freshness > timedelta(days=max_age_days)
@@ -259,10 +234,6 @@ class OpenAIPService:
         """
         Get refresh suggestion message.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (suggest_refresh)
-        2
 
         Returns
         -------

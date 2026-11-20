@@ -9,7 +9,7 @@ export {
 } from './playwright-supabase-auth';
 
 /**
- * E2E helpers for the public app (F21 Amended / F22 / F31 / ADR-031).
+ * E2E helpers for the public app (F21 Amended F22 F31).
  *
  * Guest convert remains public ({@link openPublicConverter}). Optional Auth login
  * fixtures are restored for UJ-046 / TC-F31-003..004 (E2E_USER_* or ADMIN_*).

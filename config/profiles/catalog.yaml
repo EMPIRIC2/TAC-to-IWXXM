@@ -1,5 +1,5 @@
 # Profile source catalog — machine index (EV-063 / #913)
-# Corpus: domain-profiles · ADR-036 §7
+# Corpus: domain-profiles · §7
 # Human stubs: semantic/*.md · exchange/*.md
 schema_version: 2
 cycle: EV-M1-five-remaining

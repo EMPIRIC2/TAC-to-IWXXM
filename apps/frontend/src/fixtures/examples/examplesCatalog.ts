@@ -1,9 +1,9 @@
 /**
- * Frontend-only golden examples catalog (F7.g / #780 / F25 W4 / F26–F27 / ADR-032).
+ * Frontend-only golden examples catalog (F7.g #780 F25 W4 F26–F27).
  *
  * Bodies are copied from package fixtures — never import Python at runtime.
  * In-scope TAC demos are **WMO passers** (`wmoPass`) and/or **WMO reference** samples
- * (`wmoReference`) per ADR-032 amend / UJ-039 (EV-024). Translation-failed and US
+ * (`wmoReference`) per amend UJ-039 (EV-024). Translation-failed and US
  * demos stay out of the WMO happy-path list.
  */
 
@@ -66,7 +66,7 @@ export interface GoldenExample {
   label: string;
   /** Product for convert params; set for TAC/AHL/IWXXM when known (else load → `auto`) */
   product?: TacProduct;
-  /** ADR-024 input mode to apply on load */
+  /** input mode to apply on load */
   inputMode: OperatorInputMode;
   /** Editor body */
   body: string;
@@ -75,13 +75,13 @@ export interface GoldenExample {
   /** Package-relative provenance path (mirrored vendor / annex3 golden) */
   provenance: string;
   /**
-   * True when this TAC demo passes ADR-032 WMO default golden bar (or SIGMET keeper).
+   * True when this TAC demo passes WMO default golden bar (or SIGMET keeper).
    * Strict passers for WMO_SCOPE_PRODUCTS (TC-F25-003 / TC-F26-005 / TC-F27-005).
    */
   wmoPass?: boolean;
   /**
    * Official WMO example loadable from the sample menu before convert equality
-   * (ADR-032 amend / UJ-039). Mutually exclusive with ``wmoPass`` for UI tier copy.
+   * (amend UJ-039). Mutually exclusive with ``wmoPass`` for UI tier copy.
    */
   wmoReference?: boolean;
   /** Vendor / annex3 seed id when ``wmoPass`` or ``wmoReference`` (e.g. ``metar-A3-1``). */

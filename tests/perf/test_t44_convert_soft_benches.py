@@ -1,4 +1,4 @@
-"""T4.4: soft-fail sub-second benches for convert + lint→convert→validate (ADR-016 Q11=C).
+"""T4.4: soft-fail sub-second benches for convert + lint→convert→validate ( Q11=C).
 
 Soft until cutover - over-budget runs warn only; hard-fail is T4.5 / cutover gate.
 """
@@ -21,7 +21,7 @@ def _soft_assert_under_budget(elapsed: float, label: str) -> None:
     if elapsed > SOFT_BUDGET_S:
         warnings.warn(
             f"SOFT PERF: {label} took {elapsed:.3f}s (budget {SOFT_BUDGET_S}s); "
-            "hard-fail deferred to cutover (ADR-016 Q11=C / ADR-017)",
+            "hard-fail deferred to cutover ( Q11=C )",
             stacklevel=2,
         )
 

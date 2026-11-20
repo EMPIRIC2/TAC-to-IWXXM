@@ -39,11 +39,6 @@ def validate_ingest_poller_url(url: str) -> str:
     ------
     ValueError
         If the URL is missing, a placeholder, or not ``https://``.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (validate_ingest_poller_url)
-    2
     """
     cleaned = (url or "").strip()
     if not cleaned:
@@ -63,7 +58,7 @@ def validate_ingest_poller_url(url: str) -> str:
             )
     if not cleaned.lower().startswith("https://"):
         raise ValueError(
-            "INGEST_POLLER_URL must be an https:// URL (ADR-018 Q16=A); "
+            "INGEST_POLLER_URL must be an https:// URL (Q16=A); "
             f"got {cleaned!r}. Non-prod fixture: {DEFAULT_FIXTURE_INGEST_POLLER_URL}"
         )
     return cleaned

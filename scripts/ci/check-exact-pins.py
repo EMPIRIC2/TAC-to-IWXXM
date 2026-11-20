@@ -10,7 +10,7 @@ Workspace path deps listed under ``tool.uv.sources`` with ``workspace = true``
 may be bare names (no version). Allowlist:
 ``scripts/ci/policy/exact-pins-allowlist.txt`` (one path:name or glob per line;
 ``#`` comments).
-[Corpus: adr-037] [Corpus: deps] [Corpus: tech-spec] TR-E04
+ [Corpus: deps] [Corpus: tech-spec] TR-E04
 """
 
 from __future__ import annotations

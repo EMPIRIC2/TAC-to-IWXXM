@@ -1,6 +1,6 @@
 """EV-080 M2b: fill remaining apps/backend unit line/branch gaps to 100%.
 
-[Corpus: adr/ADR-007] [Corpus: tests]
+[Corpus: tests]
 """
 
 from __future__ import annotations

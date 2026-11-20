@@ -115,11 +115,6 @@ def validate_gml_references(
     -------
     list[Issue]
         Empty when all references resolve.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (validate_gml_references)
-    2
     """
     issues: list[Issue] = []
     rdf_cache: dict[str, set[str]] = {}

@@ -12,7 +12,7 @@ import {
 } from '@/utils/liveMapTacLayers';
 
 /**
- * Checkbox row for precip / temp / wind / thunder / ice overlays.
+ * Checkbox row for precip / wind / thunder / ice overlays (Overlays mode).
  *
  * @param props.visibility - Current overlay on/off map
  * @param props.onToggle - Flip one overlay id

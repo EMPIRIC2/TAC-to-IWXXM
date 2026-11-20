@@ -592,6 +592,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/live-check": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Live check for one airport and product
+         * @description Fetch an allowlisted open feed for one airport, convert with the station profile, and return source TAC, our IWXXM, and provider IWXXM when the feed included a pair. Providers: noaa, met_no, knmi.
+         */
+        get: operations["live_check_api_v1_live_check_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/live-map": {
         parameters: {
             query?: never;
@@ -622,8 +642,6 @@ export interface paths {
         /**
          * Get Catalog
          * @description Read-only ConversionProfile catalog for the authenticated Profiles inspector.
-         *
-         *     Requires JWT so the inspector stays on the authenticated Profiles surface.
          */
         get: operations["get_catalog_api_v1_profiles_catalog_get"];
         put?: never;
@@ -1573,7 +1591,7 @@ export interface components {
              * Layers Validated
              * @description Layers validated
              */
-            layers_validated: components["schemas"]["src__schemas__validation__ValidationLayer"][];
+            layers_validated: components["schemas"]["src__models__validation_part_1__ValidationLayer"][];
             /**
              * Passed
              * @description Whether all layers passed
@@ -2436,13 +2454,8 @@ export interface components {
              * @description Structured issues (errors/warnings/info) for failed or partial conversions
              */
             issues?: components["schemas"]["ConversionIssue"][];
-            /**
-             * Metadata
-             * @description Echoed request metadata such as bulletin_id, issuing_center, and validation options
-             */
-            metadata?: {
-                [key: string]: unknown;
-            };
+            /** @description Echoed request metadata such as bulletin_id, issuing_center, and validation options */
+            metadata?: components["schemas"]["ConversionResponseMetadata"];
             /**
              * Ok
              * @description Soft-preview envelope flag; set when preview=true
@@ -2472,6 +2485,24 @@ export interface components {
              * @example 5
              */
             total_processed: number;
+        };
+        /**
+         * ConversionResponseMetadata
+         * @description Nested convert response metadata (extra keys allowed for wire stability).
+         */
+        ConversionResponseMetadata: {
+            /**
+             * Bulletin Id
+             * @description Optional bulletin identifier
+             */
+            bulletin_id?: string | null;
+            /**
+             * Product
+             * @description Optional product family
+             */
+            product?: string | null;
+        } & {
+            [key: string]: unknown;
         };
         /**
          * ConversionResult
@@ -3820,6 +3851,67 @@ export interface components {
             product?: string | null;
         };
         /**
+         * LiveCheckResponse
+         * @description GET /api/v1/live-check payload.
+         */
+        LiveCheckResponse: {
+            /**
+             * Attribution
+             * @description License attribution for CC BY sources.
+             */
+            attribution?: string | null;
+            /**
+             * Cached
+             * @description True when served from the short server cache.
+             */
+            cached: boolean;
+            /**
+             * Convert Issues
+             * @description Non-fatal or fatal convert issue messages.
+             */
+            convert_issues?: string[];
+            /**
+             * Convert Ok
+             * @description True when conversion produced IWXXM.
+             */
+            convert_ok: boolean;
+            /**
+             * Icao
+             * @description ICAO airport code.
+             */
+            icao: string;
+            /**
+             * Our Iwxxm
+             * @description IWXXM produced by this service from source_tac.
+             */
+            our_iwxxm?: string | null;
+            /**
+             * Product
+             * @description Product id: METAR or TAF.
+             */
+            product: string;
+            /**
+             * Profile
+             * @description Conversion profile used for this station.
+             */
+            profile: string;
+            /**
+             * Provider
+             * @description Allowlisted feed id: noaa, met_no, or knmi.
+             */
+            provider: string;
+            /**
+             * Provider Iwxxm
+             * @description Provider IWXXM when the feed returned a pair.
+             */
+            provider_iwxxm?: string | null;
+            /**
+             * Source Tac
+             * @description Traditional alphanumeric report from the feed.
+             */
+            source_tac: string;
+        };
+        /**
          * MappingConfigCreate
          * @description Create a field mapping. Connection secrets are not stored.
          */
@@ -4543,12 +4635,48 @@ export interface components {
             options: components["schemas"]["SelectionOption"][];
         };
         /**
+         * StationCentennialMetricModel
+         * @description One Centennial recognition-criteria proxy or insufficient-data row.
+         */
+        StationCentennialMetricModel: {
+            /**
+             * Detail
+             * @default
+             */
+            detail: string;
+            /** Id */
+            id: string;
+            /** Label */
+            label: string;
+            /** Score */
+            score?: number | null;
+            /**
+             * Status
+             * @description available or insufficient_data
+             */
+            status: string;
+        };
+        /**
          * StationHealthDetailResponse
          * @description Response for GET /api/v1/station-health/{icao}.
          */
         StationHealthDetailResponse: {
+            /** Centennial Metrics */
+            centennial_metrics?: components["schemas"]["StationCentennialMetricModel"][];
+            /** File Format Counts */
+            file_format_counts?: {
+                [key: string]: number;
+            };
             /** Icao */
             icao: string;
+            /** Issue Code Counts */
+            issue_code_counts?: {
+                [key: string]: number;
+            };
+            /** Maintenance Tag Counts */
+            maintenance_tag_counts?: {
+                [key: string]: number;
+            };
             /** Name */
             name?: string | null;
             /**
@@ -4560,6 +4688,12 @@ export interface components {
             windows?: {
                 [key: string]: components["schemas"]["StationWindowModel"];
             };
+            /**
+             * Wmo Region
+             * @description WMO Regional Association id (I-VI) or unknown
+             * @default unknown
+             */
+            wmo_region: string;
         };
         /**
          * StationHealthListResponse
@@ -4602,8 +4736,22 @@ export interface components {
          * @description One station row on the dashboard list.
          */
         StationListItemModel: {
+            /** Centennial Metrics */
+            centennial_metrics?: components["schemas"]["StationCentennialMetricModel"][];
+            /** File Format Counts */
+            file_format_counts?: {
+                [key: string]: number;
+            };
             /** Icao */
             icao: string;
+            /** Issue Code Counts */
+            issue_code_counts?: {
+                [key: string]: number;
+            };
+            /** Maintenance Tag Counts */
+            maintenance_tag_counts?: {
+                [key: string]: number;
+            };
             /** Name */
             name?: string | null;
             /** Overall Grade */
@@ -4615,6 +4763,12 @@ export interface components {
             overall_score: number;
             /** Products */
             products?: components["schemas"]["StationProductGradeModel"][];
+            /**
+             * Wmo Region
+             * @description WMO Regional Association id (I-VI) or unknown
+             * @default unknown
+             */
+            wmo_region: string;
         };
         /**
          * StationMetricDefinitionModel
@@ -4690,6 +4844,20 @@ export interface components {
          * @description One window block on the station detail page.
          */
         StationWindowModel: {
+            /** Centennial Metrics */
+            centennial_metrics?: components["schemas"]["StationCentennialMetricModel"][];
+            /** File Format Counts */
+            file_format_counts?: {
+                [key: string]: number;
+            };
+            /** Issue Code Counts */
+            issue_code_counts?: {
+                [key: string]: number;
+            };
+            /** Maintenance Tag Counts */
+            maintenance_tag_counts?: {
+                [key: string]: number;
+            };
             /** Overall Grade */
             overall_grade: string;
             /**
@@ -5126,7 +5294,7 @@ export interface components {
              */
             code?: string | null;
             /** @description Validation layer that found this issue */
-            layer: components["schemas"]["src__schemas__validation__ValidationLayer"];
+            layer: components["schemas"]["src__models__validation_part_1__ValidationLayer"];
             /** @description Severity level */
             level: components["schemas"]["ValidationLevel"];
             /**
@@ -5175,7 +5343,7 @@ export interface components {
              */
             description: string;
             /** @description Layer identifier */
-            layer: components["schemas"]["src__schemas__validation__ValidationLayer"];
+            layer: components["schemas"]["src__models__validation_part_1__ValidationLayer"];
             /**
              * Supported Content Types
              * @description Content types this layer supports (tac/xml)
@@ -5282,7 +5450,7 @@ export interface components {
              */
             issues?: components["schemas"]["ValidationIssue"][];
             /** @description Validation layer */
-            layer: components["schemas"]["src__schemas__validation__ValidationLayer"];
+            layer: components["schemas"]["src__models__validation_part_1__ValidationLayer"];
             /**
              * Metadata
              * @description Layer-specific metadata
@@ -5453,13 +5621,13 @@ export interface components {
          * @description 7-layer IWXXM validation stages.
          * @enum {string}
          */
-        src__schemas__icao_opmet__ValidationLayer: "AIRPORT_ICAO" | "TAC_SYNTAX" | "XML_WELLFORMED" | "XML_SCHEMA" | "SCHEMATRON" | "GML_REFERENCES" | "WMO_CODELISTS";
+        src__models__icao_opmet__ValidationLayer: "AIRPORT_ICAO" | "TAC_SYNTAX" | "XML_WELLFORMED" | "XML_SCHEMA" | "SCHEMATRON" | "GML_REFERENCES" | "WMO_CODELISTS";
         /**
          * ValidationLayer
          * @description Validation layer identifiers.
          * @enum {string}
          */
-        src__schemas__validation__ValidationLayer: "airport_icao" | "tac_syntax" | "xml_wellformed" | "xml_schema" | "schematron" | "gml_references" | "wmo_codelists";
+        src__models__validation_part_1__ValidationLayer: "airport_icao" | "tac_syntax" | "xml_wellformed" | "xml_schema" | "schematron" | "gml_references" | "wmo_codelists";
     };
     responses: never;
     parameters: never;
@@ -6487,6 +6655,42 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    live_check_api_v1_live_check_get: {
+        parameters: {
+            query: {
+                /** @description ICAO airport code. */
+                icao: string;
+                /** @description METAR or TAF. */
+                product?: string;
+                /** @description Allowlisted feed: noaa, met_no, or knmi. */
+                provider?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LiveCheckResponse"];
+                };
             };
             /** @description Validation Error */
             422: {
@@ -7710,13 +7914,15 @@ export interface operations {
     list_station_health_api_v1_station_health_get: {
         parameters: {
             query?: {
-                /** @description Time window: 6h, 1d, or 30d */
+                /** @description Time window: 6h, 1d, 30d, or 90d */
                 window?: string;
                 /** @description Optional product filter */
                 product?: string | null;
                 /** @description Optional letter grade filter */
                 grade?: string | null;
-                /** @description Max stations to return */
+                /** @description Optional WMO region filter: I, II, III, IV, V, VI, or unknown */
+                region?: string | null;
+                /** @description Max stations to return (higher when filtering by region) */
                 limit?: number;
             };
             header?: never;

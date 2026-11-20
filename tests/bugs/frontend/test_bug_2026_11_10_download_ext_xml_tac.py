@@ -15,7 +15,7 @@ OUTPUT_FILENAME_TEST = (
     ROOT / "apps" / "frontend" / "src" / "utils" / "outputFilename.test.ts"
 )
 FILE_CONVERTER = (
-    ROOT / "apps" / "frontend" / "src" / "app" / "components" / "FileConverter.tsx"
+    ROOT / "apps" / "frontend" / "src" / "hooks" / "useFileConverterPart5.ts"
 )
 UI_REPRO = (
     ROOT

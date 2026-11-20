@@ -93,7 +93,7 @@ function App() {
   );
   const [activeWorkSessionId, setActiveWorkSessionId] = useState<string | null>(null);
   const [loadedWorkSession, setLoadedWorkSession] = useState<WorkSession | null>(null);
-  /** TAC handed off from Decode visuals / Map Send → Convert. */
+  /** TAC handed off from Live map / Map Send → Convert. */
   const [pendingMapTac, setPendingMapTac] = useState<string | null>(null);
   const sessionInitRef = useRef<string | null>(null);
 
@@ -259,10 +259,6 @@ function App() {
     setCurrentView(view);
   };
 
-  const handleOpenVisuals = () => {
-    setCurrentView('visuals');
-  };
-
   const handleOpenGlossaryEntry = useCallback((entryId: string) => {
     setGlossaryFocusTermId(entryId);
     setCurrentView('glossary');
@@ -363,7 +359,6 @@ function App() {
                   isGuest={isGuest}
                   onRequestLogin={handleRequestLogin}
                   onOpenHistory={handleOpenHistory}
-                  onOpenVisuals={handleOpenVisuals}
                   onLoadWorkSession={handleLoadWorkSession}
                   onNewMetar={handleNewMetar}
                   onSessionUpdated={handleSessionUpdated}

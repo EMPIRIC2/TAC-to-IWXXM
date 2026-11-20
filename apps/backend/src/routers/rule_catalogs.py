@@ -95,10 +95,6 @@ async def get_rule_catalogs(
     Export a package-owned trust catalog by family.
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (get_rule_catalogs)
-    2
 
     Parameters
     ----------
@@ -142,10 +138,6 @@ async def get_selection_options(
     List deployed registry ids for workbench / dissemination dropdowns.
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (get_selection_options)
-    2
 
     Parameters
     ----------
@@ -241,10 +233,6 @@ async def get_code_name_dictionary(
     """
     Export the Decoding glossary as a tagged code-name dictionary.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (get_code_name_dictionary)
-    2
 
     Parameters
     ----------

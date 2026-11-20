@@ -1,4 +1,4 @@
-"""Inherit-factory FAILURE / validation edges (ADR-055)."""
+"""Inherit-factory FAILURE validation edges ()."""
 
 from __future__ import annotations
 

@@ -38,11 +38,6 @@ def extract_icao(tac_text: str, product: str) -> str | None:
     -------
     object
         Return value.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (extract_icao)
-    2
     """
     product_u = (product or "").upper()
     text_body = tac_text or ""
@@ -70,11 +65,6 @@ def solidus_counts(tac_text: str) -> tuple[int, int]:
     -------
     object
         Return value.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (solidus_counts)
-    2
     """
     body = tac_text or ""
     return body.count("/"), sum(1 for _ in _MISSING_DIGIT_RE.finditer(body))
@@ -108,11 +98,6 @@ def record_station_observation(
         Argument ``convert_ok``.
     source : object
         Argument ``source``.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (record_station_observation)
-    2
     """
     icao = extract_icao(tac_text, product)
     if not icao:
@@ -185,11 +170,6 @@ def maybe_record_from_row(
         Argument ``row``.
     convert_ok : object
         Argument ``convert_ok``.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (maybe_record_from_row)
-    2
     """
     if engine is None:
         return

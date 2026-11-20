@@ -286,6 +286,7 @@ def test_api_module_top_level_fallback_imports(monkeypatch):
         exchange_admin=fake_router_module,
         health=fake_health_router,
         icao_opmet=fake_router_module,
+        live_check=fake_router_module,
         live_map=fake_router_module,
         mass_ingest=fake_mass_ingest_router,
         quality_metrics=fake_router_module,

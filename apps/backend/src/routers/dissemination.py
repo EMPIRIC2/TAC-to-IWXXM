@@ -1,4 +1,4 @@
-"""Thin FastAPI routers for dissemination preflight/send (F16-F19 / ADR-030)."""
+"""Thin FastAPI routers for dissemination preflight/send (F16-F19)."""
 
 from __future__ import annotations
 
@@ -56,10 +56,6 @@ async def dissemination_preflight(
     """
     Run sink preflight; return schema diffs and optional memory-only handle.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (dissemination_preflight)
-    2
 
     Parameters
     ----------
@@ -157,10 +153,6 @@ async def dissemination_send(
     """
     Send IWXXM via a green preflight handle or inline sink params.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (dissemination_send)
-    2
 
     Parameters
     ----------
@@ -239,9 +231,7 @@ async def dissemination_send(
 
         profiles_for_lib: ConversionProfilesService | None = None
         if auth_user is not None:
-            profiles_for_lib = ConversionProfilesService(
-                str(auth_user.get("sub") or auth_user.get("user_id"))
-            )
+            profiles_for_lib = ConversionProfilesService(str(auth_user.get("sub") or auth_user.get("user_id")))
 
         def _custom_dissem_body(asset_id: str) -> dict[str, object] | None:
             """

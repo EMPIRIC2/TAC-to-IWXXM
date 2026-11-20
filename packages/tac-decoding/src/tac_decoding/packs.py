@@ -10,7 +10,6 @@ from __future__ import annotations
 import json
 import os
 import re
-from dataclasses import dataclass
 from functools import lru_cache
 from pathlib import Path
 from typing import cast
@@ -18,6 +17,8 @@ from typing import cast
 import yaml
 
 from tac_decoding.locale import LocaleError, render_template
+from tac_decoding.models.pack_file import PackFileMapping, PackRuleMapping
+from tac_decoding.models.packs import Pack, PackSchemaError, Rule
 
 PACK_DIR_ENV = "TAC_DECODING_PACK_DIR"
 _ALLOWED = frozenset({"id", "layout", "rules", "profiles", "extends"})
@@ -44,60 +45,6 @@ _BUILTINS: tuple[tuple[str, str], ...] = (
 _BUILTIN_PACK_DIR = Path(__file__).resolve().parent / "data" / "packs"
 
 
-class PackSchemaError(ValueError):
-    """
-    A pack file or directory does not match the pack schema.
-
-    Attributes
-    ----------
-    args : tuple
-        Arguments passed to the exception constructor.
-    """
-
-
-@dataclass(frozen=True, slots=True)
-class Rule:
-    """
-    One match rule. Token rules use ``patterns``; label rules use ``label``.
-
-    Attributes
-    ----------
-    id : str
-        ID.
-    explain : str
-        Explain.
-    patterns : tuple[re.Pattern[str], ...]
-        Patterns.
-    label : str
-        Label. Default ``''``.
-    """
-
-    id: str
-    explain: str
-    patterns: tuple[re.Pattern[str], ...] = ()
-    label: str = ""
-
-
-@dataclass(frozen=True, slots=True)
-class Pack:
-    """
-    One product pack: an id, a layout, and optional rules.
-
-    Attributes
-    ----------
-    id : str
-        ID.
-    layout : str
-        Layout.
-    rules : tuple[Rule, ...]
-        Rules.
-    """
-
-    id: str
-    layout: str
-    rules: tuple[Rule, ...] = ()
-
-
 def load_packs(profile: str | None = None) -> tuple[Pack, ...]:
     """
     Return built-in packs, with ``TAC_DECODING_PACK_DIR`` applied for ``profile``.
@@ -114,11 +61,6 @@ def load_packs(profile: str | None = None) -> tuple[Pack, ...]:
     -------
     tuple[Pack, ...]
         Built-in packs, with ``TAC_DECODING_PACK_DIR`` applied for ``profile``.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (load_packs)
-    2
     """
     overlay = os.environ.get(PACK_DIR_ENV, "").strip()
     if not overlay:
@@ -130,11 +72,6 @@ def load_packs(profile: str | None = None) -> tuple[Pack, ...]:
 def clear_pack_cache() -> None:
     """
     Drop cached built-in packs (tests that patch ``_BUILTIN_PACK_DIR`` must call this).
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (clear_pack_cache)
-    2
     """
     _load_builtins_cached.cache_clear()
 
@@ -292,7 +229,7 @@ def _merge_rules(base: tuple[Rule, ...], extra: tuple[Rule, ...]) -> tuple[Rule,
     return tuple(merged)
 
 
-def _load_mapping(path: Path) -> dict[str, object]:
+def _load_mapping(path: Path) -> PackFileMapping:
     """
     Internal helper ``_load_mapping``.
 
@@ -303,7 +240,7 @@ def _load_mapping(path: Path) -> dict[str, object]:
 
     Returns
     -------
-    dict[str, object]
+    PackFileMapping
         Return value.
     """
     text = path.read_text(encoding="utf-8")
@@ -318,7 +255,7 @@ def _load_mapping(path: Path) -> dict[str, object]:
     if not isinstance(data, dict):
         msg = f"{path.name} must be a mapping"
         raise PackSchemaError(msg)
-    mapping = cast(dict[str, object], data)
+    mapping = cast(PackFileMapping, data)
     unknown = sorted(set(mapping) - _ALLOWED)
     if unknown:
         msg = f"{path.name} has unknown field {unknown[0]}"
@@ -374,13 +311,13 @@ def _read_file(path: Path) -> Pack:
     return Pack(pack_id.strip(), str(layout), _parse_rules(mapping, str(layout), path.name))
 
 
-def _parse_rules(data: dict[str, object], layout: str, name: str) -> tuple[Rule, ...]:
+def _parse_rules(data: PackFileMapping, layout: str, name: str) -> tuple[Rule, ...]:
     """
     Internal helper ``_parse_rules``.
 
     Parameters
     ----------
-    data : dict[str, object]
+    data : PackFileMapping
         Argument ``data``.
 
     layout : str
@@ -432,7 +369,7 @@ def _parse_rule(item: object, layout: str, name: str, seen: set[str]) -> Rule:
     if not isinstance(item, dict):
         msg = f"{name} rule must be a mapping"
         raise PackSchemaError(msg)
-    rule = cast(dict[str, object], item)
+    rule = cast(PackRuleMapping, item)
     unknown = sorted(set(rule) - _RULE_KEYS)
     if unknown:
         msg = f"{name} rule has unknown field {unknown[0]}"
@@ -455,7 +392,7 @@ def _parse_rule(item: object, layout: str, name: str, seen: set[str]) -> Rule:
     return _label_rule(rule, clean_id, explain, name)
 
 
-def _token_rule(item: dict[str, object], rule_id: str, explain: str, name: str) -> Rule:
+def _token_rule(item: PackRuleMapping, rule_id: str, explain: str, name: str) -> Rule:
     """
     Internal helper ``_token_rule``.
 
@@ -506,7 +443,7 @@ def _token_rule(item: dict[str, object], rule_id: str, explain: str, name: str) 
     return Rule(rule_id, explain, tuple(compiled))
 
 
-def _label_rule(item: dict[str, object], rule_id: str, explain: str, name: str) -> Rule:
+def _label_rule(item: PackRuleMapping, rule_id: str, explain: str, name: str) -> Rule:
     """
     Internal helper ``_label_rule``.
 
@@ -542,3 +479,6 @@ def _label_rule(item: dict[str, object], rule_id: str, explain: str, name: str) 
         msg = f"{name} explain template does not match its label"
         raise PackSchemaError(msg) from exc
     return Rule(rule_id, explain, (), label.strip())
+
+
+__all__ = ["PACK_DIR_ENV", "Pack", "PackSchemaError", "Rule", "clear_pack_cache", "load_packs"]

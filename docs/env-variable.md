@@ -76,6 +76,8 @@ docs.
 | Live map refresh (live TAC map) | `LIVE_MAP_REFRESH_SECONDS` | Translator API, default `300` |
 | Live map import cap (live TAC map) | `LIVE_MAP_IMPORT_LIMIT` | API timer only, default `40` |
 | Live map cache (live TAC map) | `LIVE_MAP_CACHE_URL` | Same product database as `DATABASE_URL` |
+| Live check egress allowlist | `LIVE_CHECK_EGRESS_ALLOWLIST` | API / `.env`; default `aviationweather.gov,api.met.no,api.dataplatform.knmi.nl` |
+| KNMI Open Data API key (live check) | `KNMI_OPEN_DATA_API_KEY` | API / `.env` only; never frontend; optional until `provider=knmi` |
 
 Profile ids are not secrets. An exchange profile must not imply dissemination
 credentials.

@@ -9,18 +9,18 @@ import {
   listMyMetars,
   restoreLocalWorkSession,
   type LocalWorkSessionExportV1,
-} from '/utils/localWorkSessionStore';
+} from '@/utils/localWorkSessionStore';
 import {
   MY_METARS_PRODUCTS,
   deleteWorkSession,
   listWorkSessions,
   restoreWorkSession,
-} from '/utils/workSessionApi';
+} from '@/utils/workSessionApi';
 import { shellFrameClass, useLiveConvertLayout } from '@/utils/liveConvertLayout';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
 import { OutputVersionCompare } from './OutputVersionCompare';
-import { readOutputVersions } from '/utils/outputVersions';
+import { readOutputVersions } from '@/utils/outputVersions';
 import { GlossaryRichText } from './glossary/GlossaryRichText';
 
 interface MyMetarsPageProps {

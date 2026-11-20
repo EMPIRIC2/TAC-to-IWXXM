@@ -1,4 +1,4 @@
-# Decode glossary YAML overrides (F9 deepen / ADR-032 / E20-E2).
+# Decode glossary YAML overrides (F9 deepen / E20-E2).
 # Official/near-official meanings live in code; this file overlays / adds tokens only.
 # Optional operator path: TAC2IWXXM_DECODE_GLOSSARY_PATH
 #

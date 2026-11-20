@@ -31,7 +31,12 @@ Cross-cutting suites that are not owned by a single package under `apps/` or
 | Bug repro | `bugs/<theme>/test_bug_YYYY_MM_DD_<slug>.py` |
 | QA gap | `bugs/qa_gap/test_qa_gap_YYYY_MM_DD_<slug>.py` |
 | Behavior unit | `test_<subject>_<scenario>.py` |
-| Package TC archives | Existing `test_tc_*` / `test_ev*` stay; new files prefer behavior names; put TC/EV ids in docstrings or markers |
+| Historical archives | Existing `test_tc_*` / `test_ev*` / migration `test_m*` stay; **new** files must not use those planning stems |
+
+**Banned for new files:** `test_ev*` / `test_tc_ev*` / `test_m<digits>_*`.
+Keep WMO AHL `fc_*` fixtures. Guard: `make test-file-naming-guard`
+(`scripts/ci/check_test_file_naming.py`). Detail:
+`packages/tac-validate/tests/NAMING.md`.
 
 ## CI
 

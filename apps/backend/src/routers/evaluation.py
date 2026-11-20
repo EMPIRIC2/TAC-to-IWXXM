@@ -78,10 +78,6 @@ async def run_evaluation_job(job_id: str, request: EvaluationRequest) -> None:
     """
     Background task to run evaluation job.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (run_evaluation_job)
-    2
 
     Parameters
     ----------
@@ -204,10 +200,6 @@ async def create_evaluation_job(
     Create a new evaluation job.
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (create_evaluation_job)
-    2
 
     Parameters
     ----------
@@ -270,10 +262,6 @@ async def get_job_status(
     Get the status of an evaluation job.
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (get_job_status)
-    2
 
     Parameters
     ----------
@@ -332,10 +320,6 @@ async def get_job_results(
     Get evaluation results for a job (paginated).
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (get_job_results)
-    2
 
     Parameters
     ----------
@@ -413,10 +397,6 @@ async def list_user_jobs(page: int = Query(1, ge=1), per_page: int = Query(20, g
     List all evaluation jobs for the current user.
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (list_user_jobs)
-    2
 
     Parameters
     ----------

@@ -116,11 +116,6 @@ class WMOExamplesLoader:
         -------
         object
             List of WMOExample objects
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (load_examples)
-        2
         """
         examples_dir = self._examples_dir(version)
 
@@ -182,11 +177,6 @@ class WMOExamplesLoader:
         -------
         object
             Dictionary mapping version -> list of examples
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (load_all_versions)
-        2
         """
         if versions is None:
             versions = self._detect_available_versions()
@@ -218,11 +208,6 @@ class WMOExamplesLoader:
         -------
         object
             List of (tac_path, xml_path, example_id) tuples
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (get_tac_xml_pairs)
-        2
         """
         examples = self.load_examples(version)
         pairs: list[tuple[Path, Path, str]] = []
@@ -254,11 +239,6 @@ class WMOExamplesLoader:
         -------
         object
             Guidance document content or None if not found
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (load_guidance_document)
-        2
         """
         guidance_file = self._examples_dir(version) / "TAC-to-XML-Guidance.txt"
 
@@ -284,11 +264,6 @@ class WMOExamplesLoader:
         -------
         object
             Manifest dictionary with counts and categories
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (get_example_manifest)
-        2
         """
         examples = self.load_examples(version)
 
@@ -405,11 +380,6 @@ def load_wmo_examples(
     -------
     object
         List of WMOExample objects
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (load_wmo_examples)
-    2
     """
     loader = WMOExamplesLoader(schemas_base_path)
     return loader.load_examples(version, message_types)

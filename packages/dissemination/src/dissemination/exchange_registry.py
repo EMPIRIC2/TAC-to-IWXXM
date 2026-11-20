@@ -1,4 +1,4 @@
-"""Exchange profile id registry (F36 / ADR-036 / EV-063).
+"""Exchange profile id registry (F36 / EV-063).
 
 Canonical exchange ids map to wire ids (``GLOBAL_AFS``, …). Packaging hooks
 consume resolved ids - exchange profiles do not carry dissemination credentials.
@@ -56,11 +56,6 @@ def normalize_exchange_id(profile: str) -> str:
     -------
     str
         Uppercase id with hyphens as underscores.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (normalize_exchange_id)
-    2
     """
     return profile.strip().upper().replace("-", "_")
 
@@ -69,10 +64,6 @@ def normalize_exchange_id_key(profile: str) -> str:
     """
     Return lowercase registry lookup key for an exchange profile id.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (normalize_exchange_id_key)
-    2
 
     Parameters
     ----------
@@ -100,11 +91,6 @@ def resolve_exchange_profile(profile: str) -> ResolvedExchangeProfile | None:
     -------
     ResolvedExchangeProfile | None
         ``None`` when the id is unknown.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (resolve_exchange_profile)
-    2
     """
     norm = normalize_exchange_id_key(profile)
     if norm in _CANONICAL_TO_WIRE:
@@ -123,10 +109,6 @@ def known_exchange_profile_ids() -> frozenset[str]:
     """
     Return all accepted exchange profile wire ids.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (known_exchange_profile_ids)
-    2
 
     Returns
     -------

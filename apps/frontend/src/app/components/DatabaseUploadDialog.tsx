@@ -9,7 +9,7 @@ import {
   type ConvertedFileUpload,
   type DatabaseFormat,
   type UploadDestination,
-} from '/utils/databaseUpload';
+} from '@/utils/databaseUpload';
 
 interface DatabaseUploadDialogProps {
   convertedFiles: ConvertedFileUpload[];

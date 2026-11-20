@@ -102,10 +102,6 @@ def wis2_params_from_request(params: dict[str, Any]) -> Wis2Params:
     """
     Build ``Wis2Params`` from free-form BYOC JSON.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (wis2_params_from_request)
-    2
 
     Parameters
     ----------
@@ -122,8 +118,7 @@ def wis2_params_from_request(params: dict[str, Any]) -> Wis2Params:
     dataset = _str_param(params, "dataset_url", "dataset", "url")
     if not host or not topic or not dataset:
         raise ValueError(
-            "wis2 params require mqtt_host (or broker), mqtt_topic (or topic), "
-            "and dataset_url (or dataset)"
+            "wis2 params require mqtt_host (or broker), mqtt_topic (or topic), and dataset_url (or dataset)"
         )
     return Wis2Params(
         mqtt_host=host,
@@ -141,10 +136,6 @@ def edis_params_from_request(params: dict[str, Any]) -> EdisParams:
     """
     Build ``EdisParams`` from free-form BYOC JSON.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (edis_params_from_request)
-    2
 
     Parameters
     ----------
@@ -202,10 +193,6 @@ def f19_params_from_request(sink_type: str, params: dict[str, Any]) -> F19Params
     """
     Build ``F19Params`` for AMHS / SWIM / AFS staging stubs.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (f19_params_from_request)
-    2
 
     Parameters
     ----------

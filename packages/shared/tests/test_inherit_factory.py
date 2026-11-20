@@ -1,4 +1,4 @@
-"""Tests for ADR-055 inherit factory types and merge helpers."""
+"""Tests for inherit factory types and merge helpers."""
 
 from __future__ import annotations
 

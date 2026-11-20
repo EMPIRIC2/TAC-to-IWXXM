@@ -1,7 +1,7 @@
 """T6.2 — pack IR projects beside the legacy parser.
 
 XML still comes from the legacy convert. Pack IR is additive. Parsers and the
-version matrix stay. [Corpus: tests] [Corpus: adr/ADR-045]
+version matrix stay. [Corpus: tests]
 """
 
 from __future__ import annotations
@@ -54,8 +54,13 @@ def test_failed_convert_has_no_pack_ir() -> None:
 
 def test_parsers_and_pins_still_present_after_ir_projection() -> None:
     slot = Path(__file__).resolve().parents[1] / "src" / "tac2iwxxm" / "slot_builders"
-    assert (slot / "metar_speci.py").is_file()
-    assert (slot / "sigmet_airmet.py").is_file()
+
+    def present(name: str) -> bool:
+        stem = name[:-3]
+        return (slot / name).is_file() or (slot / stem / "__init__.py").is_file()
+
+    assert present("metar_speci.py")
+    assert present("sigmet_airmet.py")
     assert not (_PRODUCTS / "metar_speci.py").is_file()
     from tac2iwxxm.profile_registry import supported_iwxxm_versions_for_profile
 

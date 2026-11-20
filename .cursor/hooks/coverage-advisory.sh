@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Cursor afterFileEdit hook (advisory): EV-080 / ADR-007 coverage fill-before-flip.
+# Cursor afterFileEdit hook (advisory): EV-080 / coverage fill-before-flip.
 # Always exit 0 — never block edits; emit additional_context when relevant.
 set -euo pipefail
 
@@ -23,10 +23,10 @@ context=""
 # Gate / threshold config surfaces — fill-before-flip reminder.
 case "$rel" in
   pyproject.toml|*/pyproject.toml|Makefile|.github/workflows/ci-cd.yml|\
-  docs/adr/ADR-007*|docs/typing-policy.md|\
+  docs/adr/*|docs/typing-policy.md|\
   scripts/ci/check_per_file_coverage.py|scripts/ci/run_*coverage*.sh|\
   */vitest.config.ts|*/vitest.config.mts|vitest.config.ts)
-    context="[coverage-advisory] ADR-007 / EV-080: fill-before-flip — do not raise fail_under / Vitest thresholds / --cov-fail-under / --min-pct until the tip is green at 100%. Legacy asserts of literal 95 flip in T2.5 with the gate. Scripts: make test-coverage-scripts / make test-bats (scaffold until M4)."
+    context="[coverage-advisory] / EV-080: fill-before-flip — do not raise fail_under / Vitest thresholds / --cov-fail-under / --min-pct until the tip is green at 100%. Legacy asserts of literal 95 flip in T2.5 with the gate. Scripts: make test-coverage-scripts / make test-bats (scaffold until M4)."
     ;;
 esac
 
@@ -36,7 +36,7 @@ if [[ -z "$context" ]]; then
     apps/*|packages/*)
       case "$base" in
         *.py|*.ts|*.tsx)
-          context="[coverage-advisory] Unit coverage target is 100% line+branch (ADR-007). Prefer tests covering new/changed branches before flipping CI floors. Executable FE coverage excludes are revoked (EV-080); approved omits: vendor, generated xsd/codegen, fixtures only."
+          context="[coverage-advisory] Unit coverage target is 100% line+branch . Prefer tests covering new/changed branches before flipping CI floors. Executable FE coverage excludes are revoked (EV-080); approved omits: vendor, generated xsd/codegen, fixtures only."
           ;;
       esac
       ;;

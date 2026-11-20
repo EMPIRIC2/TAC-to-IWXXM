@@ -69,7 +69,7 @@ def test_annex3_golden_manifest_present(golden_manifest: dict) -> None:
         soft = case.get("soft_compare") is True
         golden = case.get("golden")
         if soft:
-            # Soft-compare cases omit package golden until ADR-032 equality.
+            # Soft-compare cases omit package golden until equality.
             assert not golden
         elif golden:
             assert (FIXTURES / str(golden)).is_file()

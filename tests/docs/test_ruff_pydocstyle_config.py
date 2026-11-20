@@ -1,4 +1,4 @@
-"""TC-EVDOC-008: ruff pydocstyle (D) is enabled for ADR-048 trees."""
+"""TC-EVDOC-008: ruff pydocstyle (D) is enabled for trees."""
 
 from __future__ import annotations
 

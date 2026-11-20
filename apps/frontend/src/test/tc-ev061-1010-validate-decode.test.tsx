@@ -9,7 +9,7 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { FileConverter } from '../app/components/FileConverter';
 import { ValidateIwxxmReport } from '../app/components/ValidateIwxxmReport';
-import type { ValidateResponse } from '/utils/openapiTypes';
+import type { ValidateResponse } from '@/utils/openapiTypes';
 
 const mockSignOutWithScope = vi.hoisted(() => vi.fn().mockResolvedValue(true));
 const mockConvertMetarToIwxxm = vi.hoisted(() => vi.fn());

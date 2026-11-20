@@ -1,4 +1,4 @@
-"""Verify packages/shared meets ADR-007 100% coverage gate (EV-080)."""
+"""Verify packages/shared meets 100% coverage gate (EV-080)."""
 
 from __future__ import annotations
 

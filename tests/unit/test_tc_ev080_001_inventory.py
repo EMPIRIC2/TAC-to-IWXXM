@@ -1,6 +1,6 @@
 """TC-EV080-001 / TC-EV080-010 — coverage inventory @ 100 floor + approved omits.
 
-[Corpus: tests] [Corpus: adr/ADR-007] [Corpus: product] EV-080 / #1077
+[Corpus: tests] [Corpus: product] EV-080 / #1077
 """
 
 from __future__ import annotations

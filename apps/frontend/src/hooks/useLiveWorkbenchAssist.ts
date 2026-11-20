@@ -15,9 +15,9 @@ import {
   LiveAssistScheduler,
   isAbortError,
   resolveLiveAssistDebounceMs,
-} from '/utils/liveAssist';
-import { formFieldSpanInEditor } from '/utils/liveConvertTrace';
-import type { TacSpanMark } from '/utils/tacEditorSpans';
+} from '@/utils/liveAssist';
+import { formFieldSpanInEditor } from '@/utils/liveConvertTrace';
+import type { TacSpanMark } from '@/utils/tacEditorSpans';
 
 /**
  * Type `LiveWorkbenchConsoleLine`.

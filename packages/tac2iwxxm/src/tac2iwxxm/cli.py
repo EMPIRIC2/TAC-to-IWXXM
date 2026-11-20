@@ -63,11 +63,6 @@ def main(argv: Sequence[str] | None = None) -> int:
     -------
     int
         ``0`` when the overlay loads; ``1`` on failure.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (main)
-    2
     """
     parser = _build_parser()
     args = parser.parse_args(list(argv) if argv is not None else None)

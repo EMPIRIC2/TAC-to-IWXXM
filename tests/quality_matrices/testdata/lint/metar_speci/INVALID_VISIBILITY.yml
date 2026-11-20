@@ -40,27 +40,27 @@ cases:
 - bucket: happy
   case_id: '05'
   status: ready
-  tac: SPECI KJFK 232045Z 20015G25KT 8SM -SN BKN020 OVC040 12/06 A3001=
+  tac: METAR AYPY 302000Z VRB03KT 10KM SCT050 27/24 Q1012=
   expect:
     accept: true
   meta:
-    product: SPECI
+    product: METAR
     profile: annex3
-    cite: EV-970-S2 INVALID_VISIBILITY/happy
+    cite: EV-970-S2 INVALID_VISIBILITY/happy kilometre visibility
 - bucket: sad
   case_id: '01'
   status: ready
-  tac: METAR KJFK 121251Z 18008KT 10KM FEW250 22/12 A3012=
+  tac: METAR KJFK 121251Z 18008KT 10MILES FEW250 22/12 A3012=
   expect:
     codes:
     - INVALID_VISIBILITY
   meta:
     product: METAR
-    cite: tac-validate R2 invalid_vis_km
+    cite: tac-validate R2 invalid_vis_miles
 - bucket: sad
   case_id: '02'
   status: ready
-  tac: METAR KJFK 121251Z 18008KT 10KM FEW250 22/12 A3012=
+  tac: METAR KJFK 121251Z 18008KT 10MILES FEW250 22/12 A3012=
   expect:
     accept: false
     codes:
@@ -72,7 +72,7 @@ cases:
 - bucket: sad
   case_id: '03'
   status: ready
-  tac: METAR KSEA 231800Z 27008KT 5KM SCT025 14/06 A3004=
+  tac: METAR KSEA 231800Z 27008KT 5MILES SCT025 14/06 A3004=
   expect:
     accept: false
     codes:
@@ -84,7 +84,7 @@ cases:
 - bucket: sad
   case_id: '04'
   status: ready
-  tac: SPECI KJFK 231751Z 18012KT 2KM FEW040 15/07 A3005=
+  tac: SPECI KJFK 231751Z 18012KT 2MILES FEW040 15/07 A3005=
   expect:
     accept: false
     codes:
@@ -96,7 +96,7 @@ cases:
 - bucket: sad
   case_id: '05'
   status: ready
-  tac: METAR KJFK 231852Z VRB03KT 15KM FEW040 15/07 A3005=
+  tac: METAR KJFK 231852Z VRB03KT 12345 FEW040 15/07 A3005=
   expect:
     accept: false
     codes:
@@ -160,7 +160,7 @@ cases:
 - bucket: edge_fail
   case_id: '01'
   status: ready
-  tac: METAR KJFK 231751Z 18012KT 10KM FEW250 22/12 A3012=
+  tac: METAR KJFK 231751Z 18012KT 10MILES FEW250 22/12 A3012=
   expect:
     accept: false
     codes:

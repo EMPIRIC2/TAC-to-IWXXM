@@ -3,7 +3,7 @@
  * which preview lines mention the selected TAC group.
  */
 
-import type { TacSpanMark } from '/utils/tacEditorSpans';
+import type { TacSpanMark } from '@/utils/tacEditorSpans';
 
 /**
  * Type `LiveTraceTarget`.

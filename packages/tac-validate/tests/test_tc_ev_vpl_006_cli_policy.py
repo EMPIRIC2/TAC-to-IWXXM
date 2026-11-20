@@ -87,7 +87,7 @@ def test_apply_policy_unknown_id(tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 
 
 def test_bound_policy_local_without_tac2iwxxm() -> None:
-    # ADR-055: CLI binds TAC quality ids locally (no tac2iwxxm import).
+    # : CLI binds TAC quality ids locally (no tac2iwxxm import).
     emit, policy_id = _bound_policy("hk_hko", None, product="METAR")
     assert emit == "hk_hko"
     assert policy_id == "annex3-metar-quality"

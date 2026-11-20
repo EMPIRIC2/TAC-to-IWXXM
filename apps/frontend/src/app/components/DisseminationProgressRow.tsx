@@ -8,7 +8,7 @@
 import { Check, Mail, Server, X } from 'lucide-react';
 import { motion, useReducedMotion } from 'motion/react';
 
-import type { SinkType } from '/utils/dissemination';
+import type { SinkType } from '@/utils/dissemination';
 
 /**
  * Visual / logical status for one candidate in the queue.

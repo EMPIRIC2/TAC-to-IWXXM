@@ -1,4 +1,4 @@
-"""Postgres store / quarantine writers via DATABASE_URL (F30 / ADR-033)."""
+"""Postgres store quarantine writers via DATABASE_URL (F30)."""
 
 from __future__ import annotations
 
@@ -88,11 +88,6 @@ class PostgresStore:
             Argument ``table``.
         row : object
             Argument ``row``.
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (insert)
-        2
         """
         if table not in _ALLOWED_TABLES:
             msg = f"refusing insert into unexpected table: {table}"
@@ -149,11 +144,6 @@ class PostgresStore:
         -------
         object
             Return value.
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (fetch_by_job_id)
-        2
         """
         if table not in _ALLOWED_TABLES:
             msg = f"refusing select from unexpected table: {table}"
@@ -216,11 +206,6 @@ def write_result(store: StoreClient, job: IngestJob, result: PipelineResult) -> 
     -------
     object
         Return value.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (write_result)
-    2
     """
     row = _base_row(job, result)
     if result.ok and result.xml:

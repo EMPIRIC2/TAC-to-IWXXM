@@ -4,7 +4,7 @@
 
 import { scrubInternalDocRefs } from '@/utils/internalDocRefGuard';
 import { lintJumpButtonClass } from '@/utils/lintSeverityStyle';
-import { lintSeverityLabel, type JumpableLintIssue } from '/utils/lintIssueJump';
+import { lintSeverityLabel, type JumpableLintIssue } from '@/utils/lintIssueJump';
 
 /**
  * Type `TacLintJumpsProps`.

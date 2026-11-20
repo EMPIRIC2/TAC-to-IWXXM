@@ -1,7 +1,4 @@
-"""Resolve convert IR source (legacy parser vs pack-IR path).
-
-[Corpus: adr/ADR-045]
-"""
+"""Resolve convert IR source (legacy parser vs pack-IR path)."""
 
 from __future__ import annotations
 
@@ -36,11 +33,6 @@ def resolve_ir_source(
     -------
     IrSource
         ``legacy`` or ``pack``.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (resolve_ir_source)
-    2
     """
     raw = (ir_source if ir_source is not None else os.environ.get(IR_SOURCE_ENV, "auto")).strip().lower()
     if raw in {"legacy", "pack"}:

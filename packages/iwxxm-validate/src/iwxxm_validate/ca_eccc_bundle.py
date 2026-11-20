@@ -7,9 +7,9 @@ against the vendored ``vendor/schemas/iwxxm/3.0.0`` tree plus ``externalSchema``
 
 from __future__ import annotations
 
-from dataclasses import dataclass
 from pathlib import Path
 
+from iwxxm_validate.models.ca_eccc import CaEcccSchemaBundle
 from iwxxm_validate.paths import (
     ca_xsd_path,
     repo_root,
@@ -22,32 +22,6 @@ from iwxxm_validate.paths import (
 
 CA_ECCC_IWXXM_VERSION = "3.0.0"
 CA_ECCC_EXTENSION_TAG = "3.0"
-
-
-@dataclass(frozen=True, slots=True)
-class CaEcccSchemaBundle:
-    """
-    Resolved on-disk paths for the CA_ECCC validation bundle.
-
-    Attributes
-    ----------
-    iwxxm_version : str
-        IWXXM release line.
-    core_xsd : Path
-        Core XSD.
-    schematron : Path
-        Schematron.
-    extension_root : Path
-        Extension root.
-    aggregate_ca_xsd : Path or None
-        Aggregate CA XSD.
-    """
-
-    iwxxm_version: str
-    core_xsd: Path
-    schematron: Path
-    extension_root: Path
-    aggregate_ca_xsd: Path | None
 
 
 def resolve_ca_eccc_bundle(
@@ -69,11 +43,6 @@ def resolve_ca_eccc_bundle(
     -------
     CaEcccSchemaBundle | None
         ``None`` when core or extension pins are missing (fail-closed).
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (resolve_ca_eccc_bundle)
-    2
     """
     if iwxxm_version != CA_ECCC_IWXXM_VERSION:
         return None
@@ -117,11 +86,6 @@ def ca_eccc_catalog_roots(
     -------
     list[str]
         Absolute directory paths suitable for ``catalog_roots`` on the Rust path.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (ca_eccc_catalog_roots)
-    2
     """
     try:
         vdir = version_dir(iwxxm_version)
@@ -152,10 +116,6 @@ def ca_eccc_bundle_available(
     """
     Return whether ``resolve_ca_eccc_bundle`` would succeed.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (ca_eccc_bundle_available)
-    2
 
     Parameters
     ----------

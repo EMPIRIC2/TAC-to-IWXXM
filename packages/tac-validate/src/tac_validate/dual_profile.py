@@ -99,11 +99,6 @@ def compare_lint_profiles(tac_text: str, *, product: str) -> ProfileLintCompare:
     -------
     ProfileLintCompare
         ``ok`` is False only when dual-applicable and unclassified codes diverge.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (compare_lint_profiles)
-    2
     """
     product_u = product.upper()
     annex3_codes = _issue_codes(tac_text, product=product_u, profile=PROFILE_ANNEX3)
