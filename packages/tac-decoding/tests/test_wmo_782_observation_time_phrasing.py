@@ -11,4 +11,4 @@ def test_observation_time_uses_handbook_hours_and_minutes_phrasing() -> None:
     texts = " ".join(s.explanation for s in result.segments)
     if result.summary:
         texts = f"{texts} {result.summary}"
-    assert "on 21st of the month at 10 hours and 25 minutes UTC" in texts, texts
+    assert "on day 21 at 10:25 UTC" in texts, texts

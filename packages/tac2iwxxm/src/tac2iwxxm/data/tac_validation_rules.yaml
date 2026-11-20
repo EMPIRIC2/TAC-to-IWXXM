@@ -1084,9 +1084,8 @@ rules:
 - id: TAC.ODD_FIELD_ORDER
   code: ODD_FIELD_ORDER
   label: Odd Field Order
-  severity: warning
-  message_template: This {product} has groups out of the usual order (CCCC, then ddhhmmZ, then wind).
-    Review the group order.
+  severity: error
+  message_template: '{product} groups out of A3-2 order (CCCC -> ddhhmmZ -> wind)'
   product: null
   tags:
   - order
