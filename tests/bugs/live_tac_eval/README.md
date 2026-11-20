@@ -19,7 +19,7 @@ committed). CI runs this tree via `pytest tests/bugs`.
 | `test_ws_runway_not_invalid_rvr.py` | Product-rule: `WS R14R` wind-shear runway ≠ RVR |
 | `test_unknown_wmo_membership_live.py` | Keep-as-error: concatenated wx / MOD TURB on SIGMET |
 | `test_keep_as_error_live_residuals.py` | Anti-soften (#1556): `MISSING_VISIBILITY` / `MISSING_QNH` / `MISSING_WIND` / `MISSING_TEMP_DEWPOINT` / `MISSING_OBS_TIME` / `INVALID_PROB` (incl. CW* VIS/QNH stay error) |
-| `test_keep_as_error_fnue_saez_haab.py` | Keep-error (#1496-#1498): FNUE all-solidus `INVALID_WIND`; SAEZ `Z0Z` `MISSING_OBS_TIME`; HAAB omit trailing `Z` |
+| `test_keep_as_error_fnue_saez_haab.py` | Keep-error (#1496-#1498): FNUE/SAEZ/HAAB residuals stay error; clean station TAC + empty/wrong-product fail modes |
 | `test_bug_2026_11_04_taf_spaced_cavok.py` | HAAB spaced `C A V O K` decode + TAF.TAF-8 (#1553) |
 
 Session audit reports (not in git):  
