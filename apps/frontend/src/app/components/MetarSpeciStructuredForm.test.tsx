@@ -191,6 +191,11 @@ describe('MetarSpeciStructuredForm', () => {
       'SPECI COR KJFK 211025Z NIL=',
     );
     expect(screen.getByTestId('structured-auto')).toBeDisabled();
+    expect(screen.getByTestId('structured-auto')).not.toBeChecked();
+    // Uncheck NIL so the false branch of "if checked clear AUTO" is covered.
+    await user.click(screen.getByTestId('structured-nil'));
+    expect(screen.getByTestId('structured-nil')).not.toBeChecked();
+    expect(screen.getByTestId('structured-auto')).not.toBeDisabled();
     expect(screen.getByTestId('structured-lint-summary')).toHaveTextContent(
       'warning: COR after product',
     );

@@ -558,7 +558,7 @@ describe('FileConverter Component', () => {
   });
 
   // Coverage + full-suite load routinely exceeds Vitest's default 5s on Branch Path cases.
-  vi.setConfig({ testTimeout: 20_000 });
+  vi.setConfig({ testTimeout: 45_000 });
 
   beforeEach(() => {
     cleanup();
@@ -1026,7 +1026,6 @@ describe('FileConverter Component', () => {
     });
 
     it('shows Sign in for guests and guest loss notice when local work exists', async () => {
-      const user = userEvent.setup({ delay: null });
       const onRequestLogin = vi.fn();
       const { container } = render(
         <FileConverter {...defaultProps} isGuest onRequestLogin={onRequestLogin} />,
@@ -1040,16 +1039,18 @@ describe('FileConverter Component', () => {
       fireEvent.change(textarea as HTMLTextAreaElement, {
         target: { value: 'METAR KJFK' },
       });
-      expect(screen.getByTestId('guest-loss-notice')).toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.getByTestId('guest-loss-notice')).toBeInTheDocument();
+      });
       expect(screen.getByTestId('guest-loss-notice').textContent || '').not.toMatch(
         /until you log in/i,
       );
       expect(screen.getByTestId('workbench-header-actions')).toBeInTheDocument();
 
-      await user.click(screen.getByTestId('sign-in-button'));
+      fireEvent.click(screen.getByTestId('sign-in-button'));
       expect(onRequestLogin).toHaveBeenCalled();
       onRequestLogin.mockClear();
-      await user.click(
+      fireEvent.click(
         screen
           .getByTestId('guest-loss-notice')
           .querySelector('button') as HTMLButtonElement,
@@ -5412,8 +5413,13 @@ describe('FileConverter Component', () => {
       });
       render(<FileConverter {...defaultProps} />);
 
-      await user.type(screen.getByTestId('output-filename-input'), 'batch/out');
-      await user.type(screen.getByTestId('tac-editor'), 'METAR A=\nMETAR B=');
+      // fireEvent avoids per-keystroke debounce cost that times out under coverage.
+      fireEvent.change(screen.getByTestId('output-filename-input'), {
+        target: { value: 'batch/out' },
+      });
+      fireEvent.change(screen.getByTestId('tac-editor'), {
+        target: { value: 'METAR A=\nMETAR B=' },
+      });
       await user.click(screen.getByTestId('convert-button'));
 
       await waitFor(() => {
@@ -5431,7 +5437,7 @@ describe('FileConverter Component', () => {
       await waitFor(() => {
         expect(screen.getByTestId('iwxxm-preview-xml')).toHaveTextContent('<line1/>');
       });
-    });
+    }, 60_000);
 
     it('soft-preview convert maps missing failed_span fields and warns on soft fail', async () => {
       const user = userEvent.setup({ delay: null });
@@ -5499,7 +5505,6 @@ describe('FileConverter Component', () => {
 
     it('Convert & Send persists failed when conversion returns null', async () => {
       operatorDisseminationUiConfig.destinationsEnabled = true;
-      const user = userEvent.setup({ delay: null });
       mockConvertMetarToIwxxm.mockResolvedValueOnce({
         results: [],
         errors: ['nothing converted'],
@@ -5507,8 +5512,10 @@ describe('FileConverter Component', () => {
       });
       render(<FileConverter {...defaultProps} />);
 
-      await user.type(screen.getByTestId('tac-editor'), 'BAD');
-      await user.click(screen.getByTestId('convert-and-send-button'));
+      fireEvent.change(screen.getByTestId('tac-editor'), {
+        target: { value: 'BAD' },
+      });
+      fireEvent.click(screen.getByTestId('convert-and-send-button'));
 
       await waitFor(() => {
         expect(mockPersistSession).toHaveBeenCalledWith(expect.anything(), {
@@ -5531,7 +5538,9 @@ describe('FileConverter Component', () => {
       render(<FileConverter {...defaultProps} />);
 
       await user.click(screen.getByTestId('soft-preview-toggle'));
-      await user.type(screen.getByTestId('tac-editor'), 'METAR PART=');
+      fireEvent.change(screen.getByTestId('tac-editor'), {
+        target: { value: 'METAR PART=' },
+      });
       await user.click(screen.getByTestId('convert-and-send-button'));
 
       await waitFor(() => {
@@ -5553,7 +5562,9 @@ describe('FileConverter Component', () => {
       mockUploadConvertedFiles.mockResolvedValueOnce({});
       render(<FileConverter {...defaultProps} />);
 
-      await user.type(screen.getByTestId('tac-editor'), 'METAR SEND=');
+      fireEvent.change(screen.getByTestId('tac-editor'), {
+        target: { value: 'METAR SEND=' },
+      });
       await user.click(screen.getByTestId('convert-and-send-button'));
 
       await waitFor(() => {
@@ -5574,7 +5585,9 @@ describe('FileConverter Component', () => {
       mockUploadConvertedFiles.mockRejectedValueOnce('network down');
       render(<FileConverter {...defaultProps} />);
 
-      await user.type(screen.getByTestId('tac-editor'), 'METAR SEND=');
+      fireEvent.change(screen.getByTestId('tac-editor'), {
+        target: { value: 'METAR SEND=' },
+      });
       await user.click(screen.getByTestId('convert-and-send-button'));
 
       await waitFor(() => {
