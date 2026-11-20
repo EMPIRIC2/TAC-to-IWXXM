@@ -129,16 +129,22 @@ def build_observation_and_trends(
 
     if ir.get("temp_not_observable"):
         temp_xml = f'      <iwxxm:airTemperature uom="N/A" xsi:nil="true" nilReason="{NIL_NOT_OBS}"/>\n'
+    elif ir.get("temp_missing"):
+        temp_xml = f'      <iwxxm:airTemperature uom="N/A" xsi:nil="true" nilReason="{NIL_MISSING}"/>\n'
     else:
         temp_xml = f'      <iwxxm:airTemperature uom="Cel">{_fmt_cel(ir["temp_c"])}</iwxxm:airTemperature>\n'
     if ir.get("dewpoint_not_observable"):
         dew_xml = f'      <iwxxm:dewpointTemperature uom="N/A" xsi:nil="true" nilReason="{NIL_NOT_OBS}"/>\n'
+    elif ir.get("dewpoint_missing"):
+        dew_xml = f'      <iwxxm:dewpointTemperature uom="N/A" xsi:nil="true" nilReason="{NIL_MISSING}"/>\n'
     else:
         dew_xml = (
             f'      <iwxxm:dewpointTemperature uom="Cel">{_fmt_cel(ir["dewpoint_c"])}</iwxxm:dewpointTemperature>\n'
         )
     if ir.get("qnh_not_observable"):
         qnh_xml = f'      <iwxxm:qnh uom="N/A" xsi:nil="true" nilReason="{NIL_NOT_OBS}"/>\n'
+    elif ir.get("qnh_missing"):
+        qnh_xml = f'      <iwxxm:qnh uom="N/A" xsi:nil="true" nilReason="{NIL_MISSING}"/>\n'
     else:
         qnh_xml = f'      <iwxxm:qnh uom="hPa">{_fmt_hpa(ir["qnh_hpa"])}</iwxxm:qnh>\n'
 

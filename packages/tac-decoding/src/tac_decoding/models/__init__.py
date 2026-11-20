@@ -19,8 +19,10 @@ from tac_decoding.models.locale import ExplanationHook, LocaleError
 from tac_decoding.models.match import MatchBudgetError, MatchContext, MatchResult, MatchSpan
 from tac_decoding.models.pack_file import PackFileMapping, PackRuleMapping
 from tac_decoding.models.packs import Pack, PackSchemaError, Rule
+from tac_decoding.models.remarks import REMARK_FAMILIES, RemarkDecodeResult, RemarkGroup
 
 __all__ = [
+    "REMARK_FAMILIES",
     "CatalogEntry",
     "CatalogTokenMeta",
     "CollectError",
@@ -45,6 +47,8 @@ __all__ = [
     "PackIr",
     "PackRuleMapping",
     "PackSchemaError",
+    "RemarkDecodeResult",
+    "RemarkGroup",
     "Rule",
     "_BulletinMeta",
     "_BulletinSplit",

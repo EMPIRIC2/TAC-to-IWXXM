@@ -69,6 +69,17 @@ def main(argv: list[str] | None = None) -> int:
                 for s in result.segments
             ],
             "residuals": [{"text": r.text, "start": r.start, "end": r.end} for r in result.residuals],
+            "remarks": [
+                {
+                    "code": group.code,
+                    "family": group.family,
+                    "explanation": group.explanation,
+                    "valid": group.valid,
+                    "start": group.start,
+                    "end": group.end,
+                }
+                for group in result.remarks
+            ],
         }
         print(json.dumps(payload, indent=2))
     else:

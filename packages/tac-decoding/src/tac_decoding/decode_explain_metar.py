@@ -20,12 +20,12 @@ from tac_decoding.decode_format import (
 from tac_decoding.decode_patterns import *
 from tac_decoding.decode_tokens import (
     _canadian_clouds,
-    _precip_amount,
     _pressure_tendency,
     _qfe,
     _runway_state,
     _rvr_bound,
     _tenths_c,
+    _us_precip_addenda,
     _varying_rvr,
     _wx_began_or_ended,
 )
@@ -259,6 +259,9 @@ def _explain_metar_speci(token: str, *, product: str, seen: dict[str, int]) -> s
         return f"Temperature {_tenths_c(m.group('t'))} °C, dewpoint {_tenths_c(m.group('td'))} °C in tenths"
     if m := _T_TEMP_ONLY.match(upper):
         return f"Temperature {_tenths_c(m.group('body'))} °C (dewpoint not reported)"
+    # US AO sensor variants are handled above; precip addenda also clear without RMK.
+    if phrase := _us_precip_addenda(upper):
+        return phrase
     if seen.get("rmk"):
         remark = _explain_metar_remark(upper, seen)
         if remark:
@@ -310,8 +313,7 @@ def _explain_metar_remark(upper: str, seen: dict[str, int]) -> str | None:
         return f"24-hour precipitation {hundredths / 100:.2f} inches"
     if phrase := _pressure_tendency(upper):
         return phrase
-    if phrase := _precip_amount(upper):
-        return phrase
+    # Hourly/short/PP precip addenda clear in _explain_metar_speci (with or without RMK).
     if phrase := _canadian_clouds(upper):
         return phrase
     if m := _MM_AMOUNT.match(upper):
@@ -354,14 +356,6 @@ def _explain_metar_remark(upper: str, seen: dict[str, int]) -> str | None:
         if hundredths == 0:
             return "Ice accretion: trace"
         return f"Ice accretion {hundredths / 100:.2f} inches"
-    if m := _SHORT_PRECIP.match(upper):
-        hundredths = int(m.group("amt"))
-        if hundredths == 0:
-            return "Precipitation trace in the past hour"
-        return f"Precipitation {hundredths / 100:.2f} inches in the past hour"
-    if m := _PP_PRECIP_MM.match(upper):
-        tenths = int(m.group("amt"))
-        return f"Precipitation {tenths / 10:.1f} mm"
     if m := _TX_DECIMAL.match(upper):
         return f"Maximum temperature {m.group('val')} °C"
     if m := _CLOUD_TYPE_8.match(upper):
