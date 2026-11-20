@@ -187,6 +187,8 @@ export function useFileConverter(props: FileConverterProps) {
     profileCatalogEntries: ctx.profileCatalogEntries,
     profileDrawerOpen: ctx.profileDrawerOpen,
     propagateResiduals: ctx.propagateResiduals,
+    includeNationalRemarks: ctx.includeNationalRemarks,
+    setIncludeNationalRemarks: ctx.setIncludeNationalRemarks,
     queueFocusIndex: ctx.queueFocusIndex,
     recentWorkCollapsed: ctx.recentWorkCollapsed,
     removeConvertedFile: ctx.removeConvertedFile,

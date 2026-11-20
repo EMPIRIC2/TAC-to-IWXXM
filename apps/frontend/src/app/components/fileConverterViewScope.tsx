@@ -27,6 +27,7 @@ export {
 } from './IwxxmPreviewPane';
 export { SoftPreviewControl } from './SoftPreviewControl';
 export { PropagateResidualsControl } from './PropagateResidualsControl';
+export { IncludeNationalRemarksControl } from './IncludeNationalRemarksControl';
 export { LiveIwxxmToggle } from './LiveIwxxmToggle';
 export { BulletinReportList } from './BulletinReportList';
 export { LiveConvertStatusStrip } from './LiveConvertStatusStrip';

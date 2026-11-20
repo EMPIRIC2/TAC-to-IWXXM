@@ -3450,6 +3450,11 @@ components:
                             type: null
           title: Propagate Residuals To Remarks
           description: "When true, append decode residual token text into remarks / humanReadableText when the profile supports that path; annex3 documents no XML target. Omitted uses the profile default (annex3 / ICAO_2025 off)."
+        include_national_remarks:
+          type: boolean
+          title: Include National Remarks
+          description: "When false, omit national remarks after RMK from IWXXM output even for profiles that normally keep remarks."
+          default: true
         bulletin_date:
           type: string
           title: Bulletin Date
@@ -3568,6 +3573,11 @@ components:
                             type: null
           title: Propagate Residuals To Remarks
           description: "When true, append decode residual token text into remarks / humanReadableText when the profile supports that path; annex3 documents no XML target. Omitted uses the profile default (annex3 / ICAO_2025 off)."
+        include_national_remarks:
+          type: boolean
+          title: Include National Remarks
+          description: "When false, omit national remarks after RMK from IWXXM output even for profiles that normally keep remarks."
+          default: true
         bulletin_date:
           type: string
           title: Bulletin Date
@@ -3597,6 +3607,11 @@ components:
                             type: null
           title: Propagate Residuals To Remarks
           description: "When true, append decode residual token text into remarks / humanReadableText when the profile supports that path; annex3 documents no XML target. Omitted uses the profile default (annex3 / ICAO_2025 off)."
+        include_national_remarks:
+          type: boolean
+          title: Include National Remarks
+          description: "When false, omit national remarks after RMK from IWXXM output even for profiles that normally keep remarks."
+          default: true
         bulletin_date:
           type: string
           title: Bulletin Date

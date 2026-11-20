@@ -1,0 +1,129 @@
+_BY_CODE: dict[str, IssueSpec] = {spec.code: spec for spec in ISSUES}
+
+
+def catalog_entries(*, product: str | None = None) -> tuple[IssueSpec, ...]:
+    """
+    Return registry rows for HTTP/docs catalog export.
+
+    Parameters
+    ----------
+    product : str or None, optional
+        Optional product filter (case-insensitive). When set, include rows whose
+        ``product`` field matches or whose ``tags`` contain that product id
+        (e.g. ``metar``, ``speci``). When omitted, return the full registry. By default ``None``.
+
+    Returns
+    -------
+    tuple[IssueSpec, ...]
+        Frozen catalog rows in registry order.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (catalog_entries)
+    2
+    """
+    if product is None or not str(product).strip():
+        return ISSUES
+    key = str(product).strip().lower()
+    selected: list[IssueSpec] = []
+    for spec in ISSUES:
+        if spec.product is not None and spec.product.lower() == key:
+            selected.append(spec)
+            continue
+        if key in {tag.lower() for tag in spec.tags}:
+            selected.append(spec)
+    return tuple(selected)
+
+
+def by_code(code: str) -> IssueSpec:
+    """
+    Return the registered ``IssueSpec`` for ``code``.
+
+    Parameters
+    ----------
+    code : str
+        Public issue code.
+
+    Returns
+    -------
+    IssueSpec
+        Registry row.
+
+    Raises
+    ------
+    KeyError
+        If ``code`` is not registered.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (by_code)
+    2
+    """
+    try:
+        return _BY_CODE[code]
+    except KeyError:
+        raise KeyError(f"unknown lint issue code: {code!r}") from None
+
+
+def issue_from(
+    code: str,
+    *,
+    message: str | None = None,
+    location: str | None = None,
+    start: int | None = None,
+    end: int | None = None,
+    **kwargs: object,
+) -> Issue:
+    """
+    Build an ``Issue`` from a registry row.
+
+    Parameters
+    ----------
+    code : str
+        Registered public code.
+    message : str or None, optional
+        Optional full message override (skips template formatting). By default ``None``.
+    location : str or None, optional
+        Optional token / field hint.
+        start, end :
+        Optional character offsets into the TAC string. By default ``None``.
+    **kwargs : object
+        Passed to ``message_template.format`` when ``message`` is omitted.
+    start : int or None, optional
+        Start. By default ``None``.
+    end : int or None, optional
+        End. By default ``None``.
+
+    Returns
+    -------
+    Issue
+        Structured finding using the registry default severity.
+
+    Raises
+    ------
+    KeyError
+        If ``code`` is not registered.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (issue_from)
+    2
+    """
+    spec = by_code(code)
+    if message is not None:
+        text = message
+    elif kwargs:
+        text = spec.message_template.format(**kwargs)
+    else:
+        text = spec.message_template
+    return Issue(
+        severity=spec.severity,
+        code=spec.code,
+        message=text,
+        location=location,
+        start=start,
+        end=end,
+    )
+
+
+__all__ = ["ISSUES", "IssueSpec", "by_code", "catalog_entries", "issue_from"]

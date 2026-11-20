@@ -1,0 +1,445 @@
+"""Product-specific TAC checklist and template-gate rules (F12 / E10-21).
+
+Cite paraphrase tables in ``docs/domain/TAC_VALIDATION.md`` only - no Annex prose.
+"""
+from __future__ import annotations
+import re
+
+from tac_validate import membership
+from tac_validate.issue_registry import issue_from
+from tac_validate.models import Issue
+
+# Letter-first location indicator; digits allowed (US METAR e.g. K10U). #1476
+_ICAO = re.compile(r"\b[A-Z][A-Z0-9]{3}\b")
+_OBS_TIME = re.compile(r"\b\d{6}Z\b")
+_WIND = re.compile(r"\b(?:(?:VRB|\d{3})\d{2,3}(?:G\d{2,3})?(?:KT|MPS)|CALM)\b")
+# Extreme direction variation group (Guidance: counter-clockwise then clockwise).
+_WIND_DIR_VAR = re.compile(r"^\d{3}V\d{3}$")
+# R2: CAVOK | statute miles (incl. fractions / M|P prefix) | 4-digit meters (9999)
+# | unobserved visibility //// or ////SM. A word boundary does not match before
+# a solidus, and the first four slashes of ////// are not a visibility group.
+_VIS_NOT_OBS = r"(?<![A-Z0-9/])////(?:SM)?(?![A-Z0-9/])"
+_VIS_OK = re.compile(
+    rf"(?:\b(?:CAVOK|P?\d{{1,2}}SM|[MP]?\d{{1,2}}/\d{{1,2}}SM|\d{{1,2}}\s+[MP]?\d{{1,2}}/\d{{1,2}}SM|\d{{4}})\b|{_VIS_NOT_OBS})"
+)
+# Reject KM / MILES / 5+ digit metre runs. Lookbehind skips CIS runway-state
+# groups like R19/010060 so the six-digit field is not read as visibility.
+_VIS_BAD = re.compile(
+    r"(?<![A-Z0-9/])(\d+KM|\d+MILES|\d{5,})\b",
+    re.IGNORECASE,
+)
+# R3: WMO 306 Table 4678 subset - intensity / descriptor / phenomenon grammar.
+_WX_PHENOMENA = frozenset(
+    {
+        "DZ",
+        "RA",
+        "SN",
+        "SG",
+        "IC",
+        "PL",
+        "GR",
+        "GS",
+        "UP",
+        "BR",
+        "FG",
+        "FU",
+        "VA",
+        "DU",
+        "SA",
+        "HZ",
+        "PY",
+        "PO",
+        "SQ",
+        "FC",
+        "SS",
+        "DS",
+    }
+)
+_WX_DESCRIPTORS = ("VC", "MI", "BC", "PR", "DR", "BL", "SH", "TS", "FZ")
+_WX_STANDALONE = frozenset({"TS", "SS", "DS", "SQ", "FC", "PO", "BR", "FG", "FU", "HZ", "VA", "DU", "SA", "PY"})
+_WX_SPECIAL = frozenset({"UP", "//"})
+_RVR = re.compile(r"^R\d{2}")
+# R8: RVR runway visual range (simplified ICAO/US shapes).
+# ICAO tendency U|D|N may follow the value (and optional FT for US). EV-040: R12/1000U
+# from WMO A3-1 is valid - prior pattern only allowed bare N/FT, not U/D.
+# Canadian MANOBS may insert '/' before tendency (…FT/N, …FT/D).
+_RVR_OK = re.compile(r"^R\d{2}[LCR]?/(?:[MP]?\d{4}(?:V[MP]?\d{4})?|////)(?:FT)?(?:/[UDN]|[UDN])?$")
+# CIS/Russian runway-state deposit group (Rxx/dddddd) is not ICAO RVR — skip R8.
+_RVR_RUNWAY_STATE = re.compile(r"^R\d{2}[LCR]?/\d{6}$")
+# BoM AUTO dewpoint-not-observable (temp present, dewpoint solidus).
+# Trailing solidi are non-word chars, so do not use a trailing \\b.
+_TEMP_DEWPOINT_NIL = re.compile(r"\bM?\d{2}///(?=\s|$|=)")
+# WMO AHL heading: T1T2A1A2ii CCCC YYGGgg [BBB] - YYGGgg must not be treated as visibility.
+_AHL_HEADING_LINE = re.compile(r"^[A-Z]{2}[A-Z]{2}\d{2}\s+[A-Z]{4}\s+\d{6}(?:\s+[A-Z]{3})?\s*$")
+_WIND_TOKEN = re.compile(r"(?:KT|MPS)$|^CALM$")
+_CLOUD_START = re.compile(r"^(?:FEW|SCT|BKN|OVC|VV|NSC|NCD|SKC|CLR)")
+# R4: FEW|SCT|BKN|OVC + 3-digit height + optional CB|TCU; VV###|VV///; NSC|NCD|SKC|CLR.
+_CLOUD_OK = re.compile(
+    r"^(?:(?:FEW|SCT|BKN|OVC)(?:\d{3}(?:CB|TCU|///)?|///(?:CB|TCU)?)|VV(?:\d{3}|///)|NSC|NCD|SKC|CLR)$"
+)
+_CLOUD_LIKE = re.compile(r"^(?:FEW|SCT|BKN|OVC|VV|NSC|NCD|SKC|CLR|[A-Z]{3}\d{3})")
+# Layered amounts only (NSC exclusivity / TC-EV023-001) - not VV/NSC/NCD/SKC/CLR.
+_LAYER_CLOUD_TOKEN = re.compile(r"^(?:FEW|SCT|BKN|OVC)\d{3}(?:CB|TCU)?$")
+# R5: US METAR remarks (iwxxm_us) - AO1/AO2, SLP###, P####, T########, PK WND dddss/tt.
+_RMK_AO = frozenset({"AO1", "AO2"})
+_RMK_SLP_OK = re.compile(r"^SLP\d{3}$")
+_RMK_P_OK = re.compile(r"^P\d{4}$")
+_RMK_T_OK = re.compile(r"^T\d{8}$")
+_RMK_PK_VAL = re.compile(r"^\d{5}/\d{2,4}$")
+_RMK_PRES_CA = re.compile(r"^PRES(?:FR|RR)$")
+_RMK_NOSPECI = re.compile(r"^NOSPECI$")
+_RMK_SECTOR_VIS_IN_TEXT = re.compile(r"\bVIS\s+M?(?:(?:\d+\s+)?\d/\d|\d+)(?!V)(?!\s+RWY)\s*(?:N|NE|E|SE|S|SW|W|NW)\b")
+_NCLWS_TAC = re.compile(r"^WS\d{3}/\d{3}\d{2,3}KT$")
+_CA_GFA_PHENOM = re.compile(
+    r"\b(?:FRQ|OCNL)\s+TCU\s+ISOL\s+TS(?:GR)?\b|\bSFC\s+VIS\s+AND\s+(?:BKN|OVC)\s+CLD\b",
+    re.IGNORECASE,
+)
+_GFA_CHART = re.compile(r"\bRMK\s+GFACN\d+\b", re.IGNORECASE)
+_TAF_VIS_SM = re.compile(r"^P?\d{1,2}SM$")
+_ALT_INHG_BODY = re.compile(r"\bA\d{4}\b")
+_ALT_NOT_OBS_BODY = re.compile(r"\bA////(?=\s|$)")
+_WX_TOKEN_SHAPE = re.compile(r"^(?://|[+-]{1,2}[A-Z]{2,8}|[A-Z]{2,8}[+-]|[+-]?[A-Z]{2,8})$")
+_TEMP = re.compile(r"\bM?\d{2}/M?\d{2}\b")
+_QNH = re.compile(r"\b[QA]\d{4}\b")
+_QNH_NOT_OBS = re.compile(r"\b[QA]////(?=\s|$)")
+_TAF_VALIDITY = re.compile(r"\b\d{4}/\d{4}\b")
+_TAF_FM = re.compile(r"^FM(?:\d{6})?$")
+_TAF_PROB = re.compile(r"^PROB(\d{2})$")
+_TAF_TL = re.compile(r"^TL(?:\d{4})?$")
+_TAF_AT = re.compile(r"^AT(?:\d{4})?$")
+_TAF_TX_TN = re.compile(r"^T[XN]-?\d{2}/\d{4}Z$")
+_VALID_PERIOD = re.compile(r"\bVALID\s+\d{6}/\d{6}\b", re.IGNORECASE)
+_DTG_LINE = re.compile(r"(?m)^\s*DTG\s*:", re.IGNORECASE)
+_VAAC_LINE = re.compile(r"(?m)^\s*VAAC\s*:", re.IGNORECASE)
+_VOLCANO_LINE = re.compile(r"(?m)^\s*VOLCANO\s*:\s*(.*)$", re.IGNORECASE)
+_RMK_LINE = re.compile(r"(?m)^\s*RMK\s*:\s*(.*)$", re.IGNORECASE)
+_NXT_ADVISORY_LINE = re.compile(r"(?m)^\s*NXT\s+ADVISORY\s*:\s*(.*)$", re.IGNORECASE)
+_NO_VA_EXP = re.compile(r"\bNO\s+VA\s+EXP\b", re.IGNORECASE)
+_SWXC_LINE = re.compile(r"(?m)^\s*SWXC\s*:", re.IGNORECASE)
+_SWX_EFFECT_LINE = re.compile(r"(?m)^\s*SWX\s+EFFECT\s*:\s*(.+?)\s*$", re.IGNORECASE)
+_OBS_SWX_LINE = re.compile(r"(?m)^\s*OBS\s+SWX\s*:\s*(.+)$", re.IGNORECASE)
+_NO_SWX_EXP = re.compile(r"\bNO\s+SWX\s+EXP\b", re.IGNORECASE)
+# SpaceWxPhenomena register prefixes (vendor CSV) - TAC EFFECT uses spaces.
+_SWX_EFFECT_PREFIX: dict[str, str] = {
+    "HF COM": "HF_COM",
+    "GNSS": "GNSS",
+    "RADIATION": "RADIATION",
+    "SATCOM": "SATCOM",
+}
+_MAX_WIND_LINE = re.compile(r"(?m)^\s*MAX\s+WIND\s*:", re.IGNORECASE)
+_SVO_LINE = re.compile(r"(?m)^\s*SVO\s*:", re.IGNORECASE)
+_ONSET_LINE = re.compile(r"(?m)^\s*ONSET\s*:\s*(.*)$", re.IGNORECASE)
+_DUR_LINE = re.compile(r"(?m)^\s*DUR\s*:\s*(.*)$", re.IGNORECASE)
+_TC_LINE = re.compile(r"(?m)^\s*TC\s*:\s*(.*)$", re.IGNORECASE)
+_CB_LINE = re.compile(r"(?m)^\s*CB\s*:\s*(.*)$", re.IGNORECASE)
+_NXT_MSG_LINE = re.compile(r"(?m)^\s*NXT\s+MSG\s*:\s*(.*)$", re.IGNORECASE)
+# F23 theme G1 - general SIGMET exceptional TAC shapes (#733).
+_SIGMET_POINT_COORD = re.compile(r"\b[NS]\d{4,5}\s+[EW]\d{5,7}\b")
+_SIGMET_LEVEL_RANGE = re.compile(
+    r"\b(?:FL\d{3}/\d{3}|SFC/FL\d{3}|\d{4}/\d{4}FT|\d{3,4}(?:FT|M)/FL\d{2,3})\b",
+)
+_SIGMET_SINGLE_LEVEL = re.compile(r"\b(?:FL\d{3}|\d{4}(?:FT|M))\b")
+_SIGMET_TOP_ABV_BLW = re.compile(r"\bTOP\s+(?:ABV|BLW)\b")
+_SIGMET_WI = re.compile(r"\bWI\b")
+_SIGMET_STNR = re.compile(r"\bSTNR\b")
+_SIGMET_MOV = re.compile(r"\bMOV\b")
+# Habana-style idiom: MOV immediately followed by STNR (no direction/speed).
+_SIGMET_MOV_STNR_ADJACENT = re.compile(r"\bMOV\s+STNR\b")
+# Directional movement (compass) — conflicts with STNR when both appear.
+_SIGMET_MOV_DIR = re.compile(
+    r"\bMOV\s+(?:N|NE|E|SE|S|SW|W|NW)\b",
+)
+_SIGMET_CNL = re.compile(r"\bCNL\b")
+_SIGMET_COR = re.compile(r"\bCOR\b")
+_SIGMET_SEQ = re.compile(r"\bSIGMET\s+(\d{1,3})\b")
+_SIGMET_NO_SEQ = re.compile(r"\bSIGMET\s+VALID\b")
+_AIRMET_SEQ = re.compile(r"\bAIRMET\s+(\d{1,3})\b")
+_AIRMET_NO_SEQ = re.compile(r"\bAIRMET\s+VALID\b")
+_SIGMET_VALID_PAIR = re.compile(r"\bVALID\s+(\d{6})/(\d{6})\b")
+_SIGMET_FIR_CTA = re.compile(r"\b(?:FIR(?:/UIR)?|CTA|UIR)\b")
+_SIGMET_OBS_FCST = re.compile(r"\b(?:OBS|FCST)\b")
+_SIGMET_INTENSITY = re.compile(r"\b(?:INTSF|WKN|NC)\b")
+_SIGMET_VA_TOKEN = re.compile(r"\bVA\b")
+_SIGMET_TC_TOKEN = re.compile(r"\bTC\b")
+# Volcano identity: Annex-3 ``MT … PSN``, or operational ``VA [ERUPTION] [MT] NAME PSN``
+# (MHTG live form omits ``MT`` / ``ERUPTION``). Do not treat ``VA CLD`` as a name.
+_SIGMET_VA_VOLCANO = re.compile(
+    r"\bMT\b.+\bPSN\b"
+    r"|\bPSN\b.+\bMT\b"
+    r"|\bVA(?:\s+ERUPTION)?(?:\s+MT)?\s+(?!CLD\b)[A-Z][A-Z0-9 \-]{0,40}?\bPSN\b"
+)
+_SIGMET_VA_CLD = re.compile(r"\bVA\s+CLD\b")
+_SIGMET_NO_VA_EXP = re.compile(r"\bNO\s+VA\s+EXP\b")
+_SIGMET_CNL_FIR_MOVED = re.compile(r"\b(?:AND|MOV)\s+TO\s+FIR\b")
+# TC SIGMET - name/PSN identity vs OF TC CENTRE geometry (#829).
+# Identity: ``TC name PSN`` (Annex 3) or ``TC name OBS AT`` (US WC without PSN).
+# Exclude CENTRE/CENTER so ``TC CENTRE PSN`` forecast lines are not names.
+_SIGMET_TC_IDENTITY = re.compile(r"\bTC\s+(?!CENTRE\b|CENTER\b)([A-Z][A-Z0-9-]*)\s+(?:PSN\b|OBS\s+AT\b)")
+_SIGMET_OF_TC_CENTRE = re.compile(r"\bOF\s+TC\s+CENTRE\b")
+_SIGMET_TC_NAME = re.compile(r"\bTC\s+(?!CENTRE\b|CENTER\b)([A-Z][A-Z0-9-]*)\b")
+_WS_MAX_VALIDITY_HOURS = 4.0
+_WV_MAX_VALIDITY_HOURS = 6.0
+_WC_MAX_VALIDITY_HOURS = 6.0
+
+# Phenomenon family markers (template+gate - not exhaustive Annex vocab).
+# Underscore forms match vendor AirWx/SigWx notations (EV-050 / #959).
+_SIGMET_FAMILIES: tuple[tuple[str, re.Pattern[str]], ...] = (
+    ("TS", re.compile(r"\b(?:OBSC|EMBD|FRQ|SQL)?(?:\s+|_)?TS(?:GR)?\b")),
+    ("TURB", re.compile(r"\b(?:SEV|MOD)?(?:\s+|_)?TURB\b")),
+    ("ICE", re.compile(r"\b(?:SEV|MOD)?(?:\s+|_)?ICE(?:(?:\s+|_)FZRA)?\b")),
+    ("MTW", re.compile(r"\b(?:SEV|MOD)?(?:\s+|_)?MTW\b")),
+    ("DS_SS", re.compile(r"\b(?:HVY(?:\s+|_))?(?:DS|SS)\b")),
+    ("VA", re.compile(r"\bVA\b")),
+    ("TC", re.compile(r"\bTC\b")),
+    ("RDOACT", re.compile(r"\bRDOACT(?:\s+|_)CLD\b")),
+)
+_AIRMET_FAMILIES: tuple[tuple[str, re.Pattern[str]], ...] = (
+    ("TS", re.compile(r"\b(?:ISOL|OCNL|FRQ)(?:\s+|_)TS(?:GR)?\b")),
+    ("ICE", re.compile(r"\b(?:MOD|SEV)?(?:\s+|_)?ICE\b")),
+    ("TURB", re.compile(r"\b(?:MOD|SEV)?(?:\s+|_)?TURB\b")),
+    ("MTW", re.compile(r"\b(?:MOD|SEV)?(?:\s+|_)?MTW\b")),
+    ("MT_OBSC", re.compile(r"\bMT(?:\s+|_)OBSC\b")),
+    ("CLD", re.compile(r"\b(?:BKN|OVC)(?:\s+|_)CLD\b")),
+    ("CB_TCU", re.compile(r"\b(?:ISOL|OCNL|FRQ)(?:\s+|_)(?:CB|TCU)\b")),
+    ("SFC", re.compile(r"\bSFC(?:\s+|_)(?:WIND|VIS)\b")),
+)
+# Candidate phrases for WMO membership (includes unknown/sad forms).
+_AIRMET_PHENOM_CANDIDATE = re.compile(
+    r"\b("
+    r"(?:ISOL|OCNL|FRQ)(?:\s+|_)[A-Z]{2,}|"
+    r"(?:MOD|SEV)(?:\s+|_)(?:ICE|TURB|MTW)|"
+    r"MT(?:\s+|_)OBSC|"
+    r"(?:BKN|OVC)(?:\s+|_)CLD|"
+    r"SFC(?:\s+|_)(?:WIND|VIS)"
+    r")\b"
+)
+_SIGMET_PHENOM_CANDIDATE = re.compile(
+    r"\b("
+    r"(?:OBSC|EMBD|FRQ|SQL)(?:\s+|_)TS(?:GR)?|"
+    r"(?:SEV|MOD)(?:\s+|_)(?:ICE(?:(?:\s+|_)FZRA)?|TURB|MTW)|"
+    r"HVY(?:\s+|_)(?:DS|SS)|"
+    r"RDOACT(?:\s+|_)CLD|"
+    r"VA|TC"
+    r")\b"
+)
+_RECENT_WX = re.compile(r"^RE[A-Z]{2,}$")
+_LAYER_CLOUD_PARTS = re.compile(r"^(FEW|SCT|BKN|OVC)\d{3}(CB|TCU)?$")
+
+_METAR_SPECI_SKIP = frozenset({"METAR", "SPECI", "COR", "AUTO", "NIL", "CAVOK", "NOSIG"})
+_TAF_SKIP = frozenset({"TAF", "AMD", "COR", "NIL", "CNL", "CAVOK"})
+
+
+_RESEARCH_REF_RE = re.compile(
+    r"(?:\s*[-" + "\u2013\u2014" + r";/]?\s*)?research\s+[A-Za-z]?\d+"
+    r"(?:\s*/\s*(?:[A-Za-z]?\d+|#\d+|iwxxm_us))*",
+    re.IGNORECASE,
+)
+# Compound feature+theme crumbs first (e.g. ``F26 theme V1``, ``F28 theme SX1``).
+_FN_THEME_RE = re.compile(
+    r"\(?\bF\d+\s+theme\s+[A-Za-z]{0,2}\d+\)?",
+    re.IGNORECASE,
+)
+# Leftover theme crumbs after Fn scrub (``theme V1``).
+_THEME_CRUMB_RE = re.compile(r"\btheme\s+[A-Za-z]{0,2}\d+\b", re.IGNORECASE)
+# Operator-facing messages must not carry evolve / ticket / test ids (EV-048).
+# Keep short Annex-style ``#8`` cites; only strip ``#`` + 3+ digits.
+_PLANNING_REF_RE = re.compile(
+    r"(?:\bTC-[A-Z0-9-]+\b|\bEV-\d+\b|\bADR-\d+\b|\bS0\d+\b|\bUJ-\d+\b|"
+    r"\bE\d{2}-\d+\b|(?<!\w)#\d{3,}\b|\bF\d+\b)",
+    re.IGNORECASE,
+)
+_VAGUE_FILLER_RE = re.compile(r"\bstuff\b", re.IGNORECASE)
+_EMPTY_PARENS_RE = re.compile(r"\(\s*\)")
+_TRAILING_SEP_RE = re.compile(r"\s*[-" + "\u2013\u2014" + r";/]+\s*$")
+_DANGLING_SEP_RE = re.compile(r"\s*[-" + "\u2013\u2014" + r";/]\s*(?:/\s*)+$")
+
+
+def _strip_research_refs(message: str) -> str:
+    """
+    Strip research milestone and planning vocabulary from operator lint messages.
+
+    Parameters
+    ----------
+    message : str
+        Raw issue message (may include research or ticket suffixes).
+
+    Returns
+    -------
+    str
+        Operator-safe message; returns ``message`` unchanged when scrubbing would
+        empty the string.
+    """
+    cleaned = _RESEARCH_REF_RE.sub("", message)
+    cleaned = _FN_THEME_RE.sub("", cleaned)
+    cleaned = _THEME_CRUMB_RE.sub("", cleaned)
+    cleaned = _PLANNING_REF_RE.sub("", cleaned)
+    cleaned = _VAGUE_FILLER_RE.sub("", cleaned)
+    cleaned = _EMPTY_PARENS_RE.sub("", cleaned)
+    cleaned = re.sub(r"\s*/\s*/+", " ", cleaned)
+    # Collapse `` - / `` left after removing a middle planning crumb.
+    cleaned = re.sub(r"\s+/\s+", " ", cleaned)
+    cleaned = re.sub(r"\s{2,}", " ", cleaned)
+    cleaned = _DANGLING_SEP_RE.sub("", cleaned)
+    cleaned = _TRAILING_SEP_RE.sub("", cleaned).strip()
+    return cleaned if cleaned else message
+
+
+def _issue(
+    code: str,
+    message: str,
+    *,
+    start: int,
+    end: int,
+    location: str = "body",
+) -> Issue:
+    """
+    Internal helper ``_issue``.
+
+    Parameters
+    ----------
+    code : object
+        Argument ``code``.
+    message : object
+        Argument ``message``.
+    start : object
+        Argument ``start``.
+    end : object
+        Argument ``end``.
+    location : object
+        Argument ``location``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
+    return issue_from(
+        code,
+        message=_strip_research_refs(message),
+        location=location,
+        start=start,
+        end=end,
+    )
+
+
+def _body_span(tac: str) -> tuple[int, int, str]:
+    """
+    Internal helper ``_body_span``.
+
+    Parameters
+    ----------
+    tac : object
+        Argument ``tac``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
+    stripped = tac.strip()
+    if not stripped:
+        return 0, len(tac), ""
+    leading = len(tac) - len(tac.lstrip())
+    return leading, leading + len(stripped), stripped
+
+
+def _first_icao(tokens: list[str], skip: frozenset[str]) -> str | None:
+    """
+    Internal helper ``_first_icao``.
+
+    Parameters
+    ----------
+    tokens : object
+        Argument ``tokens``.
+    skip : object
+        Argument ``skip``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
+    for tok in tokens:
+        if tok in skip:
+            continue
+        if _ICAO.fullmatch(tok) and tok not in {"KT", "MPS", "SM"}:
+            return tok
+    return None
+
+
+def _token_index(tokens: list[str], matcher: re.Pattern[str]) -> int | None:
+    """
+    Internal helper ``_token_index``.
+
+    Parameters
+    ----------
+    tokens : object
+        Argument ``tokens``.
+    matcher : object
+        Argument ``matcher``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
+    for i, tok in enumerate(tokens):
+        if matcher.fullmatch(tok):
+            return i
+    return None
+
+
+def _first_icao_index(tokens: list[str], skip: frozenset[str]) -> int | None:
+    """
+    Internal helper ``_first_icao_index``.
+
+    Parameters
+    ----------
+    tokens : object
+        Argument ``tokens``.
+    skip : object
+        Argument ``skip``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
+    for i, tok in enumerate(tokens):
+        if tok in skip:
+            continue
+        if _ICAO.fullmatch(tok) and tok not in {"KT", "MPS", "SM"}:
+            return i
+    return None
+
+
+def _consume_wx_descriptors(rest: str) -> str:
+    """
+    Internal helper ``_consume_wx_descriptors``.
+
+    Parameters
+    ----------
+    rest : object
+        Argument ``rest``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
+    while len(rest) >= 2:
+        matched = False
+        for desc in _WX_DESCRIPTORS:
+            if rest.startswith(desc) and len(rest) > len(desc):
+                rest = rest[len(desc) :]
+                matched = True
+                break
+        if not matched:
+            break
+    return rest
+
+
+def _is_valid_weather_token(token: str) -> bool:
+    """
+    Internal helper ``_is_valid_weather_token``.
+

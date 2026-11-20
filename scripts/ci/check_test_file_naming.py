@@ -130,24 +130,26 @@ def _git_output(repo_root: Path, *args: str) -> str:
 
 
 def list_new_paths(repo_root: Path, base_ref: str) -> list[str]:
-    """Return paths added on HEAD relative to ``base_ref`` (three-dot)."""
-    try:
-        merge_base = _git_output(repo_root, "merge-base", base_ref, "HEAD").strip()
-    except subprocess.CalledProcessError:
-        merge_base = base_ref
-    try:
-        out = _git_output(
-            repo_root,
-            "diff",
-            "--name-only",
-            "--diff-filter=A",
-            f"{merge_base}...HEAD",
-        )
-    except subprocess.CalledProcessError:
-        return []
-    return [
-        line.strip().replace("\\", "/") for line in out.splitlines() if line.strip()
-    ]
+    """Return paths added vs ``base_ref`` in the worktree (and index).
+
+    Uses a worktree/index diff (not ``base...HEAD``) so mid-merge renames and
+    staged replacements count as the new paths, matching what ``git commit``
+    will record.
+    """
+    paths: set[str] = set()
+    for args in (
+        ("diff", "--name-only", "--diff-filter=A", base_ref),
+        ("diff", "--cached", "--name-only", "--diff-filter=A", base_ref),
+    ):
+        try:
+            out = _git_output(repo_root, *args)
+        except subprocess.CalledProcessError:
+            continue
+        for line in out.splitlines():
+            stripped = line.strip().replace("\\", "/")
+            if stripped:
+                paths.add(stripped)
+    return sorted(paths)
 
 
 def list_base_paths(repo_root: Path, base_ref: str) -> frozenset[str]:

@@ -120,7 +120,11 @@ export function optionalTrim(value: string | undefined): string | undefined {
  */
 export function convertFieldsFromParamsBar(
   bar: ConvertParamsBar,
-  options: { softPreview: boolean; propagateResidualsToRemarks: boolean },
+  options: {
+    softPreview: boolean;
+    propagateResidualsToRemarks: boolean;
+    includeNationalRemarks?: boolean;
+  },
 ): {
   bulletinId?: string;
   issuingCenter?: string;
@@ -141,6 +145,7 @@ export function convertFieldsFromParamsBar(
   logLevel: ConvertLogLevel;
   preview: boolean;
   propagateResidualsToRemarks: boolean;
+  includeNationalRemarks: boolean;
   strict: boolean;
   strictLint: boolean;
   strictConvert: boolean;
@@ -171,6 +176,7 @@ export function convertFieldsFromParamsBar(
     logLevel: bar.logLevel,
     preview: options.softPreview,
     propagateResidualsToRemarks: options.propagateResidualsToRemarks,
+    includeNationalRemarks: options.includeNationalRemarks !== false,
     strict: bar.strictValidation,
     strictLint: bar.strictLint !== false,
     strictConvert: bar.strictConvert !== false,

@@ -106,6 +106,7 @@ describe('convertParams', () => {
       logLevel: 'WARNING',
       preview: false,
       propagateResidualsToRemarks: true,
+      includeNationalRemarks: true,
     });
     expect(
       convertFieldsFromParamsBar(bar, {

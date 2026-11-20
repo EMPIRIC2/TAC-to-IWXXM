@@ -1,7 +1,7 @@
 """TC-F15-003 / Research R1 - station, observation time, and field-order fixtures (T3.1/T3.2).
 
 Accept + missing CCCC/ddhhmmZ assert error codes. Odd-order cases expect
-``ODD_FIELD_ORDER`` (warning) without failing ``report.ok``.
+``ODD_FIELD_ORDER`` (error) and ``report.ok`` false (WMO-No. 782 group order).
 """
 
 from __future__ import annotations
@@ -53,9 +53,7 @@ def test_r1_manifest_has_accept_missing_and_order_warning_cases() -> None:
     assert len(_ORDER_WARNINGS) >= 3
     assert {c["product"] for c in _ORDER_WARNINGS} == {"METAR", "SPECI"}
     for case in _ORDER_WARNINGS:
-        assert case["ok"] is True
         assert case["expected_codes"] == ["ODD_FIELD_ORDER"]
-        assert case["expected_severity"] == "warning"
         assert (_read_tac(case["tac"])).strip()
 
 
@@ -78,13 +76,13 @@ def test_r1_missing_cccc_or_obs_time_errors(case: dict[str, Any]) -> None:
 
 
 @pytest.mark.parametrize("case", _ORDER_WARNINGS, ids=_case_ids(_ORDER_WARNINGS))
-def test_r1_odd_field_order_emits_warning(case: dict[str, Any]) -> None:
-    """Warning-only odd order - report.ok stays True (errors absent)."""
+def test_r1_odd_field_order_emits_error(case: dict[str, Any]) -> None:
+    """Odd order is an error under WMO-No. 782; report.ok is false."""
     report = lint(_read_tac(case["tac"]), product=case["product"])
-    assert report.ok is True
+    assert report.ok is False
     matched = [i for i in report.issues if i.code == "ODD_FIELD_ORDER"]
     assert matched, f"{case['id']}: expected ODD_FIELD_ORDER in {[i.code for i in report.issues]}"
-    assert all(i.severity == "warning" for i in matched)
-    assert by_code("ODD_FIELD_ORDER").severity == "warning"
+    assert all(i.severity == "error" for i in matched)
+    assert by_code("ODD_FIELD_ORDER").severity == "error"
     if case.get("require_spans"):
         assert any(i.start is not None and i.end is not None and i.end > i.start for i in matched)

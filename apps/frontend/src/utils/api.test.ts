@@ -308,6 +308,38 @@ describe('API Utils', () => {
       expect(body.get('propagate_residuals_to_remarks')).toBe('false');
     });
 
+    it('appends include_national_remarks when explicitly set (WMO-782)', async () => {
+      mockFetchResponse({
+        results: [],
+        errors: [],
+        total_processed: 0,
+        successful: 0,
+        failed: 0,
+      });
+
+      await convertMetarToIwxxm({
+        manualText: 'METAR KJFK 121151Z 18008KT 10SM FEW250 22/14 A3012 RMK AO2=',
+        includeNationalRemarks: true,
+      });
+      let body = (global.fetch as any).mock.calls[0][1].body as FormData;
+      expect(body.get('include_national_remarks')).toBe('true');
+
+      (global.fetch as any).mockClear();
+      mockFetchResponse({
+        results: [],
+        errors: [],
+        total_processed: 0,
+        successful: 0,
+        failed: 0,
+      });
+      await convertMetarToIwxxm({
+        manualText: 'METAR KJFK 121151Z 18008KT 10SM FEW250 22/14 A3012 RMK AO2=',
+        includeNationalRemarks: false,
+      });
+      body = (global.fetch as any).mock.calls[0][1].body as FormData;
+      expect(body.get('include_national_remarks')).toBe('false');
+    });
+
     it('appends conversion_library_id for canonical profile ids (EV-bridge hard cut)', async () => {
       mockFetchResponse({
         results: [],
@@ -1515,6 +1547,47 @@ describe('API Utils', () => {
       });
       body = (global.fetch as any).mock.calls[0][1].body as FormData;
       expect(body.get('propagate_residuals_to_remarks')).toBe('false');
+    });
+
+    it('appends include_national_remarks on convert-bulletin (WMO-782)', async () => {
+      mockFetchResponse({
+        bulletin_meta: {
+          ahl: 'SAUS31 KZNY 121200',
+          report_count: 0,
+          tt: 'SA',
+          aa: 'US',
+          cccc: 'KZNY',
+          yygggg: '121200',
+        },
+        results: [],
+      });
+      await convertBulletin({
+        product: 'METAR',
+        manualText: 'SAUS31',
+        includeNationalRemarks: true,
+      });
+      let body = (global.fetch as any).mock.calls[0][1].body as FormData;
+      expect(body.get('include_national_remarks')).toBe('true');
+
+      (global.fetch as any).mockClear();
+      mockFetchResponse({
+        bulletin_meta: {
+          ahl: 'SAUS31 KZNY 121200',
+          report_count: 0,
+          tt: 'SA',
+          aa: 'US',
+          cccc: 'KZNY',
+          yygggg: '121200',
+        },
+        results: [],
+      });
+      await convertBulletin({
+        product: 'METAR',
+        manualText: 'SAUS31',
+        includeNationalRemarks: false,
+      });
+      body = (global.fetch as any).mock.calls[0][1].body as FormData;
+      expect(body.get('include_national_remarks')).toBe('false');
     });
 
     it('sends extensions and bearer on convert-bulletin', async () => {

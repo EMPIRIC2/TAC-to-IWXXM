@@ -163,6 +163,7 @@ async def _process_manual_entries(
                 translation_centre_designator=runtime.translation_centre_designator,
                 translation_centre_name=runtime.translation_centre_name,
                 propagate_residuals_to_remarks=runtime.propagate_residuals_to_remarks,
+                include_national_remarks=runtime.include_national_remarks,
             )
             acc.absorb_soft_preview(
                 soft_preview_buf,

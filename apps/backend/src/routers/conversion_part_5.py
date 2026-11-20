@@ -196,6 +196,7 @@ async def _process_uploaded_files(
                 translation_centre_designator=runtime.translation_centre_designator,
                 translation_centre_name=runtime.translation_centre_name,
                 propagate_residuals_to_remarks=runtime.propagate_residuals_to_remarks,
+                include_national_remarks=runtime.include_national_remarks,
             )
             acc.absorb_soft_preview(soft_preview_buf, preview=runtime.preview, source=source_name)
             if runtime.preview and soft_preview_buf.get("ok") is False:

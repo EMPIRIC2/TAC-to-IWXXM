@@ -361,23 +361,40 @@ def test_list_new_paths_sees_added_file(tmp_path: Path) -> None:
 
 
 @pytest.mark.unit
-def test_list_new_paths_falls_back_when_merge_base_fails(
+def test_list_new_paths_skips_failed_diff_invocations(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    """merge-base failure uses base_ref; diff failure returns no paths."""
+    """Worktree/index diff failures are skipped; both failing yields no paths."""
     repo = tmp_path / "repo"
     repo.mkdir()
     calls: list[tuple[str, ...]] = []
 
     def fake_git(_root: Path, *args: str) -> str:
         calls.append(args)
-        if args[:1] == ("merge-base",):
-            raise subprocess.CalledProcessError(1, args)
         if args[:1] == ("diff",):
             raise subprocess.CalledProcessError(1, args)
         raise AssertionError(args)
 
     monkeypatch.setattr(policy, "_git_output", fake_git)
     assert policy.list_new_paths(repo, "origin/stage") == []
-    assert calls[0][0] == "merge-base"
-    assert calls[1][0] == "diff"
+    assert calls[0][0] == "diff"
+    assert calls[1][:2] == ("diff", "--cached")
+
+
+@pytest.mark.unit
+def test_list_new_paths_ignores_blank_diff_lines(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Blank name-only lines do not become paths (branch on stripped falsy)."""
+    repo = tmp_path / "repo"
+    repo.mkdir()
+
+    def fake_git(_root: Path, *args: str) -> str:
+        if args[:1] == ("diff",) and args[1:2] != ("--cached",):
+            return "\n  \nadded.py\n"
+        if args[:2] == ("diff", "--cached"):
+            return ""
+        raise AssertionError(args)
+
+    monkeypatch.setattr(policy, "_git_output", fake_git)
+    assert policy.list_new_paths(repo, "origin/stage") == ["added.py"]

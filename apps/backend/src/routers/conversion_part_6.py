@@ -99,6 +99,13 @@ async def convert_bulletin(
             "Omitted uses the profile default (annex3 / ICAO_2025 off)."
         ),
     ),
+    include_national_remarks: bool = Form(
+        default=True,
+        description=(
+            "When false, omit national remarks after RMK from IWXXM output even for "
+            "profiles that normally keep remarks."
+        ),
+    ),
     bulletin_date: str = Form(
         default="",
         description=(
@@ -396,6 +403,7 @@ async def convert_bulletin(
                     profile=emit_profile,
                     report_status=split.meta.report_status,
                     propagate_residuals_to_remarks=propagate_residuals_to_remarks,
+                    include_national_remarks=include_national_remarks,
                 )
             except ConversionError as exc:
                 ok = False

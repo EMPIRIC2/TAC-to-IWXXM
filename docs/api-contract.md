@@ -1633,3 +1633,7 @@ Grade rules (server-side, plain language for operators):
 This check does not change any request or response. Operator-facing behavior stays as the sections above describe. `POST /api/v1/convert` status 200 still includes `failed`, `successful`, and `total_processed`.
 
 The committed OpenAPI snapshot `apps/frontend/openapi/openapi.json` is compared with local interactions in the repository. The bugs job runs `uv run python scripts/ci/check_openapi_contract.py` with no PactFlow credentials and no broker. The check fails when an operation, an in-scope status, a required JSON request field, or a required JSON response field has no interaction. Path-only tests do not satisfy the check. Acceptance is \*\*\*\*. The implementation is already on `origin/stage` (pull requests and ).
+
+## Convert: include_national_remarks
+
+Operators may send `include_national_remarks` on convert forms. When false, national RMK content is omitted from IWXXM. Default is true when omitted.

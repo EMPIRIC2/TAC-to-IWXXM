@@ -1,0 +1,444 @@
+"""SIGMET / AIRMET TAC → IR parsers (F6.d annex3 path)."""
+from __future__ import annotations
+import math
+import re
+from typing import Any, cast
+
+from tac2iwxxm.geometry.reference_point import parse_vor_reference_geometry
+from tac2iwxxm.slot_builders.sigmet_body import (
+    compound_movement_degrees,
+    flight_information_region_name,
+    unwrap_wrapped_coordinates,
+    use_volcanic_ash_locations,
+    without_cancellation_remark,
+)
+
+_SIGMET = re.compile(
+    r"^(?:(?P<fir>[A-Z]{4})(?:\s+(?P<fir_extra>(?:[A-Z]{4}\s+)+))?\s*)?"
+    r"SIGMET\s+"
+    r"(?P<seq>(?:[A-Z]+\s+\d+|[A-Z]?\d+))\s+VALID\s+"
+    r"(?P<from>\d{6})/(?P<to>\d{6})\s+(?P<mwo>[A-Z]{4})\s*-\s*(?P<body>.*)$",
+    re.DOTALL | re.IGNORECASE,
+)
+_BODY_FIR = re.compile(r"\b(?P<fir>[A-Z]{4})\b(?=\s+\S+\s+FIR\b)", re.IGNORECASE)
+_AIRMET = re.compile(
+    r"^(?P<fir>[A-Z]{4})\s+AIRMET\s+"
+    r"(?P<seq>(?:[A-Z]+\s+\d+|[A-Z]?\d+))\s+VALID\s+"
+    r"(?P<from>\d{6})/(?P<to>\d{6})\s+(?P<mwo>[A-Z]{4})\s*-\s*(?P<body>.*)$",
+    re.DOTALL | re.IGNORECASE,
+)
+_CNL = re.compile(
+    r"\bCNL\s+(?:SIGMET|AIRMET)\s+(?P<cnl_seq>(?:[A-Z]+\s+\d+|[A-Z]?\d+))\s+"
+    r"(?:VALID\s+)?"
+    r"(?P<cnl_from>\d{6})/(?P<cnl_to>\d{6})\b",
+    re.IGNORECASE | re.DOTALL,
+)
+# Incomplete cancel (sequence only) must not fall through to a default phenomenon.
+_CNL_INCOMPLETE = re.compile(
+    r"\bCNL\s+(?:SIGMET|AIRMET)\s+(?:[A-Z]+\s+\d+|[A-Z]?\d+)\b",
+    re.IGNORECASE,
+)
+_SIGA0_LINE = re.compile(r"^SIGA0[A-Z0-9]*\s*$", re.IGNORECASE)
+# VA CNL identifies FIR to which ash has moved (F23 V1 / tac-validate VA_CNL_FIR_MOVED).
+_CNL_FIR_MOVED = re.compile(r"\b(?:AND|MOV)\s+TO\s+FIR\b", re.IGNORECASE)
+# Optional leading WMO AHL (WC/WV/WS) so convert can family-select CNL roots (EV-029 M7).
+_AHL_PREFIX = re.compile(
+    r"^(?P<tt>[A-Z]{2})(?P<aa>[A-Z]{2})(?P<ii>(?=[A-Z0-9]*\d)[A-Z0-9]{2})\s+"
+    r"(?P<cccc>[A-Z]{4})\s+(?P<yygggg>\d{6})"
+    r"(?:\s+(?P<bbb>[A-Z]{1,3}))?\s*\n",
+)
+_TC_NAME = re.compile(r"\bTC\s+(?P<name>[A-Z][A-Z0-9-]*)\b", re.IGNORECASE)
+_TC_CIRCLE = re.compile(
+    r"\bWI\s+(?P<nm>\d+)\s*NM\s+OF\s+TC\s+CENTRE\b",
+    re.IGNORECASE,
+)
+_TC_FCST_PSN = re.compile(
+    r"\bFCST\s+AT\s+(?P<hhmm>\d{4})Z\s+TC\s+CENTRE\s+PSN\s+"
+    r"(?P<lat_hemi>[NS])(?P<lat_deg>\d{2})(?P<lat_min>\d{2})(?:\d{2})?\s+"
+    r"(?P<lon_hemi>[EW])(?P<lon_deg>\d{3})(?P<lon_min>\d{2})(?:\d{2})?\b",
+    re.IGNORECASE,
+)
+_TC_OBS_PSN = re.compile(
+    r"\bTC\s+[A-Z][A-Z0-9-]*\s+PSN\s+"
+    r"(?P<lat_hemi>[NS])(?P<lat_deg>\d{2})(?P<lat_min>\d{2})(?:\d{2})?\s+"
+    r"(?P<lon_hemi>[EW])(?P<lon_deg>\d{3})(?P<lon_min>\d{2})(?:\d{2})?\b",
+    re.IGNORECASE,
+)
+_MOV = re.compile(
+    r"\bMOV\s+(?P<dir>NNE|ENE|ESE|SSE|SSW|WSW|WNW|NNW|NE|SE|SW|NW|N|E|S|W)"
+    r"(?:\s+(?P<spd>\d+)\s*(?P<unit>KT|KM/?H|MPS))?(?=\s|\Z|=)",
+    re.IGNORECASE,
+)
+# A half-plane has no FIR outline. This offset keeps the boundary on the named
+# side so the mandatory surface can carry the line vertices.
+_LINE_SIDE_OFFSET_DEG = 0.05
+_LINE_SIDE = re.compile(
+    r"\b(?P<side>NNE|ENE|ESE|SSE|SSW|WSW|WNW|NNW|NE|SE|SW|NW|N|E|S|W)\s+OF\s+LINE\b",
+    re.IGNORECASE,
+)
+_LINE_WIDTH = re.compile(r"\b(?P<width>\d+)\s*(?P<unit>NM|KM)\s+WID\s+LINE\b", re.IGNORECASE)
+_LINE_SPAN = re.compile(
+    r"\bLINE\b(?P<body>.*?)(?=\bSFC/|\bFL\d|\bTOP\b|\bMOV\b|\bSTNR\b|\bNC\b|\bWKN\b|\bINTSF\b|=|$)",
+    re.IGNORECASE | re.DOTALL,
+)
+_AREA_TS_MOV = re.compile(
+    r"\bAREA\s+TS\s+MOV\s+FROM\s+(?P<dir>\d{3})(?P<spd>\d{2,3})KT\b",
+    re.IGNORECASE,
+)
+_CONVECTIVE_SIGMET = re.compile(
+    r"^(?:SIG(?!MET)[A-Z0-9]*\s+)?"
+    r"(?:(?P<unit>(?!SIG)[A-Z]{4})\s+(?:WST\s+\d{6}\s+)?)?"
+    r"CONVECTIVE\s+SIGMET\s+(?P<tag>\S+)\s+"
+    r"VALID\s+UNTIL\s+(?P<until>\d{4,6})Z\s+(?P<states>.+?)\s+FROM\s+(?P<body>.*)$",
+    re.DOTALL | re.IGNORECASE,
+)
+_NWS_HAZARD_IFR = "http://nws.weather.gov/codes/NWSI10-811/HazardTypes/IFR"
+_NWS_SIGMET_AREA_TS = "https://codes.nws.noaa.gov/NWSI-10-811/SIGMETWeatherPhenomena/AreaTS"
+_TOP_FL = re.compile(r"\bTOP\s+(?:ABV\s+|BLW\s+)?FL(?P<fl>\d{2,3})\b", re.IGNORECASE)
+_SE_BOX = re.compile(
+    r"\bS OF N(?P<lat>\d{1,2})\s+AND E OF W(?P<lon>\d{1,3})\b",
+    re.IGNORECASE,
+)
+# WMO airmet-A6-1a-TS: "N OF S50" → sample box north of S50 (Guidance / vendor XML).
+_N_OF_S = re.compile(r"\bN OF S(?P<lat>\d{1,2})\b", re.IGNORECASE)
+_POINT = re.compile(
+    r"\b(?P<lat_hemi>[NS])(?P<lat_deg>\d{2})(?P<lat_min>\d{2})(?:\d{2})?\s+"
+    r"(?P<lon_hemi>[EW])(?P<lon_deg>\d{3})(?P<lon_min>\d{2})(?:\d{2})?\b",
+    re.IGNORECASE,
+)
+_FL_BAND = re.compile(r"\bFL(?P<lo>\d{2,3})/(?P<hi>\d{2,3})\b", re.IGNORECASE)
+_FT_FL_LAYER = re.compile(
+    r"\b(?P<ft>\d{3,4})(?P<unit>FT|M)/FL(?P<fl>\d{2,3})\b",
+    re.IGNORECASE,
+)
+_SINGLE_FL = re.compile(r"\bFL(?P<fl>\d{2,3})\b", re.IGNORECASE)
+_SFC_FL = re.compile(r"\bSFC/FL(?P<fl>\d{2,3})\b", re.IGNORECASE)
+_WI_BLOCK = re.compile(
+    r"\bWI\b(?P<body>.*?)(?=\bSFC/|\bTOP\b|\bMOV\b|\bSTNR\b|\bNC\b|\bWKN\b|\bINTSF\b|=|$)",
+    re.IGNORECASE | re.DOTALL,
+)
+_NO_VA_EXP = re.compile(r"\bNO\s+VA\s+EXP\b", re.IGNORECASE)
+_VA_ERUPTION = re.compile(
+    r"\bVA\s+ERUPTION\s+(?P<name>MT\s+\w+)\s+PSN\s+"
+    r"(?P<lat_hemi>[NS])(?P<lat_deg>\d{2})(?P<lat_min>\d{2})(?:\d{2})?\s+"
+    r"(?P<lon_hemi>[EW])(?P<lon_deg>\d{3})(?P<lon_min>\d{2})(?:\d{2})?\b",
+    re.IGNORECASE,
+)
+# Multi-location VA: OBS [+ FCST] blocks joined by AND (WMO sigmet-multi-location-VA).
+_VA_LOCATION = re.compile(
+    r"(?:VA\s+CLD\s+)?"
+    r"OBS\s+AT\s+(?P<obs_hhmm>\d{4})Z\s+WI\s+(?P<obs_wi>.*?)"
+    r"(?:(?P<sfc_fl>SFC/FL\d{2,3})|(?P<fl_band>FL(?P<lo>\d{2,3})/(?P<hi>\d{2,3})))?"
+    r"\s*(?P<intensity>NC|WKN|INTSF)?"
+    r"(?:\s+FCST\s+AT\s+(?P<fcst_hhmm>\d{4})Z\s+WI\s+(?P<fcst_wi>.*?))?"
+    r"(?=\s+AND\b|\s*=\s*$|$)",
+    re.IGNORECASE | re.DOTALL,
+)
+
+# Common phenomenon tokens → WMO codelist local name.
+# Longer needles first. SigWxPhenomena has no bare ``TS``; keep ``TS`` last only as a
+# parse fallback for unknown bodies (emit resolves href membership separately).
+# AIRMET-style tokens (OCNL/ISOL) appear in some national SIGMET bulletins.
+_SIG_PHENOMENA = (
+    ("OBSC TSGR", "OBSC_TSGR"),
+    ("EMBD TSGR", "EMBD_TSGR"),
+    ("FRQ TSGR", "FRQ_TSGR"),
+    ("SQL TSGR", "SQL_TSGR"),
+    ("OBSC TS", "OBSC_TS"),
+    ("EMBD TS", "EMBD_TS"),
+    ("FRQ TS", "FRQ_TS"),
+    ("SQL TS", "SQL_TS"),
+    ("OCNL TSGR", "OCNL_TSGR"),
+    ("ISOL TSGR", "ISOL_TSGR"),
+    ("OCNL TS", "OCNL_TS"),
+    ("ISOL TS", "ISOL_TS"),
+    ("SEV TURB", "SEV_TURB"),
+    ("SEV ICE (FZRA)", "SEV_ICE_FZRA"),
+    ("SEV ICE", "SEV_ICE"),
+    ("SEV MTW", "SEV_MTW"),
+    ("HVY DS", "HVY_DS"),
+    ("HVY SS", "HVY_SS"),
+    ("RDOACT CLD", "RDOACT_CLD"),
+    ("TC", "TC"),
+    ("VA", "VA"),
+    ("TS", "TS"),
+)
+_AIR_PHENOMENA = (
+    ("ISOL TSGR", "ISOL_TSGR"),
+    ("OCNL TSGR", "OCNL_TSGR"),
+    ("FRQ TSGR", "FRQ_TSGR"),
+    ("ISOL TS", "ISOL_TS"),
+    ("OCNL TS", "OCNL_TS"),
+    ("FRQ TS", "FRQ_TS"),
+    ("MOD ICE", "MOD_ICE"),
+    ("MOD TURB", "MOD_TURB"),
+    ("MOD MTW", "MOD_MTW"),
+    ("MT OBSC", "MT_OBSC"),
+    ("MTN OBSC", "MT_OBSC"),
+    ("SFC WSPD", "SFC_WIND"),
+    ("SFC WIND", "SFC_WIND"),
+    ("IFR", "SFC_VIS"),
+    ("MTW", "MTW"),
+    ("TS", "TS"),
+)
+# MANAIR GFA compound phenomena → MSC code-ca vocabulary (EV-064 M5).
+_CA_GFA_PHENOMENA = (
+    ("FRQ TCU ISOL TSGR", "FRQ_TCU_ISOL_TSGR"),
+    ("FRQ TCU ISOL TS", "FRQ_TCU_ISOL_TS"),
+    ("OCNL TCU ISOL TSGR", "OCNL_TCU_ISOL_TSGR"),
+    ("OCNL TCU ISOL TS", "OCNL_TCU_ISOL_TS"),
+    ("SFC VIS AND OVC CLD", "SFC_VIS_and_OVC_CLD"),
+    ("SFC VIS AND BKN CLD", "SFC_VIS_and_BKN_CLD"),
+)
+_GFA_CHART = re.compile(r"\bRMK\s+(GFACN\d+)\b", re.IGNORECASE)
+_GFA_SFC_VIS_SM = re.compile(r"\b(?P<vis>\d{1,2})SM\b")
+_GFA_SFC_VIS_M = re.compile(r"\b(?P<vis>\d{4})M\b")
+_GFA_CLOUD_BASE = re.compile(r"\b(?:BKN|OVC)(?P<base>\d{3})\b")
+
+_DIR_DEG = {
+    "N": 0,
+    "NNE": 22.5,
+    "NE": 45,
+    "ENE": 67.5,
+    "E": 90,
+    "ESE": 112.5,
+    "SE": 135,
+    "SSE": 157.5,
+    "S": 180,
+    "SSW": 202.5,
+    "SW": 225,
+    "WSW": 247.5,
+    "W": 270,
+    "WNW": 292.5,
+    "NW": 315,
+    "NNW": 337.5,
+}
+_INTENSITY = {
+    "WKN": "WEAKEN",
+    "DECR": "WEAKEN",
+    "INTSF": "INTENSIFY",
+    "NC": "NO_CHANGE",
+}
+_OTLK_VALID = re.compile(
+    r"\bOTLK\s+VALID\s+(?P<from>\d{4})[-/](?P<to>\d{4})Z?",
+    re.IGNORECASE,
+)
+_AIR_AREA_BOUNDARY = re.compile(
+    r"\s+AND\s+(?=(?:MOD|ISOL|OCNL|FRQ|MT|MTN|IFR)\s+)",
+    re.IGNORECASE,
+)
+# CONUS/Hawaii bulletin product line (NWSI 10-811 Appendix A2.1).
+_CONUS_AIRMET = re.compile(
+    r"^(?:W[A-Z]{3}\d{2}\s+(?P<wmo_cccc>[A-Z]{4})\s+(?P<wmo_time>\d{6})\s+)?"
+    r"(?:(?P<faa_zone>[A-Z]{4})\s+WA\s+(?P<issue>\d{6})\s+)?"
+    r"AIRMET\s+(?P<series>[A-Z]+)\s+(?:UPDT|UPDATE)\s+(?P<upd>\d+)\s+"
+    r"FOR\s+(?P<for_text>.+?)\s+VALID\s+UNTIL\s+(?P<until>\d{4,6})\s+(?P<body>.*)$",
+    re.IGNORECASE | re.DOTALL,
+)
+_FRZLVL_SECTION = re.compile(r"\bFRZLVL\.\.\.", re.IGNORECASE)
+_FRZLVL_RANGING = re.compile(
+    r"FRZLVL\.\.\.RANGING FROM (?P<from>SFC|\d{3})-(?P<to>\d{3})\s+ACRS AREA",
+    re.IGNORECASE,
+)
+_MULT_FRZLVL = re.compile(r"MULT FRZLVL (?P<lo>\d{3})-(?P<hi>\d{3})", re.IGNORECASE)
+_FRZLVL_ALG = re.compile(
+    r"(?P<alt>SFC|\d{3})\s+ALG\s+(?P<boundary>[A-Z0-9][A-Z0-9\s\-]*?)"
+    r"(?=\s+(?:\d{3}|SFC)\s+ALG|\s*\.|\s*=|$)",
+    re.IGNORECASE,
+)
+_FRZLVL_BAND = re.compile(r"\bBTN\s+FRZLVL\s+AND\s+FL(?P<fl>\d{2,3})\b", re.IGNORECASE)
+_INLINE_FRZLVL = re.compile(r"\bFRZLVL\s+(?P<lo>\d{3})-(?P<hi>\d{3})\b", re.IGNORECASE)
+_CONUS_AIR_LEAD = re.compile(r"^AIRMET\s+[A-Z]+\.\.\.", re.IGNORECASE)
+
+
+def _normalize(tac: str) -> str:
+    """
+    Internal helper ``_normalize``.
+
+    Parameters
+    ----------
+    tac : str
+        Argument ``tac``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
+    lines = [ln.strip() for ln in tac.strip().rstrip("=").splitlines() if ln.strip()]
+    return " ".join(lines)
+
+
+def _parse_valid(token: str) -> tuple[int, int, int]:
+    """
+    Internal helper ``_parse_valid``.
+
+    Parameters
+    ----------
+    token : str
+        Argument ``token``.
+
+    Returns
+    -------
+    tuple[int, int, int]
+        Return value.
+    """
+    return int(token[0:2]), int(token[2:4]), int(token[4:6])
+
+
+def _apply_motion(ir: dict[str, Any], body: str) -> None:
+    """
+    Record movement direction and speed, keeping kilometres per hour distinct from knots.
+
+    Parameters
+    ----------
+    ir : dict
+        Hazard intermediate representation being filled.
+    body : str
+        SIGMET or AIRMET body text.
+
+    Returns
+    -------
+    None
+        ``ir`` is updated in place when a movement group matches.
+    """
+    if ir.get("stationary"):
+        return
+    mov = _MOV.search(body)
+    if mov is None:
+        degrees = compound_movement_degrees(body)
+        if degrees is None:
+            return
+        ir["motion_dir_deg"] = degrees
+        return
+    ir["motion_dir_deg"] = _DIR_DEG[mov.group("dir").upper()]
+    if mov.group("spd") is None:
+        return
+    speed = int(mov.group("spd"))
+    unit = mov.group("unit").upper().replace("/", "")
+    if unit == "MPS":
+        ir["motion_speed_kmh"] = round(speed * 3.6)
+    elif unit == "KMH":
+        ir["motion_speed_kmh"] = speed
+    else:
+        ir["motion_speed_kt"] = speed
+
+
+def _detect_phenomenon(body: str, table: tuple[tuple[str, str], ...]) -> str | None:
+    """
+    Return the first matching phenomenon code, or ``None`` when none match.
+
+    Parameters
+    ----------
+    body : str
+        Hazard body text.
+
+    table : tuple[tuple[str, str], ...]
+        Needle → IR code pairs, longest / most specific first.
+
+    Returns
+    -------
+    str | None
+        Matched IR phenomenon code, or ``None`` (do not invent ``TS``).
+    """
+    upper = body.upper()
+    for needle, code in table:
+        if needle in upper:
+            return code
+    return None
+
+
+def _require_ordered_valid_period(
+    from_day: int,
+    from_hour: int,
+    from_minute: int,
+    to_day: int,
+    to_hour: int,
+    to_minute: int,
+    *,
+    product: str,
+) -> None:
+    """
+    Reject same-day VALID groups whose end is not after begin.
+
+    Day-of-month wrap (for example ``312200/010200``) stays allowed. Same-day
+    inverted or zero-length periods fail closed.
+
+    Parameters
+    ----------
+    from_day, from_hour, from_minute : int
+        VALID begin group.
+    to_day, to_hour, to_minute : int
+        VALID end group.
+    product : str
+        ``SIGMET`` or ``AIRMET`` for the error message.
+    """
+    if from_day == to_day and (to_hour, to_minute) <= (from_hour, from_minute):
+        raise ValueError(f"{product} valid period end must be after begin")
+
+
+def _detect_ca_gfa_phenomenon(body: str) -> str | None:
+    """
+    Internal helper ``_detect_ca_gfa_phenomenon``.
+
+    Parameters
+    ----------
+    body : str
+        Argument ``body``.
+
+    Returns
+    -------
+    str | None
+        Return value.
+    """
+    upper = body.upper()
+    for needle, code in _CA_GFA_PHENOMENA:
+        if needle in upper:
+            return code
+    return None
+
+
+def _parse_ca_gfa_structured(body: str, gfa_code: str) -> dict[str, Any] | None:
+    """
+    Internal helper ``_parse_ca_gfa_structured``.
+
+    Parameters
+    ----------
+    body : str
+        Argument ``body``.
+
+    gfa_code : str
+        Argument ``gfa_code``.
+
+    Returns
+    -------
+    dict[str, Any] | None
+        Return value.
+    """
+    if gfa_code not in {"SFC_VIS_and_BKN_CLD", "SFC_VIS_and_OVC_CLD"}:
+        return None
+    structured: dict[str, Any] = {}
+    sm = _GFA_SFC_VIS_SM.search(body)
+    if sm is not None:
+        metres = int(sm.group("vis")) * 1609
+        structured["surface_visibility_m"] = {"lower": metres, "higher": metres}
+    else:
+        vis_m = _GFA_SFC_VIS_M.search(body)
+        if vis_m is not None:
+            metres = int(vis_m.group("vis"))
+            structured["surface_visibility_m"] = {"lower": metres, "higher": metres}
+    cloud = _GFA_CLOUD_BASE.search(body)
+    if cloud is not None:
+        base_ft = int(cloud.group("base")) * 100
+        structured["cloud_base_ft"] = {"lower": base_ft, "higher": base_ft}
+    spd = re.search(r"\bMOV\s+[NSEW]{1,2}\s+(?P<spd>\d{2,3})KT\b", body.upper())
+    if spd is not None:
+        kt = int(spd.group("spd"))
+        structured["surface_wind_kt"] = {"lower": kt, "higher": kt}
+    return structured or None
+
+
+def _detect_intensity(body: str) -> str:
+    """
+    Internal helper ``_detect_intensity``.
+

@@ -126,6 +126,7 @@ async def convert_continue_part2(_prelude: dict[str, Any]) -> Any:
     promoted = _prelude.get("promoted")
     promoted_issues = _prelude.get("promoted_issues")
     propagate_residuals_to_remarks = _prelude.get("propagate_residuals_to_remarks")
+    include_national_remarks = bool(_prelude.get("include_national_remarks", True))
     raised_severities = _prelude.get("raised_severities")
     raw_name = _prelude.get("raw_name")
     report = _prelude.get("report")
@@ -243,6 +244,7 @@ async def convert_continue_part2(_prelude: dict[str, Any]) -> Any:
         translation_centre_designator=translation_centre_designator,
         translation_centre_name=translation_centre_name,
         propagate_residuals_to_remarks=propagate_residuals_to_remarks,
+        include_national_remarks=include_national_remarks,
         bulletin_date=bulletin_date,
         validation_service=validation_service,
         validation_orchestrator=validation_orchestrator,

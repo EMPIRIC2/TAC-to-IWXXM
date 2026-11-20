@@ -1,0 +1,4 @@
+    body : str
+        Argument ``body``.
+    """
+    _enrich_hazard_body(ir, body)

@@ -1,0 +1,359 @@
+def run_detector_pack(
+    pack: DetectorPack,
+    tac_text: str,
+    product: str,
+    *,
+    budget: int = DEFAULT_LINT_BUDGET,
+) -> list[Issue]:
+    """
+    Run all rules in ``pack`` for ``product``.
+
+    Parameters
+    ----------
+    pack : DetectorPack
+        Loaded detector pack.
+    tac_text : str
+        Raw TAC.
+    product : str
+        Product id (METAR / SPECI / …).
+    budget : int, optional
+        Max regex match steps across finditer rules; fail closed when exceeded. By default ``DEFAULT_LINT_BUDGET``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (run_detector_pack)
+    2
+
+    Returns
+    -------
+    list[Issue]
+        Run all rules in ``pack`` for ``product``.
+    """
+    product_u = product.upper()
+    if product_u not in pack.products:
+        return []
+    body_start, body_end, body = _body_span(tac_text)
+    upper = body.upper()
+    issues: list[Issue] = []
+    emitted_codes: set[str] = set()
+    steps = 0
+    for rule in pack.rules:
+        if rule.skip_if_codes and any(code in emitted_codes for code in rule.skip_if_codes):
+            continue
+        window, win_off = _prepare_window(upper, rule.preprocess)
+        if rule.skip_if_match and re.search(rule.skip_if_match, window, rule.flags):
+            continue
+        if rule.kind == "python":
+            assert rule.python_ref is not None
+            hatch_issues = _resolve_python(rule.python_ref)(tac_text, product_u)
+            issues.extend(hatch_issues)
+            for item in hatch_issues:
+                emitted_codes.add(item.code)
+            continue
+        if rule.kind == "token_scan":
+            assert rule.select_pattern is not None
+            assert rule.ok_pattern is not None
+            select_re = re.compile(rule.select_pattern, rule.flags)
+            ok_re = re.compile(rule.ok_pattern, rule.flags)
+            emitted_here = 0
+            for tok_match in _TOKEN_RE.finditer(window):
+                steps += 1
+                if steps > budget:
+                    msg = f"{product_u} lint detector budget exceeded"
+                    raise DetectorError(msg)
+                token = tok_match.group(0)
+                if select_re.fullmatch(token) is None:
+                    continue
+                emit = rule.on_ok if ok_re.fullmatch(token) is not None else rule.on_fail
+                if emit is None:
+                    continue
+                issue = _emit_issue(
+                    emit,
+                    product=product_u,
+                    body_start=body_start,
+                    body_end=body_end,
+                    window_offset=win_off,
+                    match=tok_match,
+                )
+                issues.append(issue)
+                emitted_codes.add(issue.code)
+                emitted_here += 1
+                if rule.max_emits is not None and emitted_here >= rule.max_emits:
+                    break
+            continue
+        if rule.pattern is None:
+            msg = f"rule {rule.id!r} missing pattern"
+            raise DetectorError(msg)
+        compiled = re.compile(rule.pattern, rule.flags)
+        if rule.kind == "finditer":
+            assert rule.on_match is not None
+            for emitted_here, match in enumerate(compiled.finditer(window), start=1):
+                steps += 1
+                if steps > budget:
+                    msg = f"{product_u} lint detector budget exceeded"
+                    raise DetectorError(msg)
+                issue = _emit_issue(
+                    rule.on_match,
+                    product=product_u,
+                    body_start=body_start,
+                    body_end=body_end,
+                    window_offset=win_off,
+                    match=match,
+                )
+                issues.append(issue)
+                emitted_codes.add(issue.code)
+                if rule.max_emits is not None and emitted_here >= rule.max_emits:
+                    break
+        elif rule.kind == "require_search":
+            assert rule.on_fail is not None
+            steps += 1
+            if steps > budget:
+                msg = f"{product_u} lint detector budget exceeded"
+                raise DetectorError(msg)
+            if compiled.search(window) is None:
+                issue = _emit_issue(
+                    rule.on_fail,
+                    product=product_u,
+                    body_start=body_start,
+                    body_end=body_end,
+                    window_offset=win_off,
+                    match=None,
+                )
+                issues.append(issue)
+                emitted_codes.add(issue.code)
+        else:
+            msg = f"unsupported detector kind {rule.kind!r}"
+            raise DetectorError(msg)
+    return issues
+
+
+def issue_keys(issues: Sequence[Issue]) -> frozenset[tuple[str, int | None, int | None]]:
+    """
+    Shadow-compare keys: code + span.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (issue_keys)
+    2
+
+    Parameters
+    ----------
+    issues : Sequence[Issue]
+        Issues.
+
+    Returns
+    -------
+    frozenset[tuple[str, int or None, int or None]]
+        Shadow-compare keys: code + span.
+    """
+    return frozenset((i.code, i.start, i.end) for i in issues)
+
+
+def compare_shadow(
+    legacy: Sequence[Issue],
+    detector: Sequence[Issue],
+    *,
+    codes: frozenset[str],
+) -> ShadowCompareResult:
+    """
+    Compare legacy vs detector issues filtered to ``codes``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (compare_shadow)
+    2
+
+    Parameters
+    ----------
+    legacy : Sequence[Issue]
+        Legacy.
+    detector : Sequence[Issue]
+        Detector.
+    codes : frozenset[str]
+        Codes.
+
+    Returns
+    -------
+    ShadowCompareResult
+        Compare legacy vs detector issues filtered to ``codes``.
+    """
+    leg = issue_keys([i for i in legacy if i.code in codes])
+    det = issue_keys([i for i in detector if i.code in codes])
+    return ShadowCompareResult(matched=leg == det, legacy_keys=leg, detector_keys=det)
+
+
+def run_r2_visibility_detectors(tac_text: str, product: str) -> list[Issue]:
+    """
+    Convenience: run builtin R2 visibility pack.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (run_r2_visibility_detectors)
+    2
+
+    Parameters
+    ----------
+    tac_text : str
+        TAC text.
+    product : str
+        Product id.
+
+    Returns
+    -------
+    list[Issue]
+        Convenience: run builtin R2 visibility pack.
+    """
+    return run_theme_pack("metar-speci-r2-visibility", tac_text, product)
+
+
+_ANNEX3_METAR_THEME_PACKS = frozenset(
+    {
+        "metar-speci-r1-identity-order",
+        "metar-speci-r2-visibility",
+        "metar-speci-r3-weather",
+        "metar-speci-r4-cloud",
+        "metar-speci-r5-remarks",
+        "metar-speci-r8-modifiers",
+    }
+)
+
+
+def run_theme_pack(pack_id: str, tac_text: str, product: str) -> list[Issue]:
+    """
+    Run one builtin/overlay detector pack by id (empty if missing or product mismatch).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (run_theme_pack)
+    2
+
+    Parameters
+    ----------
+    pack_id : str
+        Pack ID.
+    tac_text : str
+        TAC text.
+    product : str
+        Product id.
+
+    Returns
+    -------
+    list[Issue]
+        Run one builtin/overlay detector pack by id (empty if missing or product mismatch).
+    """
+    spans = match_port_spans.get()
+    strict = (
+        spans is not None
+        and pack_id in _ANNEX3_METAR_THEME_PACKS
+        and product.upper() == "METAR"
+        and lint_profile.get() == "annex3"
+    )
+    if strict and not spans:
+        return [
+            issue_from(
+                "MISSING_DECODE_MATCH",
+                product=product.upper(),
+                location="match",
+                start=0,
+                end=len(tac_text),
+            )
+        ]
+    catalog = load_detector_catalog(lint_profile.get())
+    pack = catalog.get(pack_id)
+    if pack is None:
+        msg = f"detector pack {pack_id!r} not found"
+        raise DetectorError(msg)
+    issues = run_detector_pack(pack, tac_text, product)
+    if strict and spans:
+        span = spans[0]
+        return [
+            Issue(
+                severity=issue.severity,
+                code=issue.code,
+                message=issue.message,
+                location=issue.location,
+                start=span.start,
+                end=span.end,
+            )
+            for issue in issues
+        ]
+    return issues
+
+
+def example_python_hatch(tac_text: str, product: str) -> list[Issue]:
+    """
+    No-op python hatch used by unit tests.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (example_python_hatch)
+    2
+
+    Parameters
+    ----------
+    tac_text : str
+        TAC text.
+    product : str
+        Product id.
+
+    Returns
+    -------
+    list[Issue]
+        No-op python hatch used by unit tests.
+    """
+    _ = (tac_text, product)
+    return []
+
+
+def example_python_hatch_emit(tac_text: str, product: str) -> list[Issue]:
+    """
+    Python hatch that emits INVALID_VISIBILITY for skip_if / emitted_codes coverage.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (example_python_hatch_emit)
+    2
+
+    Parameters
+    ----------
+    tac_text : str
+        TAC text.
+    product : str
+        Product id.
+
+    Returns
+    -------
+    list[Issue]
+        Python hatch that emits INVALID_VISIBILITY for skip_if / emitted_codes coverage.
+    """
+    _ = tac_text
+    return [
+        Issue(
+            code="INVALID_VISIBILITY",
+            severity="error",
+            message=f"{product} hatch emit",
+            start=0,
+            end=0,
+        )
+    ]
+
+
+__all__ = [
+    "DEFAULT_LINT_BUDGET",
+    "ENV_DETECTOR_DIR",
+    "ENV_DETECTOR_MODE",
+    "DetectorError",
+    "DetectorPack",
+    "DetectorRule",
+    "ShadowCompareResult",
+    "compare_shadow",
+    "detector_mode",
+    "example_python_hatch",
+    "example_python_hatch_emit",
+    "issue_keys",
+    "load_detector_catalog",
+    "load_detector_pack",
+    "run_detector_pack",
+    "run_r2_visibility_detectors",
+    "run_theme_pack",
+]

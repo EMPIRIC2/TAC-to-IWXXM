@@ -46,6 +46,7 @@ async def convert_zip_continue(_prelude: dict[str, Any]) -> Any:
     metar_text = _prelude.get("metar_text")
     metars_list = _prelude.get("metars_list")
     propagate_residuals_to_remarks = _prelude.get("propagate_residuals_to_remarks")
+    include_national_remarks = bool(_prelude.get("include_national_remarks", True))
     read_error = _prelude.get("read_error")
     request = _prelude.get("request")
     request_body = _prelude.get("request_body")
@@ -140,6 +141,7 @@ async def convert_zip_continue(_prelude: dict[str, Any]) -> Any:
                 iwxxm_version=iwxxm_version,
                 reference_time=bulletin_date or None,
                 propagate_residuals_to_remarks=propagate_residuals_to_remarks,
+                include_national_remarks=include_national_remarks,
             )
 
             # Calculate duration

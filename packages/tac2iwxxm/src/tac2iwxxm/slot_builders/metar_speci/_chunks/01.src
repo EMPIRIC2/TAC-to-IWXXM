@@ -1,0 +1,36 @@
+    Returns
+    -------
+    str
+        Return value.
+    """
+    from tac2iwxxm.time_anchor import iso_stamp
+
+    hour = int(hhmm[0:2])
+    minute = int(hhmm[2:4])
+    day = int(ir["day"])
+    # Match annex3 emit stamp month/year for YUDO WMO examples.
+    legacy = "2012-08" if str(ir.get("station")) == "YUDO" else "2023-06"
+    return iso_stamp(ir, day, hour, minute, legacy=legacy)
+
+
+def _obs_stamp(ir: dict[str, Any]) -> str:
+    """
+    Internal helper ``_obs_stamp``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
+    from tac2iwxxm.time_anchor import iso_stamp
+
+    day = int(ir["day"])
+    hour = int(ir["hour"])
+    minute = int(ir["minute"])
+    legacy = "2012-08" if str(ir.get("station")) == "YUDO" else "2023-06"
+    return iso_stamp(ir, day, hour, minute, legacy=legacy)

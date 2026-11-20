@@ -34,6 +34,16 @@ This file defines columns, test tiers, and linkage rules.
 | Live bulletin | Multi-report bulletin split, convert, and Schematron | `make test-live-bulletin` |
 | Full live sequence | Connectivity, then API, then browser, then bulletin | `make test-live` |
 
+## METAR and SPECI handbook quality
+
+Unit coverage for WMO handbook combination emitters lives in:
+
+- `packages/tac-validate/tests/test_wmo_782_metar_speci_quality.py`
+- `packages/tac-validate/tests/test_wmo_782_extended_emitters.py`
+- `packages/tac-validate/tests/test_wmo_782_permutation_shards.py` (optional local session shards)
+
+See [wmo-782-metar-speci-quality.md](wmo-782-metar-speci-quality.md).
+
 ## Quality tooling checks
 
 Rows `TC-QV-001` to `TC-QV-012` in [test-plan.csv](test-plan.csv) cover the quality
