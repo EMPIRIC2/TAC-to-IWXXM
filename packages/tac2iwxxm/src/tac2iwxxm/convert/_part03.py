@@ -16,6 +16,7 @@ def convert(
     report_status: str | None = None,
     report_variant: str | None = None,
     propagate_residuals_to_remarks: bool | None = None,
+    include_national_remarks: bool = True,
     ir_source: str | None = None,
     bulletin_date: str | None = None,
 ) -> ConvertResult:
@@ -62,6 +63,11 @@ def convert(
         When ``True``, fold decode residual token text into the profile remarks /
         ``humanReadableText`` path (or document no XML target on annex3). When
         ``None``, use the semantic-profile default (annex3 / ICAO_2025 → off).
+
+    include_national_remarks : bool, optional
+        When ``False``, strip national RMK content from the IR before emit and
+        report ``REMARKS_EXCLUDED`` (WMO-No. 782: RMK is not for international
+        dissemination). Default ``True`` keeps profile behaviour.
 
     ir_source : str | None, optional
         ``legacy``, ``pack``, or ``auto`` (default). ``auto`` uses pack IR for
@@ -266,6 +272,13 @@ def convert(
             ir = {**ir, "ca_iwxxm_root": resolved_report_variant}
         if status_override is not None:
             ir = {**ir, "report_status": status_override}
+        if not include_national_remarks and product_u in {"METAR", "SPECI"}:
+            ir = {
+                **ir,
+                "remarks_present": False,
+                "remarks_free_text": "",
+                "remark_issues": [],
+            }
         if do_propagate:
             ir, propagate_issue = _apply_propagate_residuals(
                 tac,
@@ -369,7 +382,8 @@ def convert(
                 location="remarks",
             )
         )
-    if profile_l == EMIT_ANNEX3 and product_u in {"METAR", "SPECI"} and ir.get("remarks_present"):
+    remarks_were_present = bool(_RMK_TOKEN.search(tac)) and product_u in {"METAR", "SPECI"}
+    if remarks_were_present and ((profile_l == EMIT_ANNEX3) or (not include_national_remarks)):
         rmk_match = _RMK_TOKEN.search(tac)
         issues.append(
             ConvertIssue(
