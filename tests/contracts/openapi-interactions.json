@@ -370,7 +370,7 @@
         "provider",
         "source_tac"
       ],
-      "covered_by": "apps/backend/tests/unit/test_live_check.py"
+      "covered_by": "apps/backend/tests/unit/test_live_check_router.py"
     },
     {
       "method": "GET",
@@ -378,7 +378,7 @@
       "status": 422,
       "request_fields": [],
       "response_fields": [],
-      "covered_by": "apps/backend/tests/unit/test_live_check.py"
+      "covered_by": "apps/backend/tests/unit/test_live_check_router.py"
     },
     {
       "method": "GET",

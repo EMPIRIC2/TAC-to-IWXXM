@@ -11,9 +11,9 @@ from typing import Final
 ALLOWED_PROVIDERS: Final = frozenset({"noaa", "met_no", "knmi"})
 ALLOWED_PRODUCTS: Final = frozenset({"METAR", "TAF"})
 _ATTRIBUTION: Final[dict[str, str]] = {
-    "noaa": "NOAA Aviation Weather Center — US public data",
-    "met_no": "MET Norway tafmetar — NLOD 2.0 / CC BY 4.0",
-    "knmi": "KNMI Open Data METAR — CC BY 4.0",
+    "noaa": "NOAA Aviation Weather Center, US public data",
+    "met_no": "MET Norway tafmetar, NLOD 2.0 / CC BY 4.0",
+    "knmi": "KNMI Open Data METAR, CC BY 4.0",
 }
 _PROVIDER_LIMITS: Final[dict[str, tuple[int, float]]] = {
     "noaa": (90, 60.0),
