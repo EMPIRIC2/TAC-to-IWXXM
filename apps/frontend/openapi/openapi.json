@@ -4355,6 +4355,101 @@
         "title": "LintTacResponse",
         "type": "object"
       },
+      "LiveCheckResponse": {
+        "description": "GET /api/v1/live-check payload.",
+        "properties": {
+          "attribution": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "License attribution for CC BY sources.",
+            "title": "Attribution"
+          },
+          "cached": {
+            "description": "True when served from the short server cache.",
+            "title": "Cached",
+            "type": "boolean"
+          },
+          "convert_issues": {
+            "description": "Non-fatal or fatal convert issue messages.",
+            "items": {
+              "type": "string"
+            },
+            "title": "Convert Issues",
+            "type": "array"
+          },
+          "convert_ok": {
+            "description": "True when conversion produced IWXXM.",
+            "title": "Convert Ok",
+            "type": "boolean"
+          },
+          "icao": {
+            "description": "ICAO airport code.",
+            "title": "Icao",
+            "type": "string"
+          },
+          "our_iwxxm": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "IWXXM produced by this service from source_tac.",
+            "title": "Our Iwxxm"
+          },
+          "product": {
+            "description": "Product id: METAR or TAF.",
+            "title": "Product",
+            "type": "string"
+          },
+          "profile": {
+            "description": "Conversion profile used for this station.",
+            "title": "Profile",
+            "type": "string"
+          },
+          "provider": {
+            "description": "Allowlisted feed id: noaa, met_no, or knmi.",
+            "title": "Provider",
+            "type": "string"
+          },
+          "provider_iwxxm": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Provider IWXXM when the feed returned a pair.",
+            "title": "Provider Iwxxm"
+          },
+          "source_tac": {
+            "description": "Traditional alphanumeric report from the feed.",
+            "title": "Source Tac",
+            "type": "string"
+          }
+        },
+        "required": [
+          "icao",
+          "product",
+          "provider",
+          "profile",
+          "source_tac",
+          "cached",
+          "convert_ok"
+        ],
+        "title": "LiveCheckResponse",
+        "type": "object"
+      },
       "MappingConfigCreate": {
         "description": "Create a field mapping. Connection secrets are not stored.",
         "properties": {
@@ -9584,6 +9679,77 @@
         "summary": "Lint TAC or IWXXM",
         "tags": [
           "Validation"
+        ]
+      }
+    },
+    "/api/v1/live-check": {
+      "get": {
+        "description": "Fetch an allowlisted open feed for one airport, convert with the station profile, and return source TAC, our IWXXM, and provider IWXXM when the feed included a pair. Providers: noaa, met_no, knmi.",
+        "operationId": "live_check_api_v1_live_check_get",
+        "parameters": [
+          {
+            "description": "ICAO airport code.",
+            "in": "query",
+            "name": "icao",
+            "required": true,
+            "schema": {
+              "description": "ICAO airport code.",
+              "maxLength": 4,
+              "minLength": 4,
+              "title": "Icao",
+              "type": "string"
+            }
+          },
+          {
+            "description": "METAR or TAF.",
+            "in": "query",
+            "name": "product",
+            "required": false,
+            "schema": {
+              "default": "METAR",
+              "description": "METAR or TAF.",
+              "title": "Product",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Allowlisted feed: noaa, met_no, or knmi.",
+            "in": "query",
+            "name": "provider",
+            "required": false,
+            "schema": {
+              "default": "noaa",
+              "description": "Allowlisted feed: noaa, met_no, or knmi.",
+              "title": "Provider",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LiveCheckResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Live check for one airport and product",
+        "tags": [
+          "Live check"
         ]
       }
     },

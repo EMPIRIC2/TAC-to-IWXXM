@@ -1,12 +1,13 @@
-"""Unit tests for live-check API — no network.
+"""Unit tests for live-check service and router — no network.
 
 [Corpus: product §F6] [Corpus: tests §TC-LIVE-FEEDS] [Corpus: api]
 """
 
 from __future__ import annotations
 
+import sys
+import time
 from types import SimpleNamespace
-from typing import Any
 from unittest.mock import patch
 
 import httpx
@@ -14,6 +15,24 @@ import pytest
 from dissemination.allowlist import parse_allowlist
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
+from live_check_test_support import (
+    ALLOW as _ALLOW,
+)
+from live_check_test_support import (
+    TAC as _TAC,
+)
+from live_check_test_support import (
+    XML as _XML,
+)
+from live_check_test_support import (
+    FakeResponse as _FakeResponse,
+)
+from live_check_test_support import (
+    fail_convert as _fail_convert,
+)
+from live_check_test_support import (
+    ok_convert as _ok_convert,
+)
 from src.routers import live_check as live_check_router
 from src.services.live_check import (
     LiveCheckError,
@@ -21,38 +40,7 @@ from src.services.live_check import (
     profile_for_icao,
     set_live_check_service,
 )
-
-_ALLOW = parse_allowlist("aviationweather.gov,api.met.no,api.dataplatform.knmi.nl,cdn.example.test")
-
-_TAC = "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005="
-_XML = '<iwxxm:METAR xmlns:iwxxm="http://icao.int/iwxxm/2025-2"/>'
-
-
-def _ok_convert(*_a: Any, **_k: Any) -> SimpleNamespace:
-    return SimpleNamespace(ok=True, xml=_XML, issues=())
-
-
-def _fail_convert(*_a: Any, **_k: Any) -> SimpleNamespace:
-    issue = SimpleNamespace(code="PARSE", message="bad group")
-    return SimpleNamespace(ok=False, xml=None, issues=(issue,))
-
-
-class _FakeResponse:
-    def __init__(
-        self,
-        text: str = "",
-        *,
-        status_code: int = 200,
-        json_payload: object | None = None,
-    ) -> None:
-        self.text = text
-        self.status_code = status_code
-        self._json_payload = json_payload
-
-    def json(self) -> object:
-        if self._json_payload is None:
-            raise ValueError("no json")
-        return self._json_payload
+from src.services.live_check_models import ensure_product_keyword
 
 
 @pytest.fixture(autouse=True)
@@ -321,3 +309,186 @@ def test_default_http_get_uses_httpx(monkeypatch: pytest.MonkeyPatch) -> None:
     )
     assert response.status_code == 200
     assert seen["url"] == "https://aviationweather.gov/api/data/metar"
+
+
+@pytest.mark.parametrize(
+    ("product", "provider", "detail"),
+    [
+        ("SIGMET", "noaa", "METAR or TAF"),
+        ("TAF", "knmi", "METAR only"),
+    ],
+)
+def test_product_provider_validation(product: str, provider: str, detail: str) -> None:
+    svc = LiveCheckService(convert_fn=_ok_convert, allowlist=_ALLOW)
+    with pytest.raises(LiveCheckError, match=detail) as exc:
+        svc.check(icao="EHRD", product=product, provider=provider)
+    assert exc.value.status_code == 400
+
+
+def test_get_live_check_service_singleton() -> None:
+    from src.services.live_check import get_live_check_service
+
+    set_live_check_service(None)
+    first = get_live_check_service()
+    second = get_live_check_service()
+    assert first is second
+
+
+def test_convert_uses_tac2iwxxm_when_not_injected(monkeypatch: pytest.MonkeyPatch) -> None:
+    import sys
+
+    calls: list[int] = []
+
+    def fake_convert(*_args: object, **_kwargs: object) -> SimpleNamespace:
+        calls.append(1)
+        return _ok_convert()
+
+    monkeypatch.setitem(sys.modules, "tac2iwxxm", SimpleNamespace(convert=fake_convert))
+    svc = LiveCheckService(convert_fn=None, allowlist=_ALLOW)
+    xml, ok, _issues = svc._convert(_TAC, "METAR", "iwxxm_us")
+    assert ok is True
+    assert xml == _XML
+    assert calls
+
+
+@pytest.mark.parametrize(
+    ("text", "product", "expected_prefix"),
+    [
+        ("KJFK 231751Z 18012KT", "METAR", "METAR KJFK"),
+        ("METAR KJFK 231751Z 18012KT", "METAR", "METAR KJFK"),
+        ("EGLL 231520Z CAVOK", "TAF", "TAF EGLL"),
+    ],
+)
+def test_ensure_product_keyword(text: str, product: str, expected_prefix: str) -> None:
+    assert ensure_product_keyword(text, product).startswith(expected_prefix)
+
+
+@pytest.mark.parametrize(
+    ("provider", "product", "url_part", "tac"),
+    [
+        ("noaa", "TAF", "aviationweather.gov/api/data/taf", "TAF KJFK 231730Z 2318/2424 18010KT="),
+        ("met_no", "TAF", "api.met.no/weatherapi/tafmetar/1.0/taf.txt", "TAF ENGM 2315/2415 20005KT="),
+    ],
+)
+def test_taf_success_paths(
+    provider: str,
+    product: str,
+    url_part: str,
+    tac: str,
+) -> None:
+    calls: list[str] = []
+
+    def http_get(url: str, *, params=None, headers=None):
+        calls.append(url)
+        return _FakeResponse(tac)
+
+    svc = LiveCheckService(
+        http_get=http_get,  # type: ignore[arg-type]
+        convert_fn=_ok_convert,
+        allowlist=_ALLOW,
+    )
+    icao = "KJFK" if provider == "noaa" else "ENGM"
+    result = svc.check(icao=icao, product=product, provider=provider)
+    assert result.product == "TAF"
+    assert result.convert_ok is True
+    assert result.source_tac
+    assert any(url_part in u for u in calls)
+
+
+def test_noaa_iwxxm_soft_fail_keeps_tac() -> None:
+    def http_get(url: str, *, params=None, headers=None):
+        if (params or {}).get("format") == "iwxxm":
+            return _FakeResponse("", status_code=500)
+        return _FakeResponse(_TAC)
+
+    svc = LiveCheckService(
+        http_get=http_get,  # type: ignore[arg-type]
+        convert_fn=_ok_convert,
+        allowlist=_ALLOW,
+    )
+    result = svc.check(icao="KJFK", product="METAR", provider="noaa")
+    assert result.source_tac == _TAC
+    assert result.provider_iwxxm is None
+    assert result.convert_ok is True
+
+
+def test_cache_expires_and_refetches() -> None:
+    hits = {"n": 0}
+
+    def http_get(url: str, *, params=None, headers=None):
+        hits["n"] += 1
+        return _FakeResponse(_TAC)
+
+    svc = LiveCheckService(
+        http_get=http_get,  # type: ignore[arg-type]
+        convert_fn=_ok_convert,
+        allowlist=_ALLOW,
+        cache_ttl_sec=0.01,
+    )
+    first = svc.check(icao="KJFK", product="METAR", provider="noaa")
+    time.sleep(0.02)
+    second = svc.check(icao="KJFK", product="METAR", provider="noaa")
+    assert first.cached is False
+    assert second.cached is False
+    assert hits["n"] == 4  # raw+iwxxm twice
+
+
+def test_set_live_check_service_clears_singleton() -> None:
+    from src.services.live_check import get_live_check_service
+
+    set_live_check_service(LiveCheckService(convert_fn=_ok_convert, allowlist=_ALLOW))
+    assert get_live_check_service() is not None
+    set_live_check_service(None)
+    again = get_live_check_service()
+    assert isinstance(again, LiveCheckService)
+
+
+def test_router_query_validation_and_mapped_errors() -> None:
+    def http_get(url: str, *, params=None, headers=None):
+        return _FakeResponse("EGLL 231751Z 18012KT=")
+
+    svc = LiveCheckService(
+        http_get=http_get,  # type: ignore[arg-type]
+        convert_fn=_ok_convert,
+        allowlist=_ALLOW,
+        knmi_api_key="",
+    )
+    set_live_check_service(svc)
+    app = FastAPI()
+    app.include_router(live_check_router.router)
+    client = TestClient(app)
+
+    too_short = client.get("/api/v1/live-check", params={"icao": "JFK"})
+    assert too_short.status_code == 422
+
+    too_long = client.get("/api/v1/live-check", params={"icao": "KJFKX"})
+    assert too_long.status_code == 422
+
+    missing = client.get(
+        "/api/v1/live-check",
+        params={"icao": "KJFK", "provider": "noaa"},
+    )
+    assert missing.status_code == 404
+    assert "noaa returned no" in missing.json()["detail"]
+
+    knmi = client.get(
+        "/api/v1/live-check",
+        params={"icao": "EHRD", "provider": "knmi"},
+    )
+    assert knmi.status_code == 503
+    assert "not configured" in knmi.json()["detail"]
+
+
+def test_icao_whitespace_normalized() -> None:
+    def http_get(url: str, *, params=None, headers=None):
+        return _FakeResponse(_TAC)
+
+    svc = LiveCheckService(
+        http_get=http_get,  # type: ignore[arg-type]
+        convert_fn=_ok_convert,
+        allowlist=_ALLOW,
+    )
+    result = svc.check(icao=" kjfk ", product="metar", provider="NOAA")
+    assert result.icao == "KJFK"
+    assert result.product == "METAR"
+    assert result.provider == "noaa"
