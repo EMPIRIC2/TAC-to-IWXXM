@@ -265,10 +265,6 @@ async def lint_issue_catalog(
     Return the TAC lint and IWXXM validation issue catalog.
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (lint_issue_catalog)
-    2
 
     Parameters
     ----------
@@ -428,10 +424,6 @@ async def decode_tac_endpoint(
     Decode TAC into annotated segments and a plain-language summary.
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (decode_tac_endpoint)
-    2
 
     Parameters
     ----------

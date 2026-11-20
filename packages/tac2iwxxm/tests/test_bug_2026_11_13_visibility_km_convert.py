@@ -68,12 +68,13 @@ def test_parse_and_convert_kilometre_visibility(
     assert not any(i.code == "TRANSLATION_FAILED" for i in result.issues)
 
 
-def test_missing_visibility_without_km_still_fails_parse() -> None:
-    with pytest.raises(ValueError, match="missing visibility"):
-        parse_metar_speci(
-            "METAR CWDQ 021100Z AUTO 14002KT 06/05 RMK AO1 SLP214",
-            product="METAR",
-        )
+def test_missing_visibility_without_km_emits_missing_flag() -> None:
+    """Clean omission (#1562): no vis group → visibility_missing, not raise."""
+    ir = parse_metar_speci(
+        "METAR CWDQ 021100Z AUTO 14002KT 06/05 RMK AO1 SLP214",
+        product="METAR",
+    )
+    assert ir.get("visibility_missing") is True
 
 
 @pytest.mark.parametrize(

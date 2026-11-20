@@ -55,10 +55,6 @@ class _ConvertAccumulator:
         """
         Echo tac2iwxxm non-fatal convert issues (e.g. REMARKS_EXCLUDED) to the client.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (absorb_convert_issues)
-        2
 
         Parameters
         ----------
@@ -99,10 +95,6 @@ class _ConvertAccumulator:
         """
         Merge soft-preview envelope fields from convert_metar_tac_with_metadata.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (absorb_soft_preview)
-        2
 
         Parameters
         ----------
@@ -142,10 +134,6 @@ class _ConvertAccumulator:
         """
         Mark soft-preview Layer 1-2 failure and copy spans when present.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (record_preview_layer12_soft_fail)
-        2
 
         Parameters
         ----------
@@ -187,10 +175,6 @@ class _ConvertAccumulator:
         """
         Flatten multi-layer validation results into conversion issues.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (add_aggregated_validation_issues)
-        2
 
         Parameters
         ----------
@@ -209,10 +193,6 @@ class _ConvertAccumulator:
         """
         Flatten a flat list of validation findings onto convert ``issues[]`` (#1159).
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (add_validation_issue_list)
-        2
 
         Parameters
         ----------
@@ -230,10 +210,6 @@ class _ConvertAccumulator:
         """
         Map one orchestrator or package finding onto a ConversionIssue.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (_append_validation_issue)
-        2
 
         Parameters
         ----------
@@ -296,10 +272,6 @@ class _ConvertAccumulator:
         """
         Emit structured conversion issues for recent-weather rewrites.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (emit_recent_wx_issues)
-        2
 
         Parameters
         ----------

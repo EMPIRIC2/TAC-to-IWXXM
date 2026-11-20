@@ -70,11 +70,6 @@ class WMOCodelistsClient:
         -------
         object
             True if code is valid
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (validate_weather_phenomenon)
-        2
         """
         return self._validate_code(codelist, code)
 
@@ -97,11 +92,6 @@ class WMOCodelistsClient:
         -------
         object
             True if code is valid
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (validate_cloud_type)
-        2
         """
         return self._validate_code(codelist, code)
 
@@ -124,11 +114,6 @@ class WMOCodelistsClient:
         -------
         object
             True if code is valid
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (validate_cloud_amount)
-        2
         """
         return self._validate_code(codelist, code)
 
@@ -151,11 +136,6 @@ class WMOCodelistsClient:
         -------
         object
             True if code is valid
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (validate_visibility_type)
-        2
         """
         return self._validate_code(codelist, code)
 
@@ -270,11 +250,6 @@ class WMOCodelistsClient:
         -------
         object
             WMOCodelistInfo with metadata
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (get_codelist_info)
-        2
         """
         # Try local first
         local_codes = self.parser.get_codes(codelist_name)
@@ -314,11 +289,6 @@ class WMOCodelistsClient:
         -------
         object
             List of codelist names
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (list_available_codelists)
-        2
         """
         local_lists = set(self.parser.list_codelists())
 
@@ -336,11 +306,6 @@ class WMOCodelistsClient:
         -------
         object
             Dictionary with statistics
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (get_statistics)
-        2
         """
         local_lists = self.parser.list_codelists()
         cached_lists = list(self.cache._metadata.keys())

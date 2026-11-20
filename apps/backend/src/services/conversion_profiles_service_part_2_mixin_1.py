@@ -42,10 +42,6 @@ class _ConversionProfilesServiceMethodsMixin(__ConversionProfilesServiceMethodsM
         """
         Fetch one rule pack by id (owner-scoped).
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (get_rule_pack)
-        2
 
         Parameters
         ----------
@@ -71,10 +67,6 @@ class _ConversionProfilesServiceMethodsMixin(__ConversionProfilesServiceMethodsM
         """
         Insert a new rule pack.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (create_rule_pack)
-        2
 
         Parameters
         ----------
@@ -116,10 +108,6 @@ class _ConversionProfilesServiceMethodsMixin(__ConversionProfilesServiceMethodsM
         """
         Patch an existing rule pack.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (update_rule_pack)
-        2
 
         Parameters
         ----------
@@ -154,10 +142,6 @@ class _ConversionProfilesServiceMethodsMixin(__ConversionProfilesServiceMethodsM
         """
         Delete a rule pack owned by the caller.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (delete_rule_pack)
-        2
 
         Parameters
         ----------
@@ -213,10 +197,6 @@ class _ConversionProfilesServiceMethodsMixin(__ConversionProfilesServiceMethodsM
         """
         List overlays owned by the caller (plus shared rows).
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (list_overlays)
-        2
 
         Returns
         -------
@@ -241,10 +221,6 @@ class _ConversionProfilesServiceMethodsMixin(__ConversionProfilesServiceMethodsM
         """
         Fetch one overlay by id (owner or shared).
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (get_overlay)
-        2
 
         Parameters
         ----------
@@ -278,10 +254,6 @@ class _ConversionProfilesServiceMethodsMixin(__ConversionProfilesServiceMethodsM
         """
         Insert a new server-signed overlay.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (create_overlay)
-        2
 
         Parameters
         ----------
@@ -326,10 +298,6 @@ class _ConversionProfilesServiceMethodsMixin(__ConversionProfilesServiceMethodsM
         """
         Patch an owned overlay and re-sign.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (update_overlay)
-        2
 
         Parameters
         ----------
@@ -384,10 +352,6 @@ class _ConversionProfilesServiceMethodsMixin(__ConversionProfilesServiceMethodsM
         """
         Delete an overlay owned by the caller.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (delete_overlay)
-        2
 
         Parameters
         ----------

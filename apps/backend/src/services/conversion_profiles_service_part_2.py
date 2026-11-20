@@ -64,10 +64,6 @@ class ConversionProfilesService(_ConversionProfilesServiceMethodsMixin):
         """
         List rule packs owned by the caller.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (list_rule_packs)
-        2
 
         Returns
         -------
@@ -86,10 +82,6 @@ class ConversionProfilesService(_ConversionProfilesServiceMethodsMixin):
         """
         List semantic presets owned by the caller (plus shared rows).
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (list_presets)
-        2
 
         Returns
         -------
@@ -114,10 +106,6 @@ class ConversionProfilesService(_ConversionProfilesServiceMethodsMixin):
         """
         Fetch one semantic preset by id (owner or shared).
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (get_preset)
-        2
 
         Parameters
         ----------
@@ -151,10 +139,6 @@ class ConversionProfilesService(_ConversionProfilesServiceMethodsMixin):
         """
         Insert a new semantic preset.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (create_preset)
-        2
 
         Parameters
         ----------
@@ -196,10 +180,6 @@ class ConversionProfilesService(_ConversionProfilesServiceMethodsMixin):
         """
         Patch an owned semantic preset.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (update_preset)
-        2
 
         Parameters
         ----------
@@ -247,10 +227,6 @@ class ConversionProfilesService(_ConversionProfilesServiceMethodsMixin):
         """
         Delete a semantic preset owned by the caller.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (delete_preset)
-        2
 
         Parameters
         ----------
@@ -272,10 +248,6 @@ class ConversionProfilesService(_ConversionProfilesServiceMethodsMixin):
         """
         List dissemination templates owned by the caller (plus shared rows).
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (list_templates)
-        2
 
         Returns
         -------
@@ -300,10 +272,6 @@ class ConversionProfilesService(_ConversionProfilesServiceMethodsMixin):
         """
         Fetch one dissemination template by id (owner or shared).
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (get_template)
-        2
 
         Parameters
         ----------
@@ -337,10 +305,6 @@ class ConversionProfilesService(_ConversionProfilesServiceMethodsMixin):
         """
         Insert a new dissemination template.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (create_template)
-        2
 
         Parameters
         ----------
@@ -382,10 +346,6 @@ class ConversionProfilesService(_ConversionProfilesServiceMethodsMixin):
         """
         Patch an owned dissemination template.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (update_template)
-        2
 
         Parameters
         ----------
@@ -434,10 +394,6 @@ class ConversionProfilesService(_ConversionProfilesServiceMethodsMixin):
         """
         Delete a dissemination template owned by the caller.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (delete_template)
-        2
 
         Parameters
         ----------

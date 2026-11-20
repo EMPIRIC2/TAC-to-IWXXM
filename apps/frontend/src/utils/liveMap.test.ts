@@ -620,3 +620,141 @@ describe('live map helpers', () => {
     expect(seenTac).toEqual(['']);
   });
 });
+
+describe('precip × issue-window permutations', () => {
+  const now = Date.parse('2026-11-13T18:30:00Z');
+  const identity = {
+    country: 'all',
+    region: 'all',
+    phenomena: new Set<string>(),
+    now,
+    countryOf: () => undefined,
+    regionOf: () => ({ name: 'North America', continent: 'North America' }),
+    passesTacLayers: (tac: string, layers: ReadonlySet<string>) =>
+      layers.has('precip') && /\b(?:RA|DZ|SN|TSRA)\b/.test(tac),
+  };
+
+  const place = (key: string, observedAt: string, tac: string): LivePlace => ({
+    place_key: key,
+    product: 'metar',
+    latitude: 40,
+    longitude: -74,
+    reports: [{ observed_at: observedAt, tac }],
+  });
+
+  const rainyInWindow = place(
+    'RAIN-IN',
+    '2026-11-13T18:00:00Z',
+    'METAR KJFK 131800Z 20015KT 3SM -RA',
+  );
+  const rainyAtBound = place(
+    'RAIN-BOUND',
+    '2026-11-13T17:30:00Z',
+    'METAR KJFK 131730Z 20015KT 3SM RA',
+  );
+  // ~6.5h old: outside default 1h / latest, still inside full (24h).
+  const rainyOutside = place(
+    'RAIN-OUT',
+    '2026-11-13T12:00:00Z',
+    'METAR KJFK 131200Z 20015KT 3SM RA',
+  );
+  const clearInWindow = place(
+    'CLEAR-IN',
+    '2026-11-13T18:00:00Z',
+    'METAR KBOS 131800Z 18012KT 10SM FEW040',
+  );
+  const unreadableStamp = place(
+    'UNREADABLE',
+    'rainy-now',
+    'METAR KJFK 131800Z 20015KT 3SM -RA',
+  );
+  const emptyTac = place('EMPTY-TAC', '2026-11-13T18:00:00Z', '');
+  const noReports: LivePlace = {
+    place_key: 'NO-REPORTS',
+    product: 'metar',
+    latitude: 40,
+    longitude: -74,
+    reports: [],
+  };
+
+  it.each([
+    {
+      name: 'create+validation pass: rainy inside 1h window feeds precip',
+      places: [rainyInWindow],
+      time: '1h' as const,
+      expectKeys: ['RAIN-IN'],
+    },
+    {
+      name: 'create+validation pass: rainy at exact 1h bound stays',
+      places: [rainyAtBound],
+      time: '1h' as const,
+      expectKeys: ['RAIN-BOUND'],
+    },
+    {
+      name: 'create+validation fail: rainy outside 1h window drops',
+      places: [rainyOutside],
+      time: '1h' as const,
+      expectKeys: [] as string[],
+    },
+    {
+      name: 'read/query fault: clear TAC in window fails precip predicate',
+      places: [clearInWindow],
+      time: '1h' as const,
+      expectKeys: [] as string[],
+    },
+    {
+      name: 'read/query happy: unreadable stamp skips window and keeps precip',
+      places: [unreadableStamp],
+      time: '1h' as const,
+      expectKeys: ['UNREADABLE'],
+    },
+    {
+      name: 'validation fail: empty TAC in window fails precip predicate',
+      places: [emptyTac],
+      time: '1h' as const,
+      expectKeys: [] as string[],
+    },
+    {
+      name: 'delete+rejected surface: no reports yields empty observed_at and drops precip',
+      places: [noReports],
+      time: '1h' as const,
+      expectKeys: [] as string[],
+    },
+    {
+      name: 'update+validation pass: full (24h) window recovers day-old rain',
+      places: [rainyOutside],
+      time: 'full' as const,
+      expectKeys: ['RAIN-OUT'],
+    },
+  ])('$name', ({ places, time, expectKeys }) => {
+    const filtered = filterPlaces(places, {
+      ...identity,
+      time,
+      tacLayers: new Set(['precip']),
+    });
+    expect(filtered.map((row) => row.place_key)).toEqual(expectKeys);
+  });
+
+  it('permute window × precip presence for mixed set', () => {
+    const mixed = [
+      rainyInWindow,
+      rainyOutside,
+      clearInWindow,
+      unreadableStamp,
+      emptyTac,
+    ];
+    const inside = filterPlaces(mixed, {
+      ...identity,
+      time: '1h',
+      tacLayers: new Set(['precip']),
+    }).map((row) => row.place_key);
+    expect(inside).toEqual(['RAIN-IN', 'UNREADABLE']);
+
+    const full = filterPlaces(mixed, {
+      ...identity,
+      time: 'full',
+      tacLayers: new Set(['precip']),
+    }).map((row) => row.place_key);
+    expect(full).toEqual(['RAIN-IN', 'RAIN-OUT', 'UNREADABLE']);
+  });
+});

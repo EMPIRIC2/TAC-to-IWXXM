@@ -51,10 +51,6 @@ async def lint_tac(
     Lint TAC or IWXXM XML. The body must be multipart form data.
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (lint_tac)
-    2
 
     Parameters
     ----------
@@ -206,11 +202,6 @@ def station_point(icao: str) -> dict[str, Any]:
     dict[str, Any]
         ICAO code, name, and decimal degrees. Unknown codes return null
         coordinates so a map lookup is a normal miss, not an error response.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (station_point)
-    2
     """
     code = icao.strip().upper()
     if len(code) != 4 or not code.isalnum() or not code[0].isalpha():

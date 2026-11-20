@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import {
+  AUTH_BOOTSTRAP_MISSING_MESSAGE,
   confirmEmail,
   confirmPasswordReset,
   getCurrentUser,
@@ -34,6 +35,16 @@ const authMock = {
   updateUser: vi.fn(),
 };
 
+const bootstrapMock = vi.hoisted(() => ({
+  url: 'https://project.supabase.co',
+  publishableKey: 'sb_publishable_test',
+}));
+
+vi.mock('./runtime-config', () => ({
+  getSupabaseUrl: () => bootstrapMock.url,
+  getSupabasePublishableKey: () => bootstrapMock.publishableKey,
+}));
+
 vi.mock('./supabase/client', () => ({
   getSupabaseClient: () => ({ auth: authMock }),
 }));
@@ -42,6 +53,8 @@ describe('authService', () => {
   beforeEach(() => {
     localStorage.clear();
     vi.clearAllMocks();
+    bootstrapMock.url = 'https://project.supabase.co';
+    bootstrapMock.publishableKey = 'sb_publishable_test';
   });
 
   afterEach(() => {
@@ -60,6 +73,22 @@ describe('authService', () => {
     expect(localStorage.getItem('access_token')).toBe(mockSession.access_token);
     expect(localStorage.getItem('refresh_token')).toBe(mockSession.refresh_token);
     expect(localStorage.getItem('expires_at')).toBe(String(mockSession.expires_at));
+  });
+
+  it('login fails closed when publishable key is missing', async () => {
+    bootstrapMock.publishableKey = '';
+    await expect(
+      login({ email: mockUser.email, password: 'Password123!' }),
+    ).rejects.toThrow(AUTH_BOOTSTRAP_MISSING_MESSAGE);
+    expect(authMock.signInWithPassword).not.toHaveBeenCalled();
+  });
+
+  it('register fails closed when Supabase URL is missing', async () => {
+    bootstrapMock.url = '';
+    await expect(
+      register({ email: mockUser.email, password: 'Password123!' }),
+    ).rejects.toThrow(AUTH_BOOTSTRAP_MISSING_MESSAGE);
+    expect(authMock.signUp).not.toHaveBeenCalled();
   });
 
   it('confirmEmail stores session tokens on success', async () => {

@@ -55,10 +55,6 @@ def _output_validation_orch_layers() -> list[ValidationLayer]:
     AIRPORT_ICAO / TAC_SYNTAX are METAR/SPECI input checks (already gated before
     convert). XML_SCHEMA / SCHEMATRON run via ``_call_iwxxm_validate``.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (_output_validation_orch_layers)
-    2
 
     Returns
     -------
@@ -78,10 +74,6 @@ def _initial_layers_passed(product: str | None) -> list[str]:
     """
     Layers already satisfied before post-convert soft validation.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (_initial_layers_passed)
-    2
 
     Parameters
     ----------

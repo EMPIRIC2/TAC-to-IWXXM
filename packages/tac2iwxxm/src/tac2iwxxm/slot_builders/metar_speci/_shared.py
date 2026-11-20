@@ -36,6 +36,8 @@ _CA_DENSITY_ALT_MISG = re.compile(r"\bDENSITY\s+ALT(?:ITUDE)?\s+MISG\b", re.I)
 _CA_ICE_REMARK = re.compile(r"\bICE\s+(?P<intensity>TRC|LGT|MOD|SEV|HVY)\b", re.I)
 
 _WIND = re.compile(r"\b(?P<dir>\d{3}|VRB)(?P<spd>\d{2,3})(?:G(?P<gust>\d{2,3}))?(?P<uom>KT|MPS)\b")
+# Malformed wind attempts still carry KT/MPS (typos like VBR02KT) — keep fail-closed.
+_WIND_UOM_HINT = re.compile(r"(?<![A-Z])(?:KT|MPS)\b")
 
 _VIS_SM = METAR_STATUTE_MILE_GROUP
 
@@ -43,6 +45,8 @@ _VIS_M = re.compile(r"\b(?P<vis>\d{4})\b")
 
 # Regional / non-Annex-3 kilometre form (e.g. Papua New Guinea ``10KM``) → metres.
 _VIS_KM = re.compile(r"\b(?P<vis>\d{1,3})KM\b", re.IGNORECASE)
+# Botched visibility attempts (10MILES, 5+ digits, 4+ digit KM) stay fail-closed.
+_VIS_ATTEMPT_HINT = re.compile(r"\b\d+MILES\b|\b\d{5,}\b|\b\d{4,}KM\b", re.IGNORECASE)
 
 _VIS_SM_NOT_OBS = re.compile(r"(?<![A-Z0-9/])////SM(?![A-Z0-9/])")
 
@@ -51,6 +55,8 @@ _VIS_M_NOT_OBS = re.compile(r"(?<![A-Z0-9/])////(?!SM)(?![A-Z0-9/])")
 _CAVOK = re.compile(r"\bCAVOK\b")
 
 _TEMP = re.compile(r"\b(?P<temp>M?\d{2})/(?P<dew>M?\d{2})\b")
+# Partial tt/ or /td stays fail-closed (not a clean omission).
+_TEMP_PARTIAL = re.compile(r"\bM?\d{2}/(?![M]?\d{2}\b)|(?<![A-Z0-9/])/(?:M?\d{2})\b")
 
 _TEMP_NOT_OBS = re.compile(r"(?<![A-Z0-9/])/////(?![A-Z0-9/])")
 

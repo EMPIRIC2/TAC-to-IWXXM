@@ -100,10 +100,6 @@ class CachedAviationWeatherClient(AviationWeatherClient):
         """
         Fetch METARs with caching.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (fetch_metars_by_bbox)
-        2
 
         Parameters
         ----------
@@ -158,10 +154,6 @@ class CachedAviationWeatherClient(AviationWeatherClient):
         """
         Fetch random sample with caching.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (fetch_random_sample)
-        2
 
         Parameters
         ----------
@@ -218,10 +210,6 @@ class CachedAviationWeatherClient(AviationWeatherClient):
         """
         Synchronous wrapper for fetch_metars_by_bbox with caching.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (fetch_metars_by_bbox_sync)
-        2
 
         Parameters
         ----------
@@ -261,10 +249,6 @@ class CachedAviationWeatherClient(AviationWeatherClient):
         """
         Synchronous wrapper for fetch_random_sample with caching.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (fetch_random_sample_sync)
-        2
 
         Parameters
         ----------

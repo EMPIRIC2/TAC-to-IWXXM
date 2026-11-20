@@ -26,10 +26,6 @@ def parse_optional_bulletin_id(value: str | None) -> str:
     HTTPException
         400 when a non-empty value is not 4 letters + 2 digits.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (parse_optional_bulletin_id)
-    2
 
     Parameters
     ----------
@@ -74,10 +70,6 @@ def parse_optional_issuing_center(value: str | None) -> str:
     HTTPException
         400 when a non-empty value is not exactly 4 letters.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (parse_optional_issuing_center)
-    2
 
     Parameters
     ----------
@@ -135,10 +127,6 @@ async def parse_optional_files(request: Request) -> list[UploadFile]:
     """
     Parse optional file uploads, filtering out empty strings from form data.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (parse_optional_files)
-    2
 
     Parameters
     ----------
@@ -171,11 +159,6 @@ def bulletin_split_http_error(exc: BulletinSplitError) -> HTTPException:
     -------
     HTTPException
         400 for empty bulletins; 422 for malformed headings.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (bulletin_split_http_error)
-    2
     """
     if exc.code == "empty_bulletin":
         return HTTPException(

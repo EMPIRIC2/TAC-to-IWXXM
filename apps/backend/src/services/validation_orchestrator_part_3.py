@@ -7,10 +7,6 @@ def get_validation_orchestrator() -> ValidationOrchestrator:
     """
     Get singleton validation orchestrator instance.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (get_validation_orchestrator)
-    2
 
     Returns
     -------

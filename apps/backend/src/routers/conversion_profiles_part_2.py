@@ -34,10 +34,6 @@ def patch_template(
     Update a dissemination template.
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (patch_template)
-    2
 
     Parameters
     ----------
@@ -64,10 +60,6 @@ def list_overlays(
     List overlays owned by the caller (and shared overlays).
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (list_overlays)
-    2
 
     Parameters
     ----------
@@ -91,10 +83,6 @@ def create_overlay(
     Create a server-signed overlay.
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (create_overlay)
-    2
 
     Parameters
     ----------
@@ -120,10 +108,6 @@ def get_overlay(
     Fetch one overlay.
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (get_overlay)
-    2
 
     Parameters
     ----------
@@ -150,10 +134,6 @@ def patch_overlay(
     Update an owned overlay (re-signed server-side).
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (patch_overlay)
-    2
 
     Parameters
     ----------
@@ -181,10 +161,6 @@ def delete_overlay(
     Delete an owned overlay.
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (delete_overlay)
-    2
 
     Parameters
     ----------
@@ -204,10 +180,6 @@ def list_conversion_templates(
     List first-party and custom conversion templates.
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (list_conversion_templates)
-    2
 
     Parameters
     ----------
@@ -231,10 +203,6 @@ def create_conversion_template(
     Create a custom conversion template (optionally forked from first-party).
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (create_conversion_template)
-    2
 
     Parameters
     ----------
@@ -263,10 +231,6 @@ def preview_conversion_template(
     TAC to template to IWXXM bridge preview.
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (preview_conversion_template)
-    2
 
     Parameters
     ----------
@@ -319,10 +283,6 @@ def get_conversion_template(
     Fetch one conversion template (first-party id or custom UUID).
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (get_conversion_template)
-    2
 
     Parameters
     ----------
@@ -349,10 +309,6 @@ def patch_conversion_template(
     Update an owned custom conversion template.
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (patch_conversion_template)
-    2
 
     Parameters
     ----------
@@ -380,10 +336,6 @@ def delete_conversion_template(
     Delete an owned custom conversion template.
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (delete_conversion_template)
-    2
 
     Parameters
     ----------

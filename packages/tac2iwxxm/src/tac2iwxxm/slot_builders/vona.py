@@ -5,7 +5,7 @@ from __future__ import annotations
 import re
 from typing import Any
 
-from metar_shared import tac_patterns as _tac_patterns
+import metar_shared.tac_patterns as _tac_patterns
 
 _AHL_LINE = _tac_patterns.AHL_HEADING_LINE
 

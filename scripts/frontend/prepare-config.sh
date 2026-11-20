@@ -13,10 +13,10 @@ DEST="$DEST_DIR/config.json"
 [ -f "$SRC" ] || { echo "Missing $SRC" >&2; exit 1; }
 mkdir -p "$DEST_DIR"
 
-python3 - <<'PY' "$SRC" "$DEST" "${SUPABASE_PUBLISHABLE_KEY:-${SUPABASE_ANON_KEY:-}}"
+python3 - <<'PY' "$SRC" "$DEST" "${SUPABASE_PUBLISHABLE_KEY:-${SUPABASE_ANON_KEY:-}}" "$CONFIG_ENV"
 import json, sys
 
-src, dest, publishable = sys.argv[1], sys.argv[2], sys.argv[3]
+src, dest, publishable, config_env = sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4]
 with open(src, encoding="utf-8") as f:
     cfg = json.load(f)
 
@@ -30,6 +30,14 @@ if not isinstance(supabase, dict) or not str(supabase.get("url") or "").strip():
 
 if publishable:
     supabase["publishableKey"] = publishable
+elif not str(supabase.get("publishableKey") or "").strip():
+    # Prod/staging must ship Auth bootstrap (F31). Local/e2e may omit until .env
+    # is loaded; FE merges bake-time Vite env when /config.json omits the key.
+    if config_env in ("prod", "staging"):
+        raise SystemExit(
+            "config missing supabase.publishableKey — set SUPABASE_PUBLISHABLE_KEY "
+            f"(or SUPABASE_ANON_KEY) before prepare-config ({config_env})"
+        )
 
 with open(dest, "w", encoding="utf-8") as f:
     json.dump(cfg, f, indent=2)

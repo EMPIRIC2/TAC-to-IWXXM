@@ -13,11 +13,6 @@ async def discover_schemas() -> dict[str, Any]:
     -------
     object
         Discovery results with new stable and RC versions
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (discover_schemas)
-    2
     """
     poller = SchemaDiscoveryPoller()
     return await poller.poll_once()
@@ -42,11 +37,6 @@ async def discover_schemas_with_retry(max_retries: int = 3, retry_delay: int = 6
     -------
     object
         Discovery results
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (discover_schemas_with_retry)
-    2
     """
     poller = SchemaDiscoveryPoller()
     return await poller.poll_with_retry(max_retries, retry_delay)

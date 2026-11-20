@@ -42,10 +42,6 @@ class RequestLogLevelFilter(logging.Filter):
         """
         Allow records at or above the per-request convert log level.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (filter)
-        2
 
         Parameters
         ----------
@@ -77,10 +73,6 @@ class SecretRedactFilter(logging.Filter):
         """
         Redact JWTs and Authorization header values from log message text.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (filter)
-        2
 
         Parameters
         ----------
@@ -107,11 +99,6 @@ class SecretRedactFilter(logging.Filter):
 def ensure_request_log_filters() -> None:
     """
     Attach request-level and secret filters once (safe for tests).
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (ensure_request_log_filters)
-    2
     """
     global _filters_installed
     if _filters_installed:
@@ -138,10 +125,6 @@ def set_request_log_level(request: Request, level_name: str | None) -> str:
     str
         Normalized level name (DEBUG/INFO/WARNING/ERROR/CRITICAL).
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (set_request_log_level)
-    2
 
     Parameters
     ----------
@@ -194,10 +177,6 @@ def setup_logging(service_name: str) -> None:
     """
     Configure JSON logs and optional Loki push handler.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (setup_logging)
-    2
 
     Parameters
     ----------
@@ -231,10 +210,6 @@ def install_fastapi_observability(app: FastAPI, service_name: str) -> None:
     """
     Install metrics middleware and /metrics endpoint into FastAPI app.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (install_fastapi_observability)
-    2
 
     Parameters
     ----------
@@ -252,10 +227,6 @@ def install_fastapi_observability(app: FastAPI, service_name: str) -> None:
         """
         Record Prometheus HTTP request counters and latency histograms.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (prometheus_http_metrics)
-        2
 
         Parameters
         ----------
@@ -300,10 +271,6 @@ def install_fastapi_observability(app: FastAPI, service_name: str) -> None:
         """
         Expose Prometheus metrics in text exposition format.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (metrics_endpoint)
-        2
 
         Returns
         -------

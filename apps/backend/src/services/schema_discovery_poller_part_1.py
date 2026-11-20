@@ -36,11 +36,6 @@ def extract_version_from_url(url: str) -> str | None:
     -------
     object
         Version string or None if not found
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (extract_version_from_url)
-    2
     """
     match = VERSION_PATTERN.search(url)
     return match.group(0) if match else None

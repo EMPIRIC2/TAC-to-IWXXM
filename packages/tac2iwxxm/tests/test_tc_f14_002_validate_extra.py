@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -61,6 +62,7 @@ def test_clean_venv_convert_and_validate_extra(tmp_path: Path) -> None:
         _uv_build(dist, package)
 
     tac2_wheel = _wheel_for(dist, "tac2iwxxm")
+    shared_wheel = _wheel_for(dist, "metar-shared")
     _wheel_for(dist, "reference-lookup")
     _wheel_for(dist, "tac-decoding")
     _wheel_for(dist, "tac-validate")
@@ -76,8 +78,14 @@ def test_clean_venv_convert_and_validate_extra(tmp_path: Path) -> None:
     assert create.returncode == 0, create.stderr
 
     python = venv_dir / ("Scripts/python.exe" if sys.platform == "win32" else "bin/python")
+    # Keep the clean venv free of the monorepo editable PYTHONPATH.
+    clean_env = {
+        key: value
+        for key, value in os.environ.items()
+        if key not in {"PYTHONPATH", "PYTHONHOME", "UV_PROJECT", "VIRTUAL_ENV"}
+    }
 
-    # --- Convert-only install (tac-decoding via find-links) ---
+    # --- Convert-only install (force local metar-shared wheel; same version can be cached) ---
     install_core = subprocess.run(
         [
             "uv",
@@ -87,11 +95,14 @@ def test_clean_venv_convert_and_validate_extra(tmp_path: Path) -> None:
             str(python),
             "--find-links",
             str(dist),
+            "--force-reinstall",
+            str(shared_wheel),
             str(tac2_wheel),
         ],
         check=False,
         capture_output=True,
         text=True,
+        env=clean_env,
     )
     assert install_core.returncode == 0, install_core.stderr
 
@@ -106,6 +117,7 @@ def test_clean_venv_convert_and_validate_extra(tmp_path: Path) -> None:
         check=False,
         capture_output=True,
         text=True,
+        env=clean_env,
     )
     assert convert_smoke.returncode == 0, convert_smoke.stderr + convert_smoke.stdout
 
@@ -121,6 +133,7 @@ def test_clean_venv_convert_and_validate_extra(tmp_path: Path) -> None:
         check=False,
         capture_output=True,
         text=True,
+        env=clean_env,
     )
     assert missing.returncode == 0, missing.stderr + missing.stdout
     assert "validators-absent" in missing.stdout
@@ -135,11 +148,14 @@ def test_clean_venv_convert_and_validate_extra(tmp_path: Path) -> None:
             str(python),
             "--find-links",
             str(dist),
+            "--force-reinstall",
+            str(shared_wheel),
             f"{tac2_wheel}[validate]",
         ],
         check=False,
         capture_output=True,
         text=True,
+        env=clean_env,
     )
     assert install_extra.returncode == 0, install_extra.stderr
 
@@ -159,6 +175,7 @@ def test_clean_venv_convert_and_validate_extra(tmp_path: Path) -> None:
         check=False,
         capture_output=True,
         text=True,
+        env=clean_env,
     )
     assert validators.returncode == 0, validators.stderr + validators.stdout
     assert "validate-extra-ok" in validators.stdout

@@ -49,10 +49,6 @@ def is_dev_cors_relaxation_enabled() -> bool:
     """
     Enable relaxed CORS behavior for local debugging when explicitly requested.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (is_dev_cors_relaxation_enabled)
-    2
 
     Returns
     -------
@@ -71,10 +67,6 @@ def add_origin_if_missing(origins: list[str], origin: str) -> list[str]:
     """
     Append origin if not present.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (add_origin_if_missing)
-    2
 
     Parameters
     ----------
@@ -97,10 +89,6 @@ def add_loopback_origin_variants(origins: list[Any]) -> list[Any]:
     """
     Ensure localhost and 127.0.0.1 variants are both allowed for local dev.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (add_loopback_origin_variants)
-    2
 
     Parameters
     ----------
@@ -127,10 +115,6 @@ def get_cors_origins() -> list[Any]:
     """
     Get allowed CORS origins from config with deprecated env fallbacks.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (get_cors_origins)
-    2
 
     Returns
     -------
@@ -180,10 +164,6 @@ def get_cors_allowed_headers() -> list[Any]:
     """
     Get allowed CORS request headers.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (get_cors_allowed_headers)
-    2
 
     Returns
     -------
@@ -220,10 +200,6 @@ async def parse_files(request: Request) -> list[UploadFile]:
     - Swagger UI 'Send empty value' sends empty string which FastAPI can't parse
     - This manually extracts files from the form, filtering out empty strings
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (parse_files)
-    2
 
     Parameters
     ----------
@@ -276,10 +252,6 @@ def normalize_api_product(
     """
     Normalize multipart/JSON ``product`` to uppercase enum or raise ``unknown_product`` 400.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (normalize_api_product)
-    2
 
     Parameters
     ----------
