@@ -138,11 +138,40 @@ def test_wind_calm_gust_p_indicator_and_variation_branches() -> None:
     )
     assert any(i.code == "WIND_HIGH_SPEED_P_INDICATOR" for i in high)
 
-    low_mean_var = check_wind_shear(
-        ["18002KT", "090V180"],
+    # Mean < 3 kt and span outside 60..180.
+    low_mean_narrow = check_wind_shear(
+        ["18002KT", "010V050"],
         product="METAR",
-        core="18002KT 090V180",
+        core="18002KT 010V050",
         body_start=0,
         body_end=16,
     )
-    assert any(i.code == "WIND_VARIATION_SPAN" for i in low_mean_var)
+    assert any(i.code == "WIND_VARIATION_SPAN" for i in low_mean_narrow)
+
+    # Mean >= 3 kt with valid span (no variation issue) plus WS format / exclusivity.
+    ok_var = check_wind_shear(
+        ["18005KT", "090V180"],
+        product="METAR",
+        core="18005KT 090V180",
+        body_start=0,
+        body_end=16,
+    )
+    assert not any(i.code == "WIND_VARIATION_SPAN" for i in ok_var)
+
+    bad_ws = check_wind_shear(
+        ["18005KT", "WS", "XX"],
+        product="METAR",
+        core="18005KT WS XX",
+        body_start=0,
+        body_end=13,
+    )
+    assert any(i.code == "WIND_SHEAR_FORMAT" for i in bad_ws)
+
+    exclusive = check_wind_shear(
+        ["18005KT", "WS", "ALL", "RWY", "WS", "R24"],
+        product="METAR",
+        core="18005KT WS ALL RWY WS R24",
+        body_start=0,
+        body_end=26,
+    )
+    assert any(i.code == "WS_ALL_RWY_EXCLUSIVE" for i in exclusive)
