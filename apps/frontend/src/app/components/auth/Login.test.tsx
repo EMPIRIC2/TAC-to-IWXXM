@@ -165,6 +165,27 @@ describe('Login', () => {
     });
   });
 
+  it('surfaces Auth bootstrap misconfiguration errors (UJ-003 failure)', async () => {
+    const user = userEvent.setup();
+    mockLogin.mockRejectedValueOnce(
+      new Error(
+        'Sign-in is unavailable: Auth is not configured (missing Supabase publishable key).',
+      ),
+    );
+
+    render(<Login {...defaultProps} />);
+
+    await user.type(screen.getByLabelText(/email address/i), 'pilot@example.com');
+    await user.type(screen.getByLabelText(/^password$/i), 'secret123');
+    await user.click(screen.getByRole('button', { name: /sign in to account/i }));
+
+    await waitFor(() => {
+      expect(mockToast.error).toHaveBeenCalledWith(
+        'Sign-in is unavailable: Auth is not configured (missing Supabase publishable key).',
+      );
+    });
+  });
+
   it('falls back to user email in welcome toast when metadata.name is missing', async () => {
     const user = userEvent.setup();
     const onLogin = vi.fn();

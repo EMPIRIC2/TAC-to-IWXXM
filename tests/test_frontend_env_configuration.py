@@ -54,16 +54,16 @@ class TestRuntimeConfigProfiles:
         assert isinstance(api, dict)
         assert "disableAuth" not in api
 
-    def test_prod_cors_includes_doks_fe_placeholder(self) -> None:
-        """T4.5 / D-S038-04-b2 - DOKS FE placeholder allowed before DNS pin (T6.3)."""
+    def test_prod_cors_includes_live_app_origins(self) -> None:
+        """Prod FE CORS pins live app host after DNS (F21 / DOKS prod)."""
         cfg = _load_json(CONFIG_DIR / "prod.json")
         api = cfg["api"]
         assert isinstance(api, dict)
         origins = api.get("corsOrigins")
         assert isinstance(origins, list)
-        assert "https://app.doks.placeholder.metar-iwxxm.local" in origins
-        # T6.5 / D-S038-t65-waive - Render suspended; prod primary is provisional DOKS.
-        assert "doks.placeholder" in str(api.get("baseUrl"))
+        assert "https://app.tac-to-iwxxm.com" in origins
+        # Render suspended; prod primary is DOKS with public DNS.
+        assert "tac-to-iwxxm.com" in str(api.get("baseUrl"))
         assert "onrender.com" not in str(api.get("baseUrl"))
         assert "onrender.com" not in str(api.get("frontendUrl"))
 
@@ -147,3 +147,54 @@ class TestPrepareConfigScript:
         )
         assert result.returncode != 0
         assert "api.baseUrl" in (result.stderr + result.stdout)
+
+    @pytest.mark.parametrize("config_env", ["prod", "staging"])
+    def test_prepare_config_deploy_envs_fail_closed_without_publishable_key(
+        self, tmp_path: Path, config_env: str
+    ) -> None:
+        dest_dir = tmp_path / "public"
+        env = {
+            **dict(__import__("os").environ),
+            "METAR_CONFIG_ENV": config_env,
+            "DEST_DIR": str(dest_dir),
+        }
+        env.pop("SUPABASE_PUBLISHABLE_KEY", None)
+        env.pop("SUPABASE_ANON_KEY", None)
+        result = subprocess.run(
+            ["bash", str(ROOT / "scripts/frontend/prepare-config.sh")],
+            cwd=ROOT,
+            env=env,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        assert result.returncode != 0
+        combined = result.stderr + result.stdout
+        assert "publishableKey" in combined
+        assert config_env in combined
+
+    def test_prepare_config_local_allows_missing_publishable_key(
+        self, tmp_path: Path
+    ) -> None:
+        dest_dir = tmp_path / "public"
+        env = {
+            **dict(__import__("os").environ),
+            "METAR_CONFIG_ENV": "local",
+            "DEST_DIR": str(dest_dir),
+        }
+        env.pop("SUPABASE_PUBLISHABLE_KEY", None)
+        env.pop("SUPABASE_ANON_KEY", None)
+        result = subprocess.run(
+            ["bash", str(ROOT / "scripts/frontend/prepare-config.sh")],
+            cwd=ROOT,
+            env=env,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        assert result.returncode == 0, result.stderr or result.stdout
+        written = _load_json(dest_dir / "config.json")
+        supabase = written.get("supabase")
+        assert isinstance(supabase, dict)
+        assert supabase.get("url")
+        assert not str(supabase.get("publishableKey") or "").strip()

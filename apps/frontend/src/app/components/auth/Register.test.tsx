@@ -151,6 +151,29 @@ describe('Register', () => {
     });
   });
 
+  it('surfaces Auth bootstrap misconfiguration on register (UJ-003 failure)', async () => {
+    const user = userEvent.setup();
+    mockRegisterUser.mockRejectedValueOnce(
+      new Error(
+        'Sign-in is unavailable: Auth is not configured (missing Supabase publishable key).',
+      ),
+    );
+
+    render(<Register {...defaultProps} />);
+
+    await user.type(screen.getByLabelText(/email address/i), 'pilot@example.com');
+    await user.type(screen.getByLabelText(/^password$/i), 'secret123');
+    await user.type(screen.getByLabelText(/confirm password/i), 'secret123');
+    await user.click(screen.getByLabelText(/accept terms and conditions/i));
+    await user.click(screen.getByRole('button', { name: /create account/i }));
+
+    await waitFor(() => {
+      expect(mockToast.error).toHaveBeenCalledWith(
+        'Sign-in is unavailable: Auth is not configured (missing Supabase publishable key).',
+      );
+    });
+  });
+
   it('shows generic toast when register rejects with a non-Error value', async () => {
     const user = userEvent.setup();
     mockRegisterUser.mockRejectedValueOnce('boom');
