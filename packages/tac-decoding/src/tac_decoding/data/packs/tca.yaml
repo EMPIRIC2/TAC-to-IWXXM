@@ -1,4 +1,4 @@
-# Builtin tca label-fields pack (ADR-045 / M4 #1230).
+# Builtin tca label-fields pack (M4 #1230).
 # Label SoT for A2 TCA; residual free-text values stay in label values.
 id: tca
 layout: label_fields

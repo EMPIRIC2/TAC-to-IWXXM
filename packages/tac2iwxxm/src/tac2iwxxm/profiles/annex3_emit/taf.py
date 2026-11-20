@@ -323,11 +323,6 @@ def emit_taf_annex3(
     -------
     str
         A minimal IWXXM TAF document for the annex3 profile.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (emit_taf_annex3)
-    2
     """
     ns = _ns(iwxxm_version)
     station = str(ir["station"])

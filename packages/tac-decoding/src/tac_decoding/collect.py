@@ -2,18 +2,19 @@
 
 Contained ``translationFailedTAC`` is decoded as TAC. Otherwise leaf XML
 fields are walked. This module never encodes IWXXM.
-[Corpus: adr/ADR-045] [Corpus: system-spec]
+ [Corpus: system-spec]
 """
 
 from __future__ import annotations
 
 import re
 import xml.etree.ElementTree as ET
-from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
+from tac_decoding.models.collect import CollectError, CollectField, CollectRead
+
 if TYPE_CHECKING:
-    from tac_decoding.decode import DecodeResult
+    from tac_decoding.models.decode_result import DecodeResult
 
 _IWXXM_ROOTS = frozenset(
     {
@@ -37,60 +38,6 @@ _MAX_DEPTH = 64
 _MAX_NODES = 10_000
 _MAX_LEAVES = 2_000
 _MAX_TAC_REPORTS = 500
-
-
-class CollectError(ValueError):
-    """
-    The text is not a readable COLLECT or IWXXM document.
-
-    Attributes
-    ----------
-    args : tuple
-        Arguments passed to the exception constructor.
-    """
-
-
-@dataclass(frozen=True, slots=True)
-class CollectField:
-    """
-    One leaf XML field from an XML-only COLLECT walk.
-
-    Attributes
-    ----------
-    name : str
-        Local name of the leaf element.
-    value : str
-        Leaf text.
-    path : str
-        Local-name path from the root to the leaf.
-    """
-
-    name: str
-    value: str
-    path: str
-
-
-@dataclass(frozen=True, slots=True)
-class CollectRead:
-    """
-    Result of reading COLLECT or IWXXM XML without encoding.
-
-    Attributes
-    ----------
-    mode : str
-        Mode.
-    bulletin_identifier : str | None
-        Bulletin identifier.
-    tac_reports : tuple[str, ...]
-        TAC reports.
-    fields : tuple[CollectField, ...]
-        Fields.
-    """
-
-    mode: str
-    bulletin_identifier: str | None
-    tac_reports: tuple[str, ...]
-    fields: tuple[CollectField, ...]
 
 
 def _local(tag: str) -> str:
@@ -226,11 +173,6 @@ def is_collect_input(text: str) -> bool:
     -------
     bool
         Whether ``text`` should use the COLLECT / IWXXM read path.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (is_collect_input)
-    2
     """
     if not _looks_like_xml(text) or _has_forbidden_dtd(text):
         return False
@@ -276,11 +218,6 @@ def _read_from_root(root: ET.Element) -> CollectRead:
 
         depth : int
             Nesting depth of ``el``.
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (walk)
-        2
         """
         nonlocal bulletin_identifier, nodes, saw_failed_attr
         if depth > _MAX_DEPTH:
@@ -337,11 +274,6 @@ def read_collect(xml: str) -> CollectRead:
     CollectRead
         ``mode`` is ``tac`` when at least one contained TAC is present, else
         ``xml_walk``.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (read_collect)
-    2
     """
     return _read_from_root(_parse_root(xml))
 
@@ -399,11 +331,6 @@ def decode_collect(xml: str, *, product: str, read: CollectRead | None = None) -
     -------
     DecodeResult
         Decode COLLECT or IWXXM XML into the public decode shape.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (decode_collect)
-    2
     """
     from tac_decoding.decode import (
         DecodeResidual,
@@ -474,11 +401,6 @@ def try_decode_collect(xml: str, *, product: str) -> DecodeResult | None:
     -------
     DecodeResult | None
         Decode COLLECT/IWXXM XML, or return ``None`` when the text is not that path.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (try_decode_collect)
-    2
     """
     if not _looks_like_xml(xml) or _has_forbidden_dtd(xml):
         return None
@@ -489,3 +411,14 @@ def try_decode_collect(xml: str, *, product: str) -> DecodeResult | None:
     if not _is_collect_shape(root):
         return None
     return decode_collect(xml, product=product, read=_read_from_root(root))
+
+
+__all__ = [
+    "CollectError",
+    "CollectField",
+    "CollectRead",
+    "decode_collect",
+    "is_collect_input",
+    "read_collect",
+    "try_decode_collect",
+]

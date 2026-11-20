@@ -1,5 +1,5 @@
 /**
- * Shared Source attribution renderer (Issue details + other Source lines).
+ * Shared Source attribution renderer (Lint details + other Source lines).
  */
 import { describe, expect, it } from 'vitest';
 import { render, screen } from '@testing-library/react';

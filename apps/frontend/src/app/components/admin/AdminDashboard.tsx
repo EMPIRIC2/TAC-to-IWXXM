@@ -7,7 +7,7 @@ import { SystemSettingsPanel } from './SystemSettingsPanel';
 import { MonitoringPanel } from './MonitoringPanel';
 import { AdminWorkSessionsPanel } from './AdminWorkSessionsPanel';
 import { Users, Settings, Activity, LogOut, FileText, ChevronDown } from 'lucide-react';
-import { signOutWithScope } from '/utils/supabase/logout';
+import { signOutWithScope } from '@/utils/supabase/logout';
 
 interface AdminDashboardProps {
   onLogout: () => void;

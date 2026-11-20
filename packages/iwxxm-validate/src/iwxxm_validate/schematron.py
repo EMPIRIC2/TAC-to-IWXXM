@@ -107,10 +107,6 @@ def validate_schematron(xml_content: str, iwxxm_version: str) -> list[Issue]:
     Optional Docker/Saxon backend is selected when
     ``IWXXM_VALIDATE_SCHEMATRON_DOCKER=1`` (soft gate; not required for unit CI).
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (validate_schematron)
-    2
 
     Parameters
     ----------
@@ -236,11 +232,6 @@ def validate_schematron(xml_content: str, iwxxm_version: str) -> list[Issue]:
 def clear_schematron_cache() -> None:
     """
     Clear compiled Schematron cache and temp working dirs (tests).
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (clear_schematron_cache)
-    2
     """
     _compile_schematron.cache_clear()
     for work_dir in _WORKING_DIRS.values():

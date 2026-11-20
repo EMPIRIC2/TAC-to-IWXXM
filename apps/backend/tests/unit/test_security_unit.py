@@ -1,4 +1,4 @@
-"""Unit tests for JWT gate helpers (F31 / ADR-033 JWKS-only)."""
+"""Unit tests for JWT gate helpers (F31 / JWKS-only)."""
 
 from __future__ import annotations
 

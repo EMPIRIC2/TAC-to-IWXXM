@@ -2,7 +2,7 @@
 
 These products use the label-field packs. XML still comes from the legacy
 parser. Annex 3 keeps ``2023-1`` and ``2025-2`` and still rejects ``3.0.0``.
-Vendor copies that are not on disk stay absent. [Corpus: tests] [Corpus: adr/ADR-045]
+Vendor copies that are not on disk stay absent. [Corpus: tests]
 """
 
 from __future__ import annotations

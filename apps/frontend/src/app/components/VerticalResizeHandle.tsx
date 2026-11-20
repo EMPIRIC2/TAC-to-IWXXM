@@ -6,7 +6,7 @@
 
 import { useEffect, useRef } from 'react';
 
-import { clampVerticalResizeHeight } from '/utils/verticalResize';
+import { clampVerticalResizeHeight } from '@/utils/verticalResize';
 
 /**
  * Props for {@link VerticalResizeHandle}.

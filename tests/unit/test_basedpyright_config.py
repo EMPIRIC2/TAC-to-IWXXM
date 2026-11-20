@@ -11,7 +11,7 @@ ROOT = Path(__file__).resolve().parents[2]
 
 @pytest.mark.unit
 class TestBasedpyrightConfig:
-    """Root typechecker config per ADR-005 and typing-policy.md."""
+    """Root typechecker config per and typing-policy.md."""
 
     def test_root_pyproject_declares_basedpyright(self) -> None:
         content = (ROOT / "pyproject.toml").read_text(encoding="utf-8")

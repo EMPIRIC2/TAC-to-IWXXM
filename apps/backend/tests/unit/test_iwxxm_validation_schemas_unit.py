@@ -1,7 +1,6 @@
-import pytest
-
 """Unit tests for iwxxm_validation.py schemas - 0% coverage target."""
 
+import pytest
 from src.schemas.iwxxm_validation import (
     SUPPORTED_IWXXM_VERSIONS,
     VALID_METEOROLOGICAL_FEATURES,

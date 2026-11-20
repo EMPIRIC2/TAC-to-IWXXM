@@ -1,0 +1,467 @@
+"""Split part body (exec'd into package namespace)."""
+
+from __future__ import annotations
+
+
+def _visibility_us_extension(ir: dict[str, Any]) -> str:
+    """
+    Internal helper ``_visibility_us_extension``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
+    chunks: list[str] = []
+    sector_raw = ir.get("sector_visibility")
+    if isinstance(sector_raw, dict):
+        sector = cast(dict[str, Any], sector_raw)
+        below = ""
+        if sector.get("below_sensor_minimum"):
+            below = "\n              <iwxxm-us:belowSensorMinimum>true</iwxxm-us:belowSensorMinimum>"
+        chunks.append(
+            f"""          <iwxxm:extension>
+            <iwxxm-us:SectorVisibility>
+              <iwxxm-us:visibility uom="m">{int(str(sector["visibility_m"]))}</iwxxm-us:visibility>
+              <iwxxm-us:direction uom="deg">{_fmt_deg(float(str(sector["direction_deg"])))}</iwxxm-us:direction>{below}
+            </iwxxm-us:SectorVisibility>
+          </iwxxm:extension>"""
+        )
+    tower_raw = ir.get("tower_visibility")
+    if isinstance(tower_raw, dict):
+        tower = cast(dict[str, Any], tower_raw)
+        less = ""
+        if tower.get("less_than"):
+            less = "\n              <iwxxm-us:lessThan>true</iwxxm-us:lessThan>"
+        chunks.append(
+            f"""          <iwxxm:extension>
+            <iwxxm-us:TowerVisibility>
+              <iwxxm-us:towerVisibility uom="m">{int(str(tower["visibility_m"]))}</iwxxm-us:towerVisibility>{less}
+            </iwxxm-us:TowerVisibility>
+          </iwxxm:extension>"""
+        )
+    var_vis_raw = ir.get("variable_visibility")
+    if isinstance(var_vis_raw, dict):
+        var_vis = cast(dict[str, Any], var_vis_raw)
+        attrs = ' belowMinimum="true"' if var_vis.get("below_minimum") else ""
+        chunks.append(
+            f"""          <iwxxm:extension>
+            <iwxxm-us:VariableVisibility{attrs}>
+              <iwxxm-us:minimumVisibility uom="m">{int(str(var_vis["minimum_m"]))}</iwxxm-us:minimumVisibility>
+              <iwxxm-us:maximumVisibility uom="m">{int(str(var_vis["maximum_m"]))}</iwxxm-us:maximumVisibility>
+            </iwxxm-us:VariableVisibility>
+          </iwxxm:extension>"""
+        )
+    if not chunks:
+        return ""
+    return "\n".join(chunks)
+
+
+def _cloud_layer_us_extension(ir: dict[str, Any]) -> str:
+    """
+    Internal helper ``_cloud_layer_us_extension``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
+    chunks: list[str] = []
+    cig_raw = ir.get("variable_ceiling")
+    if isinstance(cig_raw, dict):
+        cig = cast(dict[str, Any], cig_raw)
+        chunks.append(
+            f"""              <iwxxm:extension>
+                <iwxxm-us:VariableCeilingHeight>
+                  <iwxxm-us:minimumHeight uom="[ft_i]">{int(str(cig["minimum_ft"]))}</iwxxm-us:minimumHeight>
+                  <iwxxm-us:maximumHeight uom="[ft_i]">{int(str(cig["maximum_ft"]))}</iwxxm-us:maximumHeight>
+                </iwxxm-us:VariableCeilingHeight>
+              </iwxxm:extension>"""
+        )
+    sky_raw = ir.get("variable_sky")
+    if isinstance(sky_raw, dict):
+        sky = cast(dict[str, Any], sky_raw)
+        first = escape(str(sky["first_amount_href"]))
+        second = escape(str(sky["second_amount_href"]))
+        chunks.append(
+            f"""              <iwxxm:extension>
+                <iwxxm-us:VariableSkyCondition>
+                  <iwxxm-us:firstSkyCoverValue xlink:href="{first}"/>
+                  <iwxxm-us:secondSkyCoverValue xlink:href="{second}"/>
+                </iwxxm-us:VariableSkyCondition>
+              </iwxxm:extension>"""
+        )
+    if not chunks:
+        return ""
+    return "\n".join(chunks)
+
+
+def _max_min_temperatures_addendum_inner(ir: dict[str, Any]) -> str:
+    """
+    Internal helper ``_max_min_temperatures_addendum_inner``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
+    rows_raw = ir.get("max_min_temperatures")
+    if not isinstance(rows_raw, list) or not rows_raw:
+        return ""
+    parts: list[str] = []
+    for row_obj in cast(list[object], rows_raw):
+        if not isinstance(row_obj, dict):
+            continue
+        row = cast(dict[str, Any], row_obj)
+        period = escape(str(row.get("preceding_period") or "PT6H"))
+        max_xml = _measure_or_nil("maxTemperature", row.get("max_c"), uom="Cel")
+        min_xml = _measure_or_nil("minTemperature", row.get("min_c"), uom="Cel")
+        parts.append(
+            f"""          <iwxxm-us:maxMinTemperatures>
+            <iwxxm-us:MaxMinTemperatures>
+              <iwxxm-us:precedingPeriod>{period}</iwxxm-us:precedingPeriod>
+              {max_xml}
+              {min_xml}
+            </iwxxm-us:MaxMinTemperatures>
+          </iwxxm-us:maxMinTemperatures>
+"""
+        )
+    return "".join(parts)
+
+
+def _measure_or_nil(tag: str, value: object, *, uom: str) -> str:
+    """
+    Internal helper ``_measure_or_nil``.
+
+    Parameters
+    ----------
+    tag : str
+        Argument ``tag``.
+
+    value : object
+        Argument ``value``.
+
+    uom : str
+        Argument ``uom``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
+    if value is None:
+        return f'<iwxxm-us:{tag} uom="N/A" nilReason="missing" xsi:nil="true"/>'
+    txt = f"{value:.1f}" if isinstance(value, float) else _fmt_deg(float(str(value)))
+    return f'<iwxxm-us:{tag} uom="{uom}">{txt}</iwxxm-us:{tag}>'
+
+
+def _processed_quantity_addendum_inner(ir: dict[str, Any]) -> str:
+    """
+    Internal helper ``_processed_quantity_addendum_inner``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
+    qty_raw = ir.get("processed_quantities")
+    if not isinstance(qty_raw, list) or not qty_raw:
+        return ""
+    parts: list[str] = []
+    for row_obj in cast(list[object], qty_raw):
+        if not isinstance(row_obj, dict):
+            continue
+        row = cast(dict[str, Any], row_obj)
+        elem = escape(str(row["processed_weather_element_href"]))
+        vtype = escape(str(row["value_type_href"]))
+        period = escape(str(row.get("value_period") or "PT1H"))
+        uom = escape(str(row.get("uom") or "[in_i]"))
+        val = row.get("processed_value")
+        val_txt = _fmt_deg(float(str(val))) if val is not None else "0"
+        qualifier = row.get("qualifier")
+        qual_xml = (
+            f"\n                  <iwxxm-us:qualifier>{escape(str(qualifier))}</iwxxm-us:qualifier>"
+            if qualifier
+            else ""
+        )
+        parts.append(
+            f"""          <iwxxm-us:processedQuantity>
+            <iwxxm-us:ProcessedProperty>
+              <iwxxm-us:processedWeatherElement xlink:href="{elem}"/>
+              <iwxxm-us:valueType xlink:href="{vtype}"/>
+              <iwxxm-us:valuePeriod>{period}</iwxxm-us:valuePeriod>{qual_xml}
+              <iwxxm-us:processedValue uom="{uom}">{val_txt}</iwxxm-us:processedValue>
+            </iwxxm-us:ProcessedProperty>
+          </iwxxm-us:processedQuantity>
+"""
+        )
+    return "".join(parts)
+
+
+def _recent_weather_addendum_inner(ir: dict[str, Any]) -> str:
+    """
+    Internal helper ``_recent_weather_addendum_inner``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
+    rows_raw = ir.get("recent_weather_us")
+    if not isinstance(rows_raw, list) or not rows_raw:
+        return ""
+    from tac2iwxxm.time_anchor import iso_stamp
+
+    day = int(ir["day"])
+    obs_hour = int(ir["hour"])
+    legacy = "2012-08" if str(ir.get("station")) == "YUDO" else "2023-06"
+    parts: list[str] = ["          <iwxxm-us:recentWeather>"]
+    for idx, row_obj in enumerate(cast(list[object], rows_raw)):
+        if not isinstance(row_obj, dict):
+            continue
+        row = cast(dict[str, Any], row_obj)
+        href = escape(str(row["phenomenon_href"]))
+        b_hour = int(row["begin_hour"]) if row.get("begin_hour") is not None else obs_hour
+        e_hour = int(row["end_hour"]) if row.get("end_hour") is not None else obs_hour
+        begin_xml = ""
+        end_xml = ""
+        if row.get("begin_minute") is not None:
+            stamp = iso_stamp(ir, day, b_hour, int(str(row["begin_minute"])), legacy=legacy)
+            begin_xml = f"<gml:beginPosition>{stamp}</gml:beginPosition>"
+        else:
+            begin_xml = '<gml:beginPosition indeterminatePosition="unknown"/>'
+        if row.get("end_minute") is not None:
+            stamp = iso_stamp(ir, day, e_hour, int(str(row["end_minute"])), legacy=legacy)
+            end_xml = f"<gml:endPosition>{stamp}</gml:endPosition>"
+        else:
+            end_xml = '<gml:endPosition indeterminatePosition="unknown"/>'
+        gid = f"t.recent.{idx}"
+        parts.append(
+            f"""            <iwxxm-us:RecentWeather>
+              <iwxxm-us:weatherPhenomenon xlink:href="{href}"/>
+              <iwxxm-us:timeOfEvent>
+                <gml:TimePeriod gml:id="{gid}">
+                  {begin_xml}
+                  {end_xml}
+                </gml:TimePeriod>
+              </iwxxm-us:timeOfEvent>
+            </iwxxm-us:RecentWeather>
+"""
+        )
+    parts.append("          </iwxxm-us:recentWeather>")
+    return "\n".join(parts) + "\n"
+
+
+def _addendum_extension(ir: dict[str, Any]) -> str:
+    """
+    Internal helper ``_addendum_extension``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
+    free_text = str(ir.get("remarks_free_text") or "").strip()
+    has_vop = (
+        isinstance(ir.get("observed_lightning"), dict)
+        or isinstance(ir.get("convective_cloud"), dict)
+        or isinstance(ir.get("character_of_the_sky"), dict)
+        or isinstance(ir.get("obscuration"), dict)
+    )
+    has_snow = isinstance(ir.get("snow_increase"), dict)
+    has_hail = isinstance(ir.get("hailstone_size"), dict)
+    has_second = isinstance(ir.get("observed_at_second_location"), dict)
+    has_max_min = isinstance(ir.get("max_min_temperatures"), list) and bool(ir.get("max_min_temperatures"))
+    has_processed = isinstance(ir.get("processed_quantities"), list) and bool(ir.get("processed_quantities"))
+    has_recent = isinstance(ir.get("recent_weather_us"), list) and bool(ir.get("recent_weather_us"))
+    has_flags = bool(
+        ir.get("pressure_change_href")
+        or ir.get("condensation_trail")
+        or ir.get("aurora")
+        or ir.get("no_specials")
+        or ir.get("maintenance_indicator")
+    )
+    if (
+        not ir.get("observing_system_type")
+        and ir.get("sea_level_pressure_hpa") is None
+        and not free_text
+        and not has_vop
+        and not has_snow
+        and not has_hail
+        and not has_second
+        and not has_max_min
+        and not has_processed
+        and not has_recent
+        and not has_flags
+    ):
+        return ""
+    parts: list[str] = ["      <iwxxm:extension>", "        <iwxxm-us:Addendum>"]
+    if ir.get("observing_system_href"):
+        href = escape(str(ir["observing_system_href"]))
+        parts.append(f'          <iwxxm-us:observingSystemType xlink:href="{href}"/>')
+    if free_text:
+        parts.append(f"          <iwxxm-us:humanReadableText>{escape(free_text)}</iwxxm-us:humanReadableText>")
+    if ir.get("sea_level_pressure_hpa") is not None:
+        parts.append(
+            f'          <iwxxm-us:seaLevelPressure uom="hPa">{ir["sea_level_pressure_hpa"]}</iwxxm-us:seaLevelPressure>'
+        )
+    if ir.get("pressure_change_href"):
+        href = escape(str(ir["pressure_change_href"]))
+        parts.append(f'          <iwxxm-us:pressureChangeIndicator xlink:href="{href}"/>')
+    snow = _snow_increase_addendum_inner(ir)
+    if snow:
+        parts.append(snow.rstrip("\n"))
+    vop = _vop_addendum_inner(ir)
+    if vop:
+        parts.append(vop.rstrip("\n"))
+    recent = _recent_weather_addendum_inner(ir)
+    if recent:
+        parts.append(recent.rstrip("\n"))
+    processed = _processed_quantity_addendum_inner(ir)
+    if processed:
+        parts.append(processed.rstrip("\n"))
+    max_min = _max_min_temperatures_addendum_inner(ir)
+    if max_min:
+        parts.append(max_min.rstrip("\n"))
+    second = _second_location_addendum_inner(ir)
+    if second:
+        parts.append(second.rstrip("\n"))
+    if ir.get("condensation_trail"):
+        parts.append("          <iwxxm-us:condensationTrail>true</iwxxm-us:condensationTrail>")
+    if ir.get("aurora"):
+        parts.append("          <iwxxm-us:aurora>true</iwxxm-us:aurora>")
+    if ir.get("no_specials"):
+        parts.append("          <iwxxm-us:noSpecials>true</iwxxm-us:noSpecials>")
+    hail = _hailstone_size_addendum_inner(ir)
+    if hail:
+        parts.append(hail.rstrip("\n"))
+    if ir.get("maintenance_indicator"):
+        parts.append("          <iwxxm-us:maintenanceIndicator>true</iwxxm-us:maintenanceIndicator>")
+    parts.extend(["        </iwxxm-us:Addendum>", "      </iwxxm:extension>"])
+    return "\n".join(parts) + "\n"
+
+
+def _peak_wind_extension(ir: dict[str, Any]) -> str:
+    """
+    Internal helper ``_peak_wind_extension``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
+    if ir.get("peak_wind_dir_deg") is None:
+        return ""
+    stamp = _peak_timestamp(ir)
+    return f"""          <iwxxm:extension>
+            <iwxxm-us:AerodromePeakWind>
+              <iwxxm-us:windDirection uom="deg">{ir["peak_wind_dir_deg"]}</iwxxm-us:windDirection>
+              <iwxxm-us:windSpeed uom="[kn_i]">{ir["peak_wind_speed_kt"]}</iwxxm-us:windSpeed>
+              <iwxxm-us:timeOfOccurrence>
+                <gml:TimeInstant gml:id="t.peak">
+                  <gml:timePosition>{stamp}</gml:timePosition>
+                </gml:TimeInstant>
+              </iwxxm-us:timeOfOccurrence>
+            </iwxxm-us:AerodromePeakWind>
+          </iwxxm:extension>
+"""
+
+
+def _wind_shift_extension(ir: dict[str, Any]) -> str:
+    """
+    Internal helper ``_wind_shift_extension``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
+    if ir.get("wind_shift_hour") is None:
+        return ""
+    stamp = _wind_shift_timestamp(ir)
+    attrs = ' frontalPassage="true"' if ir.get("wind_shift_frontal_passage") else ""
+    return f"""          <iwxxm:extension>
+            <iwxxm-us:AerodromeWindShift{attrs}>
+              <iwxxm-us:timeOfWindShift>
+                <gml:TimeInstant gml:id="t.wshft">
+                  <gml:timePosition>{stamp}</gml:timePosition>
+                </gml:TimeInstant>
+              </iwxxm-us:timeOfWindShift>
+            </iwxxm-us:AerodromeWindShift>
+          </iwxxm:extension>
+"""
+
+
+def _variable_rvr_extension(ir: dict[str, Any]) -> str:
+    """
+    Internal helper ``_variable_rvr_extension``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
+    rvr_raw = ir.get("rvr")
+    if not isinstance(rvr_raw, dict):
+        return ""
+    rvr = cast(dict[str, Any], rvr_raw)
+    if not rvr.get("variable"):
+        return ""
+    attrs: list[str] = []
+    if rvr.get("below_sensor_minimum"):
+        attrs.append('belowSensorMinimum="true"')
+    if rvr.get("above_sensor_maximum"):
+        attrs.append('aboveSensorMaximum="true"')
+    attr_s = (" " + " ".join(attrs)) if attrs else ""
+    return f"""          <iwxxm:extension>
+            <iwxxm-us:AerodromeVariableRVR{attr_s}>
+              <iwxxm-us:minimumRVR uom="m">{rvr["min_m"]}</iwxxm-us:minimumRVR>
+              <iwxxm-us:maximumRVR uom="m">{rvr["max_m"]}</iwxxm-us:maximumRVR>
+            </iwxxm-us:AerodromeVariableRVR>
+          </iwxxm:extension>
+"""

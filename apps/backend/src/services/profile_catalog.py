@@ -28,11 +28,6 @@ def catalog_path() -> Path:
     -------
     Path
         Absolute path to the profile catalog.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (catalog_path)
-    2
     """
     override = (os.environ.get("PROFILE_CATALOG_PATH") or "").strip()
     if override:
@@ -261,10 +256,6 @@ def load_profile_catalog(
     ProfileCatalogResponse
         Read-only catalog entries (no secrets).
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (load_profile_catalog)
-    2
 
     Parameters
     ----------
@@ -315,10 +306,5 @@ def load_profile_catalog(
 def clear_catalog_cache() -> None:
     """
     Clear LRU cache (tests).
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (clear_catalog_cache)
-    2
     """
     _load_raw.cache_clear()

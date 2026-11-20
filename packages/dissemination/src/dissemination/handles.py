@@ -1,4 +1,4 @@
-"""Memory-only opaque handles for green preflight results (ADR-029 / ADR-030)."""
+"""Memory-only opaque handles for green preflight results ()."""
 
 from __future__ import annotations
 
@@ -87,11 +87,6 @@ class HandleStore:
         -------
         str
             URL-safe handle token valid for ``ttl_seconds``.
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (create)
-        2
         """
         token = secrets.token_urlsafe(24)
         ts = time.time() if now is None else now
@@ -130,11 +125,6 @@ class HandleStore:
         -------
         HandleRecord or None
             The record when valid; ``None`` when missing, expired, or user mismatch.
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (get)
-        2
         """
         ts = time.time() if now is None else now
         with self._lock:
@@ -164,11 +154,6 @@ class HandleStore:
         -------
         HandleRecord or None
             The removed record, or ``None`` when missing or user mismatch.
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (pop)
-        2
         """
         with self._lock:
             rec = self._items.get(handle)
@@ -179,11 +164,6 @@ class HandleStore:
     def clear(self) -> None:
         """
         Drop all in-memory handles (tests and process reset).
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (clear)
-        2
         """
         with self._lock:
             self._items.clear()

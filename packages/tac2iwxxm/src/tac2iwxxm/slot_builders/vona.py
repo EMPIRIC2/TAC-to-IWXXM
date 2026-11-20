@@ -5,6 +5,10 @@ from __future__ import annotations
 import re
 from typing import Any
 
+from metar_shared import tac_patterns as _tac_patterns
+
+_AHL_LINE = _tac_patterns.AHL_HEADING_LINE
+
 _FIELD_LINE = re.compile(r"^(?P<key>[A-Z0-9 /+]+?):\s*(?P<val>.*)$")
 _DTG_SHORT = re.compile(r"(?P<yyyy>\d{4})(?P<mm>\d{2})(?P<dd>\d{2})/(?P<hh>\d{2})(?P<mi>\d{2})Z")
 _PSN = re.compile(r"(?P<ns>[NS])(?P<lat>\d{4,5})\s+(?P<ew>[EW])(?P<lon>\d{5,6})")
@@ -33,7 +37,6 @@ _ELEV = re.compile(
     r"(?P<val>\d+(?:\.\d+)?)\s*(?P<uom>KM|M|FT)\b",
     re.IGNORECASE,
 )
-_AHL_LINE = re.compile(r"^[A-Z]{2}[A-Z]{2}\d{2}\s+[A-Z]{4}\s+\d{6}(?:\s+[A-Z]{1,3})?\s*$")
 
 
 def _fields(text: str) -> dict[str, str]:
@@ -299,11 +302,6 @@ def parse_vona(tac: str, *, product: str = "VONA") -> dict[str, Any]:
     ------
     ValueError
         When product is wrong or required fields are missing.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (parse_vona)
-    2
     """
     if product.upper() != "VONA":
         raise ValueError(f"VONA parser expected product VONA, found {product!r}")

@@ -1,6 +1,6 @@
 """TC-F15-001 - CI gate: every emitted Issue.code must be registered (E11-27).
 
-Fails CI when rules emit an unknown code (ADR-028 / F15). Complements the registry
+Fails CI when rules emit an unknown code (F15). Complements the registry
 API tests in ``test_tc_f15_001_issue_registry.py``.
 """
 

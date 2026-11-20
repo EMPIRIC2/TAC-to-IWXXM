@@ -1,4 +1,4 @@
-"""Unit tests for WorkSessionService URL helpers + DB error mapping (F31 / ADR-033)."""
+"""Unit tests for WorkSessionService URL helpers + DB error mapping (F31)."""
 
 from __future__ import annotations
 

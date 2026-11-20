@@ -1,4 +1,4 @@
-//! PyO3 native extension for `tac2iwxxm` (ADR-017).
+//! PyO3 native extension for `tac2iwxxm` .
 //!
 //! T4.3 scaffold + T4.5 [`scan_metar_tokens`] hotspot (TAC lexer).
 

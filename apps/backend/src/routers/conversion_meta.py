@@ -15,10 +15,6 @@ def get_supported_versions() -> object:
     Get list of supported IWXXM versions.
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (get_supported_versions)
-    2
 
     Returns
     -------
@@ -56,10 +52,6 @@ def get_schema_status() -> object:
     Return schema status, including release-candidate versions and mirror state.
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (get_schema_status)
-    2
 
     Returns
     -------
@@ -106,10 +98,6 @@ def get_schema_status() -> object:
             """
             Return False when the Canadian extension bundle cannot be imported.
 
-            Examples
-            --------
-            >>> 1 + 1  # docstring smoke (ca_eccc_bundle_available)
-            2
 
             Parameters
             ----------

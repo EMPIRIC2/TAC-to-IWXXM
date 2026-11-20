@@ -1,4 +1,4 @@
-# R5 remarks detectors for METAR/SPECI (ADR-046 / #1228 M2).
+# R5 remarks detectors for METAR/SPECI (#1228 M2).
 # SLP/P/T malformed tokens are declarative; PK WND + iwxxm_us extension stay python.
 schema_version: 1
 id: metar-speci-r5-remarks

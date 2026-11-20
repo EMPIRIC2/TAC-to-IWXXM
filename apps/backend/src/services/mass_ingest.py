@@ -131,11 +131,6 @@ def evaluate_text_bytes(
     -------
     MassIngestFileResult
         Accepted content (UTF-8) or rejection reason.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (evaluate_text_bytes)
-    2
     """
     size = len(data)
     if size > caps.max_file_bytes:
@@ -197,11 +192,6 @@ def expand_zip_bytes(
     -------
     list[MassIngestFileResult]
         One result per member, or a single reject for the archive.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (expand_zip_bytes)
-    2
     """
     if len(data) > caps.max_total_bytes:
         return [

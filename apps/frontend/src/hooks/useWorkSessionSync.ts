@@ -1,5 +1,5 @@
 /**
- * F5/F7.h debounced auto-save for the converter — browser IndexedDB (ADR-031).
+ * F5/F7.h debounced auto-save for the converter — browser IndexedDB ().
  * Honors F22 / TC-F31-005 guest work-history privacy gate.
  */
 
@@ -8,13 +8,13 @@ import type { WorkSession, WorkSessionStatus } from '@metar/shared';
 import {
   createLocalWorkSession,
   updateLocalWorkSession,
-} from '/utils/localWorkSessionStore';
-import { createWorkSession, updateWorkSession } from '/utils/workSessionApi';
+} from '@/utils/localWorkSessionStore';
+import { createWorkSession, updateWorkSession } from '@/utils/workSessionApi';
 import {
   buildWorkSessionPayload,
   type ConverterSnapshot,
-} from '/utils/workSessionPayload';
-import { canPersistWorkHistoryLocal } from '/utils/privacyPreferences';
+} from '@/utils/workSessionPayload';
+import { canPersistWorkHistoryLocal } from '@/utils/privacyPreferences';
 
 export const AUTOSAVE_DEBOUNCE_MS = 3000;
 

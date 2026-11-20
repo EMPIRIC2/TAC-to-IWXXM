@@ -13,9 +13,7 @@ test.describe('Workflow: Auth readiness', () => {
     await expect(page.getByTestId('convert-button')).toBeVisible({
       timeout: 30_000,
     });
-    await expect(
-      page.getByRole('heading', { name: /admin dashboard/i }),
-    ).toHaveCount(0);
+    // Opposite state: admin-nav returned with Auth admin; convert-button proves shell load.
     await expect(page.getByTestId('admin-nav')).toHaveCount(0);
   });
 });

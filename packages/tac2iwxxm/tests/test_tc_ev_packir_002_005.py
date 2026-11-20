@@ -1,6 +1,6 @@
 """TC-EV-PACKIR-002..005 — pack IR map, emit equality, default flip, boundary.
 
-[Corpus: tests] [Corpus: adr/ADR-045]
+[Corpus: tests]
 """
 
 from __future__ import annotations

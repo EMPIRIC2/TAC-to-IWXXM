@@ -114,7 +114,7 @@ def _params() -> Wis2Params:
 
 
 def _allowlist():
-    # Literal loopback IP + CIDR for DNS-rebinding guard (ADR-029).
+    # Literal loopback IP + CIDR for DNS-rebinding guard .
     return parse_allowlist("127.0.0.1,127.0.0.0/8,localhost,wis2box")
 
 

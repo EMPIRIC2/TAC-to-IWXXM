@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import type { WorkSession, WorkSessionStatus } from '@metar/shared';
 import { Loader2, FileText } from 'lucide-react';
-import { listAdminWorkSessions } from '/utils/workSessionApi';
+import { listAdminWorkSessions } from '@/utils/workSessionApi';
 import { Card } from '../ui/card';
 
 interface AdminWorkSessionsPanelProps {

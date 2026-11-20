@@ -39,11 +39,6 @@ def load_dissemination_transforms() -> dict[str, Any]:
     -------
     dict[str, Any]
         Mined dissemination transform catalog.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (load_dissemination_transforms)
-    2
     """
     data = _load_yaml("dissemination_transforms.yaml")
     if "transforms" not in data:
@@ -60,11 +55,6 @@ def load_decoding_library_entries() -> dict[str, Any]:
     -------
     dict[str, Any]
         Mined decoding library entries catalog.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (load_decoding_library_entries)
-    2
     """
     data = _load_yaml("decoding_library_entries.yaml")
     if "entries" not in data:

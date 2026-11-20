@@ -1,5 +1,5 @@
 /**
- * TC-EVYCL-001 — Profile Builder authoring modules removed (#1251 / ADR-044).
+ * TC-EVYCL-001 — Profile Builder authoring modules removed (#1251 ).
  */
 
 import { describe, expect, it } from 'vitest';

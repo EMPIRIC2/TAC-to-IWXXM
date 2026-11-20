@@ -1,4 +1,4 @@
-"""TC-F15-001 - issue registry API (S015 / EV-011, F15 / ADR-028).
+"""TC-F15-001 - issue registry API (S015 EV-011, F15).
 
 Contract for ``tac_validate.issue_registry``:
 
@@ -154,7 +154,7 @@ def test_registry_rows_use_screaming_snake_and_valid_severity() -> None:
 
 
 def test_missing_terminator_default_severity_is_info() -> None:
-    """ADR-025 / ADR-028 - MISSING_TERMINATOR remains info."""
+    """- MISSING_TERMINATOR remains info."""
     from tac_validate.issue_registry import by_code
 
     assert by_code("MISSING_TERMINATOR").severity == "info"

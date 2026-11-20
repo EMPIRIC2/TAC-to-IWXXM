@@ -99,14 +99,12 @@ def test_short_fir_names() -> None:
         "SLLP SIGMET A2 VALID 051300/051600 SLLP- SLLF LA PAZ FIR EMBD TS=",
         "SIGMET",
     )
-    assert la_paz["LA"] == "FIR name (LA)"
-    assert la_paz["PAZ"] == "FIR name (PAZ)"
+    assert la_paz["LA PAZ"] == "FIR name (LA PAZ)"
     new_york = _codes(
         "KZWY SIGMET BRAVO 3 VALID 051310/051710 KKCI- NEW YORK OCEANIC FIR EMBD TS=",
         "SIGMET",
     )
-    assert new_york["NEW"] == "FIR name (NEW)"
-    assert new_york["YORK"] == "FIR name (YORK)"
+    assert new_york["NEW YORK"] == "FIR name (NEW YORK)"
     sal = _codes(
         "GVSC SIGMET 1 VALID 051703/052103 GVAC- GVSC SAL OCEANIC FIR/UIR EMBD TS=",
         "SIGMET",

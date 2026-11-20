@@ -388,7 +388,7 @@ test.describe('UJ-072: ConversionProfile editor (EV-933 / TC-EV933-006)', () => 
   test('guest: Conversion profiles prompts for sign-in', async ({ page }) => {
     test.skip(
       true,
-      'Retired ADR-044 — Conversion profiles shell nav removed (EV-RPC / TC-EVPVD-001)',
+      'Retired — Conversion profiles shell nav removed (EV-RPC TC-EVPVD-001)',
     );
     await openProfiles(page);
     await expect(page.getByTestId('conversion-profiles-sign-in')).toBeVisible();
@@ -402,7 +402,7 @@ test.describe('UJ-072: ConversionProfile editor (EV-933 / TC-EV933-006)', () => 
   }) => {
     test.skip(
       true,
-      'Retired ADR-044 — Profile Builder authoring UI removed; convert pickers covered elsewhere',
+      'Retired — Profile Builder authoring UI removed; convert pickers covered elsewhere',
     );
     await seedMockAuth(page);
     await stubWorkbenchNoise(page);
@@ -480,7 +480,7 @@ test.describe('UJ-072: ConversionProfile editor (EV-933 / TC-EV933-006)', () => 
   }) => {
     test.skip(
       true,
-      'Retired ADR-044 — Conversion profiles page unmounted; glanceable summary lives on Convert',
+      'Retired — Conversion profiles page unmounted; glanceable summary lives on Convert',
     );
     await seedMockAuth(page);
     await stubWorkbenchNoise(page);

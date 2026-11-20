@@ -58,7 +58,7 @@ dev = [
 ]
 
 # App-local paths/markers for `cd apps/backend` runs. Shared ruff/pytest/coverage
-# defaults live in the root pyproject (ADR-048 / ADR-037).
+# defaults live in the root pyproject ().
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = [".", "src"]
@@ -122,10 +122,16 @@ extend = "../../pyproject.toml"
 line-length = 120
 
 [tool.ruff.lint]
-# Append only — do not replace the root pyproject ignore list (ADR-048 D ignores).
+# Append only — do not replace the root pyproject ignore list (D ignores).
 extend-ignore = ["E741"]
 
 [tool.ruff.lint.per-file-ignores]
+
+"src/routers/conversion_convert_continue.py" = ["F841", "ANN401", "F811"]
+"src/routers/conversion_convert_continue_part2.py" = ["F841", "ANN401", "F811"]
+"src/routers/conversion_zip_continue.py" = ["F841", "ANN401", "F811"]
+"src/routers/conversion_routes_io.py" = ["ANN401"]
+"src/routers/conversion_routes_zip.py" = ["ANN401"]
 "tests/**" = ["E402", "W293", "F841", "E722", "F811", "F401", "E712", "ANN", "D"]
 "src/routers/**" = ["B008"]
 "src/utilities/security.py" = ["B008"]
@@ -144,7 +150,7 @@ iwxxm-dissemination = { workspace = true }
 # [Corpus: tech-spec] docs/technical-requirements.md; [Corpus: system-spec] docs/architecture.md.
 # Run all members: scripts/ci/run_deptry_all.sh
 [tool.deptry]
-known_first_party = ["api", "api_deps", "api_wire", "clients", "config", "metar_iwxxm_api", "models", "msgspec_http", "routers", "schemas", "services", "utilities", "validation", "src"]
+known_first_party = ["api", "api_deps", "api_http_helpers", "api_wire", "clients", "config", "metar_iwxxm_api", "models", "msgspec_http", "routers", "schemas", "services", "utilities", "validation", "src"]
 pep621_dev_dependency_groups = ["dev"]
 package_module_name_map = { "iwxxm-dissemination" = "dissemination" }
 

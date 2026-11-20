@@ -76,11 +76,6 @@ def load_conversion_catalog_meta() -> dict[str, dict[str, str]]:
     -------
     dict[str, dict[str, str]]
         Meta rows keyed by normalized profile id.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (load_conversion_catalog_meta)
-    2
     """
     try:
         root = resources.files("tac2iwxxm.data")
@@ -110,11 +105,6 @@ def reload_conversion_catalog_meta() -> dict[str, dict[str, str]]:
     -------
     dict[str, dict[str, str]]
         Fresh meta rows keyed by normalized profile id.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (reload_conversion_catalog_meta)
-    2
     """
     load_conversion_catalog_meta.cache_clear()
     return load_conversion_catalog_meta()
@@ -134,11 +124,6 @@ def catalog_entries(*, limit: int | None = None) -> list[dict[str, Any]]:
     list[dict[str, Any]]
         Items with ``id``, ``title``, ``summary``, ``tags``, ``issue_type=profile``,
         and optional additive metadata.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (catalog_entries)
-    2
     """
     meta = load_conversion_catalog_meta()
     items: list[dict[str, Any]] = []

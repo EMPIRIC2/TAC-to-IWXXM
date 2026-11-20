@@ -1,5 +1,5 @@
-# Builtin SPECI token-stream pack (ADR-045 / EV-pack-ir-convert-wire).
-# Covers annex3 vendor peer speci-A3-2. Shares METAR body grammar. [Corpus: adr/ADR-045]
+# Builtin SPECI token-stream pack (EV-pack-ir-convert-wire).
+# Covers annex3 vendor peer speci-A3-2. Shares METAR body grammar.
 id: speci
 layout: token_stream
 rules:

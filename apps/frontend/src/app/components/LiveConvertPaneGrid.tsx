@@ -3,7 +3,7 @@
  */
 
 import { Children, useEffect, useRef, type ReactNode } from 'react';
-import { resizePanePair } from '/utils/liveConvertLayout';
+import { resizePanePair } from '@/utils/liveConvertLayout';
 
 /**
  * Type `LiveConvertPaneGridProps`.

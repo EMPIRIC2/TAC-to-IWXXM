@@ -1,4 +1,4 @@
-"""REST routes for F5/F7/F31 unified TAC work sessions (ADR-020 / ADR-033)."""
+"""REST routes for F5/F7/F31 unified TAC work sessions ()."""
 
 from __future__ import annotations
 
@@ -30,10 +30,6 @@ def work_session_service(
     """
     Build an owner-scoped session service from the verified JWT ``sub``.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (work_session_service)
-    2
 
     Parameters
     ----------
@@ -119,10 +115,6 @@ def list_work_sessions(
     List work sessions for the authenticated user with optional filters.
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (list_work_sessions)
-    2
 
     Parameters
     ----------
@@ -170,10 +162,6 @@ def create_work_session(
     Create a new work session owned by the authenticated user.
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (create_work_session)
-    2
 
     Parameters
     ----------
@@ -201,10 +189,6 @@ def get_work_session(
     Return a single work session by id.
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (get_work_session)
-    2
 
     Parameters
     ----------
@@ -231,10 +215,6 @@ def update_work_session(
     Update mutable fields on an existing work session.
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (update_work_session)
-    2
 
     Parameters
     ----------
@@ -262,10 +242,6 @@ def delete_work_session(
     Soft-delete a work session (sets ``deleted_at``).
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (delete_work_session)
-    2
 
     Parameters
     ----------
@@ -291,10 +267,6 @@ def restore_work_session(
     Restore a previously soft-deleted work session.
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (restore_work_session)
-    2
 
     Parameters
     ----------

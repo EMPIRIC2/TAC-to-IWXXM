@@ -1500,15 +1500,23 @@
       "cite": "US M1/4SM less-than prefix; research R2",
       "tac": "accept/metar_r2_vis_m_prefix.tac",
       "ok": true
+    },
+    {
+      "id": "accept_metar_r2_vis_km",
+      "product": "METAR",
+      "theme": "R2",
+      "cite": "kilometre visibility 10KM; #1477",
+      "tac": "accept/metar_r2_vis_km.tac",
+      "ok": true
     }
   ],
   "visibility_errors": [
     {
-      "id": "metar_invalid_vis_km",
+      "id": "metar_invalid_vis_miles_word",
       "product": "METAR",
       "theme": "R2",
       "depth": "full_checklist",
-      "cite": "visibility not KM; research R2",
+      "cite": "visibility not MILES word; research R2 / #1477",
       "tac": "negative/metar/invalid_vis_km.tac",
       "ok": false,
       "expected_codes": ["INVALID_VISIBILITY"],

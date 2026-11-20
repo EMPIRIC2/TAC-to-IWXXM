@@ -195,7 +195,7 @@ function fileLeafName(pathLike: string): string {
  * const _ = true;
  */
 export function toIwxxmDownloadName(name: string): string {
-  const trimmed = name.trim();
+  const trimmed = (name ?? '').trim();
   if (!trimmed) {
     return 'download.xml';
   }

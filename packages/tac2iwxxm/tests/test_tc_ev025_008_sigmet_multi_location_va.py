@@ -1,4 +1,4 @@
-"""TC-EV025-008 - #809 sigmet-multi-location-VA ADR-032 equality (S033 / EV-026 T1.1).
+"""TC-EV025-008 - #809 sigmet-multi-location-VA equality (S033 / EV-026 T1.1).
 
 Strict gate (E26-TC=1): convert annex3 → ``canonicalize_xml`` equals vendor XML under
 default pin. Soft-compare / inequality assert removed. Catalog promote remains TC-EV025-009.
@@ -53,7 +53,7 @@ def test_tc_ev025_008_package_and_vendor_fixtures_present() -> None:
 
 
 def test_tc_ev025_008_canonicalize_equals_vendor() -> None:
-    """ADR-032 strict equality vs vendor (EV-026)."""
+    """strict equality vs vendor (EV-026)."""
     from tac2iwxxm.slot_builders.sigmet_airmet import parse_sigmet
 
     from tac2iwxxm import convert

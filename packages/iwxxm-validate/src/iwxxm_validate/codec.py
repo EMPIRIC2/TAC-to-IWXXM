@@ -1,4 +1,4 @@
-"""Reusable msgspec JSON codec instances (ADR-016)."""
+"""Reusable msgspec JSON codec instances ."""
 
 from __future__ import annotations
 

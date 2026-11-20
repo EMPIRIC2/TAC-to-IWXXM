@@ -57,10 +57,6 @@ async def list_quality_metrics(
     Serve product summaries and file inventory from the precomputed artifact.
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (list_quality_metrics)
-    2
 
     Parameters
     ----------
@@ -97,10 +93,6 @@ async def get_quality_metrics_detail(stem: str) -> Response:
     Serve per-stem TAC / XML / match / residual / lint / validate detail.
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (get_quality_metrics_detail)
-    2
 
     Parameters
     ----------

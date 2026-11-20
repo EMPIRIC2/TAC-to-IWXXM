@@ -7,10 +7,11 @@ from typing import Any
 
 from fastapi import APIRouter, Form, HTTPException
 
-from src import api as api_surface
 from src.schemas.validation import ValidateRequest, ValidateResponse, ValidationLayer
 from src.utilities.conversion import ConversionError
 from src.utilities.iwxxm_readable_decode import decode_for_validate
+
+from .conversion_api_surface import api_surface
 
 logger = logging.getLogger(__name__)
 
@@ -91,11 +92,6 @@ async def validate_comprehensive(
     -------
     object
         Return value.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (validate_comprehensive)
-    2
     """
     try:
         json_profile = None
@@ -176,7 +172,7 @@ async def validate_comprehensive(
             except ConversionError as e:
                 raise HTTPException(status_code=400, detail=f"Failed to convert TAC to XML: {e!s}") from e
 
-        # Thin wrapper: always invoke packages/iwxxm-validate (TC-F6-033 / ADR-015)
+        # Thin wrapper: always invoke packages/iwxxm-validate (TC-F6-033)
         validation_level_name = ""
         if request_body is not None:
             validation_level_name = request_body.validation_level or "comprehensive"
