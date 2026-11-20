@@ -125,6 +125,16 @@ def _us_precip_addenda(token: str) -> str | None:
     """US precip addenda: ``P####``, truncated ``P###``, or ``PP###`` (mm).
 
     These may appear with or without an explicit ``RMK`` keyword on live TAC.
+
+    Parameters
+    ----------
+    token : str
+        One TAC group that may be a precip addendum.
+
+    Returns
+    -------
+    str | None
+        The amount in plain language, or None when the group is not precip addenda.
     """
     if phrase := _precip_amount(token):
         return phrase

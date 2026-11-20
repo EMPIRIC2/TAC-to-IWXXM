@@ -18,10 +18,7 @@ ROOT = Path(__file__).resolve().parents[2]
 DOCS = ROOT / "docs"
 REQUIREMENTS = DOCS / "requirements.csv"
 
-HEADER = (
-    "id,source,priority,product_area,requirement,"
-    "acceptance_criteria,status,notes"
-)
+HEADER = "id,source,priority,product_area,requirement,acceptance_criteria,status,notes"
 ID_PATTERN = re.compile(r"^REQ-CMO-\d{3}$")
 REQUIRED_NONEMPTY = (
     "id",
