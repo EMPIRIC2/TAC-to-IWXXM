@@ -85,11 +85,6 @@ class CodeListParser(_CodeListParserMethodsMixin):
 
         Parses all .rdf files and extracts allowed code values.
         Results are cached in memory.
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (load_codelists)
-        2
         """
         if self._loaded:
             return
@@ -175,11 +170,6 @@ class CodeListParser(_CodeListParserMethodsMixin):
         -------
         object
             Set of allowed code values
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (get_codes)
-        2
         """
         if not self._loaded:
             self.load_codelists()
@@ -205,11 +195,6 @@ class CodeListParser(_CodeListParserMethodsMixin):
         -------
         object
             True if code is valid, False otherwise
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (validate_code)
-        2
         """
         allowed_codes = self.get_codes(codelist_name)
         return code_value in allowed_codes
@@ -218,10 +203,6 @@ class CodeListParser(_CodeListParserMethodsMixin):
         """
         Get list of available code lists.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (list_codelists)
-        2
 
         Returns
         -------
@@ -295,11 +276,6 @@ class CodeListParser(_CodeListParserMethodsMixin):
         -------
         object
             CodelistValidationResult with validation outcomes
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (validate_xml_codelists)
-        2
         """
         issues: list[ValidationIssue] = []
 

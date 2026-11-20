@@ -41,10 +41,6 @@ class METARTestCase:
         """
         Check if METAR has significant weather.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (has_weather)
-        2
 
         Returns
         -------
@@ -57,10 +53,6 @@ class METARTestCase:
         """
         Check if METAR has cloud information.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (has_clouds)
-        2
 
         Returns
         -------
@@ -73,10 +65,6 @@ class METARTestCase:
         """
         Calculate complexity score (higher = more complex).
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (complexity_score)
-        2
 
         Returns
         -------
@@ -123,10 +111,6 @@ class CoverageReport:
         """
         Add a test case to coverage tracking.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (add_test_case)
-        2
 
         Parameters
         ----------
@@ -157,10 +141,6 @@ class CoverageReport:
         """
         Convert to dictionary for JSON serialization.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (to_dict)
-        2
 
         Returns
         -------

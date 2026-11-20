@@ -82,10 +82,6 @@ class ReconciledAirport:
         """
         Check if any conflicts were found during reconciliation.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (has_conflicts)
-        2
 
         Returns
         -------
@@ -98,10 +94,6 @@ class ReconciledAirport:
         """
         Get summary of conflicts.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (get_conflict_summary)
-        2
 
         Returns
         -------

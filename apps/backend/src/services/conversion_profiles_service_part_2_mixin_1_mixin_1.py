@@ -77,10 +77,6 @@ class __ConversionProfilesServiceMethodsMixinMethodsMixin(
         """
         List first-party builtins plus custom templates visible to the caller.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (list_conversion_templates)
-        2
 
         Returns
         -------
@@ -116,10 +112,6 @@ class __ConversionProfilesServiceMethodsMixinMethodsMixin(
         """
         Fetch a first-party or custom conversion template; fail-closed on unknown.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (get_conversion_template)
-        2
 
         Parameters
         ----------
@@ -162,10 +154,6 @@ class __ConversionProfilesServiceMethodsMixinMethodsMixin(
         """
         Insert a custom conversion template (fork or new).
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (create_conversion_template)
-        2
 
         Parameters
         ----------
@@ -210,10 +198,6 @@ class __ConversionProfilesServiceMethodsMixinMethodsMixin(
         """
         Patch an owned custom conversion template; reject first-party ids.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (update_conversion_template)
-        2
 
         Parameters
         ----------
@@ -275,10 +259,6 @@ class __ConversionProfilesServiceMethodsMixinMethodsMixin(
         """
         Delete an owned custom conversion template; reject first-party.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (delete_conversion_template)
-        2
 
         Parameters
         ----------
@@ -382,10 +362,6 @@ class __ConversionProfilesServiceMethodsMixinMethodsMixin(
         """
         List first-party defaults plus custom assets visible to the caller.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (list_library_assets)
-        2
 
         Parameters
         ----------

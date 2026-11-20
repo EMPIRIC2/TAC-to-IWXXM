@@ -32,10 +32,6 @@ class ___ConversionProfilesServiceMethodsMixinMethodsMixinMethodsMixin:
         """
         Fetch a first-party or custom library asset; fail-closed on unknown.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (get_library_asset)
-        2
 
         Parameters
         ----------
@@ -84,10 +80,6 @@ class ___ConversionProfilesServiceMethodsMixinMethodsMixinMethodsMixin:
         """
         Parse YAML and collect regex diagnostics without persisting.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (validate_library_yaml_document)
-        2
 
         Parameters
         ----------
@@ -173,10 +165,6 @@ class ___ConversionProfilesServiceMethodsMixinMethodsMixinMethodsMixin:
         """
         Insert a custom library asset (fork or new).
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (create_library_asset)
-        2
 
         Parameters
         ----------
@@ -228,10 +216,6 @@ class ___ConversionProfilesServiceMethodsMixinMethodsMixinMethodsMixin:
         """
         Update owned custom asset, or auto-fork first-party on edit (AC3).
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (update_library_asset)
-        2
 
         Parameters
         ----------
@@ -308,10 +292,6 @@ class ___ConversionProfilesServiceMethodsMixinMethodsMixinMethodsMixin:
         """
         Delete an owned custom library asset; reject first-party (AC4).
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (delete_library_asset)
-        2
 
         Parameters
         ----------
@@ -339,10 +319,6 @@ class ___ConversionProfilesServiceMethodsMixinMethodsMixinMethodsMixin:
         """
         Resolve AC11 rule association; return ``(rule_id, rule_name)``.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (preview_library_rule)
-        2
 
         Parameters
         ----------

@@ -126,10 +126,6 @@ def split_manual_entries(manual_text: str, product: str | None = None) -> list[s
     line-splitting would shred the header/body (SIGMET/AIRMET) or template
     fields (``VA ADVISORY`` / ``SWX ADVISORY`` / ``VONA`` / ``DTG:`` / …).
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (split_manual_entries)
-    2
 
     Parameters
     ----------
@@ -163,10 +159,6 @@ def manual_entries_with_offsets(manual_text: str, product: str | None = None) ->
     For SIGMET/AIRMET/VAA/TCA/SWXA/VONA the single entry offset is the first
     non-whitespace character of the buffer (document preserved with internal newlines).
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (manual_entries_with_offsets)
-    2
 
     Parameters
     ----------
@@ -211,10 +203,6 @@ async def read_uploaded_text(upload_file: UploadFile) -> tuple[str | None, str |
 
     Gzip payloads (``.gz`` / magic ``1f 8b``) are inflated before decode.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (read_uploaded_text)
-    2
 
     Parameters
     ----------
@@ -276,10 +264,6 @@ async def read_upload_files_text(files: list[UploadFile] | None) -> tuple[str, s
     tuple[str, str | None]
         Joined text and an error message when a non-empty upload fails limits/encoding.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (read_upload_files_text)
-    2
 
     Parameters
     ----------
@@ -304,10 +288,6 @@ def is_xml_input(filename: str | None, content: str) -> bool:
     """
     Determine if uploaded content looks like XML input.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (is_xml_input)
-    2
 
     Parameters
     ----------
@@ -338,10 +318,6 @@ def classify_and_validate_upload_content(
     """
     Return a standardized XML rejection payload for TAC-only conversion endpoints.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (classify_and_validate_upload_content)
-    2
 
     Parameters
     ----------
@@ -411,10 +387,6 @@ def normalize_code(value: str | None, max_length: int) -> str | None:
     """
     Normalize optional alphanumeric code-like fields.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (normalize_code)
-    2
 
     Parameters
     ----------
@@ -440,10 +412,6 @@ def normalize_validation_level(value: str | None) -> str:
     """
     Normalize validation level to one of the supported API values.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (normalize_validation_level)
-    2
 
     Parameters
     ----------

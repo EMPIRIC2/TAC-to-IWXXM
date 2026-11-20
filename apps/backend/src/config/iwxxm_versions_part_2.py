@@ -40,11 +40,6 @@ def get_version_config_for_emit_profile(version: str, emit_profile: str | None =
         When the version is deprecated and not allowed for ``emit_profile``.
     ValueError
         When the version is unknown.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (get_version_config_for_emit_profile)
-    2
     """
     normalized = normalize_version(version)
     try:
@@ -79,11 +74,6 @@ def resolve_schema_file(version: str, file_type: str = "xsd") -> Path:
     -------
     object
         Path to the requested file/directory
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (resolve_schema_file)
-    2
     """
     config = get_version_config(version)
 
@@ -139,11 +129,6 @@ def get_breaking_changes(from_version: str, to_version: str) -> list[dict[str, A
     -------
     object
         List of breaking change definitions with XPath and action
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (get_breaking_changes)
-    2
     """
     to_config = get_version_config(to_version)
     changes = to_config.get("breaking_changes_from_prior", {})
@@ -155,10 +140,6 @@ def get_namespace_uri(version: str) -> str:
     """
     Get XML namespace URI for a specific IWXXM version.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (get_namespace_uri)
-    2
 
     Parameters
     ----------
@@ -178,10 +159,6 @@ def get_schema_url(version: str) -> str:
     """
     Get remote schema URL for a specific IWXXM version.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (get_schema_url)
-    2
 
     Parameters
     ----------
@@ -201,10 +178,6 @@ def is_version_supported(version: str) -> bool:
     """
     Check if a version string is supported (after normalization).
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (is_version_supported)
-    2
 
     Parameters
     ----------
@@ -241,11 +214,6 @@ def is_rc_version(version: str) -> bool:
     -------
     object
         True if version is an RC, False otherwise
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (is_rc_version)
-    2
     """
     return version in RC_VERSIONS or "RC" in version.upper()
 
@@ -267,11 +235,6 @@ def get_version_channel(version: str) -> str:
     -------
     object
         Channel string: "stable", "rc", or "unknown"
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (get_version_channel)
-    2
     """
     if version in SUPPORTED_VERSIONS:
         return "stable"
@@ -298,11 +261,6 @@ def get_versions_by_channel(channel: str = "all") -> list[str]:
     -------
     object
         List of version strings for the specified channel
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (get_versions_by_channel)
-    2
     """
     return SUPPORTED_VERSIONS_BY_CHANNEL.get(channel, [])
 
@@ -319,11 +277,6 @@ def register_rc_version(version: str, config: dict[str, Any]) -> None:
         RC version string (e.g., "2025-2RC1")
     config : object
         Configuration dictionary for the RC version
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (register_rc_version)
-    2
     """
     RC_VERSIONS[version] = config
     ALL_VERSIONS[version] = config
@@ -343,11 +296,6 @@ def get_all_versions_with_metadata() -> dict[str, dict[str, Any]]:
     -------
     object
         Dictionary mapping version strings to combined config + metadata
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (get_all_versions_with_metadata)
-    2
     """
     result: dict[str, Any] = {}
     for version, config in ALL_VERSIONS.items():

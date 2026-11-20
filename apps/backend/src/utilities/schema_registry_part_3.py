@@ -13,11 +13,6 @@ def get_schema_registry() -> SchemaRegistry:
     -------
     object
         Global SchemaRegistry instance
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (get_schema_registry)
-    2
     """
     global _registry_instance
     if _registry_instance is None:
@@ -28,11 +23,6 @@ def get_schema_registry() -> SchemaRegistry:
 def clear_registry_cache() -> None:
     """
     Clear all cached schema paths (useful for testing).
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (clear_registry_cache)
-    2
     """
     global _registry_instance
     if _registry_instance:

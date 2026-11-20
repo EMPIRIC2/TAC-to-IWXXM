@@ -74,11 +74,6 @@ class LiveMapCache:
         -------
         bool
             False when a refresh is already running.
-
-        Examples
-        --------
-        >>> 1 + 1
-        2
         """
         if self._refreshing:
             return False
@@ -86,13 +81,7 @@ class LiveMapCache:
         return True
 
     def end_refresh(self) -> None:
-        """Allow the next refresh.
-
-        Examples
-        --------
-        >>> 1 + 1
-        2
-        """
+        """Allow the next refresh."""
         self._refreshing = False
 
     def status_of(self, report: LiveMapReport) -> str | None:
@@ -107,11 +96,6 @@ class LiveMapCache:
         -------
         str | None
             ``pending``, ``ready``, ``failed``, or None when the row is absent.
-
-        Examples
-        --------
-        >>> 1 + 1
-        2
         """
         with self._engine.connect() as conn:
             row = conn.execute(
@@ -135,11 +119,6 @@ class LiveMapCache:
         ----------
         report : LiveMapReport
             Observation to keep.
-
-        Examples
-        --------
-        >>> 1 + 1
-        2
         """
         if report.observed_at.astimezone(UTC) < retention_cutoff():
             return
@@ -220,11 +199,6 @@ class LiveMapCache:
             Notes for the operator. Empty while the report is still pending.
         status : str
             ``ready`` or ``failed``.
-
-        Examples
-        --------
-        >>> 1 + 1
-        2
         """
         with self._engine.begin() as conn:
             conn.execute(
@@ -270,11 +244,6 @@ class LiveMapCache:
         list[_PlaceJson]
             Places inside the box, newest report first. Reports older than
             :data:`RETENTION_HOURS` are omitted.
-
-        Examples
-        --------
-        >>> 1 + 1
-        2
         """
         if not products:
             return []
@@ -355,11 +324,6 @@ def apply_refresh(cache: LiveMapCache, reports: list[LiveMapReport]) -> str:
     -------
     str
         ``stored`` or ``skipped``.
-
-    Examples
-    --------
-    >>> 1 + 1
-    2
     """
     if not cache.begin_refresh():
         return "skipped"
@@ -378,10 +342,5 @@ def cache_from_env() -> LiveMapCache:
     -------
     LiveMapCache
         Cache for this process.
-
-    Examples
-    --------
-    >>> 1 + 1
-    2
     """
     return LiveMapCache(engine_for_url(os.getenv("LIVE_MAP_CACHE_URL")))

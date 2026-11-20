@@ -111,11 +111,6 @@ class WMOCodelistCache:
         -------
         object
             Set of values or None if not cached or expired
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (get)
-        2
         """
         metadata = self._metadata.get(codelist_name)
         if not metadata:
@@ -151,11 +146,6 @@ class WMOCodelistCache:
             Name of the codelist
         values : object
             Set of allowed values
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (set)
-        2
         """
         # Save values to file
         cache_file = self.cache_dir / f"{codelist_name}.json"
@@ -182,11 +172,6 @@ class WMOCodelistCache:
         -------
         object
             Number of entries removed
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (clear_expired)
-        2
         """
         removed = 0
         expired_keys: list[Any] = []

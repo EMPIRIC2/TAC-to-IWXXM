@@ -41,11 +41,6 @@ class CodeListRegistry:
         -------
         object
             CodeListParser instance for the version
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (get_parser)
-        2
         """
         if version not in self._parsers:
             self._parsers[version] = CodeListParser(codelists_dir)
@@ -74,11 +69,6 @@ class CodeListRegistry:
         -------
         object
             True if code is valid
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (validate_code)
-        2
         """
         parser = self.get_parser(version, codelists_dir)
         return parser.validate_code(codelist_name, code_value)
@@ -91,10 +81,6 @@ def get_codelist_parser(version: str, codelists_dir: Path) -> CodeListParser:
     """
     Get code list parser for a specific IWXXM version.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (get_codelist_parser)
-    2
 
     Parameters
     ----------
@@ -132,11 +118,6 @@ def validate_xml_codelists(xml_content: str, version: str, codelists_dir: Path) 
     -------
     object
         CodelistValidationResult with validation outcomes
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (validate_xml_codelists)
-    2
     """
     parser = get_codelist_parser(version, codelists_dir)
     return parser.validate_xml_codelists(xml_content)

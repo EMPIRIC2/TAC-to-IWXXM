@@ -45,10 +45,6 @@ class ComprehensiveValidationResult:
         """
         Alias for is_valid (API compatibility).
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (passed)
-        2
 
         Returns
         -------

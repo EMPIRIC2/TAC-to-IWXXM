@@ -89,11 +89,6 @@ class TemperatureValidationRule:
         -------
         object
             List of validation issues (empty if valid)
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (validate)
-        2
         """
         issues: list[ValidationIssue] = []
 
@@ -171,11 +166,6 @@ class TemperatureValidationRule:
         -------
         object
             Relative humidity as percentage (0-100)
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (calculate_relative_humidity)
-        2
         """
         # Magnus formula coefficients
         a = 17.27
@@ -411,11 +401,6 @@ class VisibilityWeatherValidationRule:
         -------
         object
             List of validation issues (empty if valid)
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (validate)
-        2
         """
         issues: list[ValidationIssue] = []
 

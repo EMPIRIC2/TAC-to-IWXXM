@@ -144,11 +144,6 @@ class AirportReconciliationService:
         -------
         object
             ReconciledAirport with best-effort data or None if not found
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (get_airport)
-        2
         """
         self.stats["total_queries"] += 1
         icao = icao.upper()
@@ -437,11 +432,6 @@ class AirportReconciliationService:
         -------
         object
             Dictionary with statistics
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (get_statistics)
-        2
         """
         return {
             **self.stats,

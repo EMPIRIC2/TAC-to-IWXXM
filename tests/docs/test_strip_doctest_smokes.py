@@ -224,3 +224,9 @@ def test_private_fn_rejects_smoke_stub() -> None:
         has_return=False,
     )
     assert any("placeholder doctest smoke" in i for i in issues)
+
+
+def test_repo_apps_packages_clean_of_smoke_stubs() -> None:
+    """Regression: apps/ and packages/ stay free of placeholder smoke."""
+    assert main([str(ROOT / "apps"), "--check"]) == 0
+    assert main([str(ROOT / "packages"), "--check"]) == 0

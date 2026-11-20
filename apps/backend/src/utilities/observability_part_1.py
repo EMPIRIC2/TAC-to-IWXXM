@@ -147,11 +147,6 @@ class JsonLogFormatter(logging.Formatter):
         -------
         str
             JSON-encoded log payload.
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (format)
-        2
         """
         payload = {
             "timestamp": datetime.now(UTC).isoformat().replace("+00:00", "Z"),
@@ -227,11 +222,6 @@ class LokiHandler(logging.Handler):
         ----------
         record : logging.LogRecord
             Log record to ship when Loki is configured and level passes the filter.
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (emit)
-        2
         """
         if not self.push_url or self._session is None:
             return
@@ -249,11 +239,6 @@ class LokiHandler(logging.Handler):
     def close(self) -> None:
         """
         Stop the background worker and close the HTTP session.
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (close)
-        2
         """
         try:
             self._stop_event.set()
@@ -406,11 +391,6 @@ def record_profile_wire_metrics(route: str, wire: WireProfileSelection) -> None:
         FastAPI route path (e.g. ``/api/v1/convert``).
     wire :
         ``WireProfileSelection`` from ``profile_wire.resolve_route_profiles``.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (record_profile_wire_metrics)
-    2
     """
     safe_route = (route or "unknown").strip() or "unknown"
     semantic_id = _metric_profile_id(getattr(wire, "semantic_canonical", ""))
@@ -443,10 +423,6 @@ def record_translation_metric(
     """
     Record translation status and latency metrics.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (record_translation_metric)
-    2
 
     Parameters
     ----------

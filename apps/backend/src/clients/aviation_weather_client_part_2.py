@@ -96,11 +96,6 @@ class AviationWeatherClient(_AviationWeatherClientMethodsMixin):
         -------
         object
             Dict mapping station_id -> (raw_tac, iwxxm_xml) Both values may be None if data unavailable
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (fetch_metar_batch)
-        2
         """
         if not self._client:
             raise RuntimeError("Client not initialized. Use 'async with' context manager.")
@@ -286,11 +281,6 @@ class AviationWeatherClient(_AviationWeatherClientMethodsMixin):
         -------
         object
             List of METAR records
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (fetch_metars_by_bbox)
-        2
         """
         if not self._client:
             raise RuntimeError("Client not initialized")
@@ -343,11 +333,6 @@ class AviationWeatherClient(_AviationWeatherClientMethodsMixin):
         -------
         list[dict[str, Any]]
             Rows tagged with ``_feed``. An empty product does not drop the others.
-
-        Examples
-        --------
-        >>> 1 + 1
-        2
         """
         if not self._client:
             raise RuntimeError("Client not initialized")
@@ -408,11 +393,6 @@ class AviationWeatherClient(_AviationWeatherClientMethodsMixin):
         -------
         object
             List of METAR records
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (fetch_random_sample)
-        2
         """
         if regions is None:
             # Default regions covering diverse areas

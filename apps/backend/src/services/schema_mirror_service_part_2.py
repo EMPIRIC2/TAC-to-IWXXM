@@ -40,11 +40,6 @@ async def mirror_schema_version(
     -------
     object
         Mirror results dictionary
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (mirror_schema_version)
-    2
     """
     service = SchemaMirrorService(base_path)
     return await service.mirror_version(
