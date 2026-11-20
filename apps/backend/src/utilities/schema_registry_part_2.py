@@ -56,11 +56,6 @@ class SchemaRegistry:
         -------
         object
             Path to the XSD file
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (get_xsd_path)
-        2
         """
         cache_key = f"xsd_{version}"
         if cache_key in self._file_cache:
@@ -91,11 +86,6 @@ class SchemaRegistry:
         -------
         object
             Path to the Schematron file
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (get_schematron_path)
-        2
         """
         cache_key = f"schematron_{version}"
         if cache_key in self._file_cache:
@@ -125,11 +115,6 @@ class SchemaRegistry:
         -------
         object
             Path to the codelists directory
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (get_codelists_dir)
-        2
         """
         cache_key = f"codelists_{version}"
         if cache_key in self._file_cache:
@@ -145,10 +130,6 @@ class SchemaRegistry:
         """
         Get XML namespace URI for a version.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (get_namespace_uri)
-        2
 
         Parameters
         ----------
@@ -167,10 +148,6 @@ class SchemaRegistry:
         """
         Get remote schema URL for a version.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (get_schema_url)
-        2
 
         Parameters
         ----------
@@ -189,10 +166,6 @@ class SchemaRegistry:
         """
         Get complete version configuration.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (get_version_info)
-        2
 
         Parameters
         ----------
@@ -211,10 +184,6 @@ class SchemaRegistry:
         """
         Get list of supported IWXXM versions.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (get_supported_versions)
-        2
 
         Returns
         -------
@@ -240,11 +209,6 @@ class SchemaRegistry:
         -------
         object
             List of codelist filenames (RDF files)
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (list_codelists)
-        2
         """
         codelists_dir = self.get_codelists_dir(version)
         rdf_files = list(codelists_dir.glob("*.rdf"))
@@ -269,11 +233,6 @@ class SchemaRegistry:
         -------
         object
             List of breaking change definitions
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (get_breaking_changes)
-        2
         """
         return get_breaking_changes(from_version, to_version)
 
@@ -294,11 +253,6 @@ class SchemaRegistry:
         -------
         object
             List of version strings for the channel
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (get_all_versions)
-        2
         """
         return get_versions_by_channel(channel)
 
@@ -319,11 +273,6 @@ class SchemaRegistry:
         -------
         object
             True if version is an RC, False otherwise
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (is_rc_version)
-        2
         """
         return is_rc_version(version)
 
@@ -344,11 +293,6 @@ class SchemaRegistry:
         -------
         object
             Channel name ("stable", "rc", "unknown")
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (get_version_channel)
-        2
         """
         return get_version_channel(version)
 
@@ -369,11 +313,6 @@ class SchemaRegistry:
         -------
         object
             ISO 8601 timestamp or empty string
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (get_version_discovery_date)
-        2
         """
         return get_version_discovery_date(version)
 
@@ -396,11 +335,6 @@ class SchemaRegistry:
         -------
         object
             Path to catalog.xml file
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (get_catalog_path)
-        2
         """
         normalized = normalize_version(version)
         config = get_version_config(normalized)
@@ -429,11 +363,6 @@ class SchemaRegistry:
         -------
         object
             True if integrity check passes, False otherwise
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (verify_schema_integrity)
-        2
         """
         try:
             normalized = normalize_version(version)
@@ -461,10 +390,5 @@ class SchemaRegistry:
         -------
         object
             Dictionary mapping versions to combined config + metadata
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (get_all_versions_with_metadata)
-        2
         """
         return get_all_versions_with_metadata()

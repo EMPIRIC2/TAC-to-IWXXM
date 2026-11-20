@@ -27,10 +27,6 @@ def get_library_asset(
     Fetch one library asset (first-party id or custom UUID).
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (get_library_asset)
-    2
 
     Parameters
     ----------
@@ -57,10 +53,6 @@ def update_library_asset(
     Library authoring is no longer available.
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (update_library_asset)
-    2
 
     Parameters
     ----------
@@ -88,10 +80,6 @@ def delete_library_asset(
     Library authoring is no longer available.
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (delete_library_asset)
-    2
 
     Parameters
     ----------
@@ -112,10 +100,6 @@ def list_library_assets(
     List first-party and custom five-Libraries assets.
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (list_library_assets)
-    2
 
     Parameters
     ----------
@@ -141,10 +125,6 @@ def create_library_asset(
     Library authoring is no longer available.
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (create_library_asset)
-    2
 
     Parameters
     ----------
@@ -170,10 +150,6 @@ def validate_library_yaml(
     Library authoring is no longer available.
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (validate_library_yaml)
-    2
 
     Parameters
     ----------
@@ -199,10 +175,6 @@ def preview_library_rule(
     Library authoring is no longer available.
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (preview_library_rule)
-    2
 
     Parameters
     ----------

@@ -55,10 +55,6 @@ def profiles_service(
     """
     Build owner-scoped profiles service from JWT ``sub``.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (profiles_service)
-    2
 
     Parameters
     ----------
@@ -114,10 +110,6 @@ def list_rule_packs(
     List rule packs owned by the caller.
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (list_rule_packs)
-    2
 
     Parameters
     ----------
@@ -169,10 +161,6 @@ def delete_rule_pack(
     Delete a rule pack.
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (delete_rule_pack)
-    2
 
     Parameters
     ----------
@@ -192,10 +180,6 @@ def list_presets(
     List semantic presets owned by the caller (and shared presets).
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (list_presets)
-    2
 
     Parameters
     ----------
@@ -247,10 +231,6 @@ def delete_preset(
     Delete a semantic preset.
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (delete_preset)
-    2
 
     Parameters
     ----------
@@ -270,10 +250,6 @@ def list_templates(
     List dissemination templates owned by the caller (and shared templates).
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (list_templates)
-    2
 
     Parameters
     ----------
@@ -315,10 +291,6 @@ def delete_template(
     Delete an owned dissemination template.
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (delete_template)
-    2
 
     Parameters
     ----------

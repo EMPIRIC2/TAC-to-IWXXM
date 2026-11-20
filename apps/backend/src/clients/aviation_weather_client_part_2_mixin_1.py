@@ -9,7 +9,6 @@ import httpx
 class _AviationWeatherClientMethodsMixin:
     timeout: float
     _client: object | None
-
     """Methods mixin for ``AviationWeatherClient``."""
 
     def fetch_metars_by_bbox_sync(
@@ -18,10 +17,6 @@ class _AviationWeatherClientMethodsMixin:
         """
         Synchronous wrapper for fetch_metars_by_bbox.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (fetch_metars_by_bbox_sync)
-        2
 
         Parameters
         ----------
@@ -61,10 +56,6 @@ class _AviationWeatherClientMethodsMixin:
         """
         Synchronous wrapper for fetch_random_sample.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (fetch_random_sample_sync)
-        2
 
         Parameters
         ----------

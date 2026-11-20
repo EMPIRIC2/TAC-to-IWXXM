@@ -66,10 +66,6 @@ class ValidationOrchestrator:
         """
         Public XML well-formedness validation helper.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (validate_wellformed)
-        2
 
         Parameters
         ----------
@@ -87,10 +83,6 @@ class ValidationOrchestrator:
         """
         Public XML schema validation helper.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (validate_xml_schema)
-        2
 
         Parameters
         ----------
@@ -134,10 +126,6 @@ class ValidationOrchestrator:
         """
         Validate IWXXM XML for selected layers (typically 3-7).
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (validate)
-        2
 
         Parameters
         ----------
@@ -193,11 +181,6 @@ class ValidationOrchestrator:
         -------
         object
             ComprehensiveValidationResult with all validation outcomes
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (validate_complete)
-        2
         """
         if layers is None:
             layers = list(ValidationLayer)

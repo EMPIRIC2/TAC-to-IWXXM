@@ -46,11 +46,6 @@ async def refresh_one(
     -------
     tuple[str, int]
         ``stored`` or ``skipped``, and the next tile index.
-
-    Examples
-    --------
-    >>> 1 + 1
-    2
     """
     if not cache.begin_refresh():
         return "skipped", index
@@ -96,11 +91,6 @@ async def refresh_region(
     -------
     tuple[str, int]
         ``stored`` or ``skipped``, and the next tile index.
-
-    Examples
-    --------
-    >>> 1 + 1
-    2
     """
     if not cache.begin_refresh():
         return "skipped", index
@@ -146,11 +136,6 @@ async def refresh_until(
         Boxes to walk.
     pause_sec : float
         Seconds between tiles.
-
-    Examples
-    --------
-    >>> 1 + 1
-    2
     """
     index = 0
     step = refresh_region if drain else refresh_one
@@ -177,11 +162,6 @@ def start_live_map_refresh(cache: LiveMapCache) -> asyncio.Event | None:
     -------
     asyncio.Event | None
         Stop event, or None when the loop is off.
-
-    Examples
-    --------
-    >>> 1 + 1
-    2
     """
     if os.getenv("LIVE_MAP_REFRESH", "").strip() != "1":
         return None

@@ -244,11 +244,6 @@ class METARTestGenerator(_METARTestGeneratorMethodsMixin):
         -------
         object
             List of METARTestCase objects
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (diverse_sample)
-        2
         """
         cache_file = self.cache_dir / f"diverse_sample_{count}_{hours}h.json"
 
@@ -321,11 +316,6 @@ class METARTestGenerator(_METARTestGeneratorMethodsMixin):
         -------
         object
             List of METARTestCase objects
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (regional_sample)
-        2
         """
         if region not in self.WORLD_REGIONS:
             raise ValueError(f"Unknown region: {region}")
@@ -377,11 +367,6 @@ class METARTestGenerator(_METARTestGeneratorMethodsMixin):
         -------
         object
             List of METARTestCase objects with required phenomena
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (phenomenon_coverage)
-        2
         """
         if required_phenomena is None:
             required_phenomena = ["RA", "SN", "TS", "FG", "BR", "CB", "TCU"]

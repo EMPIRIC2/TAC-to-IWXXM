@@ -74,10 +74,6 @@ class ConvertRequestLoggingMiddleware:
             """
             Log preflight response status before forwarding ASGI messages.
 
-            Examples
-            --------
-            >>> 1 + 1  # docstring smoke (send_wrapper)
-            2
 
             Parameters
             ----------

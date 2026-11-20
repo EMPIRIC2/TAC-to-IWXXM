@@ -260,11 +260,6 @@ class CloudLayerValidationRule:
         -------
         object
             List of validation issues (empty if valid)
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (validate)
-        2
         """
         issues: list[ValidationIssue] = []
 
@@ -374,11 +369,6 @@ class SemanticValidationEngine:
         -------
         object
             List of all validation issues found
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (validate_metar_data)
-        2
         """
         all_issues: list[ValidationIssue] = []
 
@@ -418,11 +408,6 @@ class SemanticValidationEngine:
         -------
         object
             Dictionary with report structure
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (generate_report)
-        2
         """
         error_count = sum(1 for i in issues if i.severity == IssueSeverity.ERROR)
         warning_count = sum(1 for i in issues if i.severity == IssueSeverity.WARNING)

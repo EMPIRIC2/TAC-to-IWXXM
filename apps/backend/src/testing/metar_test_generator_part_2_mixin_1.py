@@ -94,10 +94,6 @@ class _METARTestGeneratorMethodsMixin:
         """
         Get current coverage report.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (get_coverage_report)
-        2
 
         Returns
         -------
@@ -110,10 +106,6 @@ class _METARTestGeneratorMethodsMixin:
         """
         Save coverage report to JSON file.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (save_coverage_report)
-        2
 
         Parameters
         ----------

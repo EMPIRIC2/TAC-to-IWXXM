@@ -78,11 +78,6 @@ def _utc_now() -> datetime:
     -------
     datetime
         Current UTC time.
-
-    Examples
-    --------
-    >>> 1 + 1
-    2
     """
     return datetime.now(UTC)
 
@@ -99,11 +94,6 @@ def retention_cutoff(*, now: datetime | None = None) -> datetime:
     -------
     datetime
         UTC cutoff (exclusive of older stamps).
-
-    Examples
-    --------
-    >>> 1 + 1
-    2
     """
     clock = now if now is not None else _utc_now()
     if clock.tzinfo is None:
@@ -254,11 +244,6 @@ def _cache_url(url: str) -> str:
     -------
     str
         URL SQLAlchemy can open with psycopg.
-
-    Examples
-    --------
-    >>> 1 + 1
-    2
     """
     raw = url.strip()
     if raw.startswith("postgresql+asyncpg://"):
@@ -284,11 +269,6 @@ def engine_for_url(url: str | None) -> Engine:
     -------
     Engine
         SQLAlchemy engine for the cache.
-
-    Examples
-    --------
-    >>> 1 + 1
-    2
     """
     raw = _cache_url(url or "")
     if not raw:

@@ -116,10 +116,6 @@ async def convert_bulletin(
     Per-report ``issues`` / ``fixes`` follow lint-style identity.
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (convert_bulletin)
-    2
 
     Parameters
     ----------
