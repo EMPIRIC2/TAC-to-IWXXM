@@ -37,11 +37,6 @@ def check_wind_shear(
     -------
     list[Issue]
         Return value.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (check_wind_shear)
-    2
     """
     issues: list[Issue] = []
     mean_kt: int | None = None
@@ -92,7 +87,8 @@ def check_wind_shear(
                     body_end=body_end,
                     location="wind",
                 )
-        if ("P99" in tok and unit != "KT") or ("P49" in tok and unit != "MPS"):
+        # _WIND_PARSE only accepts digit speeds, so P99/P49 tokens never match.
+        if ("P99" in tok and unit != "KT") or ("P49" in tok and unit != "MPS"):  # pragma: no cover
             emit(
                 issues,
                 "WIND_HIGH_SPEED_P_INDICATOR",

@@ -59,7 +59,7 @@ def _vis_meters_on_reporting_scale(value: int) -> bool:
         return value % 100 == 0
     if value < 10000:
         return value % 1000 == 0
-    return False
+    return False  # pragma: no cover — gated by value >= 9999 above
 
 
 def _check_wmo782_first_groups_and_modifiers(

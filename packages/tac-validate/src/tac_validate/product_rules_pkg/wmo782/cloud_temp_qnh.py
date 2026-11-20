@@ -44,11 +44,6 @@ def check_cloud_temp_qnh(
     -------
     list[Issue]
         Return value.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (check_cloud_temp_qnh)
-    2
     """
     issues: list[Issue] = []
     layers: list[tuple[str, int, str | None]] = []

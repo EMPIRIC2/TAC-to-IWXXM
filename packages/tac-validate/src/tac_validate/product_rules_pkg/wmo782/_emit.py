@@ -58,11 +58,6 @@ def emit(
     -------
     None
         Return value.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (emit)
-    2
     """
     span = _token_span_in_core(core, tok, body_start)
     start, end = span if span is not None else (body_start, body_end)
@@ -81,11 +76,6 @@ def parse_temp_c(token: str) -> int | None:
     -------
     int | None
         Return value.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (parse_temp_c)
-    2
     """
     if token in {"//", "///"} or set(token) <= {"/"}:
         return None
@@ -106,11 +96,6 @@ def rvr_value_on_scale(raw: str) -> bool:
     -------
     bool
         Return value.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (rvr_value_on_scale)
-    2
     """
     if raw in {"/////", "////"}:
         return True
@@ -141,11 +126,6 @@ def split_obs_trend(body: list[str]) -> tuple[list[str], list[str]]:
     -------
     tuple[list[str], list[str]]
         Return value.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (split_obs_trend)
-    2
     """
     markers = ("BECMG", "TEMPO", "NOSIG")
     idxs = [body.index(m) for m in markers if m in body]
@@ -167,11 +147,6 @@ def dedupe(issues: list[Issue]) -> list[Issue]:
     -------
     list[Issue]
         Return value.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (dedupe)
-    2
     """
     seen: set[tuple[str, int, str]] = set()
     out: list[Issue] = []

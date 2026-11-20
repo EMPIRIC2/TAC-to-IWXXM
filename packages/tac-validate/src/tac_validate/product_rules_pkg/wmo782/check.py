@@ -39,11 +39,6 @@ def check_wmo782_extended(
     -------
     list[Issue]
         Return value.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (check_wmo782_extended)
-    2
     """
     issues: list[Issue] = []
     is_auto = "AUTO" in tokens

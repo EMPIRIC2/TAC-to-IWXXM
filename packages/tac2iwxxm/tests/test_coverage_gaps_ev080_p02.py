@@ -1,6 +1,6 @@
 """Per-file 100% line+branch fill for EV-080 M2b T2.2 (fill-before-flip).
 
-[Corpus: adr/ADR-007] [Corpus: tests]
+[Corpus: architecture] [Corpus: tests]
 """
 
 from __future__ import annotations

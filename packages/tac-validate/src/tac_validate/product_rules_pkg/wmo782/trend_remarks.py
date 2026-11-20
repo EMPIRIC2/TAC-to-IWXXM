@@ -50,11 +50,6 @@ def check_trend_remarks(
     -------
     list[Issue]
         Return value.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (check_trend_remarks)
-    2
     """
     issues: list[Issue] = []
 

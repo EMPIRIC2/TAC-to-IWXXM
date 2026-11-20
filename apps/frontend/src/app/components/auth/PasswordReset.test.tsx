@@ -113,12 +113,7 @@ describe('PasswordReset', () => {
   });
 
   it('updates password successfully and redirects back after delay', async () => {
-    vi.useFakeTimers({ shouldAdvanceTime: true });
-    const user = userEvent.setup({
-      advanceTimers: (ms) => {
-        vi.advanceTimersByTime(ms);
-      },
-    });
+    const user = userEvent.setup({ delay: null });
     const onBackToLogin = vi.fn();
     mockConfirmPasswordReset.mockResolvedValueOnce(undefined);
 
@@ -135,8 +130,14 @@ describe('PasswordReset', () => {
       );
     });
 
-    await vi.advanceTimersByTimeAsync(2000);
-    expect(onBackToLogin).toHaveBeenCalledTimes(1);
+    // Component sleeps 2s before redirect; keep real timers (fake timers leak
+    // across FileConverter suites under coverage) with CI headroom.
+    await waitFor(
+      () => {
+        expect(onBackToLogin).toHaveBeenCalledTimes(1);
+      },
+      { timeout: 10_000 },
+    );
   });
 
   it('shows missing token error if resetToken is absent in reset flow', async () => {

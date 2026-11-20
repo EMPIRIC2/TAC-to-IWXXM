@@ -76,11 +76,6 @@ def check_weather(
     -------
     list[Issue]
         Return value.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (check_weather)
-    2
     """
     issues: list[Issue] = []
     wx_tokens = _wx_tokens(obs)

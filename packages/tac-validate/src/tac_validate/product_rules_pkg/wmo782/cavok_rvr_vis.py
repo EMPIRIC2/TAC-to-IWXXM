@@ -48,11 +48,6 @@ def check_cavok_rvr_vis(
     -------
     list[Issue]
         Return value.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (check_cavok_rvr_vis)
-    2
     """
     issues: list[Issue] = []
 
