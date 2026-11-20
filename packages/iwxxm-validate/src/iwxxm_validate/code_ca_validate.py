@@ -31,11 +31,6 @@ def validate_code_ca_membership(xml_content: str, *, profile: str = _DEFAULT_PRO
     -------
     list[Issue]
         Empty when code-ca hrefs are known and no disallowed global URIs appear.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (validate_code_ca_membership)
-    2
     """
     try:
         root = etree.fromstring(xml_content.encode("utf-8"))

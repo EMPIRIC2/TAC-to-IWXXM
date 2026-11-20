@@ -1,0 +1,455 @@
+"""Part 2 of ``airport_reconciliation.py`` (line-cap split)."""
+
+from pathlib import Path
+from typing import Any, cast
+
+from ..clients.aviation_weather_client import AviationWeatherClient
+from ..clients.openaip_client import OpenAIPClient
+from .airport_reconciliation_part_1 import ConflictLog, DataSource, ReconciledAirport, logger
+
+
+class AirportReconciliationService:
+    """
+    Service for reconciling airport data from multiple sources.
+
+    Priority order:
+    1. OpenAIP (most comprehensive, community-maintained)
+    2. GIFTs internal database
+    3. AviationWeather.gov API
+    4. Fallback/default values
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
+
+    def __init__(
+        self,
+        openaip_client: OpenAIPClient | None = None,
+        aviation_weather_client: AviationWeatherClient | None = None,
+        gifts_data_path: Path | None = None,
+    ) -> None:
+        """
+        Internal helper ``__init__``.
+
+        Parameters
+        ----------
+        openaip_client : object
+            Argument ``openaip_client``.
+        aviation_weather_client : object
+            Argument ``aviation_weather_client``.
+        gifts_data_path : object
+            Argument ``gifts_data_path``.
+        """
+        self.openaip = openaip_client or OpenAIPClient()
+        self.aviation_weather = aviation_weather_client or AviationWeatherClient()
+        self.gifts_data_path = gifts_data_path or Path("data/af-airports.csv")
+
+        # Cache for GIFTs data
+        self._gifts_cache: dict[str, dict[str, Any]] = {}
+        self._gifts_loaded = False
+
+        # Reconciliation statistics
+        self.stats = {
+            "total_queries": 0,
+            "openaip_hits": 0,
+            "gifts_hits": 0,
+            "aviation_weather_hits": 0,
+            "conflicts_detected": 0,
+            "conflicts_resolved": 0,
+        }
+
+    def _load_gifts_data(self) -> None:
+        """Load GIFTs airport data from CSV."""
+        if self._gifts_loaded:
+            return
+
+        if not self.gifts_data_path.exists():
+            logger.warning(f"GIFTs airport data not found: {self.gifts_data_path}")
+            self._gifts_loaded = True
+            return
+
+        try:
+            import csv
+
+            with open(self.gifts_data_path, encoding="utf-8") as f:
+                reader = csv.DictReader(f)
+                for row in reader:
+                    # Handle both field name formats
+                    icao = (row.get("icao_code") or row.get("icao", "")).strip().upper()
+                    if not icao:
+                        continue
+
+                    # Convert elevation from feet to meters if needed
+                    elevation = self._safe_float(row.get("elevation_ft") or row.get("elevation"))
+                    if elevation:
+                        elevation = elevation * 0.3048  # feet to meters
+
+                    self._gifts_cache[icao] = {
+                        "icao": icao,
+                        "name": row.get("name", "").strip(),
+                        "country": row.get("iso_country", row.get("country", "")).strip(),
+                        "latitude": self._safe_float(row.get("latitude_deg") or row.get("latitude")),
+                        "longitude": self._safe_float(row.get("longitude_deg") or row.get("longitude")),
+                        "elevation": elevation,
+                    }
+
+            logger.info(f"Loaded {len(self._gifts_cache)} airports from GIFTs database")
+
+        except Exception as e:
+            logger.warning(f"Failed to load GIFTs data: {e}")
+
+        self._gifts_loaded = True
+
+    def _safe_float(self, value: object) -> float | None:
+        """
+        Internal helper ``_safe_float``.
+
+        Parameters
+        ----------
+        value : object
+            Argument ``value``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
+        if value is None or value == "":
+            return None
+        if isinstance(value, (int, float)):
+            return float(value)
+        if isinstance(value, str):
+            try:
+                return float(value)
+            except ValueError:
+                return None
+        return None
+
+    def get_airport(self, icao: str) -> ReconciledAirport | None:
+        """
+        Get reconciled airport data for ICAO code.
+
+        Returns
+        -------
+            ReconciledAirport with best-
+
+        Parameters
+        ----------
+        icao : object
+            ICAO station identifier
+
+        Returns
+        -------
+        object
+            ReconciledAirport with best-effort data or None if not found
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (get_airport)
+        2
+        """
+        self.stats["total_queries"] += 1
+        icao = icao.upper()
+
+        # Collect data from all sources
+        sources_data: dict[DataSource, Any] = {}
+
+        # Source 1: OpenAIP
+        openaip_data = self.openaip.get_airport_by_icao(icao)
+        if openaip_data:
+            sources_data[DataSource.OPENAIP] = openaip_data
+            self.stats["openaip_hits"] += 1
+
+        # Source 2: GIFTs
+        self._load_gifts_data()
+        gifts_data = self._gifts_cache.get(icao)
+        if gifts_data:
+            sources_data[DataSource.GIFTS] = gifts_data
+            self.stats["gifts_hits"] += 1
+
+        # Source 3: AviationWeather (Note: Limited metadata from their API)
+        # We could enhance this by parsing station lists, but for now skip
+        # aviation_weather_data = self._fetch_aviation_weather_metadata(icao)
+        # if aviation_weather_data:
+        #     sources_data[DataSource.AVIATION_WEATHER] = aviation_weather_data
+        #     self.stats["aviation_weather_hits"] += 1
+
+        # If no data found, return None
+        if not sources_data:
+            return None
+
+        # Reconcile data
+        return self._reconcile(icao, sources_data)
+
+    def _reconcile(self, icao: str, sources_data: dict[DataSource, Any]) -> ReconciledAirport | None:
+        """
+        Internal helper ``_reconcile``.
+
+        Parameters
+        ----------
+        icao : object
+            Argument ``icao``.
+        sources_data : object
+            Argument ``sources_data``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
+        # Priority order
+        priority_order = [DataSource.OPENAIP, DataSource.GIFTS, DataSource.AVIATION_WEATHER]
+
+        # Determine primary source (highest priority with data)
+        primary_source = None
+        for source in priority_order:
+            if source in sources_data:
+                primary_source = source
+                break
+
+        if not primary_source:
+            # No data found
+            return None
+
+        # Start with primary source data
+        primary_data = sources_data[primary_source]
+
+        # Initialize reconciled airport
+        reconciled = ReconciledAirport(
+            icao_code=icao,
+            name=str(self._get_field(primary_data, "name", "") or ""),
+            country=str(self._get_field(primary_data, "country", "") or ""),
+            latitude=self._safe_float(self._get_field(primary_data, "latitude", None)),
+            longitude=self._safe_float(self._get_field(primary_data, "longitude", None)),
+            elevation=self._safe_float(self._get_field(primary_data, "elevation", None)),
+            iata_code=(
+                str(raw_iata) if (raw_iata := self._get_field(primary_data, "iata_code", None)) is not None else None
+            ),
+            sources=set(source.name for source in sources_data),
+            primary_source=primary_source.name,
+        )
+
+        # Check for conflicts and merge
+        conflicts: list[Any] = []
+
+        # Compare each field across sources
+        for field_name in ["name", "country", "latitude", "longitude", "elevation"]:
+            conflict = self._check_field_conflict(icao, field_name, sources_data, priority_order)
+            if conflict:
+                conflicts.append(conflict)
+                self.stats["conflicts_detected"] += 1
+
+        if conflicts:
+            reconciled.conflicts = conflicts
+            self.stats["conflicts_resolved"] += len(conflicts)
+
+            # Log conflicts
+            for conflict in conflicts:
+                logger.debug(str(conflict))
+
+        # Calculate confidence scores
+        reconciled.coordinate_confidence = self._calculate_coordinate_confidence(
+            sources_data, reconciled.latitude, reconciled.longitude
+        )
+        reconciled.elevation_confidence = self._calculate_elevation_confidence(sources_data, reconciled.elevation)
+
+        return reconciled
+
+    def _get_field(self, data: object, field: str, default: object) -> object:
+        """
+        Internal helper ``_get_field``.
+
+        Parameters
+        ----------
+        data : object
+            Argument ``data``.
+        field : object
+            Argument ``field``.
+        default : object
+            Argument ``default``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
+        if isinstance(data, dict):
+            return cast(dict[str, Any], data).get(field, default)
+        return getattr(data, field, default)
+
+    def _check_field_conflict(
+        self, icao: str, field: str, sources_data: dict[DataSource, Any], priority_order: list[DataSource]
+    ) -> ConflictLog | None:
+        """
+        Internal helper ``_check_field_conflict``.
+
+        Parameters
+        ----------
+        icao : object
+            Argument ``icao``.
+        field : object
+            Argument ``field``.
+        sources_data : object
+            Argument ``sources_data``.
+        priority_order : object
+            Argument ``priority_order``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
+        # Collect values from all sources
+        values: dict[str, Any] = {}
+        for source, data in sources_data.items():
+            value = self._get_field(data, field, None)
+            if value is not None:
+                values[source.name] = value
+
+        # No conflict if only one source or all agree
+        if len(values) <= 1:
+            return None
+
+        unique_values = set(str(v) for v in values.values())
+        if len(unique_values) == 1:
+            return None  # All sources agree
+
+        # Conflict detected - resolve by priority
+        winner = None
+        winner_value = None
+        for source in priority_order:
+            if source in sources_data:
+                value = self._get_field(sources_data[source], field, None)
+                if value is not None:
+                    winner = source.name
+                    winner_value = value
+                    break
+
+        return ConflictLog(icao=icao, field=field, sources=values, resolution=str(winner_value), winner=winner)
+
+    def _calculate_coordinate_confidence(
+        self, sources_data: dict[DataSource, Any], final_lat: float | None, final_lon: float | None
+    ) -> float:
+        """
+        Internal helper ``_calculate_coordinate_confidence``.
+
+        Parameters
+        ----------
+        sources_data : object
+            Argument ``sources_data``.
+        final_lat : object
+            Argument ``final_lat``.
+        final_lon : object
+            Argument ``final_lon``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
+        if final_lat is None or final_lon is None:
+            return 0.0
+
+        # Count sources with coordinates
+        coords_count = 0
+        agreeing_count = 0
+
+        tolerance = 0.01  # ~1km tolerance
+
+        for data in sources_data.values():
+            lat = self._safe_float(self._get_field(data, "latitude", None))
+            lon = self._safe_float(self._get_field(data, "longitude", None))
+
+            if lat is not None and lon is not None:
+                coords_count += 1
+
+                # Check if agrees with final value
+                if abs(lat - final_lat) < tolerance and abs(lon - final_lon) < tolerance:
+                    agreeing_count += 1
+
+        if coords_count == 0:
+            return 0.0
+
+        # Base confidence on agreement ratio
+        agreement_ratio = agreeing_count / coords_count
+
+        # Boost for OpenAIP source
+        if DataSource.OPENAIP in sources_data:
+            agreement_ratio = min(1.0, agreement_ratio + 0.2)
+
+        return agreement_ratio
+
+    def _calculate_elevation_confidence(
+        self, sources_data: dict[DataSource, Any], final_elevation: float | None
+    ) -> float:
+        """
+        Internal helper ``_calculate_elevation_confidence``.
+
+        Parameters
+        ----------
+        sources_data : object
+            Argument ``sources_data``.
+        final_elevation : object
+            Argument ``final_elevation``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
+        if final_elevation is None:
+            return 0.0
+
+        # Count sources with elevation
+        elev_count = 0
+        agreeing_count = 0
+
+        tolerance = 10.0  # 10 meter tolerance
+
+        for data in sources_data.values():
+            elev = self._safe_float(self._get_field(data, "elevation", None))
+
+            if elev is not None:
+                elev_count += 1
+
+                # Check if agrees with final value
+                if abs(elev - final_elevation) < tolerance:
+                    agreeing_count += 1
+
+        if elev_count == 0:
+            return 0.0
+
+        agreement_ratio = agreeing_count / elev_count
+
+        # Boost for OpenAIP source
+        if DataSource.OPENAIP in sources_data:
+            agreement_ratio = min(1.0, agreement_ratio + 0.2)
+
+        return agreement_ratio
+
+    def get_statistics(self) -> dict[str, Any]:
+        """
+        Get reconciliation statistics.
+
+        Returns
+        -------
+        object
+            Dictionary with statistics
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (get_statistics)
+        2
+        """
+        return {
+            **self.stats,
+            "gifts_airports_loaded": len(self._gifts_cache),
+            "openaip_available": True,
+            "conflict_rate": (
+                self.stats["conflicts_detected"] / self.stats["total_queries"]
+                if self.stats["total_queries"] > 0
+                else 0.0
+            ),
+        }

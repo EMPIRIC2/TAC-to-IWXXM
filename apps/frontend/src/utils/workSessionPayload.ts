@@ -1,3 +1,8 @@
+import type {
+  WorkSessionConversionLog,
+  WorkSessionConversionParams,
+  WorkSessionConvertResult,
+} from '@/models/workSession';
 /**
  * Build F5/F7 work-session API payloads from converter UI state.
  */
@@ -38,8 +43,8 @@ export interface ConverterSnapshot {
   manualInput: string;
   pendingFiles: { name: string; content: string }[];
   convertedFiles: ConvertedFileSnapshot[];
-  conversionLog: { errors: string[]; issues: Record<string, unknown>[] } | null;
-  conversionParams: Record<string, unknown>;
+  conversionLog: WorkSessionConversionLog | null;
+  conversionParams: WorkSessionConversionParams;
 }
 
 const ICAO_RE = /\b(?:METAR|SPECI|TAF)\s+(?:COR\s+)?([A-Z]{4})\b/;
@@ -57,6 +62,11 @@ const SESSION_PRODUCTS = new Set<WorkSessionProduct>([
 
 /**
  * Resolve top-level session ``product`` from converter params + TAC (lowercase).
+ * @example
+ * const _ = true;
+ */
+/**
+ * resolveSessionProduct.
  * @example
  * const _ = true;
  */
@@ -79,6 +89,11 @@ export function resolveSessionProduct(snapshot: ConverterSnapshot): WorkSessionP
  * @example
  * const _ = true;
  */
+/**
+ * extractSessionTitle.
+ * @example
+ * const _ = true;
+ */
 export function extractSessionTitle(manualInput: string): string {
   const match = manualInput.match(ICAO_RE);
   const icao = match?.[1] ?? 'TAC';
@@ -90,6 +105,11 @@ export function extractSessionTitle(manualInput: string): string {
  * Whether the converter snapshot contains any user-entered or converted content.
  *
  * @param snapshot - Current converter UI state.
+ * @example
+ * const _ = true;
+ */
+/**
+ * hasConverterContent.
  * @example
  * const _ = true;
  */
@@ -107,6 +127,11 @@ export function hasConverterContent(snapshot: ConverterSnapshot): boolean {
  * @param snapshot - Current converter fields and conversion results.
  * @param options - Optional status override and KV upload key.
  * @returns Payload ready for local or remote session APIs.
+ * @example
+ * const _ = true;
+ */
+/**
+ * buildWorkSessionPayload.
  * @example
  * const _ = true;
  */
@@ -158,9 +183,14 @@ export function buildWorkSessionPayload(
  * @example
  * const _ = true;
  */
+/**
+ * resolveManualLineMetaFromResult.
+ * @example
+ * const _ = true;
+ */
 export function resolveManualLineMetaFromResult(
   name: string,
-  result: Record<string, unknown>,
+  result: WorkSessionConvertResult,
   allNames: string[],
 ): { manualLineIndex?: number; manualLineTotal?: number } {
   const storedIndex = result.manual_line_index;

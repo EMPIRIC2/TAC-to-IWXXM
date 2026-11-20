@@ -1,4 +1,4 @@
-"""TC-EV-VPL-001: TAC quality policy activate fail-closed (ADR-046 / #1216)."""
+"""TC-EV-VPL-001: TAC quality policy activate fail-closed (#1216)."""
 
 from __future__ import annotations
 

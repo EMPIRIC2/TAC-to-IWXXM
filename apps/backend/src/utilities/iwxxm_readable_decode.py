@@ -242,11 +242,6 @@ def readable_decode_from_iwxxm(xml: str) -> ReadableDecode:
     -------
     ReadableDecode
         Segments and summary, or empty when XML is not parseable / has no fields.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (readable_decode_from_iwxxm)
-    2
     """
     stripped = (xml or "").strip()
     if not stripped or not looks_like_xml(stripped):
@@ -265,10 +260,6 @@ def readable_decode_from_iwxxm(xml: str) -> ReadableDecode:
         """
         Append a readable decode segment when ``code`` is new and non-XML.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (add)
-        2
 
         Parameters
         ----------
@@ -297,10 +288,6 @@ def readable_decode_from_iwxxm(xml: str) -> ReadableDecode:
         """
         Recursively extract human-readable tokens from IWXXM XML elements.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (walk)
-        2
 
         Parameters
         ----------
@@ -423,11 +410,6 @@ def decode_for_validate(*, xml_content: str = "", manual_text: str = "") -> Read
     -------
     ReadableDecode
         Empty segments/summary when no readable decode exists.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (decode_for_validate)
-    2
     """
     xml = (xml_content or "").strip()
     tac = (manual_text or "").strip()

@@ -1,0 +1,47 @@
+# #1036 — MSC aviation IWXXM datamart product/schema drift gate (CA_ECCC ops corpus).
+# Offline on PR/push (committed probe). Live probe on weekly schedule + dispatch.
+name: MSC datamart drift
+
+on:
+  push:
+    branches: [main, stage]
+    paths:
+      - "packages/tac2iwxxm/tests/fixtures/profiles/CA_ECCC/ops_datamart_probe.json"
+      - "packages/tac2iwxxm/tests/fixtures/profiles/CA_ECCC/ops_manifest.json"
+      - "scripts/iwxxm/probe_msc_datamart_drift.py"
+      - "scripts/iwxxm/harvest_ops_corpus.py"
+      - "scripts/iwxxm/harvest_ca_eccc_ops.py"
+      - ".github/workflows/msc-datamart-drift.yml"
+  pull_request:
+    paths:
+      - "packages/tac2iwxxm/tests/fixtures/profiles/CA_ECCC/ops_datamart_probe.json"
+      - "packages/tac2iwxxm/tests/fixtures/profiles/CA_ECCC/ops_manifest.json"
+      - "scripts/iwxxm/probe_msc_datamart_drift.py"
+      - "scripts/iwxxm/harvest_ops_corpus.py"
+      - "scripts/iwxxm/harvest_ca_eccc_ops.py"
+      - ".github/workflows/msc-datamart-drift.yml"
+  schedule:
+    - cron: "15 7 * * 1"
+  workflow_dispatch:
+
+jobs:
+  msc-datamart-drift:
+    runs-on: ubuntu-latest
+    name: MSC datamart drift
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          submodules: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Offline probe integrity
+        run: python scripts/iwxxm/probe_msc_datamart_drift.py
+
+      - name: Live MSC listing probe
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+        run: python scripts/iwxxm/probe_msc_datamart_drift.py --live

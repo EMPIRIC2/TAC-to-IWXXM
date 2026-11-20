@@ -1,4 +1,4 @@
-"""Egress allowlist and SSRF guards for dissemination destinations (ADR-029).
+"""Egress allowlist and SSRF guards for dissemination destinations ().
 
 ``DISSEMINATION_EGRESS_ALLOWLIST`` is a comma-separated list of hostnames and/or
 CIDRs. An empty allowlist is **fail-closed** - no user-host egress.
@@ -73,10 +73,6 @@ class Allowlist:
         """
         Return ``True`` when no hostnames or CIDR networks are configured.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (is_empty)
-        2
 
         Returns
         -------
@@ -90,10 +86,6 @@ class Allowlist:
         """
         Return sorted hostnames followed by CIDR strings for display/logging.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (entries)
-        2
 
         Returns
         -------
@@ -123,11 +115,6 @@ def parse_allowlist(raw: str | None) -> Allowlist:
     ------
     AllowlistError
         If a token is neither a hostname nor a CIDR/IP.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (parse_allowlist)
-    2
     """
     if raw is None or not raw.strip():
         return Allowlist(hostnames=frozenset(), networks=())
@@ -158,10 +145,6 @@ def load_allowlist_from_env(
     """
     Load and parse ``DISSEMINATION_EGRESS_ALLOWLIST`` from the process environment.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (load_allowlist_from_env)
-    2
 
     Parameters
     ----------
@@ -203,11 +186,6 @@ def validate_egress_host(
     ------
     EgressDenied
         If the host is not permitted.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (validate_egress_host)
-    2
     """
     al = allowlist if allowlist is not None else load_allowlist_from_env()
     normalized = host.strip().lower().rstrip(".")
@@ -242,7 +220,7 @@ def validate_egress_host(
     for ip in resolved:
         _deny_if_blocked_ip(ip)
         # Private/loopback/link-local require an overlapping CIDR so a hostname
-        # allowlist entry cannot DNS-rebind into an unlisted LAN (ADR-029).
+        # allowlist entry cannot DNS-rebind into an unlisted LAN ().
         if (ip.is_private or ip.is_loopback or ip.is_link_local) and not _ip_on_allowlist(ip, al):
             raise EgressDenied(
                 f"resolved private/reserved address {ip} for {normalized!r} not covered by allowlisted CIDR"
@@ -350,10 +328,6 @@ def iter_allowlist_entries(allowlist: Allowlist) -> Iterable[str]:
     """
     Yield human-readable allowlist entries (hosts then CIDRs).
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (iter_allowlist_entries)
-    2
 
     Parameters
     ----------

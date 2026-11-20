@@ -1,53 +1,55 @@
-"""Type stub for Auto-split package (exec chunks) — basedpyright."""
+"""Typing stub for exec-loaded split package (EV-tac2iwxxm-models-split)."""
+
 from typing import Any
 
-__all__ = ['BridgePreview', 'ConversionTemplate', 'FIRST_PARTY_TEMPLATES', 'Slot', 'SlotMode', 'SlotType', '_WIND_RE', '_builtin_catalog', 'asdict', 'compile_pattern', 'dataclass', 'field', 'fork_first_party', 'get_first_party_template', 'list_first_party_templates', 'preview_bridge', 'reorder_slots', 'slot_from_dict', 'template_from_dict']
+from tac2iwxxm.models.conversion_template import (
+    BridgeCapture as BridgeCapture,
+)
+from tac2iwxxm.models.conversion_template import (
+    BridgePreview as BridgePreview,
+)
+from tac2iwxxm.models.conversion_template import (
+    BridgeSkipped as BridgeSkipped,
+)
+from tac2iwxxm.models.conversion_template import (
+    ConversionTemplate as ConversionTemplate,
+)
+from tac2iwxxm.models.conversion_template import (
+    Slot as Slot,
+)
 
-class BridgePreview:
-    captures: Any
-    compiled_pattern: Any
-    focus_group: Any
-    matched: Any
-    skipped: Any
-    template_id: Any
-    xml_block: Any
-    def __init__(self, *args: Any, **kwargs: Any) -> None: ...
-class ConversionTemplate:
-    access: Any
-    comments: Any
-    fork_of: Any
-    id: Any
-    iwxxm_block: Any
-    name: Any
-    profiles: Any
-    sample: Any
-    slots: Any
-    def __init__(self, *args: Any, **kwargs: Any) -> None: ...
-FIRST_PARTY_TEMPLATES: Any
-class Slot:
-    digits: Any
-    enum_values: Any
-    gloss: Any
-    id: Any
-    iwxxm_field: Any
-    label: Any
-    literal: Any
-    mode: Any
-    optional: Any
-    type: Any
-    def __init__(self, *args: Any, **kwargs: Any) -> None: ...
-SlotMode = Any
-SlotType = Any
-_WIND_RE: Any
-def _builtin_catalog(*args: Any, **kwargs: Any) -> Any: ...
-def asdict(*args: Any, **kwargs: Any) -> Any: ...
-def compile_pattern(*args: Any, **kwargs: Any) -> Any: ...
-def dataclass(*args: Any, **kwargs: Any) -> Any: ...
-def field(*args: Any, **kwargs: Any) -> Any: ...
-def fork_first_party(*args: Any, **kwargs: Any) -> Any: ...
-def get_first_party_template(*args: Any, **kwargs: Any) -> Any: ...
-def list_first_party_templates(*args: Any, **kwargs: Any) -> Any: ...
-def preview_bridge(*args: Any, **kwargs: Any) -> Any: ...
-def reorder_slots(*args: Any, **kwargs: Any) -> Any: ...
-def slot_from_dict(*args: Any, **kwargs: Any) -> Any: ...
-def template_from_dict(*args: Any, **kwargs: Any) -> Any: ...
+FIRST_PARTY_TEMPLATES: dict[str, ConversionTemplate]
+
+compile_pattern: Any
+fork_first_party: Any
+get_first_party_template: Any
+list_first_party_templates: Any
+
+def preview_bridge(
+    template: ConversionTemplate,
+    *,
+    focus_group: str | None = None,
+) -> BridgePreview: ...
+def reorder_slots(
+    template: ConversionTemplate,
+    ordered_ids: list[str],
+) -> ConversionTemplate: ...
+def slot_from_dict(raw: dict[str, Any]) -> Slot: ...
+def template_from_dict(raw: dict[str, Any]) -> ConversionTemplate: ...
+
+__all__ = [
+    "FIRST_PARTY_TEMPLATES",
+    "BridgeCapture",
+    "BridgePreview",
+    "BridgeSkipped",
+    "ConversionTemplate",
+    "Slot",
+    "compile_pattern",
+    "fork_first_party",
+    "get_first_party_template",
+    "list_first_party_templates",
+    "preview_bridge",
+    "reorder_slots",
+    "slot_from_dict",
+    "template_from_dict",
+]

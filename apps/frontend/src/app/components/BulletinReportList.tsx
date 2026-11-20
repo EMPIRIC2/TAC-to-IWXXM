@@ -2,7 +2,7 @@
  * Pick one report from an AHL bulletin, or keep the whole bulletin in view.
  */
 
-import type { BulletinReport } from '/utils/bulletinReportList';
+import type { BulletinReport } from '@/utils/bulletinReportList';
 
 /**
  * Type `BulletinReportListProps`.

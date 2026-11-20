@@ -1,12 +1,106 @@
-"""Auto-split package: loads chunked sources into this namespace (API-stable)."""
+"""theme_checks package split."""
 
+# pyright: reportWildcardImportFromLibrary=false, reportConstantRedefinition=false, reportUnknownVariableType=false, reportUnknownParameterType=false, reportUnknownArgumentType=false, reportInvalidTypeForm=false, reportUnusedImport=false, reportPrivateUsage=false, reportGeneralTypeIssues=false
 from __future__ import annotations
 
-from pathlib import Path
+from tac_validate.theme_checks.hatches import (
+    hatch_airmet,
+    hatch_r1_order,
+    hatch_r3,
+    hatch_r4,
+    hatch_r4_membership,
+    hatch_r5,
+    hatch_r5_pk_and_extension,
+    hatch_r8,
+    hatch_sigmet,
+    hatch_taf,
+)
+from tac_validate.theme_checks.hatches_advisory import (
+    R1_CODES,
+    R3_CODES,
+    R4_CODES,
+    R5_CODES,
+    R8_CODES,
+    hatch_tca,
+    hatch_vaa,
+    lint_profile,
+)
+from tac_validate.theme_checks.themes import (
+    _LAYER_CLOUD_PARTS,
+    _METAR_SPECI_SKIP,
+    _OBS_TIME,
+    _RECENT_WX,
+    _body_span,
+    _check_metar_speci_field_order,
+    _check_r8_pack,
+    _check_us_remarks,
+    _cloud_candidate_tokens,
+    _emit_token_info,
+    _first_icao,
+    _is_valid_cloud_token,
+    _is_valid_weather_token,
+    _issue,
+    _membership_issue,
+    _token_span_in_core,
+    _tokens,
+    _weather_candidate_tokens,
+    _weather_in_register,
+    hatch_r1,
+    known_base_convective_cloud,
+    membership,
+    r1_identity_order,
+    r3_weather,
+    r4_cloud,
+    r5_remarks,
+    r8_modifiers,
+    r8_nil_gate,
+)
 
-_pkg = Path(__file__).resolve().parent
-_CHUNKS = _pkg / "_chunks"
-__file__ = str(_pkg.parent / f"{_pkg.name}.py")
-_src = "".join(p.read_text(encoding="utf-8") for p in sorted(_CHUNKS.glob("*.src")))
-exec(compile(_src, __file__, "exec"), globals())
-del _pkg, _CHUNKS, _src
+__all__ = [
+    "R1_CODES",
+    "R3_CODES",
+    "R4_CODES",
+    "R5_CODES",
+    "R8_CODES",
+    "_LAYER_CLOUD_PARTS",
+    "_METAR_SPECI_SKIP",
+    "_OBS_TIME",
+    "_RECENT_WX",
+    "_body_span",
+    "_check_metar_speci_field_order",
+    "_check_r8_pack",
+    "_check_us_remarks",
+    "_cloud_candidate_tokens",
+    "_emit_token_info",
+    "_first_icao",
+    "_is_valid_cloud_token",
+    "_is_valid_weather_token",
+    "_issue",
+    "_membership_issue",
+    "_token_span_in_core",
+    "_tokens",
+    "_weather_candidate_tokens",
+    "_weather_in_register",
+    "hatch_airmet",
+    "hatch_r1",
+    "hatch_r1_order",
+    "hatch_r3",
+    "hatch_r4",
+    "hatch_r4_membership",
+    "hatch_r5",
+    "hatch_r5_pk_and_extension",
+    "hatch_r8",
+    "hatch_sigmet",
+    "hatch_taf",
+    "hatch_tca",
+    "hatch_vaa",
+    "known_base_convective_cloud",
+    "lint_profile",
+    "membership",
+    "r1_identity_order",
+    "r3_weather",
+    "r4_cloud",
+    "r5_remarks",
+    "r8_modifiers",
+    "r8_nil_gate",
+]

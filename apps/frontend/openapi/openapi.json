@@ -47,7 +47,7 @@
           "layers_validated": {
             "description": "Layers validated",
             "items": {
-              "$ref": "#/components/schemas/src__schemas__validation__ValidationLayer"
+              "$ref": "#/components/schemas/src__models__validation_part_1__ValidationLayer"
             },
             "title": "Layers Validated",
             "type": "array"
@@ -1413,10 +1413,8 @@
             "type": "array"
           },
           "metadata": {
-            "additionalProperties": true,
-            "description": "Echoed request metadata such as bulletin_id, issuing_center, and validation options",
-            "title": "Metadata",
-            "type": "object"
+            "$ref": "#/components/schemas/ConversionResponseMetadata",
+            "description": "Echoed request metadata such as bulletin_id, issuing_center, and validation options"
           },
           "ok": {
             "anyOf": [
@@ -1473,6 +1471,38 @@
           "failed"
         ],
         "title": "ConversionResponse",
+        "type": "object"
+      },
+      "ConversionResponseMetadata": {
+        "additionalProperties": true,
+        "description": "Nested convert response metadata (extra keys allowed for wire stability).",
+        "properties": {
+          "bulletin_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Optional bulletin identifier",
+            "title": "Bulletin Id"
+          },
+          "product": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Optional product family",
+            "title": "Product"
+          }
+        },
+        "title": "ConversionResponseMetadata",
         "type": "object"
       },
       "ConversionResult": {
@@ -4325,6 +4355,101 @@
         "title": "LintTacResponse",
         "type": "object"
       },
+      "LiveCheckResponse": {
+        "description": "GET /api/v1/live-check payload.",
+        "properties": {
+          "attribution": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "License attribution for CC BY sources.",
+            "title": "Attribution"
+          },
+          "cached": {
+            "description": "True when served from the short server cache.",
+            "title": "Cached",
+            "type": "boolean"
+          },
+          "convert_issues": {
+            "description": "Non-fatal or fatal convert issue messages.",
+            "items": {
+              "type": "string"
+            },
+            "title": "Convert Issues",
+            "type": "array"
+          },
+          "convert_ok": {
+            "description": "True when conversion produced IWXXM.",
+            "title": "Convert Ok",
+            "type": "boolean"
+          },
+          "icao": {
+            "description": "ICAO airport code.",
+            "title": "Icao",
+            "type": "string"
+          },
+          "our_iwxxm": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "IWXXM produced by this service from source_tac.",
+            "title": "Our Iwxxm"
+          },
+          "product": {
+            "description": "Product id: METAR or TAF.",
+            "title": "Product",
+            "type": "string"
+          },
+          "profile": {
+            "description": "Conversion profile used for this station.",
+            "title": "Profile",
+            "type": "string"
+          },
+          "provider": {
+            "description": "Allowlisted feed id: noaa, met_no, or knmi.",
+            "title": "Provider",
+            "type": "string"
+          },
+          "provider_iwxxm": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Provider IWXXM when the feed returned a pair.",
+            "title": "Provider Iwxxm"
+          },
+          "source_tac": {
+            "description": "Traditional alphanumeric report from the feed.",
+            "title": "Source Tac",
+            "type": "string"
+          }
+        },
+        "required": [
+          "icao",
+          "product",
+          "provider",
+          "profile",
+          "source_tac",
+          "cached",
+          "convert_ok"
+        ],
+        "title": "LiveCheckResponse",
+        "type": "object"
+      },
       "MappingConfigCreate": {
         "description": "Create a field mapping. Connection secrets are not stored.",
         "properties": {
@@ -6013,12 +6138,81 @@
         "title": "SelectionOptionsResponse",
         "type": "object"
       },
+      "StationCentennialMetricModel": {
+        "description": "One Centennial recognition-criteria proxy or insufficient-data row.",
+        "properties": {
+          "detail": {
+            "default": "",
+            "title": "Detail",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "score": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Score"
+          },
+          "status": {
+            "description": "available or insufficient_data",
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "label",
+          "status"
+        ],
+        "title": "StationCentennialMetricModel",
+        "type": "object"
+      },
       "StationHealthDetailResponse": {
         "description": "Response for GET /api/v1/station-health/{icao}.",
         "properties": {
+          "centennial_metrics": {
+            "items": {
+              "$ref": "#/components/schemas/StationCentennialMetricModel"
+            },
+            "title": "Centennial Metrics",
+            "type": "array"
+          },
+          "file_format_counts": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "File Format Counts",
+            "type": "object"
+          },
           "icao": {
             "title": "Icao",
             "type": "string"
+          },
+          "issue_code_counts": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Issue Code Counts",
+            "type": "object"
+          },
+          "maintenance_tag_counts": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Maintenance Tag Counts",
+            "type": "object"
           },
           "name": {
             "anyOf": [
@@ -6042,6 +6236,12 @@
             },
             "title": "Windows",
             "type": "object"
+          },
+          "wmo_region": {
+            "default": "unknown",
+            "description": "WMO Regional Association id (I-VI) or unknown",
+            "title": "Wmo Region",
+            "type": "string"
           }
         },
         "required": [
@@ -6115,9 +6315,37 @@
       "StationListItemModel": {
         "description": "One station row on the dashboard list.",
         "properties": {
+          "centennial_metrics": {
+            "items": {
+              "$ref": "#/components/schemas/StationCentennialMetricModel"
+            },
+            "title": "Centennial Metrics",
+            "type": "array"
+          },
+          "file_format_counts": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "File Format Counts",
+            "type": "object"
+          },
           "icao": {
             "title": "Icao",
             "type": "string"
+          },
+          "issue_code_counts": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Issue Code Counts",
+            "type": "object"
+          },
+          "maintenance_tag_counts": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Maintenance Tag Counts",
+            "type": "object"
           },
           "name": {
             "anyOf": [
@@ -6145,6 +6373,12 @@
             },
             "title": "Products",
             "type": "array"
+          },
+          "wmo_region": {
+            "default": "unknown",
+            "description": "WMO Regional Association id (I-VI) or unknown",
+            "title": "Wmo Region",
+            "type": "string"
           }
         },
         "required": [
@@ -6256,6 +6490,34 @@
       "StationWindowModel": {
         "description": "One window block on the station detail page.",
         "properties": {
+          "centennial_metrics": {
+            "items": {
+              "$ref": "#/components/schemas/StationCentennialMetricModel"
+            },
+            "title": "Centennial Metrics",
+            "type": "array"
+          },
+          "file_format_counts": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "File Format Counts",
+            "type": "object"
+          },
+          "issue_code_counts": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Issue Code Counts",
+            "type": "object"
+          },
+          "maintenance_tag_counts": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Maintenance Tag Counts",
+            "type": "object"
+          },
           "overall_grade": {
             "title": "Overall Grade",
             "type": "string"
@@ -6526,7 +6788,7 @@
             },
             "description": "Success rate per validation layer (percentage)",
             "propertyNames": {
-              "$ref": "#/components/schemas/src__schemas__icao_opmet__ValidationLayer"
+              "$ref": "#/components/schemas/src__models__icao_opmet__ValidationLayer"
             },
             "title": "Validation Layer Success Rates",
             "type": "object"
@@ -7081,7 +7343,7 @@
             "title": "Code"
           },
           "layer": {
-            "$ref": "#/components/schemas/src__schemas__validation__ValidationLayer",
+            "$ref": "#/components/schemas/src__models__validation_part_1__ValidationLayer",
             "description": "Validation layer that found this issue"
           },
           "level": {
@@ -7163,7 +7425,7 @@
             "type": "string"
           },
           "layer": {
-            "$ref": "#/components/schemas/src__schemas__validation__ValidationLayer",
+            "$ref": "#/components/schemas/src__models__validation_part_1__ValidationLayer",
             "description": "Layer identifier"
           },
           "supported_content_types": {
@@ -7332,7 +7594,7 @@
             "type": "array"
           },
           "layer": {
-            "$ref": "#/components/schemas/src__schemas__validation__ValidationLayer",
+            "$ref": "#/components/schemas/src__models__validation_part_1__ValidationLayer",
             "description": "Validation layer"
           },
           "metadata": {
@@ -7707,7 +7969,7 @@
         "title": "WorkSessionUpdate",
         "type": "object"
       },
-      "src__schemas__icao_opmet__ValidationLayer": {
+      "src__models__icao_opmet__ValidationLayer": {
         "description": "7-layer IWXXM validation stages.",
         "enum": [
           "AIRPORT_ICAO",
@@ -7721,7 +7983,7 @@
         "title": "ValidationLayer",
         "type": "string"
       },
-      "src__schemas__validation__ValidationLayer": {
+      "src__models__validation_part_1__ValidationLayer": {
         "description": "Validation layer identifiers.",
         "enum": [
           "airport_icao",
@@ -9420,6 +9682,77 @@
         ]
       }
     },
+    "/api/v1/live-check": {
+      "get": {
+        "description": "Fetch an allowlisted open feed for one airport, convert with the station profile, and return source TAC, our IWXXM, and provider IWXXM when the feed included a pair. Providers: noaa, met_no, knmi.",
+        "operationId": "live_check_api_v1_live_check_get",
+        "parameters": [
+          {
+            "description": "ICAO airport code.",
+            "in": "query",
+            "name": "icao",
+            "required": true,
+            "schema": {
+              "description": "ICAO airport code.",
+              "maxLength": 4,
+              "minLength": 4,
+              "title": "Icao",
+              "type": "string"
+            }
+          },
+          {
+            "description": "METAR or TAF.",
+            "in": "query",
+            "name": "product",
+            "required": false,
+            "schema": {
+              "default": "METAR",
+              "description": "METAR or TAF.",
+              "title": "Product",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Allowlisted feed: noaa, met_no, or knmi.",
+            "in": "query",
+            "name": "provider",
+            "required": false,
+            "schema": {
+              "default": "noaa",
+              "description": "Allowlisted feed: noaa, met_no, or knmi.",
+              "title": "Provider",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LiveCheckResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Live check for one airport and product",
+        "tags": [
+          "Live check"
+        ]
+      }
+    },
     "/api/v1/live-map": {
       "get": {
         "description": "Reports cached for the area in view. The newest report is first. At most two earlier reports follow it.",
@@ -9514,7 +9847,7 @@
     },
     "/api/v1/profiles/catalog": {
       "get": {
-        "description": "Read-only ConversionProfile catalog for the authenticated Profiles inspector.\n\nRequires JWT so the inspector stays on the authenticated Profiles surface.",
+        "description": "Read-only ConversionProfile catalog for the authenticated Profiles inspector.",
         "operationId": "get_catalog_api_v1_profiles_catalog_get",
         "responses": {
           "200": {
@@ -11239,13 +11572,13 @@
         "operationId": "list_station_health_api_v1_station_health_get",
         "parameters": [
           {
-            "description": "Time window: 6h, 1d, or 30d",
+            "description": "Time window: 6h, 1d, 30d, or 90d",
             "in": "query",
             "name": "window",
             "required": false,
             "schema": {
               "default": "6h",
-              "description": "Time window: 6h, 1d, or 30d",
+              "description": "Time window: 6h, 1d, 30d, or 90d",
               "title": "Window",
               "type": "string"
             }
@@ -11287,14 +11620,32 @@
             }
           },
           {
-            "description": "Max stations to return",
+            "description": "Optional WMO region filter: I, II, III, IV, V, VI, or unknown",
+            "in": "query",
+            "name": "region",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Optional WMO region filter: I, II, III, IV, V, VI, or unknown",
+              "title": "Region"
+            }
+          },
+          {
+            "description": "Max stations to return (higher when filtering by region)",
             "in": "query",
             "name": "limit",
             "required": false,
             "schema": {
               "default": 100,
-              "description": "Max stations to return",
-              "maximum": 500,
+              "description": "Max stations to return (higher when filtering by region)",
+              "maximum": 5000,
               "minimum": 1,
               "title": "Limit",
               "type": "integer"

@@ -20,10 +20,6 @@ def client_id(request: Request) -> str:
     """
     Return client host for rate limits, or ``anonymous``.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (client_id)
-    2
 
     Parameters
     ----------
@@ -46,10 +42,6 @@ def profiles_service_for_optional_auth(
     """
     Build a profiles service when JWT auth is present.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (profiles_service_for_optional_auth)
-    2
 
     Parameters
     ----------
@@ -66,16 +58,10 @@ def profiles_service_for_optional_auth(
     return ConversionProfilesService(str(auth_user.get("sub") or auth_user.get("user_id")))
 
 
-def merge_template_params(
-    template_params: dict[str, Any], request_params: dict[str, Any]
-) -> dict[str, Any]:
+def merge_template_params(template_params: dict[str, Any], request_params: dict[str, Any]) -> dict[str, Any]:
     """
     Overlay request params on template params (request wins).
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (merge_template_params)
-    2
 
     Parameters
     ----------
@@ -98,10 +84,6 @@ async def read_preflight(request: Request) -> PreflightRequest:
     """
     Decode a preflight request body.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (read_preflight)
-    2
 
     Parameters
     ----------
@@ -127,10 +109,6 @@ async def read_send(request: Request) -> SendRequest:
     """
     Decode a send request body.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (read_send)
-    2
 
     Parameters
     ----------
@@ -156,10 +134,6 @@ def require_sink(sink_type: str | None) -> str:
     """
     Require a known drawer sink type.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (require_sink)
-    2
 
     Parameters
     ----------

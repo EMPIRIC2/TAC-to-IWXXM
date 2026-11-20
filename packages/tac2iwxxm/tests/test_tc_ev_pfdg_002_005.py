@@ -1,6 +1,6 @@
 """TC-EV-PFDG-001..005 — pack fill, mapper independence, flip, selective delete.
 
-[Corpus: tests] [Corpus: adr/ADR-045]
+[Corpus: tests]
 """
 
 from __future__ import annotations
@@ -123,19 +123,14 @@ def test_swxa_alternate_inventory_present() -> None:
     assert pack.xml == legacy.xml
 
 
-def _slot_module_present(module_py: str) -> bool:
-    """True when ``module.py`` or package ``module/`` remains under slot_builders."""
-    if (_SLOT / module_py).is_file():
-        return True
-    stem = module_py.removesuffix(".py")
-    return (_SLOT / stem / "__init__.py").is_file()
-
-
 @pytest.mark.parametrize("name", _DELETED_PRODUCT_MODULES)
 def test_selective_delete_removed_product_modules(name: str) -> None:
     """TC-EV-PFDG-004 all-or-nothing deletes after goldens passed."""
     assert not (_PRODUCTS / name).is_file()
-    assert _slot_module_present(name)
+    stem = name.removesuffix(".py")
+    slot_file = _SLOT / name
+    slot_pkg = _SLOT / stem
+    assert slot_file.is_file() or (slot_pkg.is_dir() and (slot_pkg / "__init__.py").is_file())
 
 
 def test_fir_geometry_remains_under_products() -> None:

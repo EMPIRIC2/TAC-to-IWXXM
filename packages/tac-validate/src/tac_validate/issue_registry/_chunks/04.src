@@ -256,7 +256,7 @@ ISSUES = ISSUES + (
     _row(
         "WEATHER_BR_VIS_BAND",
         "warning",
-        "{product} BR outside 1000–5000 m band",
+        "{product} BR outside 1000-5000 m band",
         tags=("metar", "speci", "wmo782", "visibility",),
     ),
     _row(
@@ -298,7 +298,7 @@ ISSUES = ISSUES + (
     _row(
         "WEATHER_VIS_OBSCURATION_THRESHOLD",
         "warning",
-        "{product} visibility below 5 000 m should include an obscuration or weather cause; encoded 5000 without FU/HZ/DU/SA/BR can be valid when observed visibility was 5 001–5 999 m.",
+        "{product} visibility below 5 000 m should include an obscuration or weather cause; encoded 5000 without FU/HZ/DU/SA/BR can be valid when observed visibility was 5 001-5 999 m.",
         tags=("metar", "speci", "wmo782", "visibility",),
     ),
     _row(

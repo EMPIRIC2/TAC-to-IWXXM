@@ -47,11 +47,6 @@ def legacy_convert_fields_present(
     -------
     list[str]
         Operator-visible field names that were supplied.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (legacy_convert_fields_present)
-    2
     """
     values = {
         "semantic_profile": semantic_profile,
@@ -67,10 +62,6 @@ def legacy_convert_reject_detail(fields: list[str]) -> str:
     """
     Plain-language 422 detail for legacy Convert fields.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (legacy_convert_reject_detail)
-    2
 
     Parameters
     ----------
@@ -112,11 +103,6 @@ def resolve_engine_profile_from_conversion_library(
     -------
     tuple[str, str]
         Canonical library id used and engine semantic profile wire id.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (resolve_engine_profile_from_conversion_library)
-    2
     """
     token = (conversion_library_id or "").strip() or DEFAULT_CONVERSION_LIBRARY_ID
     first = get_first_party_library_asset(token)
@@ -165,11 +151,6 @@ def resolve_dissemination_transforms(
     ------
     ValueError
         Unknown id or wrong kind.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (resolve_dissemination_transforms)
-    2
     """
     token = (dissemination_library_id or "").strip()
     if not token:
@@ -204,10 +185,6 @@ def library_id_for_semantic_or_alias(profile_or_alias: str) -> str:
 
     Used by tests migrating off ``semantic_profile`` / ``profile``.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (library_id_for_semantic_or_alias)
-    2
 
     Parameters
     ----------
@@ -245,10 +222,6 @@ def assert_library_usable_on_convert(
     """
     Reject draft custom libraries on Convert (operator-visible detail).
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (assert_library_usable_on_convert)
-    2
 
     Parameters
     ----------

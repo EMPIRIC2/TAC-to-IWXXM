@@ -17,7 +17,13 @@ from src.services.station_health_store import (
     get_station_health_store,
     set_station_health_store,
 )
-from src.services.station_health_types import StationRecord
+from src.services.station_health_types import StationMeta, StationRecord
+
+
+def test_router_centennial_skips_non_dict_entries() -> None:
+    models = router_mod._centennial_models([{"id": "a", "label": "A", "status": "available"}, "skip"])
+    assert len(models) == 1
+    assert models[0].id == "a"
 
 
 def test_router_coercion_helpers_cover_branches() -> None:
@@ -387,9 +393,11 @@ def test_postgres_store_paths_and_exceptions() -> None:
     conn.execute.side_effect = RuntimeError("detail down")
     assert store.get_station("KJFK") is None
 
-    # _load_window exception path
+    # load_window_rows exception path
+    from src.services.station_health_postgres_load import load_window_rows
+
     conn.execute.side_effect = RuntimeError("list down")
-    stations, rows = store._load_window(cutoff=now - timedelta(hours=1), product_filter=None)
+    stations, rows = load_window_rows(engine, cutoff=now - timedelta(hours=1), product_filter=None)
     assert stations == {}
     assert rows == []
 
@@ -399,7 +407,7 @@ def test_postgres_store_paths_and_exceptions() -> None:
     record_result = MagicMock()
     record_result.mappings.return_value = []
     conn.execute.side_effect = [station_result, record_result]
-    stations, rows = store._load_window(cutoff=now - timedelta(hours=1), product_filter="metar")
+    stations, rows = load_window_rows(engine, cutoff=now - timedelta(hours=1), product_filter="metar")
     assert "KJFK" in stations
 
 

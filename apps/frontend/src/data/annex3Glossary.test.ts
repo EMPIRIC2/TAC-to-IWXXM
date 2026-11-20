@@ -41,4 +41,18 @@ describe('annex3Glossary seed (TC-F38-008)', () => {
       expect(entry.shortBlurb).not.toMatch(/Chapter 1\.\s*Definitions/i);
     }
   });
+
+  it('uses short watch-office role wording in operator-facing copy', () => {
+    const mwo = getAnnex3GlossaryEntry('mwo');
+    expect(mwo?.term).toBe('Watch office');
+    expect(mwo?.aliases).toContain('MWO');
+    expect(mwo?.shortBlurb.toLowerCase()).not.toContain('meteorological watch office');
+    expect(mwo?.pageBody.toLowerCase()).not.toContain('meteorological watch office');
+    const sigmet = getAnnex3GlossaryEntry('sigmet');
+    expect(sigmet?.shortBlurb.toLowerCase()).toContain('watch office');
+    expect(sigmet?.shortBlurb.toLowerCase()).not.toContain(
+      'meteorological watch office',
+    );
+    expect(sigmet?.pageBody.toLowerCase()).not.toContain('meteorological watch office');
+  });
 });

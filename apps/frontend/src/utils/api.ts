@@ -6,28 +6,16 @@
  */
 
 import { apiUrl, getApiBaseUrl } from './apiBase';
-import { isAbortError } from './liveAssist';
+import { apiErrorMessage, withTimeout } from './apiErrors';
 import { DEFAULT_IWXXM_VERSION } from './iwxxmVersions';
 import { wireSemanticProfile } from './semanticProfile';
-import { conversionLibraryIdFromProfile } from './libraryIds';
 import type {
-  BulletinMeta,
-  BulletinReportResult,
-  ConversionIssue,
-  ConversionResponse,
-  ConversionResult,
-  ConvertBulletinResponse,
-  DecodeResidual,
-  DecodeSegment,
   DecodeTacResponse,
-  FailedSpan,
-  LintFix,
-  LintIssue,
-  LintIssueCatalogEntry,
   LintIssueCatalogResponse,
   LintTacResponse,
   ValidateResponse,
-} from './openapiTypes';
+} from '@/models/openapi';
+import type { AirportRegionResponse, HealthResponse } from '@/models/api';
 
 export type {
   BulletinMeta,
@@ -46,115 +34,43 @@ export type {
   LintIssueCatalogResponse,
   LintTacResponse,
   ValidateResponse,
+} from '@/models/openapi';
+
+export type {
+  AirportRegionResponse,
+  ApiError,
+  CodeNameDictionaryFacets,
+  CodeNameDictionaryItem,
+  HealthResponse,
+  MassIngestFileResult,
+  MassIngestResponse,
+  SchemaStatusResponse,
+  SelectionOptionKind,
+} from '@/models/api';
+
+export { ConvertApiError, withTimeout } from './apiErrors';
+import {
+  convertMetarToIwxxm,
+  convertBulletin,
+  convertMetarToIwxxmZip,
+} from './apiConvert';
+export { convertMetarToIwxxm, convertBulletin, convertMetarToIwxxmZip };
+import {
+  EndpointNotImplementedError,
+  ingestCollect,
+  massIngestFiles,
+  fetchRuleCatalog,
+  fetchCodeNameDictionary,
+  fetchSelectionOptions,
+} from './apiCatalog';
+export {
+  EndpointNotImplementedError,
+  ingestCollect,
+  massIngestFiles,
+  fetchRuleCatalog,
+  fetchCodeNameDictionary,
+  fetchSelectionOptions,
 };
-
-/**
- * Timeout wrapper for fetch requests
- */
-function withTimeout<T>(promise: Promise<T>, timeoutMs: number = 30000): Promise<T> {
-  return Promise.race([
-    promise,
-    new Promise<T>((_, reject) =>
-      setTimeout(
-        () =>
-          reject(
-            new Error(
-              `Request timeout after ${timeoutMs / 1000}s - Backend may be unreachable`,
-            ),
-          ),
-        timeoutMs,
-      ),
-    ),
-  ]);
-}
-
-/**
- * Type `HealthResponse`.
- * @example
- * const _ = true;
- */
-export interface HealthResponse {
-  status: 'healthy' | 'degraded';
-  version: string;
-  tac2iwxxm_available: boolean;
-}
-
-/**
- * Type `AirportRegionResponse`.
- * @example
- * const _ = true;
- */
-export interface AirportRegionResponse {
-  airport_code: string;
-  icao_region: string;
-}
-
-/**
- * Type `ApiError`.
- * @example
- * const _ = true;
- */
-export interface ApiError {
-  message: string;
-  errors: string[];
-  total_errors?: number;
-}
-
-/**
- * Structured hard-convert failure surfaced by the backend.
- *
- * Preserves ``detail.errors`` / ``detail.issues`` from non-2xx convert responses so
- * the workbench can render the same operator-facing log panel it uses for 200 responses
- * with partial or failed conversion details.
- * @example
- * const _ = true;
- */
-export class ConvertApiError extends Error {
-  status: number;
-  errors: string[];
-  issues: ConversionIssue[];
-
-  constructor(
-    message: string,
-    {
-      status,
-      errors = [],
-      issues = [],
-    }: {
-      status: number;
-      errors?: string[];
-      issues?: ConversionIssue[];
-    },
-  ) {
-    super(message);
-    this.name = 'ConvertApiError';
-    this.status = status;
-    this.errors = errors;
-    this.issues = issues;
-  }
-}
-
-/** Prefer FastAPI string ``detail``, then nested message, then ``message``. */
-function apiErrorMessage(
-  error: { detail?: unknown; message?: unknown },
-  fallback: string,
-): string {
-  if (typeof error.detail === 'string' && error.detail) {
-    return error.detail;
-  }
-  if (
-    error.detail &&
-    typeof error.detail === 'object' &&
-    'message' in error.detail &&
-    typeof (error.detail as { message: unknown }).message === 'string'
-  ) {
-    return (error.detail as { message: string }).message;
-  }
-  if (typeof error.message === 'string' && error.message) {
-    return error.message;
-  }
-  return fallback;
-}
 
 /**
  * Check backend health status
@@ -194,388 +110,6 @@ export async function checkHealth(): Promise<HealthResponse> {
  * @example
  * const _ = true;
  */
-export async function convertMetarToIwxxm(params: {
-  manualText?: string;
-  files?: File[];
-  product?: string;
-  profile?: string;
-  /** Optional saved semantic preset id (requires accessToken). */
-  presetId?: string;
-  conversionLibraryId?: string;
-  tacValidationLibraryId?: string;
-  iwxxmValidationLibraryId?: string;
-  disseminationLibraryId?: string;
-  decodingLibraryId?: string;
-  iwxxmVersion?: string;
-  strict?: boolean;
-  strictLint?: boolean;
-  strictConvert?: boolean;
-  strictValidate?: boolean;
-  validateOutput?: boolean;
-  validationLevel?: string;
-  stopOnError?: boolean;
-  bulletinId?: string;
-  issuingCenter?: string;
-  includeNilReasons?: boolean;
-  /** Filters conversion/validation/lint issue verbosity (sent when API accepts it). */
-  logLevel?: string;
-  preview?: boolean;
-  /** When true, fold decode residuals into remarks/HRT (omit for profile default). */
-  propagateResidualsToRemarks?: boolean;
-  /** When false, omit national RMK content from IWXXM (default true when omitted). */
-  includeNationalRemarks?: boolean;
-  extensions?: string[];
-  exchangeOutput?: boolean;
-  /** Exchange packaging profile (ignored on convert-only; used when packaging). */
-  exchangeProfile?: string;
-  /** Optional profile-scoped report variant within the selected product family. */
-  reportVariant?: string;
-  /** Optional signed ConversionProfile overlay id (requires accessToken). */
-  overlayId?: string;
-  accessToken?: string;
-  signal?: AbortSignal;
-}): Promise<ConversionResponse> {
-  const formData = new FormData();
-
-  if (params.manualText?.trim()) {
-    formData.append('manual_text', params.manualText.trim());
-  }
-
-  if (params.files && params.files.length > 0) {
-    params.files.forEach((file) => {
-      formData.append('files', file);
-    });
-  }
-
-  // F6.e — product required by API; default METAR when caller omits (legacy callers)
-  formData.append('product', (params.product || 'METAR').toUpperCase());
-  // EV-bridge hard cut: Conversion library resolves the engine profile server-side.
-  // Do not send semantic_profile / profile / preset / overlay / exchange on Convert.
-  if (params.conversionLibraryId?.trim()) {
-    formData.append('conversion_library_id', params.conversionLibraryId.trim());
-  } else if (params.profile?.trim()) {
-    // Transitional FE callers that only know a profile wire id.
-    formData.append(
-      'conversion_library_id',
-      conversionLibraryIdFromProfile(params.profile),
-    );
-  }
-  if (params.tacValidationLibraryId?.trim()) {
-    formData.append('tac_validation_library_id', params.tacValidationLibraryId.trim());
-  }
-  if (params.iwxxmValidationLibraryId?.trim()) {
-    formData.append(
-      'iwxxm_validation_library_id',
-      params.iwxxmValidationLibraryId.trim(),
-    );
-  }
-  if (params.disseminationLibraryId?.trim()) {
-    formData.append('dissemination_library_id', params.disseminationLibraryId.trim());
-  }
-  if (params.decodingLibraryId?.trim()) {
-    formData.append('decoding_library_id', params.decodingLibraryId.trim());
-  }
-  if (params.reportVariant?.trim()) {
-    formData.append('report_variant', params.reportVariant.trim().toUpperCase());
-  }
-
-  if (params.iwxxmVersion?.trim()) {
-    formData.append('iwxxm_version', params.iwxxmVersion.trim());
-  }
-
-  // Add validation flag (default to false)
-  formData.append('validate_output', params.validateOutput ? 'true' : 'false');
-  formData.append('validation_level', params.validationLevel || 'basic');
-  if (params.strict !== undefined) {
-    formData.append('strict', params.strict ? 'true' : 'false');
-  }
-  if (params.strictLint !== undefined) {
-    formData.append('strict_lint', params.strictLint ? 'true' : 'false');
-  }
-  if (params.strictConvert !== undefined) {
-    formData.append('strict_convert', params.strictConvert ? 'true' : 'false');
-  }
-  if (params.strictValidate !== undefined) {
-    formData.append('strict_validate', params.strictValidate ? 'true' : 'false');
-  }
-  formData.append('stop_on_error', params.stopOnError ? 'true' : 'false');
-  formData.append(
-    'include_nil_reasons',
-    params.includeNilReasons === false ? 'false' : 'true',
-  );
-  if (params.logLevel) {
-    formData.append('log_level', params.logLevel.toUpperCase());
-  }
-
-  if (params.bulletinId?.trim()) {
-    formData.append('bulletin_id', params.bulletinId.trim().toUpperCase());
-  }
-  if (params.issuingCenter?.trim()) {
-    formData.append('issuing_center', params.issuingCenter.trim().toUpperCase());
-  }
-
-  if (params.preview) {
-    formData.append('preview', 'true');
-  }
-
-  if (params.propagateResidualsToRemarks === true) {
-    formData.append('propagate_residuals_to_remarks', 'true');
-  } else if (params.propagateResidualsToRemarks === false) {
-    formData.append('propagate_residuals_to_remarks', 'false');
-  }
-
-  if (params.includeNationalRemarks === true) {
-    formData.append('include_national_remarks', 'true');
-  } else if (params.includeNationalRemarks === false) {
-    formData.append('include_national_remarks', 'false');
-  }
-
-  if (params.extensions?.length) {
-    for (const token of params.extensions) {
-      formData.append('extensions', token);
-    }
-  }
-
-  if (params.exchangeOutput) {
-    formData.append('exchange_output', 'true');
-  }
-
-  try {
-    console.log('[API] Request to:', apiUrl('/convert'));
-
-    const bearer = params.accessToken?.trim();
-    const headers: HeadersInit | undefined = bearer
-      ? { Authorization: `Bearer ${bearer}` }
-      : undefined;
-
-    const response = await withTimeout(
-      fetch(apiUrl('/convert'), {
-        method: 'POST',
-        body: formData,
-        headers,
-        signal: params.signal,
-      }),
-      30000,
-    );
-
-    if (!response.ok) {
-      const error = await response.json().catch(() => ({
-        message: `Conversion failed: ${response.statusText}`,
-        errors: [],
-      }));
-      const detail =
-        error.detail && typeof error.detail === 'object'
-          ? (error.detail as Record<string, unknown>)
-          : null;
-      const errors = Array.isArray(detail?.errors)
-        ? detail.errors.filter((item): item is string => typeof item === 'string')
-        : Array.isArray(error.errors)
-          ? error.errors.filter(
-              (item: unknown): item is string => typeof item === 'string',
-            )
-          : [];
-      const issues = Array.isArray(detail?.issues)
-        ? (detail.issues as ConversionIssue[])
-        : Array.isArray(error.issues)
-          ? (error.issues as ConversionIssue[])
-          : [];
-      throw new ConvertApiError(apiErrorMessage(error, `HTTP ${response.status}`), {
-        status: response.status,
-        errors,
-        issues,
-      });
-    }
-
-    return await response.json();
-  } catch (error) {
-    if (isAbortError(error)) {
-      throw error;
-    }
-    if (error instanceof Error && error.message.includes('timeout')) {
-      console.error('[API TIMEOUT]', error.message);
-      throw error;
-    }
-    console.error('[API ERROR]', error);
-    throw error;
-  }
-}
-
-/**
- * Split a WMO AHL bulletin and convert each TAC report.
- *
- * **Endpoint**: POST /api/v1/convert-bulletin
- * @example
- * const _ = true;
- */
-export async function convertBulletin(params: {
-  manualText?: string;
-  files?: File[];
-  product: string;
-  profile?: string;
-  /** Conversion library asset id (preferred over profile after EV-bridge). */
-  conversionLibraryId?: string;
-  /** Dissemination library asset id (transforms on Convert & Send / bulletin). */
-  disseminationLibraryId?: string;
-  /**
-   * Legacy exchange overlay. Ignored on convert-bulletin after EV-bridge hard cut
-   * (use disseminationLibraryId). Kept on the params type for transitional callers.
-   */
-  exchangeProfile?: string;
-  iwxxmVersion?: string;
-  lint?: boolean;
-  /** When true, fold decode residuals into remarks/HRT (omit for profile default). */
-  propagateResidualsToRemarks?: boolean;
-  /** When false, omit national RMK content from IWXXM (default true when omitted). */
-  includeNationalRemarks?: boolean;
-  /** National extension tokens (for example IWXXM_CA). */
-  extensions?: string[];
-  accessToken?: string;
-  signal?: AbortSignal;
-}): Promise<ConvertBulletinResponse> {
-  const formData = new FormData();
-  if (params.manualText?.trim()) {
-    formData.append('manual_text', params.manualText.trim());
-  }
-  if (params.files?.length) {
-    params.files.forEach((file) => formData.append('files', file));
-  }
-  formData.append('product', params.product.toUpperCase());
-  if (params.conversionLibraryId?.trim()) {
-    formData.append('conversion_library_id', params.conversionLibraryId.trim());
-  } else if (params.profile?.trim()) {
-    formData.append(
-      'conversion_library_id',
-      conversionLibraryIdFromProfile(params.profile),
-    );
-  }
-  if (params.disseminationLibraryId?.trim()) {
-    formData.append('dissemination_library_id', params.disseminationLibraryId.trim());
-  }
-  // EV-bridge hard cut: omit exchange_profile (Dissemination library owns packaging).
-  if (params.iwxxmVersion?.trim()) {
-    formData.append('iwxxm_version', params.iwxxmVersion.trim());
-  }
-  formData.append('lint', params.lint === false ? 'false' : 'true');
-  if (params.propagateResidualsToRemarks === true) {
-    formData.append('propagate_residuals_to_remarks', 'true');
-  } else if (params.propagateResidualsToRemarks === false) {
-    formData.append('propagate_residuals_to_remarks', 'false');
-  }
-  if (params.includeNationalRemarks === true) {
-    formData.append('include_national_remarks', 'true');
-  } else if (params.includeNationalRemarks === false) {
-    formData.append('include_national_remarks', 'false');
-  }
-  if (params.extensions?.length) {
-    for (const token of params.extensions) {
-      if (token.trim()) {
-        formData.append('extensions', token.trim());
-      }
-    }
-  }
-  const bearer = params.accessToken?.trim();
-  const headers: HeadersInit | undefined = bearer
-    ? { Authorization: `Bearer ${bearer}` }
-    : undefined;
-  const response = await withTimeout(
-    fetch(apiUrl('/convert-bulletin'), {
-      method: 'POST',
-      body: formData,
-      headers,
-      signal: params.signal,
-    }),
-    60000,
-  );
-
-  if (!response.ok) {
-    const error = await response.json().catch(() => ({
-      message: `Bulletin conversion failed: ${response.statusText}`,
-    }));
-    const detail = error.detail;
-    const message =
-      (typeof detail === 'object' && detail?.message) ||
-      detail ||
-      error.message ||
-      `HTTP ${response.status}`;
-    throw new Error(typeof message === 'string' ? message : JSON.stringify(message));
-  }
-
-  return (await response.json()) as ConvertBulletinResponse;
-}
-
-/**
- * Thrown when the backend returns HTTP 501 for a not-yet-implemented route.
- * @example
- * const _ = true;
- */
-export class EndpointNotImplementedError extends Error {
-  status: number;
-  code: string;
-
-  constructor(message: string, status = 501, code = 'not_implemented') {
-    super(message);
-    this.name = 'EndpointNotImplementedError';
-    this.status = status;
-    this.code = code;
-  }
-}
-
-/**
- * Ingest / validate IWXXM COLLECT (or gzipped COLLECT).
- *
- * **Endpoint**: POST /api/v1/ingest-collect (placeholder until implemented).
- * @example
- * const _ = true;
- */
-export async function ingestCollect(params: {
-  manualText?: string;
-  files?: File[];
-  profile?: string;
-  iwxxmVersion?: string;
-  accessToken?: string;
-  signal?: AbortSignal;
-}): Promise<{ message: string; status: string }> {
-  const formData = new FormData();
-  if (params.manualText?.trim()) {
-    formData.append('manual_text', params.manualText.trim());
-  }
-  if (params.files?.length) {
-    params.files.forEach((file) => formData.append('files', file));
-  }
-  formData.append('semantic_profile', wireSemanticProfile(params.profile));
-  formData.append('iwxxm_version', params.iwxxmVersion || DEFAULT_IWXXM_VERSION);
-
-  const response = await withTimeout(
-    fetch(apiUrl('/ingest-collect'), {
-      method: 'POST',
-      body: formData,
-      signal: params.signal,
-    }),
-    30000,
-  );
-
-  if (response.status === 501) {
-    const body = await response.json().catch(() => ({}));
-    throw new EndpointNotImplementedError(
-      body?.detail?.message ||
-        body?.message ||
-        'COLLECT / FTBP ingest is not implemented yet (placeholder).',
-      501,
-      body?.detail?.code || 'not_implemented',
-    );
-  }
-
-  if (!response.ok) {
-    const error = await response.json().catch(() => ({
-      message: `COLLECT ingest failed: ${response.statusText}`,
-    }));
-    throw new Error(
-      error.detail?.message || error.message || `HTTP ${response.status}`,
-    );
-  }
-
-  return (await response.json()) as { message: string; status: string };
-}
 
 /**
  * Lint TAC via tac-validate (parse gate + shared rules — not Schematron).
@@ -619,6 +153,18 @@ export async function lintTac(params: {
 
   return (await response.json()) as LintTacResponse;
 }
+
+/**
+ * Run layered IWXXM validation (TAC and/or XML).
+ *
+ * **Endpoint**: POST /api/v1/validate
+ *
+ * @param params.manualText - Optional TAC to convert then validate
+ * @param params.xmlContent - Optional IWXXM XML to validate directly
+ * @returns Layered validation report (`ValidateResponse`)
+ * @example
+ * const _ = true;
+ */
 
 /**
  * Run layered IWXXM validation (TAC and/or XML).
@@ -690,6 +236,14 @@ export async function validateIwxxm(params: {
  * @example
  * const _ = true;
  */
+
+/**
+ * Fetch IWXXM schema / profile pin status from the API.
+ *
+ * **Endpoint**: GET /api/v1/schema-status
+ * @example
+ * const _ = true;
+ */
 export async function fetchSchemaStatus(): Promise<{
   profile_pins?: {
     ca_eccc?: {
@@ -711,6 +265,14 @@ export async function fetchSchemaStatus(): Promise<{
     };
   };
 }
+
+/**
+ * Fetch the tac-validate issue registry catalog (F15 / E11-31).
+ *
+ * **Endpoint**: GET /api/v1/lint-issue-catalog
+ * @example
+ * const _ = true;
+ */
 
 /**
  * Fetch the tac-validate issue registry catalog (F15 / E11-31).
@@ -778,6 +340,18 @@ export async function fetchLintIssueCatalog(params?: {
  * @example
  * const _ = true;
  */
+
+/**
+ * Decode TAC into ordered Code | Explanation segments.
+ *
+ * **Endpoint**: POST /api/v1/decode-tac
+ *
+ * @param params.manualText - TAC text
+ * @param params.product - Required F6 product id
+ * @returns Ordered segments and residuals
+ * @example
+ * const _ = true;
+ */
 export async function decodeTac(params: {
   manualText: string;
   product: string;
@@ -822,42 +396,6 @@ export async function decodeTac(params: {
  * @example
  * const _ = true;
  */
-export async function convertMetarToIwxxmZip(params: {
-  manualText?: string;
-  files?: File[];
-}): Promise<Blob> {
-  const formData = new FormData();
-
-  if (params.manualText?.trim()) {
-    formData.append('manual_text', params.manualText.trim());
-  }
-
-  if (params.files && params.files.length > 0) {
-    params.files.forEach((file) => {
-      formData.append('files', file);
-    });
-  }
-
-  try {
-    const response = await fetch(apiUrl('/convert-zip'), {
-      method: 'POST',
-      body: formData,
-    });
-
-    if (!response.ok) {
-      const error = await response.json().catch(() => ({
-        message: `ZIP conversion failed: ${response.statusText}`,
-        errors: [],
-      }));
-      throw new Error(error.detail?.message || error.message);
-    }
-
-    return await response.blob();
-  } catch (error) {
-    console.error('ZIP conversion error:', error);
-    throw error;
-  }
-}
 
 /**
  * Fetch ICAO region for an airport code (F3 airport data services).
@@ -887,6 +425,15 @@ export async function fetchAirportRegion(icao: string): Promise<AirportRegionRes
  * @example
  * const _ = true;
  */
+
+/**
+ * Download file from blob
+ *
+ * @param blob - File blob to download
+ * @param filename - Filename for the download
+ * @example
+ * const _ = true;
+ */
 export function downloadBlob(blob: Blob, filename: string): void {
   const url = URL.createObjectURL(blob);
   const link = document.createElement('a');
@@ -903,243 +450,6 @@ export function downloadBlob(blob: Blob, filename: string): void {
  * @example
  * const _ = true;
  */
-export interface MassIngestFileResult {
-  name: string;
-  accepted: boolean;
-  reason: string | null;
-  size_bytes: number;
-  content: string | null;
-}
-
-/**
- * Response from ``POST /api/v1/ingest/mass`` (F33 / EV-042).
- * @example
- * const _ = true;
- */
-export interface MassIngestResponse {
-  accepted_count: number;
-  rejected_count: number;
-  results: MassIngestFileResult[];
-}
-
-/**
- * Auth-gated mass file/folder ingest with server-side caps and sniff guards.
- *
- * **Endpoint**: POST /api/v1/ingest/mass
- *
- * Client expands folder picks to files before upload; zip archives may be sent
- * as-is for server unpack ([Corpus: product §F33], [Corpus: api]).
- *
- * @param params.files - Multipart files and/or ``.zip`` archives
- * @param params.accessToken - Required Bearer JWT
- * @param params.signal - Optional abort signal
- * @returns Per-file accept/reject list and summary counts
- * @example
- * const _ = true;
- */
-export async function massIngestFiles(params: {
-  files: File[];
-  accessToken: string;
-  signal?: AbortSignal;
-}): Promise<MassIngestResponse> {
-  if (!params.accessToken.trim()) {
-    throw new Error('Sign in required for mass ingest');
-  }
-  if (!params.files.length) {
-    throw new Error('At least one file is required');
-  }
-
-  const formData = new FormData();
-  for (const file of params.files) {
-    formData.append('files', file, file.name);
-  }
-
-  const response = await withTimeout(
-    fetch(apiUrl('/ingest/mass'), {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${params.accessToken}`,
-      },
-      body: formData,
-      signal: params.signal,
-    }),
-    120000,
-  );
-
-  if (!response.ok) {
-    const error = await response.json().catch(() => ({
-      message: `Mass ingest failed: ${response.statusText}`,
-    }));
-    throw new Error(apiErrorMessage(error, `HTTP ${response.status}`));
-  }
-
-  return (await response.json()) as MassIngestResponse;
-}
-
-/**
- * Fetch a package-owned trust catalog by family (ADR-044).
- *
- * **Endpoint**: GET /api/v1/rule-catalogs
- * @example
- * const _ = true;
- */
-export async function fetchRuleCatalog(params: {
-  family: 'tac' | 'iwxxm' | 'conversion' | 'dissemination' | 'decoding';
-  product?: string;
-  signal?: AbortSignal;
-}): Promise<{
-  family: string;
-  items: Array<{
-    id: string;
-    title: string;
-    summary: string;
-    severity?: string | null;
-    tags?: string[];
-    issue_type?: string | null;
-    source_url?: string | null;
-    source_attribution?: string | null;
-    source_access?: string | null;
-    source_locator?: string | null;
-    conform_note?: string | null;
-  }>;
-}> {
-  const query = new URLSearchParams();
-  query.set('family', params.family);
-  if (params.product?.trim()) {
-    query.set('product', params.product.trim().toLowerCase());
-  }
-  const response = await fetch(apiUrl(`/rule-catalogs?${query.toString()}`), {
-    method: 'GET',
-    signal: params.signal,
-  });
-  if (!response.ok) {
-    throw new Error(`rule-catalogs failed: ${response.status}`);
-  }
-  return response.json() as Promise<{
-    family: string;
-    items: Array<{
-      id: string;
-      title: string;
-      summary: string;
-      severity?: string | null;
-      tags?: string[];
-      issue_type?: string | null;
-      source_url?: string | null;
-      source_attribution?: string | null;
-      source_access?: string | null;
-      source_locator?: string | null;
-      conform_note?: string | null;
-    }>;
-  }>;
-}
-
-/**
- * One code-name dictionary row from GET /code-name-dictionary.
- * @example
- * const _ = true;
- */
-export interface CodeNameDictionaryItem {
-  id: string;
-  code: string;
-  meaning: string;
-  products: string[];
-  countries: string[];
-  wmo_amendment: string | null;
-}
-
-/**
- * Facets for Code names filters.
- * @example
- * const _ = true;
- */
-export interface CodeNameDictionaryFacets {
-  products: string[];
-  countries: string[];
-  wmo_amendments: string[];
-}
-
-/**
- * Fetch the tagged Decoding code-name dictionary.
- *
- * **Endpoint**: GET /api/v1/code-name-dictionary
- * @example
- * const _ = true;
- */
-export async function fetchCodeNameDictionary(
-  params: {
-    q?: string;
-    product?: string;
-    country?: string;
-    wmo_amendment?: string;
-    signal?: AbortSignal;
-  } = {},
-): Promise<{
-  items: CodeNameDictionaryItem[];
-  facets: CodeNameDictionaryFacets;
-}> {
-  const query = new URLSearchParams();
-  if (params.q?.trim()) {
-    query.set('q', params.q.trim());
-  }
-  if (params.product?.trim()) {
-    query.set('product', params.product.trim());
-  }
-  if (params.country?.trim()) {
-    query.set('country', params.country.trim());
-  }
-  if (params.wmo_amendment?.trim()) {
-    query.set('wmo_amendment', params.wmo_amendment.trim());
-  }
-  const suffix = query.toString() ? `?${query.toString()}` : '';
-  const response = await fetch(apiUrl(`/code-name-dictionary${suffix}`), {
-    method: 'GET',
-    signal: params.signal,
-  });
-  if (!response.ok) {
-    throw new Error(`code-name-dictionary failed: ${response.status}`);
-  }
-  return response.json() as Promise<{
-    items: CodeNameDictionaryItem[];
-    facets: CodeNameDictionaryFacets;
-  }>;
-}
-
-/**
- * Selection-option kinds for Convert (four) + Send drawer (dissemination).
- * @example
- * const _ = true;
- */
-export type SelectionOptionKind =
-  | 'conversion'
-  | 'tac_validation'
-  | 'iwxxm_validation'
-  | 'decoding'
-  | 'dissemination';
-
-/**
- * Fetch deployed selection options for dropdowns (ADR-044 / TP-YCL-01).
- *
- * **Endpoint**: GET /api/v1/selection-options
- * @example
- * const _ = true;
- */
-export async function fetchSelectionOptions(params: {
-  kind: SelectionOptionKind;
-  signal?: AbortSignal;
-}): Promise<{ kind: string; options: Array<{ id: string; label: string }> }> {
-  const query = new URLSearchParams({ kind: params.kind });
-  const response = await fetch(apiUrl(`/selection-options?${query.toString()}`), {
-    method: 'GET',
-    signal: params.signal,
-  });
-  if (!response.ok) {
-    throw new Error(`selection-options failed: ${response.status}`);
-  }
-  return response.json() as Promise<{
-    kind: string;
-    options: Array<{ id: string; label: string }>;
-  }>;
-}
 
 export default {
   checkHealth,

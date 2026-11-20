@@ -360,7 +360,7 @@ describe('API Utils', () => {
       expect(body.get('decoding_library_id')).toBe('LIB.DECODING.ICAO_2025');
     });
 
-    it('appends validation, stop_on_error, bulletin, and issuing centre (ADR-023)', async () => {
+    it('appends validation, stop_on_error, bulletin, and issuing centre ()', async () => {
       mockFetchResponse({
         results: [],
         errors: [],
@@ -396,7 +396,7 @@ describe('API Utils', () => {
       expect(body.get('strict_validate')).toBe('true');
     });
 
-    it('appends Strict ADR-054 flags as false when toggles are off', async () => {
+    it('appends Strict flags as false when toggles are off', async () => {
       mockFetchResponse({
         results: [],
         errors: [],
@@ -847,10 +847,10 @@ describe('API Utils', () => {
   });
 
   /**
-   * T5.4 / TC-F11-001 / ADR-026 — msgspec HTTP shape parity guards.
+   * T5.4 TC-F11-001 — msgspec HTTP shape parity guards.
    * Keys match backend contract smoke; OpenAPI→TS types live in openapiTypes (EV-052).
    */
-  describe('msgspec HTTP shape parity (ADR-026 / T5.4)', () => {
+  describe('msgspec HTTP shape parity (T5.4)', () => {
     const requiredKeys = (obj: Record<string, unknown>, keys: string[]) => {
       for (const key of keys) {
         expect(obj).toHaveProperty(key);
@@ -1427,7 +1427,7 @@ describe('API Utils', () => {
     });
   });
 
-  describe('convertBulletin / ingestCollect (ADR-023/024)', () => {
+  describe('convertBulletin ingestCollect (/024)', () => {
     it('posts convert-bulletin with manual text and files', async () => {
       const body = {
         bulletin_meta: {

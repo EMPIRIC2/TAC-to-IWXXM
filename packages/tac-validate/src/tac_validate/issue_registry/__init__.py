@@ -1,12 +1,24 @@
-"""Auto-split package: loads chunked sources into this namespace (API-stable)."""
+"""Maintainable TAC lint issue registry (package split)."""
 
+# pyright: reportWildcardImportFromLibrary=false, reportConstantRedefinition=false, reportUnknownVariableType=false, reportUnknownParameterType=false, reportUnknownArgumentType=false, reportInvalidTypeForm=false, reportUnusedImport=false, reportPrivateUsage=false, reportGeneralTypeIssues=false
 from __future__ import annotations
 
-from pathlib import Path
+from tac_validate.issue_registry.api import (
+    ISSUES,
+    _strip_unresolved_braces,
+    by_code,
+    catalog_entries,
+    format_operator_message,
+    issue_from,
+)
+from tac_validate.issue_registry.spec import IssueSpec
 
-_pkg = Path(__file__).resolve().parent
-_CHUNKS = _pkg / "_chunks"
-__file__ = str(_pkg.parent / f"{_pkg.name}.py")
-_src = "".join(p.read_text(encoding="utf-8") for p in sorted(_CHUNKS.glob("*.src")))
-exec(compile(_src, __file__, "exec"), globals())
-del _pkg, _CHUNKS, _src
+__all__ = [
+    "ISSUES",
+    "IssueSpec",
+    "_strip_unresolved_braces",
+    "by_code",
+    "catalog_entries",
+    "format_operator_message",
+    "issue_from",
+]

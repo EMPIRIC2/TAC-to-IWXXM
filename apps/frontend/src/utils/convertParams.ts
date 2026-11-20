@@ -1,6 +1,6 @@
 /**
  * Map FileConverter conversion parameters onto `/api/v1/convert` multipart fields
- * and client-side conversion/validation/lint log filtering (ADR-023 / ADR-024).
+ * and client-side conversion/validation/lint log filtering ().
  * @example
  * const _ = true;
  */

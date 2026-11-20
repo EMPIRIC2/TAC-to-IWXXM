@@ -1,4 +1,4 @@
-"""HTTP profile wire resolution (F35 / EV-063 / ADR-036).
+"""HTTP profile wire resolution (F35 EV-063).
 
 Resolves multipart ``semantic_profile`` / ``exchange_profile`` and legacy ``profile``
 into tac2iwxxm emit keys. Unknown ids fail closed with HTTP 400.
@@ -41,10 +41,6 @@ def profile_wire_v2_enabled() -> bool:
     """
     Return whether nested semantic/exchange wire defaults are active.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (profile_wire_v2_enabled)
-    2
 
     Returns
     -------
@@ -58,10 +54,6 @@ def default_semantic_profile() -> str:
     """
     Default semantic profile id for the active wire mode.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (default_semantic_profile)
-    2
 
     Returns
     -------
@@ -77,10 +69,6 @@ def default_exchange_profile() -> str:
     """
     Default exchange profile id when packaging paths run.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (default_exchange_profile)
-    2
 
     Returns
     -------
@@ -189,11 +177,6 @@ def resolve_route_profiles(
     ------
     HTTPException
         HTTP 400 when semantic or exchange profile id is unknown.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (resolve_route_profiles)
-    2
     """
     semantic_raw = _clean(semantic_profile)
     legacy_raw = _clean(profile)

@@ -1,6 +1,6 @@
 # Shell script bats suite (EV-080 / #1077)
 
-[Corpus: adr/ADR-007] [Corpus: tests]
+ [Corpus: tests]
 
 **bats-core** tests for every `scripts/**/*.sh`. Layout mirrors `scripts/`.
 

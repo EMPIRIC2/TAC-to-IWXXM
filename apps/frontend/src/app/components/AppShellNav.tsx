@@ -1,5 +1,5 @@
 /**
- * Primary operator shell navigation — Convert, Decode visuals, History, Rule catalogs, Code names, Glossary, Station health.
+ * Primary operator shell navigation — Convert, Live map, History, Rule catalogs, Code names, Glossary, Station health.
  *
  * Peer tabs for the operator shell; not a FileConverter panel.
  */
@@ -49,7 +49,7 @@ const TABS: ShellPrimaryView[] = [
 ];
 
 /**
- * Render Convert, Decode visuals, History, Rule catalogs, Code names, Glossary, and Station health.
+ * Render Convert, Live map, History, Rule catalogs, Code names, Glossary, and Station health.
  *
  * @param props.activeView - Currently selected shell view
  * @param props.onNavigate - View change handler

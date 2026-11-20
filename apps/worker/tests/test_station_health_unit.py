@@ -1,4 +1,4 @@
-"""Worker station health helpers ([Corpus: tests] — no skips)."""
+"""Worker station health helpers ([Corpus: tests] - no skips)."""
 
 from __future__ import annotations
 

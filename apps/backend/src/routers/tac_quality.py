@@ -1,703 +1,78 @@
-"""TAC lint, decode, and lint-issue-catalog routes (EV-037 TD-3b)."""
+"""Facade for ``tac_quality.py`` (line-cap split)."""
 
-from __future__ import annotations
+import sys
+import types
 
-from dataclasses import dataclass
-from typing import Any
-
-from fastapi import APIRouter, File, Form, HTTPException, Request, UploadFile
-from fastapi.responses import Response
-from tac_validate.api import lint_with_profile
-from tac_validate.issue_registry import catalog_entries as tac_catalog_entries
-from tac_validate.profiles import PROFILE_ANNEX3
-
-from src import api as api_surface
-from src.schemas.airport import get_airport_validator
-from src.schemas.validation import (
-    DecodeResidualModel,
-    DecodeSegmentModel,
-    DecodeTacResponse,
-    LintFixModel,
-    LintIssueCatalogEntryModel,
-    LintIssueCatalogResponse,
-    LintIssueModel,
-    LintTacResponse,
+from . import tac_quality_part_2 as _part2
+from .tac_quality_part_1 import (
+    _advisory_explanation,
+    _DecodedResidual,
+    _DecodedRow,
+    _enrich_advisory_decode,
+    _ensure_airport_location_resolver,
+    _location_resolver_ready,
+    decode_tac_endpoint,
+    lint_issue_catalog,
+    router,
 )
-from src.utilities.iwxxm_pass_through import lint_iwxxm_pass_through
-from tac2iwxxm import decode_tac as tac2iwxxm_decode_tac
+from .tac_quality_part_2 import (
+    get_airport_validator,
+    lint_tac,
+    station_point,
+)
 
-router = APIRouter(prefix="/api/v1", tags=["Validation"])
+_SYNC = {"get_airport_validator", "_facade_sync_probe"}
+_ORIG: dict[str, object] = {}
+for _n in _SYNC:
+    if hasattr(_part2, _n):
+        _ORIG.setdefault(_n, getattr(_part2, _n))
 
-_location_resolver_ready = False
 
+class _TacQualityModule(types.ModuleType):
+    """Sync facade attribute patches into split part modules."""
 
-def _ensure_airport_location_resolver() -> None:
-    """Install a per-station OpenAIP lookup for decode names (#724)."""
-    global _location_resolver_ready
-    if _location_resolver_ready:
-        return
-    from tac_decoding import set_location_name_resolver
-
-    def _resolve(icao: str) -> str | None:
+    def __setattr__(self, name: str, value: object) -> None:
         """
-        Look up one station name.
+        Internal helper ``__setattr__``.
 
         Parameters
         ----------
-        icao : str
-            Station location indicator.
-
-        Returns
-        -------
-        str | None
-            Airport name, or None when the lookup misses.
+        name : object
+            Argument ``name``.
+        value : object
+            Argument ``value``.
         """
-        from src.services.airport_name_lookup import lookup_airport_name
+        if name in _SYNC and hasattr(_part2, name):
+            setattr(_part2, name, value)
+        super().__setattr__(name, value)
 
-        return lookup_airport_name(icao)
+    def __delattr__(self, name: str) -> None:
+        """
+        Internal helper ``__delattr__``.
 
-    set_location_name_resolver(_resolve)
-    _location_resolver_ready = True
-
-
-@dataclass(frozen=True)
-class _DecodedRow:
-    """Internal helper ``_DecodedRow``."""
-
-    start: int
-    end: int
-    code: str
-    explanation: str
-
-
-@dataclass(frozen=True)
-class _DecodedResidual:
-    """Internal helper ``_DecodedResidual``."""
-
-    start: int
-    end: int
-    text: str
+        Parameters
+        ----------
+        name : object
+            Argument ``name``.
+        """
+        if name in _ORIG and hasattr(_part2, name):
+            setattr(_part2, name, _ORIG[name])
+        super().__delattr__(name)
 
 
-def _advisory_explanation(product: str, label: str) -> str:
-    """
-    Internal helper ``_advisory_explanation``.
+sys.modules[__name__].__class__ = _TacQualityModule
 
-    Parameters
-    ----------
-    product : object
-        Argument ``product``.
-    label : object
-        Argument ``label``.
-
-    Returns
-    -------
-    object
-        Return value.
-    """
-    common: dict[str, str] = {
-        "DTG": "Issue time",
-        "RMK": "Remarks",
-        "NXT NOTICE": "Next notice",
-        "NXT ADVISORY": "Next advisory",
-    }
-    if label in common:
-        return common[label]
-    if product == "VONA":
-        return {
-            "VOLCANO": "Volcano",
-            "PSN": "Location",
-            "AREA": "Area",
-            "NOTICE NR": "Notice number",
-            "CURRENT COLOUR CODE": "Current colour code",
-            "PREVIOUS COLOUR CODE": "Previous colour code",
-            "ACT STS": "Activity status",
-            "VA CLD HGT": "Ash cloud height",
-            "HGT SOURCE": "Height source",
-            "MOV": "Movement",
-            "CTC": "Contact",
-        }.get(label, label.replace("_", " ").title())
-    return {
-        "SWXC": "Center",
-        "SWX EFFECT": "Effect",
-        "ADVISORY NR": "Advisory number",
-        "OBS SWX": "Observed space weather",
-        "FCST SWX +6 HR": "Forecast +6 hours",
-        "FCST SWX +12 HR": "Forecast +12 hours",
-        "FCST SWX +18 HR": "Forecast +18 hours",
-        "FCST SWX +24 HR": "Forecast +24 hours",
-    }.get(label, label.replace("_", " ").title())
-
-
-def _enrich_advisory_decode(
-    tac_text: str,
-    *,
-    product: str,
-    segments: list[Any],
-    residuals: list[Any],
-    summary: str | None,
-) -> tuple[list[_DecodedRow], list[_DecodedResidual], str]:
-    """
-    Internal helper ``_enrich_advisory_decode``.
-
-    Parameters
-    ----------
-    tac_text : object
-        Argument ``tac_text``.
-    product : object
-        Argument ``product``.
-    segments : object
-        Argument ``segments``.
-    residuals : object
-        Argument ``residuals``.
-    summary : object
-        Argument ``summary``.
-
-    Returns
-    -------
-    object
-        Return value.
-    """
-    if product not in {"VONA", "SWXA"}:
-        return (
-            [_DecodedRow(start=s.start, end=s.end, code=s.code, explanation=s.explanation) for s in segments],
-            [_DecodedResidual(start=r.start, end=r.end, text=r.text) for r in residuals],
-            summary or "",
-        )
-    if segments:
-        return (
-            [_DecodedRow(start=s.start, end=s.end, code=s.code, explanation=s.explanation) for s in segments],
-            [_DecodedResidual(start=r.start, end=r.end, text=r.text) for r in residuals],
-            summary or "",
-        )
-
-    lines = tac_text.splitlines()
-    if not lines:
-        return [], [], summary or ""
-
-    enriched: list[_DecodedRow] = []
-    active_label: str | None = None
-    active_value = ""
-    for line in lines:
-        raw = line.rstrip()
-        if not raw.strip():
-            continue
-        if ":" in raw:
-            if active_label and active_value.strip():
-                value = active_value.strip()
-                start = tac_text.find(value)
-                enriched.append(
-                    _DecodedRow(
-                        start=max(start, 0),
-                        end=max(start, 0) + len(value),
-                        code=value,
-                        explanation=_advisory_explanation(product, active_label),
-                    )
-                )
-            label, value = raw.split(":", 1)
-            active_label = label.strip().upper()
-            active_value = value.strip()
-            continue
-        if active_label and raw.startswith((" ", "\t")):
-            active_value = f"{active_value} {raw.strip()}".strip()
-            continue
-        if not enriched and product == "SWXA" and raw.upper().startswith("SWX ADVISORY"):
-            start = tac_text.find(raw)
-            enriched.append(
-                _DecodedRow(
-                    start=max(start, 0),
-                    end=max(start, 0) + len(raw),
-                    code=raw.strip(),
-                    explanation="Advisory header",
-                )
-            )
-        elif not enriched and product == "VONA" and raw.upper().startswith("VONA"):
-            start = tac_text.find(raw)
-            enriched.append(
-                _DecodedRow(
-                    start=max(start, 0),
-                    end=max(start, 0) + len(raw),
-                    code=raw.strip(),
-                    explanation="Notice type",
-                )
-            )
-    if active_label and active_value.strip():
-        value = active_value.strip()
-        start = tac_text.find(value)
-        enriched.append(
-            _DecodedRow(
-                start=max(start, 0),
-                end=max(start, 0) + len(value),
-                code=value,
-                explanation=_advisory_explanation(product, active_label),
-            )
-        )
-    if not enriched:
-        return [], [_DecodedResidual(start=r.start, end=r.end, text=r.text) for r in residuals], summary or ""
-
-    summary_parts: list[str] = []
-    if product == "VONA":
-        volcano = next((row.code for row in enriched if row.explanation == "Volcano"), "")
-        colour = next((row.code for row in enriched if row.explanation == "Current colour code"), "")
-        if volcano:
-            summary_parts.append(f"VONA for {volcano}.")
-        if colour:
-            summary_parts.append(f"Current colour code {colour}.")
-    else:
-        center = next((row.code for row in enriched if row.explanation == "Center"), "")
-        effect = next((row.code for row in enriched if row.explanation == "Effect"), "")
-        if center:
-            summary_parts.append(f"SWX advisory from {center}.")
-        if effect:
-            summary_parts.append(f"Effect: {effect}.")
-    return enriched, [], " ".join(summary_parts).strip() or (summary or "")
-
-
-@router.get(
-    "/lint-issue-catalog",
-    response_model=LintIssueCatalogResponse,
-    summary="Lint and validation catalog",
-    responses={},
-)
-async def lint_issue_catalog(
-    product: str | None = None,
-    family: str | None = None,
-    issue_type: str | None = None,
-    source_access: str | None = None,
-    semantic_profile: str | None = None,
-    exchange_profile: str | None = None,
-) -> Response:
-    """
-    Return the TAC lint and IWXXM validation issue catalog.
-
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (lint_issue_catalog)
-    2
-
-    Parameters
-    ----------
-    product : object
-        Argument ``product``.
-    family : object
-        Argument ``family``.
-    issue_type : object
-        Argument ``issue_type``.
-    source_access : object
-        Argument ``source_access``.
-    semantic_profile : object
-        Argument ``semantic_profile``.
-    exchange_profile : object
-        Argument ``exchange_profile``.
-
-    Returns
-    -------
-    object
-        Return value.
-    """
-    from dissemination.exchange_registry import resolve_exchange_profile
-    from tac_validate.catalog_attribution import attribution_for
-    from tac_validate.issue_catalog_meta import classify_issue_type
-
-    from src.services.iwxxm_validation_catalog import iwxxm_validation_catalog_rows
-    from src.services.lint_catalog_profile_filter import (
-        exchange_profiles_from_tags,
-        row_matches_profile,
-        semantic_profiles_from_tags,
-    )
-    from src.utilities.profile_wire import resolve_route_profiles
-
-    family_key = (family or "").strip().lower() or None
-    if family_key is not None and family_key not in {"lint", "iwxxm"}:
-        family_key = None
-    issue_type_key = (issue_type or "").strip().lower() or None
-    source_access_key = (source_access or "").strip().lower() or None
-
-    semantic_raw = (semantic_profile or "").strip()
-    exchange_raw = (exchange_profile or "").strip()
-    semantic_canonical: str | None = None
-    exchange_canonical: str | None = None
-    if semantic_raw:
-        semantic_canonical = resolve_route_profiles(
-            semantic_profile=semantic_raw,
-            for_packaging=False,
-        ).semantic_canonical
-    if exchange_raw:
-        resolved_ex = resolve_exchange_profile(exchange_raw)
-        if resolved_ex is None:
-            raise HTTPException(
-                status_code=400,
-                detail={
-                    "code": "invalid_exchange_profile",
-                    "message": f"Unknown exchange profile {exchange_raw!r}",
-                },
-            )
-        exchange_canonical = resolved_ex.wire_id
-
-    issues: list[LintIssueCatalogEntryModel] = []
-
-    if family_key in (None, "lint"):
-        entries = tac_catalog_entries(product=product)
-        for spec in entries:
-            attr = attribution_for(spec.code)
-            tags = list(spec.tags)
-            issues.append(
-                LintIssueCatalogEntryModel(
-                    code=spec.code,
-                    severity=spec.severity,
-                    message_template=spec.message_template,
-                    product=spec.product,
-                    tags=tags,
-                    source_id=attr.get("source_id"),
-                    source_url=attr.get("source_url"),
-                    source_attribution=attr.get("source_attribution"),
-                    family=attr.get("family") or "lint",
-                    source_type=attr.get("source_type"),
-                    status=attr.get("status"),
-                    semantic_identifier=attr.get("semantic_identifier"),
-                    last_verified=attr.get("last_verified"),
-                    replacement_url=attr.get("replacement_url"),
-                    issue_type=classify_issue_type(
-                        code=spec.code,
-                        tags=spec.tags,
-                        family="lint",
-                    ),
-                    source_locator=attr.get("source_locator"),
-                    source_access=attr.get("source_access"),
-                    semantic_profiles=semantic_profiles_from_tags(tags),
-                    exchange_profiles=exchange_profiles_from_tags(tags),
-                )
-            )
-
-    if family_key in (None, "iwxxm"):
-        for row in iwxxm_validation_catalog_rows():
-            tags = list(row.get("tags") or [])
-            issues.append(
-                LintIssueCatalogEntryModel(
-                    code=str(row["code"]),
-                    severity=str(row["severity"]),
-                    message_template=str(row["message_template"]),
-                    product=row.get("product"),
-                    tags=tags,
-                    source_id=row.get("source_id"),
-                    source_url=row.get("source_url"),
-                    source_attribution=row.get("source_attribution"),
-                    family=row.get("family"),
-                    source_type=row.get("source_type"),
-                    status=row.get("status"),
-                    semantic_identifier=row.get("semantic_identifier"),
-                    last_verified=row.get("last_verified"),
-                    replacement_url=row.get("replacement_url"),
-                    issue_type=row.get("issue_type"),
-                    source_locator=row.get("source_locator"),
-                    source_access=row.get("source_access"),
-                    semantic_profiles=semantic_profiles_from_tags(tags),
-                    exchange_profiles=exchange_profiles_from_tags(tags),
-                )
-            )
-    if issue_type_key or source_access_key:
-        filtered: list[LintIssueCatalogEntryModel] = []
-        for row in issues:
-            if issue_type_key and (row.issue_type or "").lower() != issue_type_key:
-                continue
-            if source_access_key and (row.source_access or "").lower() != source_access_key:
-                continue
-            filtered.append(row)
-        issues = filtered
-
-    if semantic_canonical is not None:
-        issues = [row for row in issues if row_matches_profile(row.semantic_profiles, selected=semantic_canonical)]
-    if exchange_canonical is not None:
-        issues = [row for row in issues if row_matches_profile(row.exchange_profiles, selected=exchange_canonical)]
-
-    return api_surface.msgspec_json_response(LintIssueCatalogResponse(issues=issues))
-
-
-@router.post(
-    "/lint-tac",
-    response_model=LintTacResponse,
-    summary="Lint TAC or IWXXM",
-    responses={
-        415: {"description": "Unsupported Media Type - multipart/form-data required"},
-    },
-)
-async def lint_tac(
-    request: Request,
-    manual_text: str = Form(default="", description="TAC or IWXXM XML to lint"),
-    product: str = Form(
-        default="METAR",
-        description="Product type, or iwxxm for XML lint (default METAR)",
-    ),
-    semantic_profile: str = Form(
-        default=PROFILE_ANNEX3,
-        description="Semantic / lint profile id (default annex3)",
-    ),
-    icao: str = Form(
-        default="",
-        description="Optional station ICAO; TAF auto-detects when omitted",
-    ),
-    files: list[UploadFile] | None = File(None),
-) -> Response:
-    """
-    Lint TAC or IWXXM XML. The body must be multipart form data.
-
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (lint_tac)
-    2
-
-    Parameters
-    ----------
-    request : object
-        Argument ``request``.
-    manual_text : object
-        Argument ``manual_text``.
-    product : object
-        Argument ``product``.
-    files : object
-        Argument ``files``.
-
-    Returns
-    -------
-    object
-        Return value.
-    """
-    content_type = (request.headers.get("content-type") or "").lower()
-    if "multipart/form-data" not in content_type:
-        raise HTTPException(
-            status_code=415,
-            detail="POST /api/v1/lint-tac requires multipart/form-data",
-        )
-
-    tac_text = manual_text or ""
-    if files:
-        joined, err = await api_surface.read_upload_files_text(files)
-        if err:
-            raise HTTPException(status_code=400, detail={"code": "upload_rejected", "message": err})
-        if joined:
-            tac_text = joined
-
-    product_u = api_surface.normalize_api_product(product, default="METAR")
-    if product_u == "IWXXM":
-        report = lint_iwxxm_pass_through(tac_text)
-        return api_surface.msgspec_json_response(
-            LintTacResponse(
-                ok=report.ok,
-                product=report.product,
-                issues=[
-                    LintIssueModel(
-                        severity=i.severity,
-                        code=i.code,
-                        message=i.message,
-                        location=i.location,
-                        start=i.start,
-                        end=i.end,
-                    )
-                    for i in report.issues
-                ],
-                fixes=[],
-            )
-        )
-    # Direct unit calls may leave FastAPI Form defaults unbound.
-    profile_raw = semantic_profile if type(semantic_profile) is str else PROFILE_ANNEX3
-    icao_raw = icao if type(icao) is str else ""
-    profile = (profile_raw or PROFILE_ANNEX3).strip() or PROFILE_ANNEX3
-    station = (icao_raw or "").strip() or None
-    try:
-        from tac2iwxxm.profile_registry import resolve_semantic_profile
-
-        resolved = resolve_semantic_profile(profile)
-        profile_key = resolved.emit_key if resolved is not None else profile
-    except Exception:
-        profile_key = profile
-    try:
-        report = lint_with_profile(
-            tac_text,
-            product=product_u,
-            profile=profile_key,
-            icao=station,
-        )
-    except ValueError as exc:
-        raise HTTPException(
-            status_code=400,
-            detail={"code": "invalid_semantic_profile", "message": str(exc)},
-        ) from exc
-    lint_issues = [
-        LintIssueModel(
-            severity=i.severity,
-            code=i.code,
-            message=i.message,
-            location=i.location,
-            start=getattr(i, "start", None),
-            end=getattr(i, "end", None),
-        )
-        for i in report.issues
-    ]
-    # Pipeline overlay: decode residuals → PARTIAL_DECODE warning.
-    # Emit at API orchestration — not from the pack engine.
-    # Skip WMO AHL bulletins: whole-blob decode treats sibling reports as
-    # residuals; convert-bulletin maps residuals per contained report instead.
-    from tac_validate.issue_registry import issue_from as lint_issue_from
-
-    from tac2iwxxm import BulletinSplitError, split_bulletin
-
-    try:
-        split_bulletin(tac_text, product=product_u)
-        is_ahl_bulletin = True
-    except BulletinSplitError:
-        is_ahl_bulletin = False
-
-    if not is_ahl_bulletin:
-        decoded = tac2iwxxm_decode_tac(tac_text, product=product_u)
-        residual_spans = [r for r in decoded.residuals if getattr(r, "text", None) and str(r.text).strip()]
-        if residual_spans and not any(i.code == "PARTIAL_DECODE" for i in lint_issues):
-            partial = lint_issue_from(
-                "PARTIAL_DECODE",
-                start=residual_spans[0].start,
-                end=residual_spans[-1].end,
-                location="decode",
-            )
-            lint_issues.append(
-                LintIssueModel(
-                    severity=partial.severity,
-                    code=partial.code,
-                    message=partial.message,
-                    location=partial.location,
-                    start=partial.start,
-                    end=partial.end,
-                )
-            )
-    return api_surface.msgspec_json_response(
-        LintTacResponse(
-            ok=report.ok,
-            product=report.product,
-            issues=lint_issues,
-            fixes=[LintFixModel(code=f.code, message=f.message, replacement=f.replacement) for f in report.fixes],
-        )
-    )
-
-
-@router.post(
-    "/decode-tac",
-    tags=["Conversion"],
-    summary="Decode TAC",
-    response_model=DecodeTacResponse,
-    responses={
-        415: {"description": "Unsupported Media Type - multipart/form-data required"},
-        422: {"description": "Missing required product field"},
-    },
-)
-async def decode_tac_endpoint(
-    request: Request,
-    product: str = Form(..., description="TAC product (required)"),
-    manual_text: str = Form(default="", description="TAC text to decode"),
-    files: list[UploadFile] | None = File(None),
-) -> Response:
-    """
-    Decode TAC into annotated segments and a plain-language summary.
-
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (decode_tac_endpoint)
-    2
-
-    Parameters
-    ----------
-    request : object
-        Argument ``request``.
-    product : object
-        Argument ``product``.
-    manual_text : object
-        Argument ``manual_text``.
-    files : object
-        Argument ``files``.
-
-    Returns
-    -------
-    object
-        Return value.
-    """
-    content_type = (request.headers.get("content-type") or "").lower()
-    if "multipart/form-data" not in content_type:
-        raise HTTPException(
-            status_code=415,
-            detail="POST /api/v1/decode-tac requires multipart/form-data",
-        )
-
-    tac_text = manual_text or ""
-    if files:
-        joined, err = await api_surface.read_upload_files_text(files)
-        if err:
-            raise HTTPException(status_code=400, detail={"code": "upload_rejected", "message": err})
-        if joined:
-            tac_text = joined
-
-    product_u = api_surface.normalize_api_product(product, default=None)
-    _ensure_airport_location_resolver()
-    result = tac2iwxxm_decode_tac(tac_text, product=product_u)
-    segments, residuals, summary = _enrich_advisory_decode(
-        tac_text,
-        product=product_u,
-        segments=list(result.segments),
-        residuals=list(result.residuals),
-        summary=result.summary,
-    )
-    return api_surface.msgspec_json_response(
-        DecodeTacResponse(
-            product=result.product,
-            segments=[
-                DecodeSegmentModel(
-                    start=s.start,
-                    end=s.end,
-                    code=s.code,
-                    explanation=s.explanation,
-                )
-                for s in segments
-            ],
-            residuals=[DecodeResidualModel(start=r.start, end=r.end, text=r.text) for r in residuals],
-            summary=summary,
-        )
-    )
-
-
-@router.get("/stations/{icao}")
-def station_point(icao: str) -> dict[str, Any]:
-    """
-    Return the map point for one station ID.
-
-    The airport catalog is already loaded for ICAO checks. This reads that
-    one record. It does not call an external map service.
-
-
-    Parameters
-    ----------
-    icao :
-        Four-character station location indicator.
-
-    Returns
-    -------
-    dict[str, Any]
-        ICAO code, name, and decimal degrees. Unknown codes return null
-        coordinates so a map lookup is a normal miss, not an error response.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (station_point)
-    2
-    """
-    code = icao.strip().upper()
-    if len(code) != 4 or not code.isalnum() or not code[0].isalpha():
-        return {"icao": code, "name": None, "latitude": None, "longitude": None}
-    airport = get_airport_validator().get_airport(code)
-    coordinates = None if airport is None else airport.coordinates
-    if airport is None or coordinates is None:
-        return {"icao": code, "name": None, "latitude": None, "longitude": None}
-    return {
-        "icao": airport.icao,
-        "name": airport.name,
-        "latitude": coordinates.latitude,
-        "longitude": coordinates.longitude,
-    }
+__all__ = [
+    "_DecodedResidual",
+    "_DecodedRow",
+    "_advisory_explanation",
+    "_enrich_advisory_decode",
+    "_ensure_airport_location_resolver",
+    "_location_resolver_ready",
+    "decode_tac_endpoint",
+    "get_airport_validator",
+    "lint_issue_catalog",
+    "lint_tac",
+    "router",
+    "station_point",
+]

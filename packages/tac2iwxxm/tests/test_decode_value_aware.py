@@ -3,7 +3,7 @@
 Explanations must carry parsed values (wind direction/speed/gusts, temps,
 visibility, pressure, times, change groups) - not only group labels - while
 segment ``start``/``end`` offsets stay identical to pre-F9 behavior (additive
-contract; ADR-025).
+contract; ).
 """
 
 from __future__ import annotations

@@ -1,4 +1,4 @@
-"""TC-EVRPC-009 — tac-decoding package parity (ADR-044)."""
+"""TC-EVRPC-009 — tac-decoding package parity ."""
 
 from __future__ import annotations
 

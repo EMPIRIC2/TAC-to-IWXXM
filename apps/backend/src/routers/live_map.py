@@ -23,11 +23,6 @@ def get_live_map_cache() -> LiveMapCache:
     -------
     LiveMapCache
         Cache shared by this API process.
-
-    Examples
-    --------
-    >>> 1 + 1
-    2
     """
     global _cache
     if _cache is None:
@@ -42,11 +37,6 @@ def set_live_map_cache(cache: LiveMapCache | None) -> None:
     ----------
     cache : LiveMapCache | None
         Cache to use, or None to clear it.
-
-    Examples
-    --------
-    >>> 1 + 1
-    2
     """
     global _cache
     _cache = cache
@@ -89,11 +79,6 @@ def read_live_map(
     -------
     dict[str, object]
         A ``places`` list for the box.
-
-    Examples
-    --------
-    >>> 1 + 1
-    2
     """
     south = min(90.0, max(-90.0, south))
     north = min(90.0, max(-90.0, north))
@@ -138,6 +123,10 @@ def _places_for_browser(
 ) -> list[dict[str, object]]:
     """Leave stored XML and issue notes off the map list.
 
+    Each report keeps ``observed_at`` and ``tac``. When the cache row already
+    carries ``valid_from`` / ``valid_to``, those stamps are passed through for
+    the Active reports filter on Decode visuals.
+
     Parameters
     ----------
     places : Sequence[Mapping[str, object]]
@@ -146,20 +135,24 @@ def _places_for_browser(
     Returns
     -------
     list[dict[str, object]]
-        The same places, with each report reduced to its time and TAC.
-
-    Examples
-    --------
-    >>> 1 + 1
-    2
+        The same places, with each report reduced to time, TAC, and optional
+        validity stamps.
     """
     slim: list[dict[str, object]] = []
     for place in places:
         reports = cast(list[dict[str, object]], place["reports"])
-        slim.append(
-            {
-                **place,
-                "reports": [{"observed_at": report["observed_at"], "tac": report["tac"]} for report in reports],
+        slim_reports: list[dict[str, object]] = []
+        for report in reports:
+            row: dict[str, object] = {
+                "observed_at": report["observed_at"],
+                "tac": report["tac"],
             }
-        )
+            valid_from = report.get("valid_from")
+            valid_to = report.get("valid_to")
+            if isinstance(valid_from, str) and valid_from.strip():
+                row["valid_from"] = valid_from
+            if isinstance(valid_to, str) and valid_to.strip():
+                row["valid_to"] = valid_to
+            slim_reports.append(row)
+        slim.append({**place, "reports": slim_reports})
     return slim

@@ -7,7 +7,7 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { DisseminationDrawer, resolveCandidateIwxxmXml } from './DisseminationDrawer';
-import { DRAWER_SINK_TYPES, isPreflightGreen } from '/utils/dissemination';
+import { DRAWER_SINK_TYPES, isPreflightGreen } from '@/utils/dissemination';
 
 const mockRunDisseminationQueue = vi.hoisted(() => vi.fn());
 const actualRunDisseminationQueue = vi.hoisted(() => ({

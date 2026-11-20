@@ -18,11 +18,6 @@ def get_config_env() -> str:
     -------
     str
         Active config profile (``local`` or ``prod``).
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (get_config_env)
-    2
     """
     return os.getenv("METAR_CONFIG_ENV", "local").strip() or "local"
 
@@ -40,11 +35,6 @@ def config_path(env: str | None = None) -> Path:
     -------
     Path
         Path to ``config/deploy/profiles/{env}.json`` under the repository root.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (config_path)
-    2
     """
     profile = (env or get_config_env()).strip() or "local"
     return _REPO_ROOT / "config" / "deploy" / "profiles" / f"{profile}.json"
@@ -70,11 +60,6 @@ def load_config(env: str | None = None) -> dict[str, Any]:
         When the profile file is missing.
     json.JSONDecodeError
         When the file is not valid JSON.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (load_config)
-    2
     """
     path = config_path(env)
     with path.open(encoding="utf-8") as handle:
@@ -94,11 +79,6 @@ def get_supabase_url_from_config(env: str | None = None) -> str:
     -------
     str
         ``supabase.url`` from config, or empty string when unset.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (get_supabase_url_from_config)
-    2
     """
     try:
         cfg = load_config(env)
@@ -125,11 +105,6 @@ def get_cors_origins_from_config(env: str | None = None) -> list[str]:
     -------
     list[str]
         ``api.corsOrigins`` from config, or empty list when unset.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (get_cors_origins_from_config)
-    2
     """
     try:
         cfg = load_config(env)
@@ -160,11 +135,6 @@ def get_frontend_url_from_config(env: str | None = None) -> str:
     -------
     str
         ``api.frontendUrl`` from config, or empty string when unset.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (get_frontend_url_from_config)
-    2
     """
     try:
         cfg = load_config(env)

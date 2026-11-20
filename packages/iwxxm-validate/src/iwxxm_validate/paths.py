@@ -26,10 +26,6 @@ def packaged_schemas_root() -> Path | None:
     The subset is present after ``make sync-iwxxm-validate-schemas`` or inside a
     published wheel. ``MANIFEST.json`` alone does not count as materialised.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (packaged_schemas_root)
-    2
 
     Returns
     -------
@@ -49,10 +45,6 @@ def repo_root() -> Path:
 
     Honours ``IWXXM_SCHEMAS_ROOT`` parent when set to ``…/vendor/schemas/iwxxm``.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (repo_root)
-    2
 
     Returns
     -------
@@ -76,10 +68,6 @@ def vendor_iwxxm_root() -> Path:
     """
     Return ``iwxxm`` schema root (packaged subset or ``vendor/schemas/iwxxm``).
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (vendor_iwxxm_root)
-    2
 
     Returns
     -------
@@ -96,10 +84,6 @@ def vendor_iwxxm_us_root() -> Path:
     """
     Return ``iwxxm-us`` schema root (packaged subset or vendor pin).
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (vendor_iwxxm_us_root)
-    2
 
     Returns
     -------
@@ -116,10 +100,6 @@ def vendor_iwxxm_ca_root() -> Path:
     """
     Return ``iwxxm-ca`` schema root (packaged subset or vendor pin).
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (vendor_iwxxm_ca_root)
-    2
 
     Returns
     -------
@@ -141,10 +121,6 @@ def ca_xsd_path(*, tag: str = "3.0") -> Path | None:
     tag : str, optional
         Pin subdirectory (default ``3.0`` per ``vendor/manifest.json``).
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (ca_xsd_path)
-    2
 
     Returns
     -------
@@ -172,10 +148,6 @@ def version_dir(iwxxm_version: str) -> Path:
     iwxxm_version : str
         Release line such as ``2023-1`` or ``2025-2``.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (version_dir)
-    2
 
     Returns
     -------
@@ -192,10 +164,6 @@ def xsd_path(iwxxm_version: str) -> Path:
     """
     Return path to ``iwxxm.xsd`` for ``iwxxm_version``.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (xsd_path)
-    2
 
     Parameters
     ----------
@@ -217,10 +185,6 @@ def schematron_path(iwxxm_version: str) -> Path:
     """
     Return path to ``rule/iwxxm.sch`` for ``iwxxm_version``.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (schematron_path)
-    2
 
     Parameters
     ----------
@@ -242,10 +206,6 @@ def codelists_dir(iwxxm_version: str) -> Path:
     """
     Return directory of bundled RDF codelists for Schematron ``document()``.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (codelists_dir)
-    2
 
     Parameters
     ----------
@@ -269,10 +229,6 @@ def us_catalog_path() -> Path | None:
 
     Prefers ``3.0/united-states-catalog.xml`` under the vendored / packaged pin.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (us_catalog_path)
-    2
 
     Returns
     -------
@@ -293,11 +249,6 @@ def us_catalog_path() -> Path | None:
 def clear_path_caches() -> None:
     """
     Clear cached version directory lookups (tests / after schema sync).
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (clear_path_caches)
-    2
     """
     version_dir.cache_clear()
 

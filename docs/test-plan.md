@@ -72,5 +72,5 @@ job exist. Run `make check-fast` for the local subset.
 
 CI enforces **100%** line+branch coverage on the inventoried Python, Vitest, and
 `scripts/` surfaces (`fail_under = 100`). Standing gate docs:
-TC-EV080-009 and ADR-007 (local architecture decision copy when present).
+TC-EV080-009 and (local architecture decision copy when present).
 

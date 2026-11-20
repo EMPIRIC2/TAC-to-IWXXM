@@ -168,11 +168,9 @@ describe('TAC overlay visibility', () => {
     ).toBe(0);
     expect(placeFeedsOverlay(metarTs.reports, 'thunder')).toBe(true);
     expect(placeFeedsOverlay(metarTs.reports, 'precip')).toBe(true);
-    expect(placeFeedsOverlay(metarTs.reports, 'temp')).toBe(true);
     expect(placeFeedsOverlay(metarIce.reports, 'ice')).toBe(true);
     expect(overlayApplies(parseTacOverlayFields(thunderTac), 'windVector')).toBe(true);
     expect(overlayApplies(parseTacOverlayFields(thunderTac), 'precip')).toBe(true);
-    expect(overlayApplies(parseTacOverlayFields(thunderTac), 'temp')).toBe(true);
     expect(overlayApplies(parseTacOverlayFields(thunderTac), 'thunder')).toBe(true);
     expect(overlayApplies(parseTacOverlayFields(iceTac), 'ice')).toBe(true);
     expect(

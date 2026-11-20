@@ -1,12 +1,29 @@
-"""Auto-split package: loads chunked sources into this namespace (API-stable)."""
+"""Package split of former ``bulletin.py`` (stable import path)."""
 
 from __future__ import annotations
 
+from importlib import import_module as _import_module
 from pathlib import Path as _Path
 
-_pkg = _Path(__file__).resolve().parent
-_CHUNKS = _pkg / "_chunks"
-__file__ = str(_pkg.parent / f"{_pkg.name}.py")
-_src = "".join(p.read_text(encoding="utf-8") for p in sorted(_CHUNKS.glob("*.src")))
-exec(compile(_src, __file__, "exec"), globals())
-del _pkg, _CHUNKS, _src, _Path
+# Static names for type checkers (also loaded via _shared + exec at runtime).
+from tac2iwxxm.bulletin._shared import BulletinSplitError as BulletinSplitError
+
+__all__ = [
+    "BulletinSplitError",
+    "bbb_to_report_status",
+    "format_ahl",
+    "iwxxm_filename",
+    "map_t1t2",
+    "parse_ahl",
+    "split_bulletin",
+]
+
+_shared = _import_module("tac2iwxxm.bulletin._shared")
+globals().update({k: v for k, v in _shared.__dict__.items() if not k.startswith("__")})
+
+_parts_dir = _Path(__file__).resolve().parent
+for _part in sorted(_parts_dir.glob("_part*.py")):
+    _src = _part.read_text(encoding="utf-8")
+    exec(compile(_src, str(_part), "exec"), globals())
+
+del _import_module, _Path, _shared, _parts_dir, _part, _src

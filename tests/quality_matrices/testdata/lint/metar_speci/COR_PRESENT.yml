@@ -145,7 +145,7 @@ cases:
 - bucket: edge_pass
   case_id: '03'
   status: ready
-  tac: METAR KJFK 231751Z AUTO COR 18012KT 10SM FEW040 15/07 A3005=
+  tac: METAR COR KJFK 231751Z AUTO 18012KT 10SM FEW040 15/07 A3005=
   expect:
     accept: true
     codes:
@@ -184,7 +184,7 @@ cases:
 - bucket: edge_fail
   case_id: '01'
   status: ready
-  tac: METAR KJFK 231751Z 18012KT 10KM FEW250 22/12 A3012=
+  tac: METAR KJFK 231751Z 18012KT 10MILES FEW250 22/12 A3012=
   expect:
     accept: false
     codes:

@@ -218,11 +218,6 @@ def parse_swxa(tac: str, *, product: str = "SWXA") -> dict[str, Any]:
     ------
     ValueError
         When product is wrong or required fields are missing.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (parse_swxa)
-    2
     """
     if product.upper() != "SWXA":
         raise ValueError(f"SWXA parser expected product SWXA, found {product!r}")

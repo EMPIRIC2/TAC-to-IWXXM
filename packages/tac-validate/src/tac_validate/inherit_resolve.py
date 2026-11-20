@@ -1,7 +1,7 @@
-"""Lint inherit factory adapter (ADR-055 LintResolvePort).
+"""Lint inherit factory adapter (LintResolvePort).
 
 Product → (empty region) → country profile → station using the lint catalog.
-[Corpus: adr/ADR-055] [Corpus: product §F15] [Corpus: pack-engine-boundary]
+ [Corpus: product §F15] [Corpus: pack-engine-boundary]
 """
 
 from __future__ import annotations
@@ -38,11 +38,6 @@ def prefer_lint_profile(profile: str, product: str, icao: str | None) -> str:
     -------
     str
         Effective lint profile id (applicability fall-back applied).
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (prefer_lint_profile)
-    2
     """
     profile_l = normalize_profile(profile)
     product_u = (product or "").strip().upper()
@@ -71,11 +66,6 @@ def catalog_inherit_root(product: str) -> InheritNode:
     -------
     InheritNode
         Product root with country → station children.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (catalog_inherit_root)
-    2
     """
     product_u = (product or "").strip().upper()
     countries: dict[str, InheritNode] = {}
@@ -111,11 +101,6 @@ class LintInheritResolver:
     ----------
     (none)
         Stateless adapter; all state comes from the lint catalog.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (LintInheritResolver)
-    2
     """
 
     def resolve_lint(
@@ -141,11 +126,6 @@ class LintInheritResolver:
         -------
         EffectiveBundle
             Ids and chain only.
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (resolve_lint)
-        2
         """
         product_u = (product or "").strip().upper()
         station_u = (station or "").strip().upper() or None

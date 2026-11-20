@@ -2,7 +2,7 @@
 
 Compare every vendor example that is already on disk. Shadow must not change
 convert XML. Do not fetch missing older copies. Do not delete legacy parsers
-or the version matrix. [Corpus: tests] [Corpus: adr/ADR-045]
+or the version matrix. [Corpus: tests]
 """
 
 from __future__ import annotations
@@ -85,12 +85,9 @@ def test_shadow_xml_byte_identical_on_every_existing_pin(
     assert shadow.profile == legacy.profile
 
 
-def _slot_module_present(slot: Path, module_py: str) -> bool:
-    """True when ``module.py`` or package ``module/`` remains under slot_builders."""
-    if (slot / module_py).is_file():
-        return True
-    stem = module_py.removesuffix(".py")
-    return (slot / stem / "__init__.py").is_file()
+def _slot_module_present(slot: Path, name: str) -> bool:
+    stem = name[:-3] if name.endswith(".py") else name
+    return (slot / name).is_file() or (slot / stem / "__init__.py").is_file()
 
 
 def test_legacy_parsers_remain() -> None:

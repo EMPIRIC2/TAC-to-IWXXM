@@ -1,12 +1,48 @@
-"""Auto-split package: loads chunked sources into this namespace (API-stable)."""
+"""lint_profile_catalog package split."""
 
+# pyright: reportWildcardImportFromLibrary=false, reportConstantRedefinition=false, reportUnknownVariableType=false, reportUnknownParameterType=false, reportUnknownArgumentType=false, reportInvalidTypeForm=false, reportUnusedImport=false, reportPrivateUsage=false, reportGeneralTypeIssues=false
 from __future__ import annotations
 
-from pathlib import Path
+from tac_validate.lint_profile_catalog.load import (
+    _delta,
+    _mapping,
+    _object_list,
+    _required_str,
+    _specs_from_document,
+    _string_list,
+    _validate_inherits,
+    lint_profile_spec,
+    load_lint_profiles,
+    profile_inherit_chain,
+)
+from tac_validate.lint_profile_catalog.models import (
+    LintDelta,
+    LintProfileSpec,
+    canonical_lint_profile_id,
+)
+from tac_validate.lint_profile_catalog.resolve import (
+    MAX_INHERIT_DEPTH,
+    _suppressed,
+    apply_profile_deltas,
+    resolved_lint_profile,
+)
 
-_pkg = Path(__file__).resolve().parent
-_CHUNKS = _pkg / "_chunks"
-__file__ = str(_pkg.parent / f"{_pkg.name}.py")
-_src = "".join(p.read_text(encoding="utf-8") for p in sorted(_CHUNKS.glob("*.src")))
-exec(compile(_src, __file__, "exec"), globals())
-del _pkg, _CHUNKS, _src
+__all__ = [
+    "MAX_INHERIT_DEPTH",
+    "LintDelta",
+    "LintProfileSpec",
+    "_delta",
+    "_mapping",
+    "_object_list",
+    "_required_str",
+    "_specs_from_document",
+    "_string_list",
+    "_suppressed",
+    "_validate_inherits",
+    "apply_profile_deltas",
+    "canonical_lint_profile_id",
+    "lint_profile_spec",
+    "load_lint_profiles",
+    "profile_inherit_chain",
+    "resolved_lint_profile",
+]

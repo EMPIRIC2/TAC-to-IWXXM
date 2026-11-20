@@ -2,7 +2,7 @@
 
 Bulletin split stays injected. COLLECT decodes contained TAC when present,
 otherwise walks XML fields. No IWXXM encoder and no ``tac2iwxxm`` import.
-[Corpus: tests] [Corpus: adr/ADR-045] [Corpus: system-spec]
+[Corpus: tests] [Corpus: system-spec]
 """
 
 from __future__ import annotations

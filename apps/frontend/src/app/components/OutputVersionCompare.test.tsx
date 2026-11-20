@@ -5,7 +5,7 @@
 import { describe, expect, it } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { OutputVersionCompare } from './OutputVersionCompare';
-import type { OutputVersion } from '/utils/outputVersions';
+import type { OutputVersion } from '@/utils/outputVersions';
 
 const row = (xml: string): OutputVersion => ({
   at: 1,

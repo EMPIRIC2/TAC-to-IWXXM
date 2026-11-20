@@ -21,7 +21,8 @@ GENERATED_JSON = _REPO_ROOT / "apps" / "frontend" / "src" / "generated" / "iwxxm
 # EV-040: UserPreferencesDialog no longer hosts IWXXM version (workbench FileConverter does).
 _FE_PICKER_FILES = (
     _REPO_ROOT / "apps" / "frontend" / "src" / "app" / "components" / "admin" / "SystemSettingsPanel.tsx",
-    _REPO_ROOT / "apps" / "frontend" / "src" / "app" / "components" / "FileConverter.tsx",
+    # Workbench SoT import + profile-scoped options after the FileConverter split.
+    _REPO_ROOT / "apps" / "frontend" / "src" / "hooks" / "fileConverterDeps.ts",
 )
 _API_SOURCES = (
     _REPO_ROOT / "apps" / "backend" / "src" / "api.py",
@@ -62,7 +63,7 @@ def test_fe_pickers_render_options_from_sot_module() -> None:
     for path in _FE_PICKER_FILES:
         text = path.read_text(encoding="utf-8")
         assert "iwxxmVersions" in text, f"{path.name} must import iwxxmVersions SoT module"
-        if path.name == "FileConverter.tsx":
+        if path.name in {"FileConverter.tsx", "fileConverterDeps.ts"}:
             assert "iwxxmVersionOptionsForProfile" in text, (
                 f"{path.name} must use profile-scoped iwxxmVersionOptionsForProfile"
             )

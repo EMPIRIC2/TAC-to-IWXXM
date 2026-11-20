@@ -8,7 +8,7 @@
 # Transitive dep of python-jose (apps/backend). Upstream declares side-channel
 # attacks out of scope for pure-Python code: NO FIX PLANNED.
 # Risk accepted 2026-07-17 (S013/EV-009 QA-001 remediation): operator JWT Auth
-# removed in F21 (ADR-031); residual python-jose[cryptography] use (if any)
+# removed in F21 (); residual python-jose[cryptography] use (if any)
 # delegates EC operations to pyca/cryptography — the vulnerable
 # ecdsa.SigningKey.sign_digest() path is not exercised for public convert.
 PYSEC-2026-1325

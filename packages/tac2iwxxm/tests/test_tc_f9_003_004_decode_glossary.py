@@ -1,7 +1,7 @@
 """TC-F9-003 / TC-F9-004 - decode glossary registry (S026 / EV-020 T5.1 / F9 deepen).
 
 Plain-English token meanings from official/near-official tables with YAML
-overrides (ADR-032 / E20-E2). OpenAIP/F3 miss keeps ICAO designator (no fail).
+overrides (E20-E2). OpenAIP/F3 miss keeps ICAO designator (no fail).
 """
 
 from __future__ import annotations

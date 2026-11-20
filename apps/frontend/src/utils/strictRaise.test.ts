@@ -1,5 +1,5 @@
 /**
- * Unit tests for Strict raise helpers (ADR-054).
+ * Unit tests for Strict raise helpers ().
  */
 import { describe, expect, it } from 'vitest';
 import {

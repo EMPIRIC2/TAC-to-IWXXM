@@ -1,4 +1,4 @@
-"""Coverage for scripts/docs/check_docs_py.py ADR-048 branches (scripts cov gate)."""
+"""Coverage for scripts/docs/check_docs_py.py branches (scripts cov gate)."""
 
 from __future__ import annotations
 
@@ -27,6 +27,14 @@ def test_should_skip_tests_and_vendor_dirs() -> None:
     assert _should_skip(base / "packages" / "x" / "tests" / "a.py")
     assert _should_skip(base / "vendor" / "schemas" / "a.py")
     assert not _should_skip(base / "packages" / "x" / "src" / "a.py")
+    # Facade split artifacts and helpers are out of the docstring scan.
+    assert _should_skip(
+        base / "apps" / "backend" / "src" / "routers" / "conversion_part_1.py"
+    )
+    assert _should_skip(
+        base / "apps" / "backend" / "src" / "routers" / "conversion_routes_io.py"
+    )
+    assert _should_skip(base / "apps" / "backend" / "src" / "api_http_helpers.py")
 
 
 def test_typing_stub_and_args_and_returns_helpers() -> None:
@@ -80,14 +88,25 @@ def test_doc_ok_helpers() -> None:
         "missing docstring"
     ]
     issues = _doc_ok_public_fn("summary\n", has_args=True, has_return=True)
-    assert "missing Examples section" in issues
+    assert "missing Examples section" not in issues
     assert "missing Parameters section" in issues
     assert "missing Returns section" in issues
-    good = (
-        "summary\n\nParameters\n----------\nx : int\n\n"
-        "Returns\n-------\nint\n\nExamples\n--------\n>>> 1\n1\n"
-    )
+    good = "summary\n\nParameters\n----------\nx : int\n\nReturns\n-------\nint\n"
     assert _doc_ok_public_fn(good, has_args=True, has_return=True) == []
+    smoke = (
+        "summary\n\nParameters\n----------\nx : int\n\n"
+        "Returns\n-------\nint\n\nExamples\n--------\n"
+        ">>> 1 + 1  # docstring smoke (f)\n2\n"
+    )
+    assert "placeholder doctest smoke" in " ".join(
+        _doc_ok_public_fn(smoke, has_args=True, has_return=True)
+    )
+    real_ex = (
+        "summary\n\nParameters\n----------\nx : int\n\n"
+        "Returns\n-------\nint\n\nExamples\n--------\n>>> 1 + 2\n3\n"
+    )
+    # Real arithmetic that is not the banned placeholder pattern is allowed.
+    assert _doc_ok_public_fn(real_ex, has_args=True, has_return=True) == []
     assert _doc_ok_public_class(None) == ["missing docstring"]
     assert _doc_ok_public_class("only title") == [
         "missing Attributes or Parameters section"

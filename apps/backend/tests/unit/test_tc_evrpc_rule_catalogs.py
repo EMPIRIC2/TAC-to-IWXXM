@@ -1,4 +1,4 @@
-"""TC-EVRPC-001..008 — rule catalogs + selection options (ADR-044)."""
+"""TC-EVRPC-001..008 — rule catalogs + selection options ."""
 
 from __future__ import annotations
 

@@ -60,10 +60,6 @@ def normalize_profile(profile: str) -> str:
     ValueError
         When ``profile`` is not a supported lint profile.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (normalize_profile)
-    2
 
     Parameters
     ----------
@@ -85,10 +81,6 @@ def ca_eccc_applicable(product: str) -> bool:
     """
     Return True when ``profile=ca_eccc`` is defined for ``product``.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (ca_eccc_applicable)
-    2
 
     Parameters
     ----------
@@ -107,10 +99,6 @@ def in_imd_applicable(product: str) -> bool:
     """
     Return True when ``profile=in_imd`` is defined for ``product``.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (in_imd_applicable)
-    2
 
     Parameters
     ----------
@@ -129,10 +117,6 @@ def iwxxm_us_applicable(product: str) -> bool:
     """
     Return True when ``profile=iwxxm_us`` is defined for ``product``.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (iwxxm_us_applicable)
-    2
 
     Parameters
     ----------
@@ -151,10 +135,6 @@ def iwxxm_us_lint_applicable(product: str) -> bool:
     """
     Return True when ``lint(..., profile=iwxxm_us)`` is allowed for ``product``.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (iwxxm_us_lint_applicable)
-    2
 
     Parameters
     ----------
@@ -190,11 +170,6 @@ def effective_lint_profile(profile: str, product: str) -> str:
     str
         Lowercased applicable lint profile (``annex3`` when the requested
         profile does not list ``product``).
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (effective_lint_profile)
-    2
     """
     product_u = product.upper()
     try:

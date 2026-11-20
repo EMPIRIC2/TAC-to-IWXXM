@@ -5,13 +5,13 @@
 import { useState } from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 
-import { prettyPrintXml } from '/utils/prettyXml';
-import { xmlLinesForSelection, type GroupTrace } from '/utils/liveConvertTrace';
+import { prettyPrintXml } from '@/utils/prettyXml';
+import { xmlLinesForSelection, type GroupTrace } from '@/utils/liveConvertTrace';
 import {
   DO_NOT_PUBLISH_LABEL,
   RESULT_STATUS_ATTENTION,
   RESULT_STATUS_VALID,
-} from '/utils/resultCard';
+} from '@/utils/resultCard';
 import { Button } from './ui/button';
 
 /** Operator-facing expand control label (drawer fill → grow taller). */

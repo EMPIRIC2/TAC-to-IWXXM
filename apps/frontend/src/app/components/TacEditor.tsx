@@ -10,7 +10,7 @@ import {
   setTacSpansEffect,
   tacSpanExtensions,
   type TacSpanMark,
-} from '/utils/tacEditorSpans';
+} from '@/utils/tacEditorSpans';
 
 /**
  * Type `FailedSpanMark`.

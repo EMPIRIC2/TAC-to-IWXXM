@@ -42,10 +42,6 @@ def ops_service(
     """
     Build owner-scoped ops service from JWT ``sub``.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (ops_service)
-    2
 
     Parameters
     ----------
@@ -72,10 +68,6 @@ def upsert_plan_by_slug(
     Path slug wins over body.slug when they differ.
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (upsert_plan_by_slug)
-    2
 
     Parameters
     ----------
@@ -104,10 +96,6 @@ def get_plan(
     Fetch one plan by id (owner-scoped).
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (get_plan)
-    2
 
     Parameters
     ----------
@@ -134,10 +122,6 @@ def patch_plan(
     Update plan fields (no secrets).
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (patch_plan)
-    2
 
     Parameters
     ----------
@@ -172,10 +156,6 @@ async def execute_plan_route(
     Default ``dry_run=true`` so operators can exercise audit without egress.
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (execute_plan_route)
-    2
 
     Parameters
     ----------
@@ -251,10 +231,6 @@ def list_audit(
     List redacted delivery audit rows for the caller.
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (list_audit)
-    2
 
     Parameters
     ----------
@@ -298,10 +274,6 @@ def get_audit(
     Fetch one audit row (owner-scoped).
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (get_audit)
-    2
 
     Parameters
     ----------
@@ -328,10 +300,6 @@ def upsert_mapping(
     Create MappingConfig by name (unique per user).
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (upsert_mapping)
-    2
 
     Parameters
     ----------
@@ -360,10 +328,6 @@ def get_mapping(
     Fetch MappingConfig by id.
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (get_mapping)
-    2
 
     Parameters
     ----------
@@ -390,10 +354,6 @@ def patch_mapping(
     Update MappingConfig fields.
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (patch_mapping)
-    2
 
     Parameters
     ----------
@@ -427,10 +387,6 @@ async def gateways_health(
     Other kinds report that no live probe is configured.
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (gateways_health)
-    2
 
     Parameters
     ----------

@@ -1,4 +1,4 @@
-"""T3.7a / ADR-027 / F11 acc4: codegen regen smoke - importable + non-empty models."""
+"""T3.7a / F11 acc4: codegen regen smoke - importable + non-empty models."""
 
 from __future__ import annotations
 
@@ -118,7 +118,7 @@ def test_t37a_regen_pinned_xsd_nonempty_and_importable(tmp_path: Path) -> None:
 
     Writes under a temp ``metar_shared/iwxxm_xsd`` so committed trees stay intact.
 
-    Spec: ADR-027; F11 acceptance #4 (xsdata → pydantic); execution-plan T3.7a.
+    Spec: ; F11 acceptance #4 (xsdata → pydantic); execution-plan T3.7a.
     """
     mod = _load_script()
     assert SMOKE_VERSION in mod.load_manifest_versions()

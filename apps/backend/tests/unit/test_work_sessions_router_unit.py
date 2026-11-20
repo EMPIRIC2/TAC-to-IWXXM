@@ -167,7 +167,7 @@ def test_get_work_session_by_id(work_session_client: TestClient) -> None:
 
 
 def test_admin_list_work_sessions_removed(work_session_client: TestClient) -> None:
-    """S011 / ADR-021: admin work-sessions list is not mounted."""
+    """S011 : admin work-sessions list is not mounted."""
     response = work_session_client.get(
         "/admin/work-sessions",
         headers={"Authorization": "Bearer test-token"},

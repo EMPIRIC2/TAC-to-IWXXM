@@ -1086,7 +1086,7 @@ paths:
       tags:
         - Conversion Profiles
       summary: Get Catalog
-      description: "Read-only ConversionProfile catalog for the authenticated Profiles inspector.\n\nRequires JWT so the inspector stays on the authenticated Profiles surface."
+      description: Read-only ConversionProfile catalog for the authenticated Profiles inspector.
       operationId: get_catalog_api_v1_profiles_catalog_get
       responses:
         200:
@@ -1457,6 +1457,33 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HTTPValidationError"
+    delete:
+      tags:
+        - Conversion Profiles
+      summary: Delete Template
+      description: Delete an owned dissemination template.
+      operationId: delete_template_api_v1_profiles_templates__template_id__delete
+      security:
+        -
+                    HTTPBearer: []
+      parameters:
+        -
+                    name: template_id
+                    in: path
+                    required: true
+                    schema:
+                      type: string
+                      format: uuid
+                      title: Template Id
+      responses:
+        204:
+          description: Successful Response
+        422:
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
     patch:
       tags:
         - Conversion Profiles
@@ -1488,33 +1515,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/DisseminationTemplateOut"
-        422:
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/HTTPValidationError"
-    delete:
-      tags:
-        - Conversion Profiles
-      summary: Delete Template
-      description: Delete an owned dissemination template.
-      operationId: delete_template_api_v1_profiles_templates__template_id__delete
-      security:
-        -
-                    HTTPBearer: []
-      parameters:
-        -
-                    name: template_id
-                    in: path
-                    required: true
-                    schema:
-                      type: string
-                      format: uuid
-                      title: Template Id
-      responses:
-        204:
-          description: Successful Response
         422:
           description: Validation Error
           content:
@@ -1829,6 +1829,99 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HTTPValidationError"
+  /api/v1/profiles/library-assets/{asset_id}:
+    get:
+      tags:
+        - Conversion Profiles
+      summary: Get Library Asset
+      description: Fetch one library asset (first-party id or custom UUID).
+      operationId: get_library_asset_api_v1_profiles_library_assets__asset_id__get
+      security:
+        -
+                    HTTPBearer: []
+      parameters:
+        -
+                    name: asset_id
+                    in: path
+                    required: true
+                    schema:
+                      type: string
+                      title: Asset Id
+      responses:
+        200:
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LibraryAssetOut"
+        422:
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+    patch:
+      tags:
+        - Conversion Profiles
+      summary: Update Library Asset
+      description: Library authoring is no longer available.
+      operationId: update_library_asset_api_v1_profiles_library_assets__asset_id__patch
+      security:
+        -
+                    HTTPBearer: []
+      parameters:
+        -
+                    name: asset_id
+                    in: path
+                    required: true
+                    schema:
+                      type: string
+                      title: Asset Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LibraryAssetUpdate"
+      responses:
+        200:
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LibraryAssetOut"
+        422:
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+    delete:
+      tags:
+        - Conversion Profiles
+      summary: Delete Library Asset
+      description: Library authoring is no longer available.
+      operationId: delete_library_asset_api_v1_profiles_library_assets__asset_id__delete
+      security:
+        -
+                    HTTPBearer: []
+      parameters:
+        -
+                    name: asset_id
+                    in: path
+                    required: true
+                    schema:
+                      type: string
+                      title: Asset Id
+      responses:
+        204:
+          description: Successful Response
+        422:
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
   /api/v1/profiles/library-assets:
     get:
       tags:
@@ -1950,99 +2043,6 @@ paths:
       security:
         -
                     HTTPBearer: []
-  /api/v1/profiles/library-assets/{asset_id}:
-    get:
-      tags:
-        - Conversion Profiles
-      summary: Get Library Asset
-      description: Fetch one library asset (first-party id or custom UUID).
-      operationId: get_library_asset_api_v1_profiles_library_assets__asset_id__get
-      security:
-        -
-                    HTTPBearer: []
-      parameters:
-        -
-                    name: asset_id
-                    in: path
-                    required: true
-                    schema:
-                      type: string
-                      title: Asset Id
-      responses:
-        200:
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/LibraryAssetOut"
-        422:
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/HTTPValidationError"
-    patch:
-      tags:
-        - Conversion Profiles
-      summary: Update Library Asset
-      description: Library authoring is no longer available.
-      operationId: update_library_asset_api_v1_profiles_library_assets__asset_id__patch
-      security:
-        -
-                    HTTPBearer: []
-      parameters:
-        -
-                    name: asset_id
-                    in: path
-                    required: true
-                    schema:
-                      type: string
-                      title: Asset Id
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/LibraryAssetUpdate"
-      responses:
-        200:
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/LibraryAssetOut"
-        422:
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/HTTPValidationError"
-    delete:
-      tags:
-        - Conversion Profiles
-      summary: Delete Library Asset
-      description: Library authoring is no longer available.
-      operationId: delete_library_asset_api_v1_profiles_library_assets__asset_id__delete
-      security:
-        -
-                    HTTPBearer: []
-      parameters:
-        -
-                    name: asset_id
-                    in: path
-                    required: true
-                    schema:
-                      type: string
-                      title: Asset Id
-      responses:
-        204:
-          description: Successful Response
-        422:
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/HTTPValidationError"
   /api/v1/ingest/mass:
     post:
       tags:
@@ -2478,6 +2478,31 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HTTPValidationError"
+  /api/v1/decode-tac:
+    post:
+      tags:
+        - Validation
+        - Conversion
+      summary: Decode TAC
+      description: Decode TAC into annotated segments and a plain-language summary.
+      operationId: decode_tac_endpoint_api_v1_decode_tac_post
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/Body_decode_tac_endpoint_api_v1_decode_tac_post"
+        required: true
+      responses:
+        200:
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DecodeTacResponse"
+        415:
+          description: Unsupported Media Type - multipart/form-data required
+        422:
+          description: Missing required product field
   /api/v1/lint-tac:
     post:
       tags:
@@ -2505,31 +2530,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HTTPValidationError"
-  /api/v1/decode-tac:
-    post:
-      tags:
-        - Validation
-        - Conversion
-      summary: Decode TAC
-      description: Decode TAC into annotated segments and a plain-language summary.
-      operationId: decode_tac_endpoint_api_v1_decode_tac_post
-      requestBody:
-        content:
-          multipart/form-data:
-            schema:
-              $ref: "#/components/schemas/Body_decode_tac_endpoint_api_v1_decode_tac_post"
-        required: true
-      responses:
-        200:
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/DecodeTacResponse"
-        415:
-          description: Unsupported Media Type - multipart/form-data required
-        422:
-          description: Missing required product field
   /api/v1/stations/{icao}:
     get:
       tags:
@@ -2880,6 +2880,58 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HTTPValidationError"
+  /api/v1/live-check:
+    get:
+      tags:
+        - Live check
+      summary: Live check for one airport and product
+      description: "Fetch an allowlisted open feed for one airport, convert with the station profile, and return source TAC, our IWXXM, and provider IWXXM when the feed included a pair. Providers: noaa, met_no, knmi."
+      operationId: live_check_api_v1_live_check_get
+      parameters:
+        -
+                    name: icao
+                    in: query
+                    required: true
+                    schema:
+                      type: string
+                      minLength: 4
+                      maxLength: 4
+                      description: ICAO airport code.
+                      title: Icao
+                    description: ICAO airport code.
+        -
+                    name: product
+                    in: query
+                    required: false
+                    schema:
+                      type: string
+                      description: METAR or TAF.
+                      default: METAR
+                      title: Product
+                    description: METAR or TAF.
+        -
+                    name: provider
+                    in: query
+                    required: false
+                    schema:
+                      type: string
+                      description: "Allowlisted feed: noaa, met_no, or knmi."
+                      default: noaa
+                      title: Provider
+                    description: "Allowlisted feed: noaa, met_no, or knmi."
+      responses:
+        200:
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LiveCheckResponse"
+        422:
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
   /api/v1/station-health/metrics:
     get:
       tags:
@@ -2908,10 +2960,10 @@ paths:
                     required: false
                     schema:
                       type: string
-                      description: "Time window: 6h, 1d, or 30d"
+                      description: "Time window: 6h, 1d, 30d, or 90d"
                       default: 6h
                       title: Window
-                    description: "Time window: 6h, 1d, or 30d"
+                    description: "Time window: 6h, 1d, 30d, or 90d"
         -
                     name: product
                     in: query
@@ -2939,17 +2991,30 @@ paths:
                       title: Grade
                     description: Optional letter grade filter
         -
+                    name: region
+                    in: query
+                    required: false
+                    schema:
+                      anyOf:
+                        -
+                                          type: string
+                        -
+                                          type: null
+                      description: "Optional WMO region filter: I, II, III, IV, V, VI, or unknown"
+                      title: Region
+                    description: "Optional WMO region filter: I, II, III, IV, V, VI, or unknown"
+        -
                     name: limit
                     in: query
                     required: false
                     schema:
                       type: integer
-                      maximum: 500
+                      maximum: 5000
                       minimum: 1
-                      description: Max stations to return
+                      description: Max stations to return (higher when filtering by region)
                       default: 100
                       title: Limit
-                    description: Max stations to return
+                    description: Max stations to return (higher when filtering by region)
       responses:
         200:
           description: Successful Response
@@ -3005,7 +3070,7 @@ components:
           description: Whether all layers passed
         layers_validated:
           items:
-            $ref: "#/components/schemas/src__schemas__validation__ValidationLayer"
+            $ref: "#/components/schemas/src__models__validation_part_1__ValidationLayer"
           type: array
           title: Layers Validated
           description: Layers validated
@@ -4055,9 +4120,7 @@ components:
             - 0
             - 1
         metadata:
-          additionalProperties: true
-          type: object
-          title: Metadata
+          $ref: "#/components/schemas/ConversionResponseMetadata"
           description: "Echoed request metadata such as bulletin_id, issuing_center, and validation options"
         ok:
           anyOf:
@@ -4109,6 +4172,28 @@ components:
                         source: EGLL.txt
         successful: 2
         total_processed: 2
+    ConversionResponseMetadata:
+      properties:
+        bulletin_id:
+          anyOf:
+            -
+                            type: string
+            -
+                            type: null
+          title: Bulletin Id
+          description: Optional bulletin identifier
+        product:
+          anyOf:
+            -
+                            type: string
+            -
+                            type: null
+          title: Product
+          description: Optional product family
+      additionalProperties: true
+      type: object
+      title: ConversionResponseMetadata
+      description: Nested convert response metadata (extra keys allowed for wire stability).
     ConversionResult:
       properties:
         name:
@@ -6197,6 +6282,77 @@ components:
         - ok
       title: LintTacResponse
       description: Response for POST /api/v1/lint-tac.
+    LiveCheckResponse:
+      properties:
+        icao:
+          type: string
+          title: Icao
+          description: ICAO airport code.
+        product:
+          type: string
+          title: Product
+          description: "Product id: METAR or TAF."
+        provider:
+          type: string
+          title: Provider
+          description: "Allowlisted feed id: noaa, met_no, or knmi."
+        profile:
+          type: string
+          title: Profile
+          description: Conversion profile used for this station.
+        source_tac:
+          type: string
+          title: Source Tac
+          description: Traditional alphanumeric report from the feed.
+        our_iwxxm:
+          anyOf:
+            -
+                            type: string
+            -
+                            type: null
+          title: Our Iwxxm
+          description: IWXXM produced by this service from source_tac.
+        provider_iwxxm:
+          anyOf:
+            -
+                            type: string
+            -
+                            type: null
+          title: Provider Iwxxm
+          description: Provider IWXXM when the feed returned a pair.
+        attribution:
+          anyOf:
+            -
+                            type: string
+            -
+                            type: null
+          title: Attribution
+          description: License attribution for CC BY sources.
+        cached:
+          type: boolean
+          title: Cached
+          description: True when served from the short server cache.
+        convert_ok:
+          type: boolean
+          title: Convert Ok
+          description: True when conversion produced IWXXM.
+        convert_issues:
+          items:
+            type: string
+          type: array
+          title: Convert Issues
+          description: Non-fatal or fatal convert issue messages.
+      type: object
+      required:
+        - icao
+        - product
+        - provider
+        - profile
+        - source_tac
+        - cached
+        - convert_ok
+      title: LiveCheckResponse
+      description: GET /api/v1/live-check payload.
     MappingConfigCreate:
       properties:
         name:
@@ -7413,6 +7569,36 @@ components:
         - options
       title: SelectionOptionsResponse
       description: Response for GET /selection-options.
+    StationCentennialMetricModel:
+      properties:
+        id:
+          type: string
+          title: Id
+        label:
+          type: string
+          title: Label
+        status:
+          type: string
+          title: Status
+          description: available or insufficient_data
+        score:
+          anyOf:
+            -
+                            type: number
+            -
+                            type: null
+          title: Score
+        detail:
+          type: string
+          title: Detail
+          default: ""
+      type: object
+      required:
+        - id
+        - label
+        - status
+      title: StationCentennialMetricModel
+      description: One Centennial recognition-criteria proxy or insufficient-data row.
     StationHealthDetailResponse:
       properties:
         icao:
@@ -7425,6 +7611,11 @@ components:
             -
                             type: null
           title: Name
+        wmo_region:
+          type: string
+          title: Wmo Region
+          description: WMO Regional Association id (I-VI) or unknown
+          default: unknown
         windows:
           additionalProperties:
             $ref: "#/components/schemas/StationWindowModel"
@@ -7434,6 +7625,26 @@ components:
           type: integer
           title: Record Count
           default: 0
+        maintenance_tag_counts:
+          additionalProperties:
+            type: integer
+          type: object
+          title: Maintenance Tag Counts
+        file_format_counts:
+          additionalProperties:
+            type: integer
+          type: object
+          title: File Format Counts
+        issue_code_counts:
+          additionalProperties:
+            type: integer
+          type: object
+          title: Issue Code Counts
+        centennial_metrics:
+          items:
+            $ref: "#/components/schemas/StationCentennialMetricModel"
+          type: array
+          title: Centennial Metrics
       type: object
       required:
         - icao
@@ -7496,6 +7707,11 @@ components:
             -
                             type: null
           title: Name
+        wmo_region:
+          type: string
+          title: Wmo Region
+          description: WMO Regional Association id (I-VI) or unknown
+          default: unknown
         overall_grade:
           type: string
           title: Overall Grade
@@ -7508,6 +7724,26 @@ components:
             $ref: "#/components/schemas/StationProductGradeModel"
           type: array
           title: Products
+        maintenance_tag_counts:
+          additionalProperties:
+            type: integer
+          type: object
+          title: Maintenance Tag Counts
+        file_format_counts:
+          additionalProperties:
+            type: integer
+          type: object
+          title: File Format Counts
+        issue_code_counts:
+          additionalProperties:
+            type: integer
+          type: object
+          title: Issue Code Counts
+        centennial_metrics:
+          items:
+            $ref: "#/components/schemas/StationCentennialMetricModel"
+          type: array
+          title: Centennial Metrics
       type: object
       required:
         - icao
@@ -7603,6 +7839,26 @@ components:
             $ref: "#/components/schemas/StationProductGradeModel"
           type: array
           title: Products
+        maintenance_tag_counts:
+          additionalProperties:
+            type: integer
+          type: object
+          title: Maintenance Tag Counts
+        file_format_counts:
+          additionalProperties:
+            type: integer
+          type: object
+          title: File Format Counts
+        issue_code_counts:
+          additionalProperties:
+            type: integer
+          type: object
+          title: Issue Code Counts
+        centennial_metrics:
+          items:
+            $ref: "#/components/schemas/StationCentennialMetricModel"
+          type: array
+          title: Centennial Metrics
       type: object
       required:
         - overall_grade
@@ -7765,7 +8021,7 @@ components:
           additionalProperties:
             type: number
           propertyNames:
-            $ref: "#/components/schemas/src__schemas__icao_opmet__ValidationLayer"
+            $ref: "#/components/schemas/src__models__icao_opmet__ValidationLayer"
           type: object
           title: Validation Layer Success Rates
           description: Success rate per validation layer (percentage)
@@ -8174,7 +8430,7 @@ components:
     ValidationIssue:
       properties:
         layer:
-          $ref: "#/components/schemas/src__schemas__validation__ValidationLayer"
+          $ref: "#/components/schemas/src__models__validation_part_1__ValidationLayer"
           description: Validation layer that found this issue
         level:
           $ref: "#/components/schemas/ValidationLevel"
@@ -8236,7 +8492,7 @@ components:
     ValidationLayerInfo:
       properties:
         layer:
-          $ref: "#/components/schemas/src__schemas__validation__ValidationLayer"
+          $ref: "#/components/schemas/src__models__validation_part_1__ValidationLayer"
           description: Layer identifier
         description:
           type: string
@@ -8358,7 +8614,7 @@ components:
           title: Passed
           description: Whether validation passed
         layer:
-          $ref: "#/components/schemas/src__schemas__validation__ValidationLayer"
+          $ref: "#/components/schemas/src__models__validation_part_1__ValidationLayer"
           description: Validation layer
         issues:
           items:
@@ -8646,7 +8902,7 @@ components:
       type: object
       title: WorkSessionUpdate
       description: "Body for PATCH /api/v1/work-sessions/{id}."
-    src__schemas__icao_opmet__ValidationLayer:
+    src__models__icao_opmet__ValidationLayer:
       type: string
       enum:
         - AIRPORT_ICAO
@@ -8658,7 +8914,7 @@ components:
         - WMO_CODELISTS
       title: ValidationLayer
       description: 7-layer IWXXM validation stages.
-    src__schemas__validation__ValidationLayer:
+    src__models__validation_part_1__ValidationLayer:
       type: string
       enum:
         - airport_icao

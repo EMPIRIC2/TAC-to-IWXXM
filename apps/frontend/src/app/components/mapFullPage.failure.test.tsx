@@ -1,5 +1,5 @@
 /**
- * Decode visuals full-page failure paths (Send without handler, empty TAC forward, map error chrome).
+ * Live map full-page failure paths (Send without handler, empty TAC forward, map error chrome).
  *
  * Empty/whitespace TAC guard lives in App.handleMapOpenPlace — DecodeVisualsPage always
  * forwards the place; App ignores empty TAC. This file asserts page forwarding only.
@@ -8,7 +8,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { DecodeVisualsPage } from './DecodeVisualsPage';
-import { publishDecodeVisuals, writeStationDraft } from '@/utils/decodeVisualsStore';
+import { publishDecodeVisuals } from '@/utils/decodeVisualsStore';
 import { DECODE_VISUALS_TITLE } from '@/utils/decodeVisualsCopy';
 import type { LivePlace } from '@/utils/liveMap';
 
@@ -47,15 +47,20 @@ vi.mock('@/app/components/LiveWorldMap', () => ({
   ),
 }));
 
+function expectNoStationFinder(): void {
+  expect(screen.queryByTestId('decode-visuals-station')).not.toBeInTheDocument();
+  expect(document.getElementById('decode-visuals-station-input')).toBeNull();
+}
+
 describe('mapFullPage failure paths', () => {
   beforeEach(() => {
-    writeStationDraft(null);
     publishDecodeVisuals({ station: '', segments: [] });
   });
 
   it('does not throw when Send is clicked and onOpenPlace is omitted', async () => {
     const user = userEvent.setup();
     render(<DecodeVisualsPage />);
+    expectNoStationFinder();
     await expect(
       user.click(screen.getByTestId('mock-send-place')),
     ).resolves.toBeUndefined();
@@ -65,6 +70,7 @@ describe('mapFullPage failure paths', () => {
     const user = userEvent.setup();
     const onOpenPlace = vi.fn();
     render(<DecodeVisualsPage onOpenPlace={onOpenPlace} />);
+    expectNoStationFinder();
 
     await user.click(screen.getByTestId('mock-send-place'));
     expect(onOpenPlace).toHaveBeenCalledWith(emptyReportsPlace);
@@ -80,6 +86,7 @@ describe('mapFullPage failure paths', () => {
   it('still renders page chrome when the map mock shows an error child', () => {
     // Real LiveWorldMap fetch errors are covered in LiveWorldMap.test.tsx.
     render(<DecodeVisualsPage />);
+    expectNoStationFinder();
     expect(screen.getByTestId('decode-visuals-page')).toBeInTheDocument();
     expect(
       screen.getByRole('heading', { name: DECODE_VISUALS_TITLE }),
