@@ -151,6 +151,8 @@ def _visibility_block(ir: dict[str, Any], *, visibility_extension: str = "") -> 
     """
     if ir.get("visibility_not_observable"):
         return f'      <iwxxm:visibility xsi:nil="true" nilReason="{NIL_NOT_OBS}"/>\n'
+    if ir.get("visibility_missing"):
+        return f'      <iwxxm:visibility xsi:nil="true" nilReason="{NIL_MISSING}"/>\n'
     vis_op = ""
     if ir.get("visibility_above"):
         vis_op = "\n          <iwxxm:prevailingVisibilityOperator>ABOVE</iwxxm:prevailingVisibilityOperator>"
@@ -198,7 +200,7 @@ def _rvr_block(ir: dict[str, Any], *, rvr_extension: str = "") -> str:
         # exists(iwxxm:rvr) whenever prevailing visibility is below 1500 m.
         vis_m = ir.get("visibility_m")
         low_vis = isinstance(vis_m, (int, float)) and float(vis_m) < 1500
-        if ir.get("visibility_not_observable") or low_vis:
+        if ir.get("visibility_not_observable") or ir.get("visibility_missing") or low_vis:
             return f'      <iwxxm:rvr xsi:nil="true" nilReason="{NIL_MISSING}"/>\n'
         return ""
     rvr = cast(dict[str, Any], rvr_raw)
@@ -382,6 +384,9 @@ def _surface_wind_inner(ir: dict[str, Any], *, peak_extension: str = "") -> str:
     str
         Return value.
     """
+    if ir.get("wind_missing"):
+        return f'      <iwxxm:surfaceWind xsi:nil="true" nilReason="{NIL_MISSING}"/>\n'
+
     variable = bool(ir.get("wind_variable"))
     var_attr = "true" if variable else "false"
     if variable:
