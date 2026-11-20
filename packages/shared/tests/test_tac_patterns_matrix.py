@@ -20,11 +20,17 @@ from metar_shared.tac_patterns import (
 # --- S / V+ : success + validation pass ---
 
 
-def test_parse_station_icao_accepts_letter_first_with_digits() -> None:
-    station = parse_station_icao("k10u")
-    assert station.code == "K10U"
-    assert is_station_icao("K10U")
-    assert STATION_ICAO_FULLMATCH.fullmatch("K10U")
+@pytest.mark.parametrize(
+    "code",
+    ["K10U", "K05U", "K1F0", "KJFK"],
+    ids=["k10u", "k05u", "k1f0", "kjfk"],
+)
+def test_parse_station_icao_accepts_letter_first_with_digits(code: str) -> None:
+    station = parse_station_icao(code.lower())
+    assert station.code == code
+    assert is_station_icao(code)
+    assert STATION_ICAO_FULLMATCH.fullmatch(code)
+    assert STATION_ICAO_TOKEN.search(f"METAR {code}") is not None
 
 
 def test_parse_ahl_heading_line_accepts_optional_bbb() -> None:
