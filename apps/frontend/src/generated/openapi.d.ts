@@ -592,6 +592,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/live-check": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Live check for one airport and product
+         * @description Fetch an allowlisted open feed for one airport, convert with the station profile, and return source TAC, our IWXXM, and provider IWXXM when the feed included a pair. Providers: noaa, met_no, knmi.
+         */
+        get: operations["live_check_api_v1_live_check_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/live-map": {
         parameters: {
             query?: never;
@@ -3831,6 +3851,67 @@ export interface components {
             product?: string | null;
         };
         /**
+         * LiveCheckResponse
+         * @description GET /api/v1/live-check payload.
+         */
+        LiveCheckResponse: {
+            /**
+             * Attribution
+             * @description License attribution for CC BY sources.
+             */
+            attribution?: string | null;
+            /**
+             * Cached
+             * @description True when served from the short server cache.
+             */
+            cached: boolean;
+            /**
+             * Convert Issues
+             * @description Non-fatal or fatal convert issue messages.
+             */
+            convert_issues?: string[];
+            /**
+             * Convert Ok
+             * @description True when conversion produced IWXXM.
+             */
+            convert_ok: boolean;
+            /**
+             * Icao
+             * @description ICAO airport code.
+             */
+            icao: string;
+            /**
+             * Our Iwxxm
+             * @description IWXXM produced by this service from source_tac.
+             */
+            our_iwxxm?: string | null;
+            /**
+             * Product
+             * @description Product id: METAR or TAF.
+             */
+            product: string;
+            /**
+             * Profile
+             * @description Conversion profile used for this station.
+             */
+            profile: string;
+            /**
+             * Provider
+             * @description Allowlisted feed id: noaa, met_no, or knmi.
+             */
+            provider: string;
+            /**
+             * Provider Iwxxm
+             * @description Provider IWXXM when the feed returned a pair.
+             */
+            provider_iwxxm?: string | null;
+            /**
+             * Source Tac
+             * @description Traditional alphanumeric report from the feed.
+             */
+            source_tac: string;
+        };
+        /**
          * MappingConfigCreate
          * @description Create a field mapping. Connection secrets are not stored.
          */
@@ -6574,6 +6655,42 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    live_check_api_v1_live_check_get: {
+        parameters: {
+            query: {
+                /** @description ICAO airport code. */
+                icao: string;
+                /** @description METAR or TAF. */
+                product?: string;
+                /** @description Allowlisted feed: noaa, met_no, or knmi. */
+                provider?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LiveCheckResponse"];
+                };
             };
             /** @description Validation Error */
             422: {

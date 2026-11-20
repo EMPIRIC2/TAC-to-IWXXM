@@ -2880,6 +2880,58 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HTTPValidationError"
+  /api/v1/live-check:
+    get:
+      tags:
+        - Live check
+      summary: Live check for one airport and product
+      description: "Fetch an allowlisted open feed for one airport, convert with the station profile, and return source TAC, our IWXXM, and provider IWXXM when the feed included a pair. Providers: noaa, met_no, knmi."
+      operationId: live_check_api_v1_live_check_get
+      parameters:
+        -
+                    name: icao
+                    in: query
+                    required: true
+                    schema:
+                      type: string
+                      minLength: 4
+                      maxLength: 4
+                      description: ICAO airport code.
+                      title: Icao
+                    description: ICAO airport code.
+        -
+                    name: product
+                    in: query
+                    required: false
+                    schema:
+                      type: string
+                      description: METAR or TAF.
+                      default: METAR
+                      title: Product
+                    description: METAR or TAF.
+        -
+                    name: provider
+                    in: query
+                    required: false
+                    schema:
+                      type: string
+                      description: "Allowlisted feed: noaa, met_no, or knmi."
+                      default: noaa
+                      title: Provider
+                    description: "Allowlisted feed: noaa, met_no, or knmi."
+      responses:
+        200:
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LiveCheckResponse"
+        422:
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
   /api/v1/station-health/metrics:
     get:
       tags:
@@ -6230,6 +6282,77 @@ components:
         - ok
       title: LintTacResponse
       description: Response for POST /api/v1/lint-tac.
+    LiveCheckResponse:
+      properties:
+        icao:
+          type: string
+          title: Icao
+          description: ICAO airport code.
+        product:
+          type: string
+          title: Product
+          description: "Product id: METAR or TAF."
+        provider:
+          type: string
+          title: Provider
+          description: "Allowlisted feed id: noaa, met_no, or knmi."
+        profile:
+          type: string
+          title: Profile
+          description: Conversion profile used for this station.
+        source_tac:
+          type: string
+          title: Source Tac
+          description: Traditional alphanumeric report from the feed.
+        our_iwxxm:
+          anyOf:
+            -
+                            type: string
+            -
+                            type: null
+          title: Our Iwxxm
+          description: IWXXM produced by this service from source_tac.
+        provider_iwxxm:
+          anyOf:
+            -
+                            type: string
+            -
+                            type: null
+          title: Provider Iwxxm
+          description: Provider IWXXM when the feed returned a pair.
+        attribution:
+          anyOf:
+            -
+                            type: string
+            -
+                            type: null
+          title: Attribution
+          description: License attribution for CC BY sources.
+        cached:
+          type: boolean
+          title: Cached
+          description: True when served from the short server cache.
+        convert_ok:
+          type: boolean
+          title: Convert Ok
+          description: True when conversion produced IWXXM.
+        convert_issues:
+          items:
+            type: string
+          type: array
+          title: Convert Issues
+          description: Non-fatal or fatal convert issue messages.
+      type: object
+      required:
+        - icao
+        - product
+        - provider
+        - profile
+        - source_tac
+        - cached
+        - convert_ok
+      title: LiveCheckResponse
+      description: GET /api/v1/live-check payload.
     MappingConfigCreate:
       properties:
         name:

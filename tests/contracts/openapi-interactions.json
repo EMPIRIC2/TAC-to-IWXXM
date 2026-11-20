@@ -358,6 +358,30 @@
     },
     {
       "method": "GET",
+      "path": "/api/v1/live-check",
+      "status": 200,
+      "request_fields": [],
+      "response_fields": [
+        "cached",
+        "convert_ok",
+        "icao",
+        "product",
+        "profile",
+        "provider",
+        "source_tac"
+      ],
+      "covered_by": "apps/backend/tests/unit/test_live_check.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/live-check",
+      "status": 422,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_live_check.py"
+    },
+    {
+      "method": "GET",
       "path": "/api/v1/live-map",
       "status": 200,
       "request_fields": [],
@@ -687,6 +711,73 @@
       "request_fields": [],
       "response_fields": [],
       "covered_by": "apps/backend/tests/unit/test_tc_evrpc_rule_catalogs.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/station-health",
+      "status": 200,
+      "request_fields": [],
+      "response_fields": [
+        "window",
+        "computed_at",
+        "stations",
+        "summary"
+      ],
+      "covered_by": "apps/backend/tests/unit/test_station_health_api.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/station-health",
+      "status": 400,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_station_health_api.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/station-health",
+      "status": 422,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_station_health_api.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/station-health/metrics",
+      "status": 200,
+      "request_fields": [],
+      "response_fields": [
+        "metrics"
+      ],
+      "covered_by": "apps/backend/tests/unit/test_station_health_api.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/station-health/{icao}",
+      "status": 200,
+      "request_fields": [],
+      "response_fields": [
+        "icao",
+        "windows",
+        "record_count"
+      ],
+      "covered_by": "apps/backend/tests/unit/test_station_health_api.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/station-health/{icao}",
+      "status": 404,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_station_health_api.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/station-health/{icao}",
+      "status": 422,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_station_health_api.py"
     },
     {
       "method": "GET",
@@ -1831,73 +1922,6 @@
       "request_fields": [],
       "response_fields": [],
       "covered_by": "apps/backend/tests/unit/test_exchange_admin.py"
-    },
-    {
-      "method": "GET",
-      "path": "/api/v1/station-health",
-      "status": 200,
-      "request_fields": [],
-      "response_fields": [
-        "window",
-        "computed_at",
-        "stations",
-        "summary"
-      ],
-      "covered_by": "apps/backend/tests/unit/test_station_health_api.py"
-    },
-    {
-      "method": "GET",
-      "path": "/api/v1/station-health",
-      "status": 422,
-      "request_fields": [],
-      "response_fields": [],
-      "covered_by": "apps/backend/tests/unit/test_station_health_api.py"
-    },
-    {
-      "method": "GET",
-      "path": "/api/v1/station-health/{icao}",
-      "status": 200,
-      "request_fields": [],
-      "response_fields": [
-        "icao",
-        "windows",
-        "record_count"
-      ],
-      "covered_by": "apps/backend/tests/unit/test_station_health_api.py"
-    },
-    {
-      "method": "GET",
-      "path": "/api/v1/station-health/{icao}",
-      "status": 422,
-      "request_fields": [],
-      "response_fields": [],
-      "covered_by": "apps/backend/tests/unit/test_station_health_api.py"
-    },
-    {
-      "method": "GET",
-      "path": "/api/v1/station-health/metrics",
-      "status": 200,
-      "request_fields": [],
-      "response_fields": [
-        "metrics"
-      ],
-      "covered_by": "apps/backend/tests/unit/test_station_health_api.py"
-    },
-    {
-      "method": "GET",
-      "path": "/api/v1/station-health",
-      "status": 400,
-      "request_fields": [],
-      "response_fields": [],
-      "covered_by": "apps/backend/tests/unit/test_station_health_api.py"
-    },
-    {
-      "method": "GET",
-      "path": "/api/v1/station-health/{icao}",
-      "status": 404,
-      "request_fields": [],
-      "response_fields": [],
-      "covered_by": "apps/backend/tests/unit/test_station_health_api.py"
     }
   ],
   "source": "consumer-tests"
