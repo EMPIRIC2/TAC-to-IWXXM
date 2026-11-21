@@ -18,6 +18,7 @@ export function useFileConverterPart3b(ctx: any) {
     manualInput,
     softPreview,
     propagateResiduals,
+    includeNationalRemarks,
     setFailedSpans,
     setPreviewXml,
     setPreviewStatus,
@@ -185,6 +186,7 @@ export function useFileConverterPart3b(ctx: any) {
           iwxxmVersion: conversionParams.iwxxmVersion,
           lint: true,
           propagateResidualsToRemarks: propagateResiduals,
+          includeNationalRemarks,
           extensions: D.nationalExtensionsForProfile(conversionParams.profile),
           ...(accessToken?.trim() ? { accessToken: accessToken.trim() } : {}),
         });
@@ -281,7 +283,11 @@ export function useFileConverterPart3b(ctx: any) {
 
       const barFields = D.convertFieldsFromParamsBar(
         D.paramsBarFromState(conversionParams, activeReportVariant),
-        { softPreview, propagateResidualsToRemarks: propagateResiduals },
+        {
+          softPreview,
+          propagateResidualsToRemarks: propagateResiduals,
+          includeNationalRemarks,
+        },
       );
 
       const response = await D.callBackendConversion({

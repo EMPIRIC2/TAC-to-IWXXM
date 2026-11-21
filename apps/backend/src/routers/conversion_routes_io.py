@@ -168,6 +168,13 @@ async def convert(
             "Omitted uses the profile default (annex3 / ICAO_2025 off)."
         ),
     ),
+    include_national_remarks: bool = Form(
+        default=True,
+        description=(
+            "When false, omit national remarks after RMK from IWXXM output even for "
+            "profiles that normally keep remarks."
+        ),
+    ),
     bulletin_date: str = Form(
         default="",
         description=(

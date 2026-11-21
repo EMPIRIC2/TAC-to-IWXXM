@@ -1,0 +1,392 @@
+"""TC-EV-VPL-002/003/004 — detector DSL + R2 visibility shadow/flip (#1216 M2)."""
+
+from __future__ import annotations
+
+import json
+from pathlib import Path
+
+import pytest
+from tac_validate.detectors import (
+    DetectorError,
+    load_detector_catalog,
+    load_detector_pack,
+    run_detector_pack,
+    run_r2_visibility_detectors,
+    run_theme_pack,
+)
+from tac_validate.theme_checks import lint_profile
+
+FIXTURES = Path(__file__).resolve().parent / "fixtures"
+_MANIFEST = json.loads((FIXTURES / "manifest.json").read_text(encoding="utf-8"))
+_R2_CODES = frozenset({"INVALID_VISIBILITY", "MISSING_VISIBILITY"})
+
+
+def _read(rel: str) -> str:
+    return (FIXTURES / rel).read_text(encoding="utf-8")
+
+
+def _r2_cases() -> list[dict[str, object]]:
+    cases: list[dict[str, object]] = []
+    cases.extend(c for c in _MANIFEST["accept"] if c.get("theme") == "R2")
+    cases.extend(_MANIFEST.get("r2_fraction_accept", []))
+    cases.extend(_MANIFEST.get("visibility_errors", []))
+    cases.extend(
+        c
+        for c in _MANIFEST.get("negative", [])
+        if "MISSING_VISIBILITY" in c.get("expected_codes", []) or "INVALID_VISIBILITY" in c.get("expected_codes", [])
+    )
+    return cases
+
+
+def test_detector_error_matrix(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    from tac_validate.detectors import (
+        EmitSpec,
+        PreprocessSpec,
+        _emit_issue,
+        _parse_emit,
+        _prepare_window,
+        _re_flags,
+        _resolve_python,
+    )
+
+    with pytest.raises(DetectorError, match="flags entries"):
+        _re_flags([1])
+    assert _re_flags(["MULTILINE", "DOTALL"]) != 0
+    assert _parse_emit(None, required=False) is None
+    with pytest.raises(DetectorError, match="emit spec required"):
+        _parse_emit(None, required=True)
+    with pytest.raises(DetectorError, match="emit spec must be a mapping"):
+        _parse_emit([], required=True)
+    with pytest.raises(DetectorError, match=r"emit\.code"):
+        _parse_emit({"code": ""}, required=True)
+    with pytest.raises(DetectorError, match="message_template"):
+        _parse_emit({"code": "INVALID_VISIBILITY"}, required=True)
+    with pytest.raises(DetectorError, match="capture_group"):
+        _parse_emit({"code": "INVALID_VISIBILITY", "message_template": "x", "capture_group": -1}, required=True)
+    with pytest.raises(DetectorError, match="span must be"):
+        _parse_emit({"code": "INVALID_VISIBILITY", "message_template": "x", "span": "nope"}, required=True)
+    with pytest.raises(DetectorError, match="preprocess must be"):
+        load_detector_pack(_write(tmp_path, "p.yaml", _min_pack(preprocess="bad")))
+
+    cases = [
+        ("rules: [notmap]\n", "rule must be a mapping"),
+        (
+            "rules: [{kind: finditer, pattern: a, on_match: {code: INVALID_VISIBILITY, message_template: x}}]\n",
+            "rule.id",
+        ),
+        ("rules: [{id: r, kind: nope}]\n", "rule.kind"),
+        (
+            "rules: [{id: r, kind: finditer, pattern: a, skip_if_codes: 1, on_match: {code: INVALID_VISIBILITY, message_template: x}}]\n",
+            "skip_if_codes",
+        ),
+        (
+            "rules: [{id: r, kind: finditer, pattern: a, flags: x, on_match: {code: INVALID_VISIBILITY, message_template: x}}]\n",
+            "flags must be",
+        ),
+        (
+            "id: \nproducts: [METAR]\nrules: [{id: r, kind: python, python: python:tac_validate.detectors:example_python_hatch}]\n",
+            "id is required",
+        ),
+        ("id: x\nproducts: [METAR]\nrules: []\n", "rules must be"),
+    ]
+    for index, (frag, match) in enumerate(cases):
+        body = (
+            "schema_version: 1\nid: x\nproducts: [METAR]\n" + frag
+            if not frag.startswith("id:")
+            else "schema_version: 1\n" + frag
+        )
+        if "id: x\nproducts" not in body and not frag.startswith("id:"):
+            body = "schema_version: 1\nid: x\nproducts: [METAR]\n" + frag
+        path = tmp_path / f"m{index}.yaml"
+        path.write_text(body, encoding="utf-8")
+        with pytest.raises(DetectorError, match=match):
+            load_detector_pack(path)
+
+    with pytest.raises(DetectorError, match="python:"):
+        _resolve_python("notpython:x")
+    with pytest.raises(DetectorError, match="module:attr"):
+        _resolve_python("python:onlymodule")
+    with pytest.raises(DetectorError, match="module:attr"):
+        _resolve_python("python:mod:")
+    with pytest.raises(DetectorError, match="module:attr"):
+        _resolve_python("python::attr")
+    with pytest.raises(DetectorError, match="not callable"):
+        _resolve_python("python:tac_validate.detectors:ENV_DETECTOR_DIR")
+
+    window, off = _prepare_window("ABC=", PreprocessSpec(strip_terminator=True, before="ZZ"))
+    assert window == "ABC"
+    assert off == 0
+    window2, off2 = _prepare_window("ABC=RMK FOO", PreprocessSpec(strip_terminator=True, before="RMK"))
+    assert "RMK" not in window2
+    assert off2 == 0
+    emit = EmitSpec(
+        code="INVALID_VISIBILITY",
+        location=None,
+        message_template="{product} {capture!r}",
+        capture_group=99,
+        span="match",
+    )
+    import re as _re
+
+    m = _re.search(r"(a)", "a")
+    assert m is not None
+    issue = _emit_issue(emit, product="METAR", body_start=0, body_end=1, window_offset=0, match=m)
+    assert issue.code == "INVALID_VISIBILITY"
+
+    monkeypatch.setenv("TAC_VALIDATE_DETECTOR_DIR", str(tmp_path / "missing-dir-file"))
+    (tmp_path / "missing-dir-file").write_text("x", encoding="utf-8")
+    catalog = load_detector_catalog()
+    assert "metar-speci-r2-visibility" in catalog
+
+    # empty TAC body
+    issues = run_r2_visibility_detectors("   ", "METAR")
+    assert any(i.code == "MISSING_VISIBILITY" for i in issues)
+
+    # require_search budget
+    path = tmp_path / "req_budget.yaml"
+    path.write_text(
+        "\n".join(
+            [
+                "schema_version: 1",
+                "id: reqb",
+                "stage: parse_gate",
+                "products: [METAR]",
+                "rules:",
+                "  - id: r",
+                "    kind: require_search",
+                "    pattern: NOMATCH",
+                "    on_fail:",
+                "      code: MISSING_VISIBILITY",
+                "      message_template: '{product} m'",
+                "      span: body",
+            ]
+        ),
+        encoding="utf-8",
+    )
+    pack = load_detector_pack(path)
+    with pytest.raises(DetectorError, match="budget exceeded"):
+        run_detector_pack(pack, "METAR X=", "METAR", budget=0)
+
+    # yml overlay + hatch emitting a code for skip path
+    overlay = tmp_path / "ov"
+    overlay.mkdir()
+    (overlay / "h.yml").write_text(
+        "\n".join(
+            [
+                "schema_version: 1",
+                "id: hatch2",
+                "stage: cross_field",
+                "products: [METAR]",
+                "rules:",
+                "  - id: p",
+                "    kind: python",
+                "    python: python:tac_validate.detectors:example_python_hatch_emit",
+                "  - id: after",
+                "    kind: require_search",
+                "    skip_if_codes: [INVALID_VISIBILITY]",
+                "    pattern: NEVER",
+                "    on_fail:",
+                "      code: MISSING_VISIBILITY",
+                "      message_template: '{product} m'",
+            ]
+        ),
+        encoding="utf-8",
+    )
+    monkeypatch.setenv("TAC_VALIDATE_DETECTOR_DIR", str(overlay))
+    catalog2 = load_detector_catalog()
+    assert "hatch2" in catalog2
+    out = run_detector_pack(catalog2["hatch2"], "METAR KJFK=", "METAR")
+    assert any(i.code == "INVALID_VISIBILITY" for i in out)
+    assert not any(i.code == "MISSING_VISIBILITY" for i in out)
+
+    # Force missing-pattern / unsupported-kind defensive branches via object surgery
+    from tac_validate.detectors import DetectorPack, DetectorRule, EmitSpec, PreprocessSpec
+
+    bad_rule = DetectorRule(
+        id="x",
+        kind="finditer",
+        preprocess=PreprocessSpec(),
+        pattern=None,
+        flags=0,
+        skip_if_codes=(),
+        on_match=None,
+        on_fail=None,
+        python_ref=None,
+    )
+    bad_pack = DetectorPack(id="bad", stage="token", products=frozenset({"METAR"}), rules=(bad_rule,))
+    with pytest.raises(DetectorError, match="missing pattern"):
+        run_detector_pack(bad_pack, "METAR X=", "METAR")
+    weird = DetectorRule(
+        id="y",
+        kind="finditer",
+        preprocess=PreprocessSpec(),
+        pattern="a",
+        flags=0,
+        skip_if_codes=(),
+        on_match=EmitSpec(code="INVALID_VISIBILITY", location=None, message_template="{product} x", span="body"),
+        on_fail=None,
+        python_ref=None,
+    )
+    # Bypass type checker: mutate kind to an invalid value for the else branch
+    object.__setattr__(weird, "kind", "nope")  # type: ignore[arg-type]
+    weird_pack = DetectorPack(id="w", stage="token", products=frozenset({"METAR"}), rules=(weird,))
+    with pytest.raises(DetectorError, match="unsupported detector kind"):
+        run_detector_pack(weird_pack, "METAR a=", "METAR")
+
+    from tac_validate.detectors import run_theme_pack
+
+    with pytest.raises(DetectorError, match="not found"):
+        run_theme_pack("no-such-pack-zzzz", "METAR X=", "METAR")
+
+
+def _write(tmp_path: Path, name: str, body: str) -> Path:
+    path = tmp_path / name
+    path.write_text(body, encoding="utf-8")
+    return path
+
+
+def _min_pack(**kwargs: object) -> str:
+    prep = kwargs.get("preprocess")
+    prep_line = f"    preprocess: {prep}\n" if prep is not None else ""
+    return (
+        "schema_version: 1\nid: x\nproducts: [METAR]\nrules:\n"
+        "  - id: r\n    kind: finditer\n"
+        f"{prep_line}"
+        "    pattern: a\n"
+        "    on_match:\n      code: INVALID_VISIBILITY\n      message_template: x\n"
+    )
+
+
+def test_extension_header_layers_detector_rules(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    overlay = tmp_path / "d"
+    overlay.mkdir()
+    (overlay / "layer.yaml").write_text(
+        "\n".join(
+            [
+                "schema_version: 1",
+                "id: vis-extra",
+                "extends: metar-speci-r2-visibility",
+                "profiles: [annex3]",
+                "stage: token",
+                "products: [METAR, SPECI]",
+                "rules:",
+                "  - id: missing_visibility",
+                "    kind: require_search",
+                "    pattern: NEVER",
+                "    on_fail:",
+                "      code: MISSING_VISIBILITY",
+                "      message_template: '{product} overlay'",
+                "  - id: extra_group",
+                "    kind: require_search",
+                "    pattern: METAR",
+                "    on_fail:",
+                "      code: MISSING_VISIBILITY",
+                "      message_template: '{product} extra'",
+            ]
+        ),
+        encoding="utf-8",
+    )
+    monkeypatch.setenv("TAC_VALIDATE_DETECTOR_DIR", str(overlay))
+    bare = load_detector_catalog()
+    assert all(rule.id != "extra_group" for rule in bare["metar-speci-r2-visibility"].rules)
+    scoped = load_detector_catalog("annex3")
+    rules = {rule.id: rule for rule in scoped["metar-speci-r2-visibility"].rules}
+    assert rules["missing_visibility"].on_fail is not None
+    assert rules["missing_visibility"].on_fail.message_template == "{product} overlay"
+    assert "extra_group" in rules
+    assert "invalid_visibility" in rules
+    other = load_detector_catalog("iwxxm_us")
+    assert all(rule.id != "extra_group" for rule in other["metar-speci-r2-visibility"].rules)
+    annex3 = lint_profile.set("annex3")
+    try:
+        layered = run_theme_pack("metar-speci-r2-visibility", "METAR X=", "METAR")
+    finally:
+        lint_profile.reset(annex3)
+    assert any(issue.message == "METAR overlay" for issue in layered)
+    other_profile = lint_profile.set("iwxxm_us")
+    try:
+        plain = run_theme_pack("metar-speci-r2-visibility", "METAR X=", "METAR")
+    finally:
+        lint_profile.reset(other_profile)
+    assert all(issue.message != "METAR overlay" for issue in plain)
+
+    (overlay / "layer.yaml").write_text(
+        "schema_version: 1\nid: metar-speci-r2-visibility\nstage: token\nproducts: [METAR]\n"
+        "rules:\n  - id: r\n    kind: require_search\n    pattern: A\n"
+        "    on_fail:\n      code: MISSING_VISIBILITY\n      message_template: x\n",
+        encoding="utf-8",
+    )
+    with pytest.raises(DetectorError, match="must extend one builtin"):
+        load_detector_catalog()
+
+    (overlay / "layer.yaml").write_text(
+        "schema_version: 1\nid: vis-extra\nextends: missing-pack\nprofiles: [annex3]\nstage: token\n"
+        "products: [METAR]\nrules:\n  - id: r\n    kind: require_search\n    pattern: A\n"
+        "    on_fail:\n      code: MISSING_VISIBILITY\n      message_template: x\n",
+        encoding="utf-8",
+    )
+    with pytest.raises(DetectorError, match="unknown builtin"):
+        load_detector_catalog("annex3")
+
+    (overlay / "layer.yaml").write_text(
+        "schema_version: 1\nid: vis-extra\nextends: metar-speci-r2-visibility\nprofiles: [annex3]\n"
+        "stage: cross_field\nproducts: [METAR]\nrules:\n  - id: r\n    kind: require_search\n    pattern: A\n"
+        "    on_fail:\n      code: MISSING_VISIBILITY\n      message_template: x\n",
+        encoding="utf-8",
+    )
+    with pytest.raises(DetectorError, match="stage must match"):
+        load_detector_catalog("annex3")
+
+    (overlay / "layer.yaml").write_text(
+        "schema_version: 1\nid: vis-extra\nextends: [metar-speci-r2-visibility]\nstage: token\n"
+        "products: [METAR]\nrules:\n  - id: r\n    kind: require_search\n    pattern: A\n"
+        "    on_fail:\n      code: MISSING_VISIBILITY\n      message_template: x\n",
+        encoding="utf-8",
+    )
+    with pytest.raises(DetectorError, match="needs a profiles list"):
+        load_detector_catalog("annex3")
+
+    (overlay / "layer.yaml").write_text(
+        "schema_version: 1\nid: vis-extra\nextends: [a, b]\nprofiles: [annex3]\nstage: token\n"
+        "products: [METAR]\nrules:\n  - id: r\n    kind: require_search\n    pattern: A\n"
+        "    on_fail:\n      code: MISSING_VISIBILITY\n      message_template: x\n",
+        encoding="utf-8",
+    )
+    with pytest.raises(DetectorError, match="must extend one builtin"):
+        load_detector_catalog("annex3")
+
+    (overlay / "layer.yaml").write_text(
+        "schema_version: 1\nid: vis-extra\nextends: ''\nprofiles: [annex3]\nstage: token\n"
+        "products: [METAR]\nrules:\n  - id: r\n    kind: require_search\n    pattern: A\n"
+        "    on_fail:\n      code: MISSING_VISIBILITY\n      message_template: x\n",
+        encoding="utf-8",
+    )
+    with pytest.raises(DetectorError, match="must extend one builtin"):
+        load_detector_catalog("annex3")
+
+    (overlay / "layer.yaml").write_text(
+        "schema_version: 1\nid: brand\nprofiles: annex3\nstage: token\nproducts: [METAR]\n"
+        "rules:\n  - id: r\n    kind: require_search\n    pattern: A\n"
+        "    on_fail:\n      code: MISSING_VISIBILITY\n      message_template: x\n",
+        encoding="utf-8",
+    )
+    with pytest.raises(DetectorError, match="needs a profiles list"):
+        load_detector_catalog()
+
+    (overlay / "layer.yaml").write_text(
+        "schema_version: 1\nid: brand\nprofiles: ['']\nstage: token\nproducts: [METAR]\n"
+        "rules:\n  - id: r\n    kind: require_search\n    pattern: A\n"
+        "    on_fail:\n      code: MISSING_VISIBILITY\n      message_template: x\n",
+        encoding="utf-8",
+    )
+    with pytest.raises(DetectorError, match="needs a profiles list"):
+        load_detector_catalog()
+
+    (overlay / "layer.yaml").write_text(
+        "schema_version: 1\nid: brand\nprofiles: [annex3]\nstage: token\nproducts: [METAR]\n"
+        "rules:\n  - id: r\n    kind: require_search\n    pattern: A\n"
+        "    on_fail:\n      code: MISSING_VISIBILITY\n      message_template: x\n",
+        encoding="utf-8",
+    )
+    with pytest.raises(DetectorError, match="profiles require extends"):
+        load_detector_catalog()

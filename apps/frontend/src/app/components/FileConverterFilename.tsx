@@ -16,9 +16,11 @@ export function FileConverterFilename(props: FileConverterViewProps) {
     outputFilename,
     outputFilenameOwnedRef,
     propagateResiduals,
+    includeNationalRemarks,
     setLiveIwxxm,
     setOutputFilename,
     setPropagateResiduals,
+    setIncludeNationalRemarks,
     setSoftPreview,
     softPreview,
   } = props;
@@ -64,6 +66,11 @@ export function FileConverterFilename(props: FileConverterViewProps) {
       <S.PropagateResidualsControl
         checked={propagateResiduals}
         onChange={setPropagateResiduals}
+        disabled={isReadOnly || isBusy}
+      />
+      <S.IncludeNationalRemarksControl
+        checked={includeNationalRemarks}
+        onChange={setIncludeNationalRemarks}
         disabled={isReadOnly || isBusy}
       />
       <S.LiveIwxxmToggle

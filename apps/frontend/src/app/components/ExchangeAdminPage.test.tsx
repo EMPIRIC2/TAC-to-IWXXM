@@ -77,9 +77,10 @@ describe('ExchangeAdminPage', () => {
       sink_scope: 'wis2',
     });
     render(<ExchangeAdminPage token="tok" />);
-    expect(
-      await screen.findByTestId('exchange-admin-allowlist-empty'),
-    ).toBeInTheDocument();
+    const empty = await screen.findByTestId('exchange-admin-allowlist-empty');
+    expect(empty).toBeInTheDocument();
+    expect(empty).toHaveTextContent(/no destinations|closed|empty|allowlist/i);
+    expect(screen.queryByTestId('exchange-admin-allowlist')).not.toBeInTheDocument();
   });
 
   it('success: group select clears prior error', async () => {

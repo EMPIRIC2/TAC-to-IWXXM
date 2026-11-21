@@ -347,6 +347,7 @@ class _ConvertRuntime:
     translation_centre_designator: str
     translation_centre_name: str
     propagate_residuals_to_remarks: bool | None
+    include_national_remarks: bool
     bulletin_date: str
     validation_service: Any
     validation_orchestrator: Any

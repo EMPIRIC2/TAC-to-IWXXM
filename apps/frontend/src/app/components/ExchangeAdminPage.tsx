@@ -95,7 +95,7 @@ export function ExchangeAdminPage({ token }: Props) {
         <h2 className="text-sm font-semibold tracking-wide text-gray-500 uppercase">
           {EXCHANGE_ADMIN_ALLOWLIST}
         </h2>
-        {allowlist && allowlist.entries.length === 0 ? (
+        {allowlist == null ? null : allowlist.entries.length === 0 ? (
           <p
             className="mt-2 text-sm text-gray-600"
             data-testid="exchange-admin-allowlist-empty"
@@ -107,7 +107,7 @@ export function ExchangeAdminPage({ token }: Props) {
             className="mt-2 list-inside list-disc text-sm text-gray-800 dark:text-gray-200"
             data-testid="exchange-admin-allowlist"
           >
-            {(allowlist?.entries ?? []).map((entry) => (
+            {allowlist.entries.map((entry) => (
               <li key={entry}>{entry}</li>
             ))}
           </ul>

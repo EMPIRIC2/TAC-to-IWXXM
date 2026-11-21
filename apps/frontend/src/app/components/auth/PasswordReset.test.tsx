@@ -113,7 +113,7 @@ describe('PasswordReset', () => {
   });
 
   it('updates password successfully and redirects back after delay', async () => {
-    const user = userEvent.setup();
+    const user = userEvent.setup({ delay: null });
     const onBackToLogin = vi.fn();
     mockConfirmPasswordReset.mockResolvedValueOnce(undefined);
 
@@ -130,11 +130,13 @@ describe('PasswordReset', () => {
       );
     });
 
+    // Component sleeps 2s before redirect; keep real timers (fake timers leak
+    // across FileConverter suites under coverage) with CI headroom.
     await waitFor(
       () => {
         expect(onBackToLogin).toHaveBeenCalledTimes(1);
       },
-      { timeout: 3000 },
+      { timeout: 10_000 },
     );
   });
 

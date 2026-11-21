@@ -7,10 +7,11 @@ import string
 
 from tac_validate.issue_registry.rows_a import ISSUES_A
 from tac_validate.issue_registry.rows_b import ISSUES_B
+from tac_validate.issue_registry.rows_wmo782 import ISSUES_WMO782
 from tac_validate.issue_registry.spec import IssueSpec
 from tac_validate.models import Issue
 
-ISSUES: tuple[IssueSpec, ...] = ISSUES_A + ISSUES_B
+ISSUES: tuple[IssueSpec, ...] = ISSUES_A + ISSUES_B + ISSUES_WMO782
 _BY_CODE: dict[str, IssueSpec] = {spec.code: spec for spec in ISSUES}
 
 # Catalog / soft-preview may render templates without live kwargs. Prefer a

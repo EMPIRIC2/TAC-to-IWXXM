@@ -49,6 +49,13 @@ async def convert_zip(
             "Omitted uses the profile default (annex3 / ICAO_2025 off)."
         ),
     ),
+    include_national_remarks: bool = Form(
+        default=True,
+        description=(
+            "When false, omit national remarks after RMK from IWXXM output even for "
+            "profiles that normally keep remarks."
+        ),
+    ),
     bulletin_date: str = Form(
         default="",
         description=(
@@ -135,6 +142,7 @@ async def convert_zip(
                 iwxxm_version=iwxxm_version,
                 reference_time=bulletin_date or None,
                 propagate_residuals_to_remarks=propagate_residuals_to_remarks,
+                include_national_remarks=include_national_remarks,
             )
             duration_ms = int((time.perf_counter() - start_time) * 1000)
 
@@ -213,6 +221,7 @@ async def convert_zip(
                     iwxxm_version=iwxxm_version,
                     reference_time=bulletin_date or None,
                     propagate_residuals_to_remarks=propagate_residuals_to_remarks,
+                    include_national_remarks=include_national_remarks,
                 )
 
                 # Calculate duration

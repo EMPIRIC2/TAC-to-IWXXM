@@ -6,7 +6,7 @@ cases:
   status: ready
   tac: METAR KJFK 18012KT 231751Z 10SM FEW040 15/07 A3005=
   expect:
-    accept: true
+    accept: false
     codes:
     - ODD_FIELD_ORDER
   meta:
@@ -18,7 +18,7 @@ cases:
   status: ready
   tac: METAR KSEA 27008KT 231800Z 10SM SCT025 14/06 A3004=
   expect:
-    accept: true
+    accept: false
     codes:
     - ODD_FIELD_ORDER
   meta:
@@ -30,7 +30,7 @@ cases:
   status: ready
   tac: SPECI KJFK 20015G25KT 232045Z 8SM -SN BKN020 12/06 A3001=
   expect:
-    accept: true
+    accept: false
     codes:
     - ODD_FIELD_ORDER
     - WIND_VRB_OR_GUST
@@ -43,7 +43,7 @@ cases:
   status: ready
   tac: METAR KJFK VRB03KT 231751Z 10SM FEW040 15/07 A3005=
   expect:
-    accept: true
+    accept: false
     codes:
     - ODD_FIELD_ORDER
     - WIND_VRB_OR_GUST
@@ -56,7 +56,7 @@ cases:
   status: ready
   tac: METAR KJFK 18012KT 231852Z CAVOK 15/07 Q1013=
   expect:
-    accept: true
+    accept: false
     codes:
     - ODD_FIELD_ORDER
     - CAVOK_PRESENT

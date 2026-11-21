@@ -27,6 +27,7 @@ export {
 } from '@/app/components/IwxxmPreviewPane';
 export { SoftPreviewControl } from '@/app/components/SoftPreviewControl';
 export { PropagateResidualsControl } from '@/app/components/PropagateResidualsControl';
+export { IncludeNationalRemarksControl } from '@/app/components/IncludeNationalRemarksControl';
 export { LiveIwxxmToggle } from '@/app/components/LiveIwxxmToggle';
 export { BulletinReportList } from '@/app/components/BulletinReportList';
 export { LiveConvertStatusStrip } from '@/app/components/LiveConvertStatusStrip';

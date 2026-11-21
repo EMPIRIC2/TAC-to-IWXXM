@@ -1,0 +1,203 @@
+def _airmet_weather_hazards_extension(ir: dict[str, Any]) -> str:
+    """
+    Internal helper ``_airmet_weather_hazards_extension``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
+    hazard_raw = ir.get("us_airmet_hazard")
+    if not isinstance(hazard_raw, dict):
+        return ""
+    hazard = cast(dict[str, Any], hazard_raw)
+    href = hazard.get("href")
+    if not isinstance(href, str) or not href.strip():
+        return ""
+    attrs: list[str] = []
+    if hazard.get("causing_ifr_conditions"):
+        attrs.append('causingIFRConditions="true"')
+    if hazard.get("causing_llws_conditions"):
+        attrs.append('causingLLWSConditions="true"')
+    attr_txt = f" {' '.join(attrs)}" if attrs else ""
+    return f"""          <iwxxm:extension>
+            <iwxxm-us:AIRMETWeatherHazards{attr_txt}>
+              <iwxxm-us:weatherPhenomenon xlink:href="{escape(href)}"/>
+            </iwxxm-us:AIRMETWeatherHazards>
+          </iwxxm:extension>
+"""
+
+
+def _sigmet_weather_hazards_extension(ir: dict[str, Any]) -> str:
+    """
+    Internal helper ``_sigmet_weather_hazards_extension``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
+    hazard_raw = ir.get("us_sigmet_hazard")
+    if not isinstance(hazard_raw, dict):
+        return ""
+    hazard = cast(dict[str, Any], hazard_raw)
+    href = hazard.get("href")
+    if not isinstance(href, str) or not href.strip():
+        return ""
+    attrs: list[str] = []
+    tag = hazard.get("tag")
+    if isinstance(tag, str) and tag.strip():
+        attrs.append(f'tag="{escape(tag.strip())}"')
+    if hazard.get("is_severe") is True:
+        attrs.append('isSevere="true"')
+    attr_txt = f" {' '.join(attrs)}" if attrs else ""
+    return f"""              <iwxxm:extension>
+                <iwxxm-us:SIGMETWeatherHazards{attr_txt}>
+                  <iwxxm-us:weatherPhenomenon xlink:href="{escape(href)}"/>
+                </iwxxm-us:SIGMETWeatherHazards>
+              </iwxxm:extension>
+"""
+
+
+def emit_taf_iwxxm_us(ir: dict[str, Any], *, iwxxm_version: str) -> str:
+    """
+    Emit TAF annex3 body plus optional ``MeteorologicalAerodromeForecastExtension``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Parsed TAF IR (optional ``forecast_altimeter_inhg``).
+
+    iwxxm_version : str
+        Release line.
+
+    Returns
+    -------
+    str
+        TAF annex3 body plus optional ``MeteorologicalAerodromeForecastExtension``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (emit_taf_iwxxm_us)
+    2
+    """
+    from tac2iwxxm.profiles.annex3_emit import emit_taf_annex3
+
+    xml = emit_taf_annex3(ir, iwxxm_version=iwxxm_version)
+    xml = _with_us_namespace(xml)
+    xml = xml.replace('gml:id="taf.basic.', 'gml:id="taf.us.', 1)
+
+    alt = ir.get("forecast_altimeter_inhg")
+    if alt is None:
+        return xml
+
+    extension = f"""      <iwxxm:extension>
+        <iwxxm-us:MeteorologicalAerodromeForecastExtension>
+          <iwxxm-us:altimeter uom="[in_i'Hg]">{alt:.2f}</iwxxm-us:altimeter>
+        </iwxxm-us:MeteorologicalAerodromeForecastExtension>
+      </iwxxm:extension>
+"""
+    needle = "    </iwxxm:MeteorologicalAerodromeForecast>"
+    if needle not in xml:
+        return xml
+    return xml.replace(needle, extension + needle, 1)
+
+
+def emit_sigmet_iwxxm_us(ir: dict[str, Any], *, iwxxm_version: str) -> str:
+    """
+    Emit SIGMET annex3 body with IWXXM-US namespace and weather-hazard extensions.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Parsed product fields.
+
+    iwxxm_version : str
+        IWXXM release line.
+
+    Returns
+    -------
+    str
+        SIGMET annex3 body with IWXXM-US namespace and weather-hazard extensions.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (emit_sigmet_iwxxm_us)
+    2
+    """
+    from tac2iwxxm.profiles.annex3_emit import emit_sigmet_annex3
+
+    xml = emit_sigmet_annex3(ir, iwxxm_version=iwxxm_version)
+    xml = _with_us_namespace(xml)
+    for prefix in ("basic", "conv", "va", "tc", "cnl"):
+        xml = xml.replace(f'gml:id="sigmet.{prefix}.', 'gml:id="sigmet.us.', 1)
+    ext = _sigmet_weather_hazards_extension(ir)
+    return _inject_evolving_extension(xml, ext, "</iwxxm:SIGMETEvolvingCondition>")
+
+
+def emit_airmet_iwxxm_us(ir: dict[str, Any], *, iwxxm_version: str) -> str:
+    """
+    Emit AIRMET annex3 body with IWXXM-US namespace and weather-hazard extensions.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Parsed product fields.
+
+    iwxxm_version : str
+        IWXXM release line.
+
+    Returns
+    -------
+    str
+        AIRMET annex3 body with IWXXM-US namespace and weather-hazard extensions.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (emit_airmet_iwxxm_us)
+    2
+    """
+    from tac2iwxxm.profiles.annex3_emit import emit_airmet_annex3
+
+    xml = emit_airmet_annex3(ir, iwxxm_version=iwxxm_version)
+    xml = _with_us_namespace(xml)
+    xml = xml.replace('gml:id="airmet.basic.', 'gml:id="airmet.us.', 1)
+    ext = _airmet_weather_hazards_extension(ir)
+    xml = _inject_evolving_extension(xml, ext, "</iwxxm:AIRMETEvolvingCondition>")
+    inline_lo = ir.get("inline_frzlvl_lo")
+    inline_hi = ir.get("inline_frzlvl_hi")
+    if inline_lo is not None and inline_hi is not None:
+        inline_ext = _inline_freezing_levels_xml(int(inline_lo), int(inline_hi), prefix="obs")
+        xml = _inject_first_evolving_extension(xml, inline_ext)
+    outlook_raw = ir.get("outlook")
+    if isinstance(outlook_raw, dict):
+        outlook_ir = cast(dict[str, Any], outlook_raw)
+        subperiod = _airmet_subperiod_extension(ir, outlook_ir)
+        fir = str(ir["fir"]).lower()
+        member_token = f'gml:id="cond.{fir}.outlook.1"'
+        if member_token in xml:
+            start = xml.index(member_token)
+            close_idx = xml.index("</iwxxm:AIRMETEvolvingCondition>", start)
+            xml = xml[:close_idx] + subperiod + xml[close_idx:]
+    frzlvl_ext = _airmet_freezing_level_forecast_extension(ir)
+    if frzlvl_ext and "</iwxxm:AIRMET>" in xml:
+        xml = xml.replace("</iwxxm:AIRMET>", f"{frzlvl_ext}</iwxxm:AIRMET>", 1)
+    return xml
+
+
+__all__ = [
+    "emit_airmet_iwxxm_us",
+    "emit_metar_speci_iwxxm_us",
+    "emit_sigmet_iwxxm_us",
+    "emit_taf_iwxxm_us",
+]

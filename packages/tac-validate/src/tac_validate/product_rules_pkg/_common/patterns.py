@@ -34,6 +34,13 @@ _VIS_BAD = re.compile(
     r"(?<![A-Z0-9/])(\d{4,}KM|\d+MILES|\d{5,})\b",
     re.IGNORECASE,
 )
+# WMO-782 METAR/SPECI quality helpers (metre vis, AUTO ////, wind parse, wx grammar).
+_VIS_METERS = re.compile(r"^\d{4}$")
+_VIS_SOLIDUS = re.compile(r"^////(?:SM)?$")
+_WIND_PARSE = re.compile(r"^(?:(?P<dir>VRB|\d{3}))(?P<spd>\d{2,3})(?:G(?P<gust>\d{2,3}))?(?P<unit>KT|MPS)$")
+_WX_SIGNIFICANT = re.compile(
+    r"^(?:[+-]|VC)?(?:MI|BC|PR|DR|BL|SH|TS|FZ)?(?:DZ|RA|SN|SG|IC|PL|GR|GS|UP|BR|FG|FU|VA|DU|SA|HZ|PY|PO|SQ|FC|SS|DS)+$"
+)
 # R3: WMO 306 Table 4678 subset - intensity / descriptor / phenomenon grammar.
 _WX_PHENOMENA = frozenset(
     {
@@ -355,17 +362,21 @@ __all__ = [
     "_VAGUE_FILLER_RE",
     "_VALID_PERIOD",
     "_VIS_BAD",
+    "_VIS_METERS",
     "_VIS_NOT_OBS",
     "_VIS_OK",
+    "_VIS_SOLIDUS",
     "_VOLCANO_LINE",
     "_WC_MAX_VALIDITY_HOURS",
     "_WIND",
     "_WIND_DIR_VAR",
+    "_WIND_PARSE",
     "_WIND_TOKEN",
     "_WS_MAX_VALIDITY_HOURS",
     "_WV_MAX_VALIDITY_HOURS",
     "_WX_DESCRIPTORS",
     "_WX_PHENOMENA",
+    "_WX_SIGNIFICANT",
     "_WX_SPECIAL",
     "_WX_STANDALONE",
     "_WX_TOKEN_SHAPE",

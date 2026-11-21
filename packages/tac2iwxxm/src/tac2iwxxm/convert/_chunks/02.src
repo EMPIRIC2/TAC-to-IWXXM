@@ -1,0 +1,63 @@
+def _inject_translation_centre(
+    xml: str,
+    *,
+    designator: str,
+    name: str,
+    heading: tuple[str, str] | None = None,
+) -> str:
+    """
+    Insert ``translationCentre*`` attributes on the IWXXM root element.
+
+    Parameters
+    ----------
+    xml : str
+        Successful convert document (not a quarantine shell).
+    designator : str
+        ``translationCentreDesignator`` value.
+    name : str
+        ``translationCentreName`` value.
+
+    Returns
+    -------
+    str
+        XML with centre attributes on the first ``iwxxm:*`` root start tag.
+    """
+    extra = f'\n    translationCentreDesignator="{escape(designator)}"\n    translationCentreName="{escape(name)}"'
+    if heading is not None:
+        bulletin_id, translation_time = heading
+        extra += (
+            f'\n    translatedBulletinID="{escape(bulletin_id)}"'
+            f'\n    translatedBulletinReceptionTime="{escape(translation_time)}"'
+            f'\n    translationTime="{escape(translation_time)}"'
+        )
+    match = _ROOT_OPEN.search(xml)
+    if match is None:
+        return xml
+    return xml[: match.start()] + match.group(1) + match.group(2) + extra + match.group(3) + xml[match.end() :]
+
+
+def _xml_gzip(xml: str | None, suggested_filename: str | None) -> bytes | None:
+    """
+    Gzip the IWXXM text when the suggested name ends in ``.xml.gz``.
+
+    Parameters
+    ----------
+    xml : str | None
+        IWXXM document text.
+
+    suggested_filename : str | None
+        Guideline filename, or ``None``.
+
+    Returns
+    -------
+    bytes | None
+        Compressed document, or ``None`` when there is nothing to compress.
+
+    Examples
+    --------
+    >>> _xml_gzip(None, None) is None
+    True
+    """
+    if xml and suggested_filename and suggested_filename.endswith(".xml.gz"):
+        return gzip.compress(xml.encode("utf-8"))
+    return None

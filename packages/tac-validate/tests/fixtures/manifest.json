@@ -1444,11 +1444,11 @@
       "product": "METAR",
       "theme": "R1",
       "depth": "full_checklist",
-      "cite": "A3-2 body order CCCC\u2192ddhhmmZ; research R1",
+      "cite": "WMO-782 METAR/SPECI group order CCCC\u2192ddhhmmZ",
       "tac": "negative/metar/odd_order_time_before_cccc.tac",
-      "ok": true,
+      "ok": false,
       "expected_codes": ["ODD_FIELD_ORDER"],
-      "expected_severity": "warning",
+      "expected_severity": "error",
       "require_spans": true
     },
     {
@@ -1456,11 +1456,11 @@
       "product": "METAR",
       "theme": "R1",
       "depth": "full_checklist",
-      "cite": "A3-2 body order ddhhmmZ\u2192wind; research R1",
+      "cite": "WMO-782 METAR/SPECI group order ddhhmmZ\u2192wind",
       "tac": "negative/metar/odd_order_wind_before_time.tac",
-      "ok": true,
+      "ok": false,
       "expected_codes": ["ODD_FIELD_ORDER"],
-      "expected_severity": "warning",
+      "expected_severity": "error",
       "require_spans": true
     },
     {
@@ -1468,11 +1468,11 @@
       "product": "SPECI",
       "theme": "R1",
       "depth": "full_checklist",
-      "cite": "A3-2 body order CCCC\u2192ddhhmmZ; research R1",
+      "cite": "WMO-782 METAR/SPECI group order CCCC\u2192ddhhmmZ",
       "tac": "negative/speci/odd_order_time_before_cccc.tac",
-      "ok": true,
+      "ok": false,
       "expected_codes": ["ODD_FIELD_ORDER"],
-      "expected_severity": "warning",
+      "expected_severity": "error",
       "require_spans": true
     }
   ],

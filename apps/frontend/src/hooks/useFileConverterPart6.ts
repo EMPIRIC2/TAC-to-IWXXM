@@ -31,6 +31,7 @@ export function useFileConverterPart6(ctx: any) {
     setDecodeError,
     softPreview,
     propagateResiduals,
+    includeNationalRemarks,
     liveIwxxm,
     selectedTrace,
     setSelectedTrace,
@@ -149,7 +150,11 @@ export function useFileConverterPart6(ctx: any) {
           product: liveAssistProduct,
           ...D.convertFieldsFromParamsBar(
             D.paramsBarFromState(conversionParams, activeReportVariant),
-            { softPreview: true, propagateResidualsToRemarks: propagateResiduals },
+            {
+              softPreview: true,
+              propagateResidualsToRemarks: propagateResiduals,
+              includeNationalRemarks,
+            },
           ),
           extensions: D.nationalExtensionsForProfile(conversionParams.profile),
           exchangeOutput: D.exchangeOutputForProfile(conversionParams.profile),
@@ -207,6 +212,7 @@ export function useFileConverterPart6(ctx: any) {
       activeReportVariant,
       accessToken,
       propagateResiduals,
+      includeNationalRemarks,
     ],
   );
 

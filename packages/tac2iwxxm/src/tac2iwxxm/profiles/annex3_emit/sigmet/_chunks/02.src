@@ -1,0 +1,17 @@
+    Returns
+    -------
+    str
+        Return value.
+    """
+    pos = ir.get("tropical_cyclone_position")
+    if not isinstance(pos, dict) or "lat" not in pos or "lon" not in pos:
+        return ""
+    lat = float(cast(dict[str, Any], pos)["lat"])
+    lon = float(cast(dict[str, Any], pos)["lon"])
+    pos_txt = _sigmet_tc_format_pos(lat, lon)
+    return f"""
+              <iwxxm:tropicalCyclonePosition>
+                <gml:Point gml:id="{gid}" srsDimension="2" axisLabels="Lat Long" srsName="http://www.opengis.net/def/crs/EPSG/0/4326">
+                  <gml:pos>{pos_txt}</gml:pos>
+                </gml:Point>
+              </iwxxm:tropicalCyclonePosition>"""

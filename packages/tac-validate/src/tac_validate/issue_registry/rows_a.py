@@ -62,8 +62,8 @@ ISSUES_A: tuple[IssueSpec, ...] = (
     ),
     _row(
         "ODD_FIELD_ORDER",
-        "warning",
-        "This {product} has groups out of the usual order (CCCC, then ddhhmmZ, then wind). Review the group order.",
+        "error",
+        "{product} groups out of A3-2 order (CCCC -> ddhhmmZ -> wind)",
         tags=("order", "station", "time", "metar", "speci"),
     ),
     _row(

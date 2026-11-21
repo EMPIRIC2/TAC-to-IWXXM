@@ -1,0 +1,343 @@
+def _sky_level_field(token: str, base: int) -> dict[str, str]:
+    """
+    Internal helper ``_sky_level_field``.
+
+    Parameters
+    ----------
+    token : str
+        Argument ``token``.
+
+    base : int
+        Argument ``base``.
+
+    Returns
+    -------
+    dict[str, str]
+        Return value.
+    """
+    if token == "/":
+        return {"nil_reason": _NIL_NOT_OBSERVABLE}
+    code = base + int(token)
+    return {"href": _BUFR_CLOUD_HREF.format(code=code)}
+
+
+def _parse_sky_types_remark(remarks: str) -> dict[str, Any] | None:
+    """
+    Internal helper ``_parse_sky_types_remark``.
+
+    Parameters
+    ----------
+    remarks : str
+        Argument ``remarks``.
+
+    Returns
+    -------
+    dict[str, Any] | None
+        Return value.
+    """
+    m = _SKY_TYPES.search(remarks)
+    if m is None:
+        return None
+    low = _sky_level_field(m.group("cl"), 30)
+    mid = _sky_level_field(m.group("cm"), 20)
+    high = _sky_level_field(m.group("ch"), 10)
+    sky: dict[str, Any] = {}
+    if "href" in low:
+        sky["low_href"] = low["href"]
+    else:
+        sky["low_nil_reason"] = low["nil_reason"]
+    if "href" in mid:
+        sky["middle_href"] = mid["href"]
+    else:
+        sky["middle_nil_reason"] = mid["nil_reason"]
+    if "href" in high:
+        sky["high_href"] = high["href"]
+    else:
+        sky["high_nil_reason"] = high["nil_reason"]
+    return sky
+
+
+def _parse_convective_remark(remarks: str) -> dict[str, Any] | None:
+    """
+    Internal helper ``_parse_convective_remark``.
+
+    Parameters
+    ----------
+    remarks : str
+        Argument ``remarks``.
+
+    Returns
+    -------
+    dict[str, Any] | None
+        Return value.
+    """
+    m = _CONVECTIVE.search(remarks)
+    if m is None:
+        return None
+    ctype = m.group("ctype")
+    entry: dict[str, Any] = {
+        "cloud_type_href": _CONVECTIVE_TYPE_HREF.format(code=_CONVECTIVE_TYPE_CODES[ctype]),
+    }
+    dist = m.group("dist")
+    if dist:
+        entry["qualitative_distance_href"] = _DIST_HREF.format(code=_CONVECTIVE_DIST_CODES[dist])
+    sector = _lightning_sector(m.group("sector"))
+    if sector is not None:
+        entry["sector"] = sector
+    mov = m.group("mov")
+    if mov:
+        entry["direction_of_motion_deg"] = _LTG_COMPASS_DEG[mov]
+        # True north as 360 for N (PDF overhead-moving-north sample).
+        if mov == "N":
+            entry["direction_of_motion_deg"] = 360.0
+    return entry
+
+
+def _parse_hail_size_remark(remarks: str) -> dict[str, Any] | None:
+    """
+    Internal helper ``_parse_hail_size_remark``.
+
+    Parameters
+    ----------
+    remarks : str
+        Argument ``remarks``.
+
+    Returns
+    -------
+    dict[str, Any] | None
+        Return value.
+    """
+    m = _HAIL_SIZE.search(remarks)
+    if m is None:
+        return None
+    if m.group("below"):
+        inches = _frac_to_inches(m.group("bfrac"))
+        return {"maximum_diameter_in": inches, "size_operator": "BELOW"}
+    if m.group("whole") is not None and m.group("frac"):
+        inches = float(int(m.group("whole"))) + _frac_to_inches(m.group("frac"))
+        return {"maximum_diameter_in": inches}
+    if m.group("onlyfrac"):
+        return {"maximum_diameter_in": _frac_to_inches(m.group("onlyfrac"))}
+    if m.group("onlywhole"):
+        return {"maximum_diameter_in": float(int(m.group("onlywhole")))}
+    return None  # pragma: no cover — _HAIL_SIZE alternatives are exhaustive
+
+
+def _precip_6_period(hour: int) -> str:
+    """
+    Internal helper ``_precip_6_period``.
+
+    Parameters
+    ----------
+    hour : int
+        Argument ``hour``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
+    if hour % 6 == 0:
+        return "PT6H"
+    return "PT3H"
+
+
+def _parse_max_min_temperatures(remarks: str) -> list[dict[str, Any]]:
+    """
+    Internal helper ``_parse_max_min_temperatures``.
+
+    Parameters
+    ----------
+    remarks : str
+        Argument ``remarks``.
+
+    Returns
+    -------
+    list[dict[str, Any]]
+        Return value.
+    """
+    rows: list[dict[str, Any]] = []
+    max_6 = _RMK_MAX_6H.search(remarks)
+    min_6 = _RMK_MIN_6H.search(remarks)
+    if max_6 is not None or min_6 is not None:
+        row: dict[str, Any] = {"preceding_period": "PT6H"}
+        if max_6 is not None:
+            row["max_c"] = _tenths_celsius(max_6.group("sign"), max_6.group("ttt"))
+        if min_6 is not None:
+            row["min_c"] = _tenths_celsius(min_6.group("sign"), min_6.group("ttt"))
+        rows.append(row)
+    mm24 = _RMK_MAXMIN_24H.search(remarks)
+    if mm24 is not None:
+        rows.append(
+            {
+                "preceding_period": "PT24H",
+                "max_c": _tenths_celsius(mm24.group("msign"), mm24.group("mttt")),
+                "min_c": _tenths_celsius(mm24.group("nsign"), mm24.group("nttt")),
+            }
+        )
+    return rows
+
+
+def _precip_quantity(hundredths: int, *, period: str) -> dict[str, Any]:
+    """
+    Internal helper ``_precip_quantity``.
+
+    Parameters
+    ----------
+    hundredths : int
+        Argument ``hundredths``.
+
+    period : str
+        Argument ``period``.
+
+    Returns
+    -------
+    dict[str, Any]
+        Return value.
+    """
+    row: dict[str, Any] = {
+        "processed_weather_element_href": _PRECIP_ELEMENT_HREF,
+        "value_type_href": _STAT_ACCUM_HREF,
+        "value_period": period,
+        "uom": "[in_i]",
+    }
+    if hundredths == 0:
+        # FMH P0000 / 60000 / 70000 - less than 0.01" (PDF BELOW sample).
+        row["processed_value"] = 0.01
+        row["qualifier"] = "BELOW"
+    else:
+        row["processed_value"] = hundredths / 100.0
+    return row
+
+
+def _parse_recent_weather_remarks(remarks: str) -> list[dict[str, Any]]:
+    """
+    Internal helper ``_parse_recent_weather_remarks``.
+
+    Parameters
+    ----------
+    remarks : str
+        Argument ``remarks``.
+
+    Returns
+    -------
+    list[dict[str, Any]]
+        Return value.
+    """
+    rows: list[dict[str, Any]] = []
+    for m in _RECENT_WX.finditer(remarks):
+        wx = m.group("wx")
+        row: dict[str, Any] = {
+            "phenomenon_href": _WX_4678_HREF.format(code=wx),
+            "wx": wx,
+        }
+        if m.group("b") is not None:
+            btok = m.group("b")
+            row["begin_minute"] = int(btok[-2:])
+            if len(btok) == 4:
+                row["begin_hour"] = int(btok[0:2])
+        end_tok = m.group("e") or m.group("e_only")
+        if end_tok is not None:
+            row["end_minute"] = int(end_tok[-2:])
+            if len(end_tok) == 4:
+                row["end_hour"] = int(end_tok[0:2])
+        rows.append(row)
+    return rows
+
+
+def _parse_processed_precip(remarks: str, hour: int) -> list[dict[str, Any]]:
+    """
+    Internal helper ``_parse_processed_precip``.
+
+    Parameters
+    ----------
+    remarks : str
+        Argument ``remarks``.
+
+    hour : int
+        Argument ``hour``.
+
+    Returns
+    -------
+    list[dict[str, Any]]
+        Return value.
+    """
+    qty: list[dict[str, Any]] = []
+    precip = _RMK_P.search(remarks)
+    if precip is not None:
+        qty.append(_precip_quantity(int(precip.group("p")), period="PT1H"))
+    p6 = _RMK_PRECIP_6.search(remarks)
+    if p6 is not None:
+        qty.append(_precip_quantity(int(p6.group("p")), period=_precip_6_period(hour)))
+    p7 = _RMK_PRECIP_7.search(remarks)
+    if p7 is not None:
+        qty.append(_precip_quantity(int(p7.group("p")), period="PT24H"))
+    return qty
+
+
+def _product_matches_rtype(product: str, rtype: str) -> bool:
+    """
+    Internal helper ``_product_matches_rtype``.
+
+    Parameters
+    ----------
+    product : str
+        Argument ``product``.
+
+    rtype : str
+        Argument ``rtype``.
+
+    Returns
+    -------
+    bool
+        Return value.
+    """
+    product_u = product.upper()
+    rtype_u = rtype.upper()
+    if product_u == rtype_u:
+        return True
+    # CA_ECCC: API product METAR/SPECI accepts MANOBS LWIS/SAWR TAC leads (#1039).
+    return bool(product_u in {"METAR", "SPECI"} and rtype_u in {"LWIS", "SAWR"})
+
+
+def _parse_ca_remarks(remarks: str, ir: dict[str, Any]) -> None:
+    """
+    Internal helper ``_parse_ca_remarks``.
+
+    Parameters
+    ----------
+    remarks : str
+        Argument ``remarks``.
+
+    ir : dict[str, Any]
+        Argument ``ir``.
+    """
+    density = _CA_DENSITY_ALT.search(remarks)
+    if density is not None:
+        ir["density_altitude_ft"] = int(density.group("ft"))
+    elif _CA_DENSITY_ALT_MISG.search(remarks):
+        ir["density_altitude_missing"] = True
+
+    ice = _CA_ICE_REMARK.search(remarks)
+    if ice is not None:
+        intensity = ice.group("intensity").upper()
+        ir["ca_icing_href"] = f"https://dd.weather.gc.ca/today/aviation/iwxxm/code-ca/AerodromeIcing/{intensity}"
+
+
+def _remarks_free_text(remarks: str) -> str:
+    """
+    Internal helper ``_remarks_free_text``.
+
+    Parameters
+    ----------
+    remarks : str
+        Argument ``remarks``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
+    leftover = _CONSUMED_REMARK.sub(" ", remarks)
+    leftover = re.sub(r"\s+", " ", leftover).strip(" =")
+    return leftover

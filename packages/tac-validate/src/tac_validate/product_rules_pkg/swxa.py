@@ -1,6 +1,6 @@
 """Product rules - swxa."""
 
-# pyright: reportWildcardImportFromLibrary=false, reportUnusedFunction=false, reportPrivateUsage=false
+# pyright: reportUndefinedVariable=false, reportUnknownMemberType=false, reportUnknownVariableType=false, reportUnknownArgumentType=false, reportPrivateUsage=false, reportWildcardImportFromLibrary=false, reportUnusedFunction=false
 
 from __future__ import annotations
 

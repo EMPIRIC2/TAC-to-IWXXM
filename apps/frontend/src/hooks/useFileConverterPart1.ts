@@ -47,6 +47,7 @@ export function useFileConverterPart1(props: any) {
   const [decodeError, setDecodeError] = D.useState<string | null>(null);
   const [softPreview, setSoftPreview] = D.useState(false);
   const [propagateResiduals, setPropagateResiduals] = D.useState(false);
+  const [includeNationalRemarks, setIncludeNationalRemarks] = D.useState(true);
   const [liveIwxxm, setLiveIwxxm] = D.useState(true);
   const [selectedTrace, setSelectedTrace] = D.useState<LiveTraceTarget | null>(null);
   const [lintJump, setLintJump] = D.useState<number | null>(null);
@@ -356,6 +357,8 @@ export function useFileConverterPart1(props: any) {
     setSoftPreview,
     propagateResiduals,
     setPropagateResiduals,
+    includeNationalRemarks,
+    setIncludeNationalRemarks,
     liveIwxxm,
     setLiveIwxxm,
     selectedTrace,
