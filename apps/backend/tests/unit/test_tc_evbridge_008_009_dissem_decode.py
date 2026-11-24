@@ -9,10 +9,8 @@ from uuid import uuid4
 
 import pytest
 from dissemination.handles import default_handle_store
-from dissemination.rate_limit import DisseminationRateLimiter
 from fastapi.testclient import TestClient
 from src import api as api_module
-from src.routers import dissemination as diss_router
 from src.utilities.abuse_controls import get_limiter
 from src.utilities.security import verify_optional_supabase_token, verify_supabase_token
 from tac2iwxxm.library_assets import get_first_party_library_asset
@@ -33,8 +31,6 @@ def client(monkeypatch: pytest.MonkeyPatch):
     api_module.app.dependency_overrides[verify_supabase_token] = override_verify_token
     api_module.app.dependency_overrides[verify_optional_supabase_token] = override_verify_token
     monkeypatch.setenv("DISSEMINATION_EGRESS_ALLOWLIST", "")
-    lim = DisseminationRateLimiter(max_per_minute=1000)
-    monkeypatch.setattr(diss_router, "default_rate_limiter", lim)
     default_handle_store.clear()
     get_limiter().reset()
     test_client = TestClient(api_module.app)
@@ -480,10 +476,6 @@ def test_tc_evbridge_008_send_custom_dissemination_library(
     custom.body = {"transforms": [{"type": "checksum", "params": {}}]}
     fake_svc = MagicMock()
     fake_svc.get_library_asset.return_value = custom
-    monkeypatch.setattr(
-        "src.routers.dissemination.ConversionProfilesService",
-        lambda *_a, **_k: fake_svc,
-    )
     uri = _sqlite_uri(tmp_path)
     pre = client.post(
         "/api/v1/dissemination/preflight",
@@ -869,10 +861,6 @@ def test_tc_evbridge_008_send_custom_dissem_lookup_paths(
     fake_svc = MagicMock()
     fake_svc.get_library_asset.side_effect = ValueError(
         "dissemination_library_id must reference a Dissemination library"
-    )
-    monkeypatch.setattr(
-        "src.routers.dissemination.ConversionProfilesService",
-        lambda *_a, **_k: fake_svc,
     )
     r1 = client.post(
         "/api/v1/dissemination/send",

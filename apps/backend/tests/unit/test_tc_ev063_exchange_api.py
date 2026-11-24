@@ -10,10 +10,8 @@ from dissemination.collect_namespaces import is_collect_bulletin
 from dissemination.exchange_registry import resolve_exchange_profile
 from dissemination.handles import default_handle_store
 from dissemination.packaging import apply_exchange_packaging, wrap_global_afs_collect
-from dissemination.rate_limit import DisseminationRateLimiter
 from fastapi.testclient import TestClient
 from src import api as api_module
-from src.routers import dissemination as diss_router
 from src.utilities.abuse_controls import get_limiter
 from src.utilities.security import verify_supabase_token
 
@@ -31,8 +29,6 @@ METAR KJFK 121151Z 18008KT 10SM FEW250 22/14 A3012=
 @pytest.fixture
 def client(monkeypatch: pytest.MonkeyPatch):
     monkeypatch.setenv("DISSEMINATION_EGRESS_ALLOWLIST", "")
-    lim = DisseminationRateLimiter(max_per_minute=1000)
-    monkeypatch.setattr(diss_router, "default_rate_limiter", lim)
     default_handle_store.clear()
 
     async def override_verify_token():

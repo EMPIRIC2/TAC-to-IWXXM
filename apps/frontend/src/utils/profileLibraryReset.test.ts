@@ -81,4 +81,14 @@ describe('profileLibraryReset', () => {
     expect(confirmFn.mock.calls[0]![0]).toMatch(/reset/i);
     expect(confirmFn.mock.calls[0]![0]).not.toMatch(/ADR|Corpus|EV-|TC-/i);
   });
+
+  it('confirm helper defaults to window.confirm', () => {
+    const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(false);
+    try {
+      expect(confirmLibraryResetForProfile('ICAO_2025')).toBe(false);
+      expect(confirmSpy).toHaveBeenCalledWith(expect.stringContaining('ICAO_2025'));
+    } finally {
+      confirmSpy.mockRestore();
+    }
+  });
 });

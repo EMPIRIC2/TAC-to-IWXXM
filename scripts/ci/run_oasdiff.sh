@@ -18,6 +18,9 @@
 #   OASDIFF_REVISION      revision spec file (default docs/api/openapi.json)
 #   OASDIFF_FRONTEND_SPEC frontend copy (default apps/frontend/openapi/openapi.json)
 #   OASDIFF_FAIL_ON       ERR (default) | WARN | NONE
+#   OASDIFF_ERR_IGNORE    optional err-ignore file (default:
+#                         scripts/ci/policy/oasdiff-err-ignore-m1-dissemination.txt
+#                         when that file exists)
 #   OASDIFF_REQUIRE_BASE  1 = exit 2 when no base spec can be found (default: skip)
 #   QUALITY_REPORTS_DIR   output directory (default .quality-reports)
 set -euo pipefail
@@ -30,6 +33,10 @@ REVISION="${OASDIFF_REVISION:-docs/api/openapi.json}"
 FRONTEND_SPEC="${OASDIFF_FRONTEND_SPEC:-apps/frontend/openapi/openapi.json}"
 SPEC_PATH_IN_GIT="${OASDIFF_SPEC_GIT_PATH:-docs/api/openapi.json}"
 FAIL_ON="${OASDIFF_FAIL_ON:-ERR}"
+DEFAULT_ERR_IGNORE="${ROOT}/scripts/ci/policy/oasdiff-err-ignore-m1-dissemination.txt"
+if [[ -z "${OASDIFF_ERR_IGNORE:-}" && -f "${DEFAULT_ERR_IGNORE}" ]]; then
+  OASDIFF_ERR_IGNORE="${DEFAULT_ERR_IGNORE}"
+fi
 REPORT_DIR="${QUALITY_REPORTS_DIR:-.quality-reports}"
 mkdir -p "${REPORT_DIR}"
 
@@ -133,11 +140,22 @@ if [[ -z "${BASE_FILE}" || ! -f "${BASE_FILE}" ]]; then
   printf '[]\n' >"${REPORT_DIR}/oasdiff-breaking.json"
 else
   log "breaking: ${BASE_LABEL} -> ${REVISION} (fail-on=${FAIL_ON})"
-  "${OASDIFF}" breaking "${BASE_FILE}" "${REVISION}" -f json >"${REPORT_DIR}/oasdiff-breaking.json" || true
+  ignore_args=()
+  if [[ -n "${OASDIFF_ERR_IGNORE:-}" ]]; then
+    if [[ ! -f "${OASDIFF_ERR_IGNORE}" ]]; then
+      err "OASDIFF_ERR_IGNORE not found: ${OASDIFF_ERR_IGNORE}"
+      exit 2
+    fi
+    log "err-ignore: ${OASDIFF_ERR_IGNORE}"
+    ignore_args+=(--err-ignore "${OASDIFF_ERR_IGNORE}")
+  fi
+  "${OASDIFF}" breaking "${BASE_FILE}" "${REVISION}" -f json ${ignore_args[@]+"${ignore_args[@]}"} \
+    >"${REPORT_DIR}/oasdiff-breaking.json" || true
   fail_args=()
   [[ "${FAIL_ON}" != "NONE" ]] && fail_args+=(--fail-on "${FAIL_ON}")
   set +e
-  "${OASDIFF}" breaking "${BASE_FILE}" "${REVISION}" -f text ${fail_args[@]+"${fail_args[@]}"} \
+  "${OASDIFF}" breaking "${BASE_FILE}" "${REVISION}" -f text \
+    ${fail_args[@]+"${fail_args[@]}"} ${ignore_args[@]+"${ignore_args[@]}"} \
     >"${REPORT_DIR}/oasdiff-breaking.txt" 2>&1
   BREAKING_RC=$?
   set -e

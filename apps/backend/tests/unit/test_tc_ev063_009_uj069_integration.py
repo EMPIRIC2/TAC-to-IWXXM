@@ -8,10 +8,8 @@ from __future__ import annotations
 import pytest
 from dissemination.collect_namespaces import is_collect_bulletin
 from dissemination.handles import default_handle_store
-from dissemination.rate_limit import DisseminationRateLimiter
 from fastapi.testclient import TestClient
 from src import api as api_module
-from src.routers import dissemination as diss_router
 from src.utilities.abuse_controls import get_limiter
 from src.utilities.security import verify_supabase_token
 
@@ -30,8 +28,6 @@ _BULLETIN = f"SAUS31 KZNY 121200\n{_TAC}"
 @pytest.fixture
 def client(monkeypatch: pytest.MonkeyPatch):
     monkeypatch.setenv("DISSEMINATION_EGRESS_ALLOWLIST", "")
-    lim = DisseminationRateLimiter(max_per_minute=1000)
-    monkeypatch.setattr(diss_router, "default_rate_limiter", lim)
     default_handle_store.clear()
 
     async def override_verify_token():

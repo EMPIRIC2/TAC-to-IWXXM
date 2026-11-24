@@ -1,0 +1,18 @@
+# Intentional OpenAPI removals for M1 FR-052..056 / DI-008 (epic #1688).
+# Dissemination HTTP surface unmounted; paths dropped from docs/api/openapi.json.
+# Safe to clear after this PR merges to stage (subsequent PRs will not see the delta).
+#
+# [Corpus: fr] [Corpus: api]
+
+GET /api/v1/dissemination/audit api path removed without deprecation
+GET /api/v1/dissemination/audit/{audit_id} api path removed without deprecation
+GET /api/v1/dissemination/gateways/health api path removed without deprecation
+GET /api/v1/dissemination/mappings/{mapping_id} api path removed without deprecation
+PATCH /api/v1/dissemination/mappings/{mapping_id} api path removed without deprecation
+PUT /api/v1/dissemination/mappings/{name} api path removed without deprecation
+GET /api/v1/dissemination/plans/{plan_id} api path removed without deprecation
+PATCH /api/v1/dissemination/plans/{plan_id} api path removed without deprecation
+POST /api/v1/dissemination/plans/{plan_id}/execute api path removed without deprecation
+PUT /api/v1/dissemination/plans/{slug} api path removed without deprecation
+POST /api/v1/dissemination/preflight api path removed without deprecation
+POST /api/v1/dissemination/send api path removed without deprecation

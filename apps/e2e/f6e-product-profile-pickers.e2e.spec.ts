@@ -76,14 +76,16 @@ test.describe('H6 / T8.4: F6.e product + Conversion library pickers', () => {
 
     await page.locator('#param-product').selectOption('METAR');
     const conversionSelect = page.getByTestId('conversion-library-select');
-    // Opposite state: ICAO option is present; US_FAA_NWS can match only if national seeds return.
+    // <option> nodes are not reliably "visible" in Playwright; assert attachment + select.
+    // Opposite state: US_FAA_NWS can match only if national seeds return (M1: count 0).
     await expect(
       conversionSelect.locator('option[value="LIB.CONVERSION.ICAO_2025"]'),
-    ).toBeVisible();
+    ).toBeAttached();
     await expect(
       conversionSelect.locator('option[value="LIB.CONVERSION.US_FAA_NWS"]'),
     ).toHaveCount(0);
     await conversionSelect.selectOption('LIB.CONVERSION.ICAO_2025');
+    await expect(conversionSelect).toHaveValue('LIB.CONVERSION.ICAO_2025');
 
     await convertManualMetar(page, METAR_TAC);
 
