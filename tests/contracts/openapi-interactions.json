@@ -296,6 +296,22 @@
     },
     {
       "method": "GET",
+      "path": "/api/v1/live-map/eval",
+      "status": 200,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_live_map_eval.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/live-map/eval/refresh",
+      "status": 200,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_live_map_eval.py"
+    },
+    {
+      "method": "GET",
       "path": "/api/v1/profiles/catalog",
       "status": 200,
       "request_fields": [],

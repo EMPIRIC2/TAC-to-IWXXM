@@ -417,6 +417,46 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/live-map/eval": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Latest live-map evaluation snapshot
+         * @description Aggregate decode/lint/convert/IWXXM counts from the last cron refresh (about every 15 minutes). Empty cache returns zeros.
+         */
+        get: operations["read_live_map_eval_api_v1_live_map_eval_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/live-map/eval/refresh": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Refresh live-map evaluation snapshot
+         * @description Same work as the cron job. Disabled unless LIVE_MAP_EVAL_REFRESH_ENABLED is set.
+         */
+        post: operations["refresh_live_map_eval_api_v1_live_map_eval_refresh_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/profiles/catalog": {
         parameters: {
             query?: never;
@@ -5904,6 +5944,50 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    read_live_map_eval_api_v1_live_map_eval_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
+    refresh_live_map_eval_api_v1_live_map_eval_refresh_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
                 };
             };
         };

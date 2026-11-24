@@ -8567,6 +8567,54 @@
         ]
       }
     },
+    "/api/v1/live-map/eval": {
+      "get": {
+        "description": "Aggregate decode/lint/convert/IWXXM counts from the last cron refresh (about every 15 minutes). Empty cache returns zeros.",
+        "operationId": "read_live_map_eval_api_v1_live_map_eval_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Read Live Map Eval Api V1 Live Map Eval Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Latest live-map evaluation snapshot",
+        "tags": [
+          "Live map"
+        ]
+      }
+    },
+    "/api/v1/live-map/eval/refresh": {
+      "post": {
+        "description": "Same work as the cron job. Disabled unless LIVE_MAP_EVAL_REFRESH_ENABLED is set.",
+        "operationId": "refresh_live_map_eval_api_v1_live_map_eval_refresh_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Refresh Live Map Eval Api V1 Live Map Eval Refresh Post",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Refresh live-map evaluation snapshot",
+        "tags": [
+          "Live map"
+        ]
+      }
+    },
     "/api/v1/profiles/catalog": {
       "get": {
         "description": "Read-only ConversionProfile catalog for the authenticated Profiles inspector.",

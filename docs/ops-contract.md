@@ -108,6 +108,10 @@ Do not set retired Auth key aliases after the shim window ends. See
 1. Run the ingest worker as a DOKS Deployment.
 2. Give the worker `DATABASE_URL` and the credentials it needs for ingest.
 3. Do not configure the worker to disseminate.
+4. Run the live-map evaluation refresh on a schedule of about **15 minutes**
+   (staging and prod). The job writes DigitalOcean Postgres live-eval rows;
+   the API serves the latest snapshot on `GET /api/v1/live-map/eval`. Do not
+   recompute on every browser pan.
 
 ## Observability
 

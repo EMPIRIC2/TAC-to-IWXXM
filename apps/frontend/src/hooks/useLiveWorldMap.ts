@@ -10,7 +10,9 @@ import { OSM_TILE_ATTRIBUTION, OSM_TILE_URL } from '@/utils/mapTileAttribution';
 import {
   boundsOf,
   fetchLivePlaces,
+  fetchLiveMapEval,
   filterPlaces,
+  type LiveMapEvalSnapshot,
   LIVE_MAP_CANVAS_TOLERANCE,
   LIVE_MAP_ERROR,
   LIVE_MAP_LAYERS_OFF,
@@ -100,6 +102,7 @@ export function useLiveWorldMap({
   const [error, setError] = useState('');
   const [phase, setPhase] = useState<'loading' | 'ready' | 'refreshing'>('loading');
   const [refreshTick, setRefreshTick] = useState(0);
+  const [evalSnapshot, setEvalSnapshot] = useState<LiveMapEvalSnapshot | null>(null);
   const annex3Mode = showsAnnex3Products(displayMode);
   const overlaysMode = showsOverlayControls(displayMode);
   const temperaturesMode = showsTemperatureControls(displayMode);
@@ -398,6 +401,21 @@ export function useLiveWorldMap({
     return () => window.clearInterval(timer);
   }, [bounds, products]);
 
+  useEffect(() => {
+    const controller = new AbortController();
+    fetchLiveMapEval(controller.signal)
+      .then((snapshot) => {
+        setEvalSnapshot(snapshot);
+      })
+      .catch((reason: unknown) => {
+        if (reason instanceof DOMException && reason.name === 'AbortError') {
+          return;
+        }
+        setEvalSnapshot(null);
+      });
+    return () => controller.abort();
+  }, [refreshTick]);
+
   return {
     host,
     displayMode,
@@ -438,5 +456,6 @@ export function useLiveWorldMap({
     visible,
     message,
     status,
+    evalSnapshot,
   };
 }

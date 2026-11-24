@@ -83,6 +83,7 @@ export function LiveWorldMapView(props: any) {
     visible,
     message,
     status,
+    evalSnapshot,
   } = props;
   return (
     <div className="flex flex-col gap-3" data-testid="live-world-map">
@@ -399,6 +400,59 @@ export function LiveWorldMapView(props: any) {
       >
         {LIVE_MAP_NOTICE}
       </p>
+      {evalSnapshot ? (
+        <div
+          className="overflow-x-auto rounded-xl border border-gray-200 bg-white px-3 py-2 text-xs text-gray-700 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-200"
+          data-testid="live-map-eval-table"
+        >
+          <p className="mb-1 font-medium text-gray-800 dark:text-gray-100">
+            Live evaluation
+            {evalSnapshot.computed_at ? ` (snapshot ${evalSnapshot.computed_at})` : ''}
+          </p>
+          <p className="mb-2 text-[11px] text-gray-500 dark:text-gray-400">
+            Updated about every 15 minutes. Not refreshed when you pan the map.
+          </p>
+          <table className="w-full min-w-[28rem] border-collapse text-left">
+            <thead>
+              <tr className="border-b border-gray-200 dark:border-gray-700">
+                <th className="py-1 pr-3 font-medium">Partial decode</th>
+                <th className="py-1 pr-3 font-medium">Lint</th>
+                <th className="py-1 pr-3 font-medium">Convert fail</th>
+                <th className="py-1 pr-3 font-medium">IWXXM pass</th>
+                <th className="py-1 pr-3 font-medium">IWXXM fail</th>
+                <th className="py-1 font-medium">Top lint codes</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td className="py-1 pr-3" data-testid="live-map-eval-partial">
+                  {evalSnapshot.partial_decode_count}
+                </td>
+                <td className="py-1 pr-3" data-testid="live-map-eval-lint">
+                  {evalSnapshot.lint_count}
+                </td>
+                <td className="py-1 pr-3" data-testid="live-map-eval-convert-fail">
+                  {evalSnapshot.convert_failure_count}
+                </td>
+                <td className="py-1 pr-3" data-testid="live-map-eval-iwxxm-pass">
+                  {evalSnapshot.iwxxm_validation.pass}
+                </td>
+                <td className="py-1 pr-3" data-testid="live-map-eval-iwxxm-fail">
+                  {evalSnapshot.iwxxm_validation.fail}
+                </td>
+                <td className="py-1" data-testid="live-map-eval-top-codes">
+                  {evalSnapshot.top_lint_codes.length === 0
+                    ? 'None'
+                    : evalSnapshot.top_lint_codes
+                        .slice(0, 5)
+                        .map((row) => `${row.code} (${row.count})`)
+                        .join(', ')}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      ) : null}
       <p className="px-1 text-xs text-gray-400">{LIVE_MAP_ZOOM_HINT}</p>
       <div
         ref={host}

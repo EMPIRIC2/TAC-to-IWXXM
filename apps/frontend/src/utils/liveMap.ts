@@ -20,6 +20,8 @@ export {
   DEFAULT_LIVE_MAP_BOUNDS,
   boundsOf,
   fetchLivePlaces,
+  fetchLiveMapEval,
   isUsableMapBounds,
   sanitizeMapBounds,
 } from './liveMapViews';
+export type { LiveMapEvalSnapshot } from './liveMapViews';

@@ -318,12 +318,15 @@ async def database_lifespan(app: FastAPI) -> AsyncIterator[None]:
         await create_tables()
         from src.routers.live_map import get_live_map_cache
 
+        from .live_map_eval import start_live_map_eval, stop_live_map_eval
         from .live_map_refresh import start_live_map_refresh, stop_live_map_refresh
 
         map_stop = start_live_map_refresh(get_live_map_cache())
+        eval_stop = start_live_map_eval()
         try:
             yield
         finally:
+            await stop_live_map_eval(eval_stop)
             await stop_live_map_refresh(map_stop)
     finally:
         # Shutdown

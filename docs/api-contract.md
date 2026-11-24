@@ -1514,6 +1514,55 @@ GET /api/v1/live-map?west=&south=&east=&north=&products=
 
 The route reads the cache. It does not call a vendor during the request.
 
+**Amend (live evaluation / FR-045):** G-AIRMET is not a live-map product after the
+ICAO ship gate. Default `products` omit `gairmet`.
+
+## Live map evaluation snapshot
+
+Public read of the latest live-map evaluation snapshot. Writers are the scheduled
+refresh job only (about every 15 minutes on staging and prod). Browser pans do
+not trigger recompute. Rows live in DigitalOcean Postgres.
+
+**Auth**: None (public), same as `GET /api/v1/live-map`.
+
+```
+GET /api/v1/live-map/eval
+```
+
+**Purpose**: Return aggregate evaluation for reports currently in the live-map
+cache product set (all geographically located products the map may show).
+
+**Response** (minimum fields):
+
+```json
+{
+  "computed_at": "2026-11-24T20:00:00Z",
+  "window_hours": 24,
+  "products": ["metar", "speci", "taf", "airmet", "sigmet", "vaa", "tca", "vona"],
+  "partial_decode_count": 0,
+  "lint_count": 0,
+  "top_lint_codes": [{"code": "MISSING_VIS", "count": 0}],
+  "convert_failure_count": 0,
+  "iwxxm_validation": {"pass": 0, "fail": 0, "skip": 0},
+  "failure_locations": [
+    {"place_key": "KJFK", "product": "metar", "stage": "lint", "code": "MISSING_VIS"}
+  ]
+}
+```
+
+- `computed_at` is the cron snapshot time (UTC).
+- Empty cache → zeros and empty lists; HTTP 200.
+- Do not reuse `/api/v1/eval/jobs*` (METAR corpus sampler) for this surface.
+
+```
+POST /api/v1/live-map/eval/refresh
+```
+
+**Purpose**: Operator or ops-triggered refresh of the snapshot (same work as the
+cron). Staging and prod may restrict this route to internal callers; public
+default is **404** or **401** when not enabled. Prefer the schedule for normal
+operation.
+
 ## Live check (open aviation feeds)
 
 Public. No JWT. The browser must not call provider hosts; this route mediates egress.
