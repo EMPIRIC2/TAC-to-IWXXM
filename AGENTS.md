@@ -91,10 +91,10 @@ This section mirrors feature ids for quick agent load.
 | F13 | Fast IWXXM validate (Rust + Schematron + PyPI) | Implemented |
 | F14 | Publish `tac2iwxxm` + validate extras + PyPI/release CI | Implemented |
 | F15 | TAC lint issue registry + METAR/SPECI quality bar | Done |
-| F16 | Dissemination drawer + multi-DB upload (BYOC URI) | Done |
-| F17 | WIS2 dissemination pathway | Done |
-| F18 | EDIS → RTH Washington dissemination | Done |
-| F19 | AMHS / SWIM / AFS adapters | Done |
+| F16 | Dissemination drawer + multi-DB upload (BYOC URI) | Superseded (FR drop M1) |
+| F17 | WIS2 dissemination pathway | Superseded (FR drop M1) |
+| F18 | EDIS → RTH Washington dissemination | Superseded (FR drop M1) |
+| F19 | AMHS / SWIM / AFS adapters | Superseded (FR drop M1) |
 | F20 | TAF + SPECI quality bar | Done |
 | F21 | Public convert + optional Auth for long-term storage | Amended |
 | F22 | Privacy preference center | Implemented |
@@ -111,7 +111,7 @@ This section mirrors feature ids for quick agent load.
 | F33 | Secure mass file/folder ingest | Implemented |
 | F34 | Contract + mutation quality gates | Done |
 | F35 | Semantic vs exchange profiles | Implemented |
-| F36 | National semantic + regional exchange profiles (incl. CA_ECCC; EV-077 VAA validate-first) | In progress |
+| F36 | National semantic + regional exchange profiles (incl. CA_ECCC; EV-077 VAA validate-first) | Superseded (FR drop M1; ICAO baseline only) |
 | F37 | Live TAC map on Live map page | In progress |
 | F39 | Station health dashboard (availability + quality grades) | In progress |
 | M1 | Monorepo layout (`apps/` + `packages/` + `vendor/`) | Implemented |

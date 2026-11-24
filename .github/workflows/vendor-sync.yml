@@ -1,13 +1,11 @@
 ---
 name: Vendor Schema Sync
 
-# Weekly check for new wmo-im iwxxm-* releases; open PR when pins change (M6,).
+# NFR-021 / DI-014 / M1: scheduled vendor upstream sync dropped as a requirement.
+# Manual workflow_dispatch remains for maintainers who still want a one-shot sync.
 # GIFTs upstream is manual only — not included (REQ-014,).
 
 on:
-  schedule:
-    - cron: '0 6 * * 1'
-
   workflow_dispatch:
 
 permissions:
