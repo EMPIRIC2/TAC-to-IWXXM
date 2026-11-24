@@ -344,3 +344,5 @@ def test_close_live_map_eval_store_disposes_engine() -> None:
     close_live_map_eval_store()
     engine.dispose.assert_called_once()
     close_live_map_eval_store()
+    # dispose with no engine covers the ``engine is None`` branch (90->exit).
+    LiveMapEvalStore().dispose()
