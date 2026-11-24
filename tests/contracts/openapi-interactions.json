@@ -142,108 +142,6 @@
     },
     {
       "method": "GET",
-      "path": "/api/v1/dissemination/audit",
-      "status": 200,
-      "request_fields": [],
-      "response_fields": [
-        "items",
-        "limit",
-        "page",
-        "total"
-      ],
-      "covered_by": "apps/backend/tests/unit/test_dissemination_ops_router.py"
-    },
-    {
-      "method": "GET",
-      "path": "/api/v1/dissemination/audit",
-      "status": 422,
-      "request_fields": [],
-      "response_fields": [],
-      "covered_by": "apps/backend/tests/unit/test_dissemination_ops_router.py"
-    },
-    {
-      "method": "GET",
-      "path": "/api/v1/dissemination/audit/{audit_id}",
-      "status": 200,
-      "request_fields": [],
-      "response_fields": [
-        "created_at",
-        "gateway",
-        "id",
-        "status",
-        "user_id"
-      ],
-      "covered_by": "apps/backend/tests/unit/test_dissemination_ops_router.py"
-    },
-    {
-      "method": "GET",
-      "path": "/api/v1/dissemination/audit/{audit_id}",
-      "status": 422,
-      "request_fields": [],
-      "response_fields": [],
-      "covered_by": "apps/backend/tests/unit/test_dissemination_ops_router.py"
-    },
-    {
-      "method": "GET",
-      "path": "/api/v1/dissemination/gateways/health",
-      "status": 200,
-      "request_fields": [],
-      "response_fields": [
-        "items"
-      ],
-      "covered_by": "apps/backend/tests/unit/test_dissemination_ops_router.py"
-    },
-    {
-      "method": "GET",
-      "path": "/api/v1/dissemination/mappings/{mapping_id}",
-      "status": 200,
-      "request_fields": [],
-      "response_fields": [
-        "config",
-        "created_at",
-        "id",
-        "mode",
-        "name",
-        "updated_at",
-        "user_id"
-      ],
-      "covered_by": "tests/bugs/qa_gap/test_qa_gap_2026_10_19_openapi_path_templates.py"
-    },
-    {
-      "method": "GET",
-      "path": "/api/v1/dissemination/mappings/{mapping_id}",
-      "status": 422,
-      "request_fields": [],
-      "response_fields": [],
-      "covered_by": "tests/bugs/qa_gap/test_qa_gap_2026_10_19_openapi_path_templates.py"
-    },
-    {
-      "method": "GET",
-      "path": "/api/v1/dissemination/plans/{plan_id}",
-      "status": 200,
-      "request_fields": [],
-      "response_fields": [
-        "created_at",
-        "destination_refs",
-        "id",
-        "slug",
-        "transforms",
-        "updated_at",
-        "user_id",
-        "validity_policy"
-      ],
-      "covered_by": "tests/bugs/qa_gap/test_qa_gap_2026_10_19_openapi_path_templates.py"
-    },
-    {
-      "method": "GET",
-      "path": "/api/v1/dissemination/plans/{plan_id}",
-      "status": 422,
-      "request_fields": [],
-      "response_fields": [],
-      "covered_by": "tests/bugs/qa_gap/test_qa_gap_2026_10_19_openapi_path_templates.py"
-    },
-    {
-      "method": "GET",
       "path": "/api/v1/eval/jobs",
       "status": 200,
       "request_fields": [],
@@ -942,56 +840,7 @@
         "tac2iwxxm_available",
         "version"
       ],
-      "covered_by": "apps/backend/tests/unit/test_dissemination_ops_router.py"
-    },
-    {
-      "method": "PATCH",
-      "path": "/api/v1/dissemination/mappings/{mapping_id}",
-      "status": 200,
-      "request_fields": [],
-      "response_fields": [
-        "config",
-        "created_at",
-        "id",
-        "mode",
-        "name",
-        "updated_at",
-        "user_id"
-      ],
-      "covered_by": "tests/bugs/qa_gap/test_qa_gap_2026_10_19_openapi_path_templates.py"
-    },
-    {
-      "method": "PATCH",
-      "path": "/api/v1/dissemination/mappings/{mapping_id}",
-      "status": 422,
-      "request_fields": [],
-      "response_fields": [],
-      "covered_by": "tests/bugs/qa_gap/test_qa_gap_2026_10_19_openapi_path_templates.py"
-    },
-    {
-      "method": "PATCH",
-      "path": "/api/v1/dissemination/plans/{plan_id}",
-      "status": 200,
-      "request_fields": [],
-      "response_fields": [
-        "created_at",
-        "destination_refs",
-        "id",
-        "slug",
-        "transforms",
-        "updated_at",
-        "user_id",
-        "validity_policy"
-      ],
-      "covered_by": "tests/bugs/qa_gap/test_qa_gap_2026_10_19_openapi_path_templates.py"
-    },
-    {
-      "method": "PATCH",
-      "path": "/api/v1/dissemination/plans/{plan_id}",
-      "status": 422,
-      "request_fields": [],
-      "response_fields": [],
-      "covered_by": "tests/bugs/qa_gap/test_qa_gap_2026_10_19_openapi_path_templates.py"
+      "covered_by": "apps/backend/tests/unit/test_api_helpers_middleware_unit.py"
     },
     {
       "method": "PATCH",
@@ -1264,41 +1113,6 @@
       "request_fields": [],
       "response_fields": [],
       "covered_by": "apps/backend/tests/unit/test_ev080_m2b_coverage_gaps.py"
-    },
-    {
-      "method": "POST",
-      "path": "/api/v1/dissemination/plans/{plan_id}/execute",
-      "status": 200,
-      "request_fields": [],
-      "response_fields": [
-        "plan_id",
-        "receipts"
-      ],
-      "covered_by": "tests/bugs/qa_gap/test_qa_gap_2026_10_19_openapi_path_templates.py"
-    },
-    {
-      "method": "POST",
-      "path": "/api/v1/dissemination/plans/{plan_id}/execute",
-      "status": 422,
-      "request_fields": [],
-      "response_fields": [],
-      "covered_by": "tests/bugs/qa_gap/test_qa_gap_2026_10_19_openapi_path_templates.py"
-    },
-    {
-      "method": "POST",
-      "path": "/api/v1/dissemination/preflight",
-      "status": 200,
-      "request_fields": [],
-      "response_fields": [],
-      "covered_by": "apps/backend/tests/unit/test_dissemination_api.py"
-    },
-    {
-      "method": "POST",
-      "path": "/api/v1/dissemination/send",
-      "status": 200,
-      "request_fields": [],
-      "response_fields": [],
-      "covered_by": "apps/backend/tests/unit/test_dissemination_api.py"
     },
     {
       "method": "POST",
@@ -1813,65 +1627,6 @@
       "path": "/api/v1/work-sessions/{session_id}/restore",
       "status": 422,
       "request_fields": [],
-      "response_fields": [],
-      "covered_by": "tests/bugs/qa_gap/test_qa_gap_2026_10_19_openapi_path_templates.py"
-    },
-    {
-      "method": "PUT",
-      "path": "/api/v1/dissemination/mappings/{name}",
-      "status": 200,
-      "request_fields": [
-        "mode",
-        "name"
-      ],
-      "response_fields": [
-        "config",
-        "created_at",
-        "id",
-        "mode",
-        "name",
-        "updated_at",
-        "user_id"
-      ],
-      "covered_by": "tests/bugs/qa_gap/test_qa_gap_2026_10_19_openapi_path_templates.py"
-    },
-    {
-      "method": "PUT",
-      "path": "/api/v1/dissemination/mappings/{name}",
-      "status": 422,
-      "request_fields": [
-        "mode",
-        "name"
-      ],
-      "response_fields": [],
-      "covered_by": "tests/bugs/qa_gap/test_qa_gap_2026_10_19_openapi_path_templates.py"
-    },
-    {
-      "method": "PUT",
-      "path": "/api/v1/dissemination/plans/{slug}",
-      "status": 200,
-      "request_fields": [
-        "slug"
-      ],
-      "response_fields": [
-        "created_at",
-        "destination_refs",
-        "id",
-        "slug",
-        "transforms",
-        "updated_at",
-        "user_id",
-        "validity_policy"
-      ],
-      "covered_by": "tests/bugs/qa_gap/test_qa_gap_2026_10_19_openapi_path_templates.py"
-    },
-    {
-      "method": "PUT",
-      "path": "/api/v1/dissemination/plans/{slug}",
-      "status": 422,
-      "request_fields": [
-        "slug"
-      ],
       "response_fields": [],
       "covered_by": "tests/bugs/qa_gap/test_qa_gap_2026_10_19_openapi_path_templates.py"
     },
