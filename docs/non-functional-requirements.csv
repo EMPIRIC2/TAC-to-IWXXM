@@ -1,0 +1,31 @@
+id,decision,requirement,area,metric_or_constraint,actor,status,notes,source_answer
+NFR-001,keep,Host runtime on DigitalOcean Kubernetes Service (DOKS),platform,DOKS,ops,accepted,,N1
+NFR-002,keep,Product shared/operational database is DigitalOcean Postgres via DATABASE_URL,platform,DO Postgres,ops,accepted,,N2
+NFR-003,change,Supabase holds Auth and user data (including history via PostgREST where chosen),platform,Supabase Auth + user data,ops,accepted,C1=1. Supabase Auth + user/history PostgREST.,N3
+NFR-004,drop,Render is not used; remove remaining Render config and docs references,platform,n/a,ops,accepted,,N4
+NFR-005,keep,Required environments are local staging and prod; e2e runs as testing against those contracts,platform,local|staging|prod + e2e tests,ops/CI,accepted,,N5
+NFR-006,change,Keep FastAPI msgspec performance path; define concrete latency and throughput numbers in this interview,performance,TBD numbers,API,accepted,Must align with NFR-009 NFR-010 FR-057,N6
+NFR-007,change,Public API requires API keys (issuable to anyone); rate limiting per key; IP abuse and DDoS protections on key use,security,API key + rate limit + IP abuse,API,accepted,Replaces anonymous public convert abuse-only model,N7
+NFR-008,keep,CORS allow/deny contract is required and tested,security/connectivity,CORS,API/FE,accepted,,N8
+NFR-009,change,Convert and ingest speed follow FR-057 (1000–5000 files in about one minute); refine per-request latency SLO in test interview,performance,1000-5000 files / ~1 min,worker/API,accepted,,N9 / F64
+NFR-010,change,Support 1000–5000 concurrent users; load test is a staging-to-prod gate,performance,1000-5000 users; load test gate,ops/CI,accepted,,N10
+NFR-011,drop,SSRF controls and egress allowlist for dissemination are out of scope while dissemination is dropped,security,n/a,API,accepted,,N11
+NFR-012,research,Mass-ingest size and type caps follow researched best practices (limits TBD),security,TBD caps,API/worker,accepted,,N12
+NFR-013,keep,Secrets stay out of git; runtime env and one-shot paste only where still applicable,security,no secrets in git,ops,accepted,,N13
+NFR-014,change,Supabase manages all user auth and account management,auth,Supabase Auth,ops/FE,accepted,,N14
+NFR-015,keep,iwxxm-validate Rust plus Schematron path is required; any Rust-using path needs unit tests,validation,Rust + Schematron + unit tests,packages,accepted,,N15
+NFR-016,change,Do not rely on vendored schema trees as SoT; fetch official WMO IWXXM XSD and Schematron at build or runtime for pins 3.0 2021-2 2023-1 2025-2,validation,vendor/ optional,maintainer,accepted,C4=2. vendor/ directory may remain as cache or be emptied; layout NFR-019 still allows the folder.,N16+C4
+NFR-017,change,One shared quality-bar regression suite replaces per-product ad hoc bars; Schematron from official release,validation,single regression bar,CI,accepted,C3=1. Official Schematron + matching XSD; single regression bar.,N17+C3
+NFR-018,keep,Contract and mutation quality gates are required in CI,CI,contract + mutation,CI,accepted,,N18
+NFR-019,keep,Monorepo layout apps/ packages/ vendor/ remains required (vendor/ may empty if NFR-016 drops content),repo,apps+packages+vendor,maintainer,accepted,,N19
+NFR-020,change,Implement uv pnpm and Makefile workspace tooling now,tooling,uv+pnpm+Makefile,maintainer,accepted,,N20
+NFR-021,drop,Drop ongoing vendor upstream sync process as a requirement,tooling,n/a,maintainer,accepted,,N21
+NFR-022,keep,Generate and publish SBOM with CI/CD drift checks,supply-chain,CycloneDX SBOM,CI,accepted,,N22
+NFR-023,change,Service availability SLA target is 99 percent,ops,99% availability,ops,accepted,Window and measurement method TBD,N23
+NFR-024,keep,No PII in logs; TAC payloads must not introduce PII fields,privacy,no PII in logs,ops,accepted,,N24
+NFR-025,keep,Staging smoke is required before promote to prod,ops,staging-smoke gate,ops/CI,accepted,,N25
+NFR-026,change,test-plan.csv and user-journeys.csv stay separate; many test cases map to one journey,tests,many-to-one TC→UJ,maintainer,accepted,,N26
+NFR-027,keep,Coverage gates run whenever code changes (repo fail-closed defaults),tests,coverage on change,CI,accepted,,N27
+NFR-028,change,Golden / WMO example parity and live eval benchmark run in CI as part of staging-to-prod setup,tests,benchmark + goldens gate,CI,accepted,,N28
+NFR-029,change,Dropped features: delete the code in this evolve cycle after the Documenting→Implementing gate opens,cleanup,delete on implement,maintainer,accepted,0c=1 blocks code until gate open. Deletion is Build-band work.,N29
+NFR-030,n/a,Defer policy unused; drops are delete-not-defer,cleanup,n/a,maintainer,accepted,,N30

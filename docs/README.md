@@ -32,10 +32,15 @@ Agents start at [AGENTS.md](../AGENTS.md). Writers follow
 | [user-journeys.csv](user-journeys.csv) | Journey rows tied to tests |
 | [test-plan.csv](test-plan.csv) | Test-case and coverage rows |
 | [requirements.csv](requirements.csv) | Product intake from CMO IWXXM testing feedback |
+| [functional-requirements.csv](functional-requirements.csv) | Behavioral FR matrix (EV rebaseline) |
+| [non-functional-requirements.csv](non-functional-requirements.csv) | Technical NFR matrix (EV rebaseline) |
+| [test-mode-matrix.csv](test-mode-matrix.csv) | Requirement × test-mode coverage grid |
+| [test-mode-matrix-summary.csv](test-mode-matrix-summary.csv) | Per-requirement mode counts |
 | [risks.csv](risks.csv) | Risks log |
 | [assumptions.csv](assumptions.csv) | Assumptions log |
 | [issues.csv](issues.csv) | Issues log |
 | [decisions.csv](decisions.csv) | Decisions log |
+| [dependencies.csv](dependencies.csv) | Dependencies log (RAIDD) |
 
 ## Tracked config (not under docs)
 

@@ -18,6 +18,9 @@ Index: [docs/README.md](docs/README.md). Writing rules:
 | ID | Role | Path | Skills use it to… |
 |----|------|------|-------------------|
 | **product** | Project definition and behavioral requirements | [docs/product-requirements.md](docs/product-requirements.md) (+ this file §Product feature index mirror) | Scope (feature `F*` / milestone `M*`); reject out-of-list work |
+| **fr** | Behavioral FR matrix (rebaseline) | [docs/functional-requirements.csv](docs/functional-requirements.csv) | Authoritative keep/change/drop FR rows for EV-requirements-baseline-csv |
+| **nfr** | Technical NFR matrix (rebaseline) | [docs/non-functional-requirements.csv](docs/non-functional-requirements.csv) | Authoritative NFR rows for EV-requirements-baseline-csv |
+| **test-modes** | Requirement × mode grid | [docs/test-mode-matrix.csv](docs/test-mode-matrix.csv) | Modes that must be covered per FR/NFR |
 | **journeys** | End-user journeys | [docs/user-journeys.csv](docs/user-journeys.csv) + [docs/user-journeys.md](docs/user-journeys.md) | End-to-end / verify-impl sign-off (`UJ-*`) |
 | **ui-style** | Living operator UI style guide | [docs/ui-style-guide.md](docs/ui-style-guide.md) | UI/UX tweak norms; cite when polishing the frontend |
 | **system-spec** | Architecture, components, constraints | [docs/architecture.md](docs/architecture.md) | Design parity vs `apps/` + `packages/` + `vendor/` |
@@ -29,7 +32,7 @@ Index: [docs/README.md](docs/README.md). Writing rules:
 | **data-flows** | Data paths | [docs/data-flows.md](docs/data-flows.md) | Flow order through convert/decode/session/ingest/disseminate |
 | **data-integrations** | Data systems | [docs/data-integrations.md](docs/data-integrations.md) | Systems that supply or receive data |
 | **tests** | Test matrix and gates | [docs/test-plan.csv](docs/test-plan.csv) + [docs/test-plan.md](docs/test-plan.md) | Parity checks, smoke test-case IDs, CI expectations |
-| **raid** | Risks, assumptions, issues, decisions | [docs/risks.csv](docs/risks.csv), [docs/assumptions.csv](docs/assumptions.csv), [docs/issues.csv](docs/issues.csv), [docs/decisions.csv](docs/decisions.csv) | Evolve/RAID tracking |
+| **raid** | Risks, assumptions, issues, dependencies, decisions (RAIDD) | [docs/risks.csv](docs/risks.csv), [docs/assumptions.csv](docs/assumptions.csv), [docs/issues.csv](docs/issues.csv), [docs/dependencies.csv](docs/dependencies.csv), [docs/decisions.csv](docs/decisions.csv) | Evolve/RAIDD tracking (no ADRs this rebaseline) |
 | **doc-standards** | Documentation standards | [docs/documentation-standards.md](docs/documentation-standards.md) | STE + avoid-ai + corpus citation rules |
 | **deps** | Live dependency inventory | [config/sbom/cyclonedx.json](config/sbom/cyclonedx.json) | Allowed packages; regenerate with `make sbom` |
 | **env** | Environment variable names | [docs/env-variable.md](docs/env-variable.md) | Env var contract by layer |

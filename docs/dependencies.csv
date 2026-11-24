@@ -1,0 +1,8 @@
+id,date,status,summary,owner,links,corpus_cite,notes,blocks
+DEP-001,2026-11-24,open,Official WMO IWXXM XSD+Schematron fetch/cache for pins 3.0 2021-2 2023-1 2025-2,maintainer,https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1709,"[Corpus: nfr] [Corpus: fr]",TP2/C4,M2+
+DEP-002,2026-11-24,open,Supabase PostgREST schema for user history cutover from DO work-sessions,maintainer,https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1713,[Corpus: fr],C1/TP4,M4
+DEP-003,2026-11-24,open,WAFS SIGWX and QVACI golden fixtures (≥3 each),domain,https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1705,[Corpus: fr],TP11,M7
+DEP-004,2026-11-24,open,Mass-ingest size/type cap numbers from spike #1707,ops,https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1707,[Corpus: nfr],TP13,M5
+DEP-005,2026-11-24,open,Privacy standards list from spike #1708,ops,https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1708,[Corpus: fr],TP13,M4/M8
+DEP-006,2026-11-24,open,DOKS staging capacity for 1000–5000 VU load tests,ops,https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1721,[Corpus: nfr],TP10,M8
+DEP-007,2026-11-24,accepted,Epic #1688 child issues for M1 drops,maintainer,https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1688,[Corpus: fr],TP1,M1

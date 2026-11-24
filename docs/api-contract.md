@@ -164,13 +164,11 @@ the same public convert path. Work history: guest → IndexedDB. logged-in → s
   do **not** run TAC→IWXXM. they lint XML (well-formed / COLLECT vs report) and may run IWXXM validation
   validate. TAC text → structured not-XML error (not METAR lint). `/lint-tac` with
   `product=iwxxm` uses XML lint rules, not TAC product syntax. `/validate` unchanged engine
-  (IWXXM validation). product field documents the pass-through path. **:** on `POST /api/v1/convert`,
-  when the uploaded IWXXM line differs from the requested `iwxxm_version`, the backend migrates
-  only **supported** pairs per
-  [CROSS_VERSION_CONVERSION.md](domain/iwxxm/CROSS_VERSION_CONVERSION.md) (currently
-  **2023-1 → 2025-2** lossy), rewrites namespace/schema references, and validates the
-  migrated output before returning success. Unsupported pairs (e.g. **2025-2 → 2023-1**)
-  fail closed with HTTP **400** and issue code `UNSUPPORTED_IWXXM_MIGRATION`.
+  (IWXXM validation). product field documents the pass-through path. On `POST /api/v1/convert`,
+  when the uploaded IWXXM line differs from the requested `iwxxm_version`, the backend
+  **rejects** the request (FR-017 / DI-001: no automatic version migration). Select a matching
+  pin or convert from TAC. Fail closed with HTTP **400** and issue code
+  `UNSUPPORTED_IWXXM_MIGRATION`. Same-version pass-through sets `migrated_iwxxm=false`.
 - **`product=vona`**: Volcano Observatory Notice for Aviation →
   `iwxxm:VolcanoObservatoryNoticeForAviation` (VONA quality bar). Canonical wire value is **`vona`**.
   Unknown aliases → `unknown_product` **400**.

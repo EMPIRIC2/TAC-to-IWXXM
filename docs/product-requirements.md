@@ -1,46 +1,59 @@
 # Product requirements
 
 > Index: [README.md](README.md)
-> Last updated: 2026-11-13
+> Last updated: 2026-11-24
 
 This document defines the product and the behavioral requirements.
 Technical pass criteria live in [technical-requirements.md](technical-requirements.md).
 System shape lives in [architecture.md](architecture.md).
+
+**Authoritative FR matrix for the open rebaseline:**
+[functional-requirements.csv](functional-requirements.csv)
+(session `EV-requirements-baseline-csv`, epic
+[#1688](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1688)).
+Where this file’s capability index disagrees with that CSV, the CSV wins until
+Build deletes or rewrites the old code.
 
 ## Project definition
 
 TAC to IWXXM converts aviation Traditional Alphanumeric Code (TAC) into
 World Meteorological Organization (WMO) IWXXM XML.
 
-Operators use a browser workbench to convert, lint, validate, decode, and
-send messages. Integrators call the HTTP API. Maintainers ship Python packages
-on PyPI.
+Operators use a browser workbench to convert, lint, validate, and decode
+messages, and to run live quality evaluation. Integrators call the HTTP API
+with API keys. Maintainers ship Python packages on PyPI.
 
 The repository is one Git monorepo: `apps/` (deployable services), `packages/`
-(libraries), and `vendor/` (read-only schema snapshots).
+(libraries), and `vendor/` (optional cache; official IWXXM XSD/Schematron are
+fetched at build or runtime per FR-077).
 
 ## Behavioral goals
 
-1. An operator converts supported TAC products to IWXXM without a login.
-2. An operator lints TAC and validates IWXXM output before dissemination.
-3. An operator reads a plain-language decode of the TAC under edit.
-4. A logged-in operator stores long-term work sessions in product Postgres.
-5. A guest operator may keep short-term work in the browser when privacy
-   settings allow it.
-6. An operator sends output through dissemination adapters with one-shot
-   credentials that stay in memory only.
-7. A near-realtime worker ingests TAC, stores good results, and quarantines
-   failures.
+1. An operator converts supported products to IWXXM without a login (METAR,
+   SPECI, TAF, AIRMET, SIGMET including VA/TC paths, VAA, TCA, SWXA, VONA,
+   plus WAFS SIGWX and QVACI).
+2. An operator lints TAC and validates IWXXM with official Schematron and
+   matching XSD for the selected pin (`3.0`, `2021-2`, `2023-1`, `2025-2`).
+3. An operator reads a plain-language decode of the product under edit.
+4. Authenticated user history lives in Supabase (Auth + PostgREST). Shared and
+   live-eval data live in DigitalOcean Postgres.
+5. Privacy controls meet stated international compliance work (spike open).
+6. Dissemination adapters are out of product scope for this rebaseline
+   (deferred; code scheduled for delete).
+7. A near-realtime worker ingests live files at 1000–5000 files in about one
+   minute, with live eval queued ahead of local uploads.
 8. Continuous integration and live tests prove journeys in
    [user-journeys.csv](user-journeys.csv) through tests in
-   [test-plan.csv](test-plan.csv).
+   [test-plan.csv](test-plan.csv), with modes from
+   [test-mode-matrix.csv](test-mode-matrix.csv) (many TCs to one journey).
 
 ## Non-goals
 
-Do not add capabilities that [architecture.md](architecture.md) lists as
-non-goals without a new planning cycle. Permanent exclusions include product
-database use of Supabase PostgREST, in-app paste of Supabase auth keys for
-dissemination, and automatic worker push to dissemination sinks.
+Deferred or removed for this rebaseline (see functional-requirements.csv drops
+and epic #1688 children): dissemination drawer and sinks; national US/CA
+profile extensions; LWIS/SAWR; G-AIRMET map layer; soft-fail IWXXM preview;
+automatic IWXXM version migration; Render hosting; vendored schema trees as
+source of truth.
 
 ## Capability index
 
@@ -104,5 +117,14 @@ Every active capability that operators touch must map to one or more rows in
 
 ## Change rule
 
-New behavioral scope needs a planning cycle and an update to this file.
-Do not add a capability only in chat.
+Update [functional-requirements.csv](functional-requirements.csv) when
+behavioral scope changes, then reflect the delta here. Chat-only capabilities
+are not accepted.
+
+## Rebaseline note (EV-requirements-baseline-csv)
+
+The capability index below still lists historical Implemented/Done rows. Rows
+that conflict with the FR CSV (dissemination, national profiles, soft-preview,
+guest IndexedDB as SoR, Auth-only Supabase) are **pending delete** under epic
+[#1688](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1688). Do not treat
+those index rows as the target state for new work.

@@ -23,7 +23,6 @@ from src.utilities.extension_wire import IWXXM_CA_TOKEN
 from src.utilities.iwxxm_pass_through import NOT_XML_CODE, lint_iwxxm_pass_through
 from src.utilities.observability import set_request_log_level
 from src.utilities.strict_raise import apply_strict_validate_flags, compute_raised_severities
-from src.utilities.version_migration import migrate_xml
 
 from .conversion_api_surface import api_surface
 from .conversion_part_1 import (
@@ -237,60 +236,41 @@ async def convert_continue(_prelude: dict[str, Any]) -> Any:
                 ).model_dump(),
             ) from exc
 
-        migrated_iwxxm = source_iwxxm_version != iwxxm_version
-        migrated_payload = xml_payload
-        migration_warnings: list[dict[str, Any]] = []
-        if migrated_iwxxm:
-            try:
-                migrated_payload, migration_warnings = migrate_xml(
-                    xml_payload,
-                    from_version=source_iwxxm_version,
-                    to_version=iwxxm_version,
-                    emit_profile=emit_profile,
-                )
-            except ValueError as exc:
-                raise HTTPException(
-                    status_code=400,
-                    detail=ErrorDetail(
-                        message="Unsupported IWXXM version migration",
-                        errors=[str(exc)],
-                        issues=[
-                            ConversionIssue(
-                                source="manual",
-                                message=str(exc),
-                                severity=ConversionIssueSeverity.ERROR,
-                                code="UNSUPPORTED_IWXXM_MIGRATION",
-                            )
-                        ],
-                        total_errors=1,
-                    ).model_dump(),
-                ) from exc
-            pass_issues.extend(
-                ConversionIssue(
-                    source="manual",
-                    message=str(warning.get("reason") or "IWXXM migration adjusted the document for the target line."),
-                    severity=ConversionIssueSeverity.WARNING,
-                    code="IWXXM_VERSION_MIGRATION",
-                    layer="iwxxm_version_migration",
-                    location=str(warning.get("xpath") or "") or None,
-                )
-                for warning in migration_warnings
+        # FR-017 / DI-001: no automatic IWXXM version migration. Operator selects
+        # the pin; pass-through requires the document namespace to match.
+        if source_iwxxm_version != iwxxm_version:
+            mismatch = (
+                f"IWXXM document version {source_iwxxm_version} does not match "
+                f"requested iwxxm_version {iwxxm_version}; re-select the pin or "
+                f"convert from TAC instead of migrating XML"
             )
-        want_validate = (
-            migrated_iwxxm
-            or bool(validate_output)
-            or str(validation_level or "").lower()
-            in {
-                "comprehensive",
-                "schematron",
-                "icao_opmet",
-                "schema",
-            }
-        )
+            raise HTTPException(
+                status_code=400,
+                detail=ErrorDetail(
+                    message="IWXXM version migration is not supported",
+                    errors=[mismatch],
+                    issues=[
+                        ConversionIssue(
+                            source="manual",
+                            message=mismatch,
+                            severity=ConversionIssueSeverity.ERROR,
+                            code="UNSUPPORTED_IWXXM_MIGRATION",
+                        )
+                    ],
+                    total_errors=1,
+                ).model_dump(),
+            )
+        pass_payload = xml_payload
+        want_validate = bool(validate_output) or str(validation_level or "").lower() in {
+            "comprehensive",
+            "schematron",
+            "icao_opmet",
+            "schema",
+        }
         if want_validate:
             try:
                 report = api_surface._call_iwxxm_validate(
-                    migrated_payload,
+                    pass_payload,
                     iwxxm_version=iwxxm_version,
                     profile=(profile or "annex3"),
                     levels=("xsd", "schematron"),
@@ -304,47 +284,18 @@ async def convert_continue(_prelude: dict[str, Any]) -> Any:
                         ConversionIssue(
                             source="manual",
                             message=str(getattr(issue, "message", "") or "IWXXM validation issue"),
-                            severity=(
-                                ConversionIssueSeverity.ERROR if migrated_iwxxm else ConversionIssueSeverity.WARNING
-                            ),
+                            severity=ConversionIssueSeverity.WARNING,
                             code=str(getattr(issue, "code", None) or "IWXXM_VALIDATE"),
                             location=getattr(issue, "location", None),
                             layer=getattr(issue, "layer", None),
                         )
                         for issue in getattr(report, "issues", []) or []
                     ]
-                    if migrated_iwxxm:
-                        raise HTTPException(
-                            status_code=400,
-                            detail=ErrorDetail(
-                                message="Migrated IWXXM did not validate for the requested target version",
-                                errors=[issue.message for issue in validation_issues],
-                                issues=validation_issues,
-                                total_errors=len(validation_issues),
-                            ).model_dump(),
-                        )
                     pass_issues.extend(validation_issues)
             except Exception as exc:
                 if isinstance(exc, HTTPException):
                     raise
                 logger.warning("[CONVERT] IWXXM pass-through validate_output failed: %s", exc)
-                if migrated_iwxxm:
-                    raise HTTPException(
-                        status_code=400,
-                        detail=ErrorDetail(
-                            message="Migrated IWXXM validation could not complete",
-                            errors=[str(exc)],
-                            issues=[
-                                ConversionIssue(
-                                    source="manual",
-                                    message=f"Migrated IWXXM validation could not complete: {exc}",
-                                    severity=ConversionIssueSeverity.ERROR,
-                                    code="IWXXM_VALIDATE_ERROR",
-                                )
-                            ],
-                            total_errors=1,
-                        ).model_dump(),
-                    ) from exc
                 pass_issues.append(
                     ConversionIssue(
                         source="manual",
@@ -358,10 +309,10 @@ async def convert_continue(_prelude: dict[str, Any]) -> Any:
                 results=[
                     ConversionResult(
                         name="iwxxm_pass_through.xml",
-                        content=migrated_payload,
+                        content=pass_payload,
                         tac_input=None,
                         source="manual",
-                        size_bytes=len(migrated_payload.encode("utf-8")),
+                        size_bytes=len(pass_payload.encode("utf-8")),
                     )
                 ],
                 errors=[],
@@ -378,7 +329,7 @@ async def convert_continue(_prelude: dict[str, Any]) -> Any:
                     "pass_through": True,
                     "source_iwxxm_version": source_iwxxm_version,
                     "target_iwxxm_version": iwxxm_version,
-                    "migrated_iwxxm": migrated_iwxxm,
+                    "migrated_iwxxm": False,
                 },
             )
         )
