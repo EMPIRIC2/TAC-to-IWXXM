@@ -312,6 +312,39 @@ describe('LiveWorldMap', () => {
     expect(screen.queryByTestId('live-map-eval-table')).toBeNull();
   });
 
+  it('renders the live evaluation table with top lint codes', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockImplementation(async (url: string) => {
+        if (String(url).includes('/live-map/eval')) {
+          return {
+            ok: true,
+            json: async () => ({
+              computed_at: '2026-11-24T20:00:00Z',
+              window_hours: 24,
+              products: ['metar'],
+              partial_decode_count: 1,
+              lint_count: 2,
+              top_lint_codes: [{ code: 'MISSING_VIS', count: 2 }],
+              convert_failure_count: 0,
+              iwxxm_validation: { pass: 3, fail: 0, skip: 1 },
+              failure_locations: [],
+            }),
+          };
+        }
+        return { ok: true, json: async () => ({ places: [] }) };
+      }),
+    );
+    render(<LiveWorldMap />);
+    await waitFor(() => {
+      expect(screen.getByTestId('live-map-eval-table')).toBeInTheDocument();
+    });
+    expect(screen.getByTestId('live-map-eval-top-codes')).toHaveTextContent(
+      'MISSING_VIS (2)',
+    );
+    expect(screen.getByTestId('live-map-eval-lint')).toHaveTextContent('2');
+  });
+
   it('reads bounds from the map', () => {
     expect(boundsOf(map as never)).toEqual({
       west: -80,
