@@ -175,6 +175,16 @@ def is_shipped_product_semantic_profile(profile: str) -> bool:
     Emit-package unit suites may still resolve other registry ids via
     ``resolve_semantic_profile``; product HTTP and first-party library seeds
     use this gate.
+
+    Parameters
+    ----------
+    profile : str
+        Semantic profile id or alias (for example ``ICAO_2025`` or ``annex3``).
+
+    Returns
+    -------
+    bool
+        ``True`` when the resolved canonical id is on the product ship list.
     """
     resolved = resolve_semantic_profile(profile)
     if resolved is None:
@@ -185,6 +195,11 @@ def is_shipped_product_semantic_profile(profile: str) -> bool:
 def shipped_product_semantic_wire_ids() -> tuple[str, ...]:
     """
     Return uppercase OpenAPI ids shipped on the product surface (ICAO only).
+
+    Returns
+    -------
+    tuple[str, ...]
+        Sorted OpenAPI-style wire ids such as ``ICAO_2025``.
     """
     return tuple(sorted(key.upper() for key in _SHIPPED_PRODUCT_CANONICAL))
 

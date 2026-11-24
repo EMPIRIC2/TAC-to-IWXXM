@@ -30,7 +30,7 @@ _KNOWN_SCHEDULED = frozenset(
         "load-tests.yml",
         "mutation.yml",
         "pypi-nightly.yml",
-        "vendor-sync.yml",
+        # NFR-021 / DI-014 / M1: vendor-sync.yml keeps workflow_dispatch only.
     }
 )
 

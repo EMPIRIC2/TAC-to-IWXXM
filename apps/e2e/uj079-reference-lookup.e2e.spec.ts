@@ -27,7 +27,7 @@ test.describe('UJ-079 reference lookup', () => {
     await page.getByTestId('convert-advanced-engines').locator('summary').click();
     await page
       .getByTestId('conversion-library-select')
-      .selectOption('LIB.CONVERSION.US_FAA_NWS');
+      .selectOption('LIB.CONVERSION.ICAO_2025');
     await page.getByLabel('Expand parameters', { exact: true }).click();
     await page.locator('#param-iwxxm-version').selectOption('2025-2');
 

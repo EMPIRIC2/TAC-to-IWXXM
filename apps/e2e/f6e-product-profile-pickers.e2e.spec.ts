@@ -68,14 +68,18 @@ test.describe('H6 / T8.4: F6.e product + Conversion library pickers', () => {
     await openConvertDownloadsTab(page, 30_000);
   });
 
-  test('UJ-005: US Conversion library selectable with METAR', async ({ page }) => {
+  test('UJ-005: ICAO Conversion library selectable; US option dropped', async ({
+    page,
+  }) => {
     await openPublicConverter(page);
     await requireF6ePickers(page);
 
     await page.locator('#param-product').selectOption('METAR');
-    await page
-      .getByTestId('conversion-library-select')
-      .selectOption('LIB.CONVERSION.US_FAA_NWS');
+    const conversionSelect = page.getByTestId('conversion-library-select');
+    await expect(
+      conversionSelect.locator('option[value="LIB.CONVERSION.US_FAA_NWS"]'),
+    ).toHaveCount(0);
+    await conversionSelect.selectOption('LIB.CONVERSION.ICAO_2025');
 
     await convertManualMetar(page, METAR_TAC);
 
