@@ -893,16 +893,19 @@ Preflight: `OPTIONS` on `/api/v1/*` and `/auth/*`.
 Frontend and API may be different origins on DOKS. configure `corsOrigins` accordingly. H4–H5
 **required** this cycle after Auth + URL changes.
 
-## Dissemination (dissemination drawer through AMHS SWIM AFS adapters) , Done. multi-select deepen
+## Dissemination (drawer / AMHS / SWIM / AFS) — removed (M1)
 
-> **Status**: Shipped. : UI multi-file selection , **no**
-> new batch endpoint. existing single-payload routes reused via N sequential client calls.
+> **Status**: **Removed** for FR-052..056 / DI-008 (epic #1688). HTTP routes under
+> `/api/v1/dissemination/*` are **not mounted** (404). Operator Convert&Send /
+> Disseminate UI stays off (`destinationsEnabled: false`). The `packages/dissemination`
+> library may still provide exchange packaging / allowlist helpers for convert; it is
+> not a public disseminate product surface. PyPI publish wiring cleanup is follow-on
+> (DI-010 / T1.9).
 
-Auth: **None** (public operator app public, same as other `/api/v1/*`). Destination credentials are
-**memory-only** (never persisted. never returned in responses). Egress subject to
-allowlist. Abuse controls apply (rate limits / body size).
+Historical contract below is retained for archaeology only. Do not implement new clients
+against these paths.
 
-### `POST /api/v1/dissemination/preflight`
+### `POST /api/v1/dissemination/preflight` (removed)
 
 | Field   | Notes                                                                                                                                                                                                                                                                                                                                           |
 | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |

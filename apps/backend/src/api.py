@@ -133,8 +133,6 @@ try:
         conversion,
         conversion_meta,
         conversion_profiles,
-        dissemination,
-        dissemination_ops,
         evaluation,
         exchange_admin,
         health,
@@ -155,8 +153,6 @@ except ImportError:
         conversion,
         conversion_meta,
         conversion_profiles,
-        dissemination,
-        dissemination_ops,
         evaluation,
         exchange_admin,
         health,
@@ -315,17 +311,9 @@ try:
 except Exception as e:  # pragma: no cover - defensive
     logger.error(f"DEBUG: Failed to include work_sessions router: {e}", exc_info=True)
 
-try:
-    app.include_router(dissemination.router)
-    logger.info("DEBUG: included dissemination router successfully")
-except Exception as e:  # pragma: no cover - defensive
-    logger.error(f"DEBUG: Failed to include dissemination router: {e}", exc_info=True)
-
-try:
-    app.include_router(dissemination_ops.router)
-    logger.info("DEBUG: included dissemination_ops router successfully")
-except Exception as e:  # pragma: no cover - defensive
-    logger.error(f"DEBUG: Failed to include dissemination_ops router: {e}", exc_info=True)
+# FR-052..056 / DI-008: dissemination HTTP surface removed (M1). Package
+# ``dissemination`` may still supply exchange packaging / allowlist helpers.
+logger.info("DEBUG: dissemination and dissemination_ops routers not mounted (FR drop)")
 
 try:
     app.include_router(exchange_admin.router)

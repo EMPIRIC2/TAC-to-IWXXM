@@ -1,4 +1,8 @@
-"""API tests for dissemination preflight/send (T2.3 / api-contract)."""
+"""API tests for dissemination preflight/send (T2.3 / api-contract).
+
+Skipped: FR-052..056 / DI-008 removed the public dissemination HTTP surface (M1).
+See ``test_dissemination_routes_removed.py`` for drop-guard coverage.
+"""
 
 from __future__ import annotations
 
@@ -6,6 +10,11 @@ import json
 from pathlib import Path
 
 import pytest
+
+pytestmark = pytest.mark.skip(
+    reason="FR-052..056 dissemination HTTP surface removed (DI-008 / M1)",
+)
+
 from dissemination.handles import default_handle_store
 from dissemination.rate_limit import DisseminationRateLimiter
 from fastapi.testclient import TestClient

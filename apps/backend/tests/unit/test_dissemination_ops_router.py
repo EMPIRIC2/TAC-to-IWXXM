@@ -1,4 +1,7 @@
-"""Unit tests for EV-936 dissemination ops JWT routes (TC-F16-OPS-003..004)."""
+"""Unit tests for EV-936 dissemination ops JWT routes (TC-F16-OPS-003..004).
+
+Skipped: FR-052..056 / DI-008 removed dissemination HTTP surface (M1).
+"""
 
 from __future__ import annotations
 
@@ -7,6 +10,11 @@ from typing import Any
 from uuid import UUID, uuid4
 
 import pytest
+
+pytestmark = pytest.mark.skip(
+    reason="FR-052..056 dissemination HTTP surface removed (DI-008 / M1)",
+)
+
 from fastapi import HTTPException
 from fastapi.testclient import TestClient
 from src.api import app

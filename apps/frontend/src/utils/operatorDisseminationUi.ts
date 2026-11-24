@@ -6,20 +6,21 @@
  * Mutable config supports Vitest isolation (set ``destinationsEnabled`` false to assert
  * the EV-042 hide gate still works).
  *
- * Backend ``/api/v1/dissemination/*`` remains for harness/tests.
+ * FR-052..056 / DI-008: dissemination drawer deferred; destinations stay off.
+ * Backend ``/api/v1/dissemination/*`` routes are unregistered.
  *
- * [Corpus: product §F16–F19] [Corpus: journeys UJ-027–030]
+ * [Corpus: fr] epic #1688
  */
 
 export const operatorDisseminationUiConfig = {
   /** When false, Convert&Send + Disseminate are hidden. */
-  destinationsEnabled: true,
+  destinationsEnabled: false,
 };
 
 /**
  * Whether operator Convert&Send / Disseminate are shown.
  *
- * @returns true when destinations UI is enabled (default after EV-091)
+ * @returns true when destinations UI is enabled (default false; FR drop)
  * @example
  * const _ = true;
  */
