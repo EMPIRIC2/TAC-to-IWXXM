@@ -200,15 +200,16 @@ the same public convert path. Work history: guest → IndexedDB. logged-in → s
 | Residuals → remarks | `propagate_residuals_to_remarks`                                                                            | `propagate_residuals_to_remarks` |
 | Profile extensions  | `extensions`                                                                                                | `extensions`                     |
 
-**Soft-preview (`preview=true`)** :
+**Soft-preview (`preview=true`)** — **operator UI removed** (FR-043 / DI-007 / M1):
 
-- HTTP **200** allowed when parse/convert is partial. response may include best-effort IWXXM,
-  `ok: false`, and `failed_spans: [{ start, end, code?, message? }]`.
-- Does **not** imply Schematron-passed publish. hard convert (default) keeps failure HTTP
-  semantics for non-quarantine errors. **:** product-shaped unreliable
-  TAC emits a successful quarantine document (`@translationFailedTAC`) with HTTP **200**
+- Operator Convert no longer exposes a soft-preview toggle; workbench requests use hard convert.
+- Library/API may still accept `preview=true` for eval/harness. When set: HTTP **200** allowed
+  on partial parse/convert with best-effort IWXXM, `ok: false`, and
+  `failed_spans: [{ start, end, code?, message? }]`.
+- Does **not** imply Schematron-passed publish. Hard convert (default) keeps failure HTTP
+  semantics for non-quarantine errors. Product-shaped unreliable TAC may still emit a
+  quarantine document (`@translationFailedTAC`) with HTTP **200**
   (not the soft-preview `ok:false` envelope).
-- Prefer this flag over a separate `/preview-convert` route.
 
 ** spans on convert issues/errors** (when present): optional integer `start` / `end` alongside
 existing string fields.

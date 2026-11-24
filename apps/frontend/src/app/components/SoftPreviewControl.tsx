@@ -1,6 +1,11 @@
 /**
- * Soft-preview checkbox for convert ``preview=true`` (UJ-016).
+ * Soft-preview checkbox for convert ``preview=true``.
+ *
+ * FR-043 / DI-007 / M1: operator soft-preview UX off by default.
+ *
+ * [Corpus: fr] epic #1688
  */
+import { softPreviewUiConfig } from '@/utils/softPreviewUi';
 
 /** Operator-visible label (scanned by TC-EV048-003). */
 export const SOFT_PREVIEW_LABEL = 'Soft-preview';
@@ -21,18 +26,16 @@ export interface SoftPreviewControlProps {
 }
 
 /**
- * Toggle soft-preview mode on convert requests.
- *
- * @param props.checked - Whether soft-preview is enabled
- * @param props.onChange - Called with the next checked state
- * @example
- * const _ = true;
+ * Toggle soft-preview mode on convert requests when enabled.
  */
 export function SoftPreviewControl({
   checked,
   onChange,
   disabled = false,
 }: SoftPreviewControlProps) {
+  if (!softPreviewUiConfig.enabled) {
+    return null;
+  }
   return (
     <label className="mb-0 flex cursor-pointer items-start gap-2 text-sm text-gray-800 dark:text-gray-200">
       <input

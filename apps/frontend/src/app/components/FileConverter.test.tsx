@@ -81,6 +81,7 @@ vi.mock('./LiveWorldMap', () => ({
 }));
 import { clearOverlayOnAuthLoss } from '@/app/utils/clearOverlayOnAuthLoss';
 import { operatorDisseminationUiConfig } from '@/utils/operatorDisseminationUi';
+import { softPreviewUiConfig } from '@/utils/softPreviewUi';
 import { defaultLibraryId } from '@/utils/libraryIds';
 import {
   CONVERSION_METADATA_PREFS_KEY,
@@ -565,6 +566,8 @@ describe('FileConverter Component', () => {
     vi.clearAllMocks();
     vi.spyOn(window, 'confirm').mockReturnValue(true);
     operatorDisseminationUiConfig.destinationsEnabled = false;
+    // Harness keeps soft-preview control mountable; product default remains off.
+    softPreviewUiConfig.enabled = true;
     // Reset queued Once/implementations so coverage runs do not leak mocks across cases.
     mockConvertMetarToIwxxm.mockReset();
     mockConvertBulletin.mockReset();
@@ -691,6 +694,7 @@ describe('FileConverter Component', () => {
 
   afterEach(() => {
     operatorDisseminationUiConfig.destinationsEnabled = false;
+    softPreviewUiConfig.enabled = false;
     cleanup();
   });
 

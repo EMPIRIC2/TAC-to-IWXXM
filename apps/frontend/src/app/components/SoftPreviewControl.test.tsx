@@ -1,37 +1,27 @@
 /**
- * T3.3 — Soft-preview control contract for UJ-016 / #666 (wired in T3.4).
+ * Drop-guard: soft-preview control off by default (FR-043 / M1).
+ *
+ * [Corpus: fr] epic #1688
  */
-
-import { describe, it, expect, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { softPreviewUiConfig } from '@/utils/softPreviewUi';
 import { SoftPreviewControl } from './SoftPreviewControl';
 
-describe('SoftPreviewControl', () => {
-  it('exposes a preview checkbox distinct from hard convert', async () => {
-    const user = userEvent.setup();
-    const onChange = vi.fn();
-    render(<SoftPreviewControl checked={false} onChange={onChange} />);
-
-    const toggle = screen.getByTestId('soft-preview-toggle');
-    expect(toggle).toBeInTheDocument();
-    expect(toggle).toHaveAttribute('type', 'checkbox');
-    expect(screen.getByText(/soft-preview|preview/i)).toBeInTheDocument();
-
-    await user.click(toggle);
-    expect(onChange).toHaveBeenCalledWith(true);
+describe('SoftPreviewControl (FR-043 drop)', () => {
+  afterEach(() => {
+    softPreviewUiConfig.enabled = false;
   });
 
-  it('reflects checked state', () => {
-    render(<SoftPreviewControl checked={true} onChange={() => {}} />);
-    expect(screen.getByTestId('soft-preview-toggle')).toBeChecked();
+  it('does not render the soft-preview toggle by default', () => {
+    softPreviewUiConfig.enabled = false;
+    render(<SoftPreviewControl checked={false} onChange={vi.fn()} />);
+    expect(screen.queryByTestId('soft-preview-toggle')).not.toBeInTheDocument();
   });
 
-  it('when busy uses disabled, not readOnly', () => {
-    render(<SoftPreviewControl checked={false} onChange={() => {}} disabled />);
-    const toggle = screen.getByTestId('soft-preview-toggle') as HTMLInputElement;
-    expect(toggle).toBeDisabled();
-    expect(toggle.readOnly).toBe(false);
-    expect(toggle).not.toHaveAttribute('readonly');
+  it('renders when explicitly re-enabled for harnesses', () => {
+    softPreviewUiConfig.enabled = true;
+    render(<SoftPreviewControl checked={false} onChange={vi.fn()} />);
+    expect(screen.getByTestId('soft-preview-toggle')).toBeInTheDocument();
   });
 });
