@@ -9,6 +9,7 @@ from typing import Any, cast
 
 import yaml
 from fastapi import HTTPException, status
+from tac2iwxxm.profile_registry import resolve_semantic_profile
 
 from ..schemas.conversion_profiles import (
     MetarFamilyVariant,
@@ -272,13 +273,19 @@ def load_profile_catalog(
             detail="Profile catalog malformed",
         )
     profiles_raw = cast(list[object], profiles_obj)
+    # FR-019..022 / M1: default catalog ships resolved baseline ids only.
+    # PROFILE_CATALOG_PATH overrides keep raw rows for unit fixtures.
+    using_override = bool((os.environ.get("PROFILE_CATALOG_PATH") or "").strip())
     entries: list[ProfileCatalogEntry] = []
     for item in profiles_raw:
         if not isinstance(item, dict):
             continue
         row = cast(dict[str, Any], item)
         entry_id = _as_str(row.get("id")) or ""
+        if not using_override and resolve_semantic_profile(entry_id) is None:
+            continue
         vendor_pins = _as_str_dict(row.get("vendor_pins"))
+        variants = _as_metar_family_variants(row.get("metar_family_variants")) if using_override else []
         entries.append(
             ProfileCatalogEntry(
                 id=entry_id,
@@ -292,7 +299,7 @@ def load_profile_catalog(
                 implementation=_as_str_dict(row.get("implementation")),
                 deltas_vs_icao=_deltas_vs_icao(entry_id),
                 iwxxm_line=_iwxxm_line(entry_id, vendor_pins),
-                metar_family_variants=_as_metar_family_variants(row.get("metar_family_variants")),
+                metar_family_variants=variants,
                 rule_pack_count=None if rule_pack_counts is None else rule_pack_counts.get(entry_id, 0),
                 overlay_count=None if overlay_counts is None else overlay_counts.get(entry_id, 0),
             )

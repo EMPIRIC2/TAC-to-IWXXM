@@ -11,7 +11,8 @@ from src.services.live_map_cache import LiveMapCache, cache_from_env
 
 router = APIRouter(prefix="/api/v1/live-map", tags=["Live map"])
 
-MAP_PRODUCTS = frozenset({"metar", "speci", "taf", "airmet", "gairmet", "sigmet", "vaa", "tca", "vona"})
+# FR-013 / DI-016: G-AIRMET layer removed from live map.
+MAP_PRODUCTS = frozenset({"metar", "speci", "taf", "airmet", "sigmet", "vaa", "tca", "vona"})
 
 _cache: LiveMapCache | None = None
 
@@ -53,7 +54,7 @@ def read_live_map(
     east: float = Query(..., description="East edge of the view, in degrees."),
     north: float = Query(..., description="North edge of the view, in degrees."),
     products: str = Query(
-        "metar,speci,taf,airmet,gairmet,sigmet,vaa,tca,vona",
+        "metar,speci,taf,airmet,sigmet,vaa,tca,vona",
         description="Comma-separated product ids. Defaults to every geographically located product.",
     ),
 ) -> dict[str, object]:

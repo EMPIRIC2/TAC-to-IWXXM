@@ -286,8 +286,7 @@ def test_catalog_returns_profiles(profiles_client: Any) -> None:
     body = res.json()
     assert "profiles" in body
     ids = {p["id"] for p in body["profiles"]}
-    assert "ICAO_2025" in ids
-    assert "US_FAA_NWS" in ids
+    assert ids == {"ICAO_2025"}
 
     by_id = {profile["id"]: profile for profile in body["profiles"]}
     icao = by_id["ICAO_2025"]
@@ -295,24 +294,7 @@ def test_catalog_returns_profiles(profiles_client: Any) -> None:
     assert icao["overlay_count"] == 1
     assert icao["deltas_vs_icao"]
     assert isinstance(icao["iwxxm_line"], str)
-
-    us = by_id["US_FAA_NWS"]
-    assert us["rule_pack_count"] == 0
-    assert us["overlay_count"] == 0
-    assert len(us["deltas_vs_icao"]) <= 3
-    assert "iwxxm-us" in (us["iwxxm_line"] or "")
-
-    ca = by_id["CA_ECCC"]
-    assert [variant["tac_lead"] for variant in ca["metar_family_variants"]] == [
-        "METAR",
-        "SPECI",
-        "LWIS",
-        "SAWR",
-    ]
-    lwis = next(variant for variant in ca["metar_family_variants"] if variant["tac_lead"] == "LWIS")
-    assert lwis["api_product"] == "METAR"
-    assert lwis["iwxxm_root"] == "iwxxm-ca:LWIS"
-    assert lwis["minimal_observation"] is True
+    assert icao["metar_family_variants"] == []
 
 
 def test_catalog_stays_available_when_profile_storage_is_unavailable() -> None:

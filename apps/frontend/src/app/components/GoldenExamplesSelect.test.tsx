@@ -83,7 +83,7 @@ describe('GoldenExamplesSelect', () => {
     render(
       <GoldenExamplesSelect
         onSelectExample={vi.fn()}
-        semanticProfile="US_FAA_NWS"
+        semanticProfile="ICAO_2025"
         applicableProducts={['METAR']}
       />,
     );
@@ -91,18 +91,18 @@ describe('GoldenExamplesSelect', () => {
     await user.click(screen.getByTestId('examples-select'));
     expect(
       await screen.findByRole('option', {
-        name: /METAR WMO A3-1 \(annex3\).*Reused for United States \(FAA\/NWS\)/i,
+        name: /METAR WMO A3-1 \(annex3\)/i,
       }),
     ).toBeInTheDocument();
     expect(screen.queryByRole('option', { name: /SIGMET/i })).not.toBeInTheDocument();
   });
 
-  it('labels reused WMO reference examples for non-ICAO profiles', async () => {
+  it('labels WMO reference examples for the ICAO baseline', async () => {
     const user = userEvent.setup();
     render(
       <GoldenExamplesSelect
         onSelectExample={vi.fn()}
-        semanticProfile="US_FAA_NWS"
+        semanticProfile="ICAO_2025"
         applicableProducts={['SWXA']}
       />,
     );
@@ -110,7 +110,7 @@ describe('GoldenExamplesSelect', () => {
     await user.click(screen.getByTestId('examples-select'));
     expect(
       await screen.findByRole('option', {
-        name: /SWXA WMO A7-3.*WMO reference.*Reused for United States \(FAA\/NWS\)/i,
+        name: /SWXA WMO A7-3.*WMO reference/i,
       }),
     ).toBeInTheDocument();
   });
@@ -149,7 +149,7 @@ describe('GoldenExamplesSelect', () => {
     render(
       <GoldenExamplesSelect
         onSelectExample={vi.fn()}
-        semanticProfile="AU_BOM"
+        semanticProfile="ICAO_2025"
         applicableProducts={[]}
       />,
     );

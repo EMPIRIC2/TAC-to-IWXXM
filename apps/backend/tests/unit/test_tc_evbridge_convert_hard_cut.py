@@ -43,10 +43,9 @@ def test_resolve_default_icao_library() -> None:
 
 
 def test_resolve_us_library() -> None:
-    """US Conversion library maps to US_FAA_NWS."""
-    lib_id, engine = resolve_engine_profile_from_conversion_library("LIB.CONVERSION.US_FAA_NWS")
-    assert lib_id == "LIB.CONVERSION.US_FAA_NWS"
-    assert engine == "US_FAA_NWS"
+    """US Conversion library dropped (FR-019 / M1)."""
+    with pytest.raises(ValueError, match="Unknown"):
+        resolve_engine_profile_from_conversion_library("LIB.CONVERSION.US_FAA_NWS")
 
 
 def test_resolve_unknown_library_raises() -> None:
@@ -88,10 +87,10 @@ def test_resolve_custom_callback_none_still_unknown() -> None:
 
 
 def test_library_id_for_alias_annex3() -> None:
-    """annex3 alias maps to ICAO Conversion library."""
+    """annex3 alias maps to ICAO; dropped nationals fall back to ICAO (FR-019..022)."""
     assert library_id_for_semantic_or_alias("annex3") == "LIB.CONVERSION.ICAO_2025"
-    assert library_id_for_semantic_or_alias("iwxxm_us") == "LIB.CONVERSION.US_FAA_NWS"
-    assert library_id_for_semantic_or_alias("CA_ECCC") == "LIB.CONVERSION.CA_ECCC"
+    assert library_id_for_semantic_or_alias("iwxxm_us") == "LIB.CONVERSION.ICAO_2025"
+    assert library_id_for_semantic_or_alias("CA_ECCC") == "LIB.CONVERSION.ICAO_2025"
 
 
 def test_library_id_for_empty_lib_prefix_and_unknown() -> None:

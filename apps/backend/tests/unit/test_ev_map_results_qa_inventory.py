@@ -13,7 +13,7 @@ from fastapi.testclient import TestClient
 from src.routers.live_map import MAP_PRODUCTS, get_live_map_cache, router, set_live_map_cache
 
 # Keep in sync with apps/frontend LIVE_MAP_VIEWS product ids (TC-F37-013).
-_EXPECTED_PIN_PRODUCTS = frozenset({"metar", "speci", "taf", "airmet", "gairmet", "sigmet", "vaa", "tca", "vona"})
+_EXPECTED_PIN_PRODUCTS = frozenset({"metar", "speci", "taf", "airmet", "sigmet", "vaa", "tca", "vona"})
 
 _REPO_ROOT = Path(__file__).resolve().parents[4]
 _SWXA_FIXTURES = (
@@ -25,7 +25,7 @@ _SWXA_FIXTURES = (
 
 
 def test_map_pin_products_match_f37_inventory() -> None:
-    """Live-map pin ids stay the nine geographically located products."""
+    """Live-map pin ids stay the eight geographically located products (no gairmet)."""
     assert MAP_PRODUCTS == _EXPECTED_PIN_PRODUCTS
     assert "swxa" not in MAP_PRODUCTS
     assert "wafs" not in MAP_PRODUCTS

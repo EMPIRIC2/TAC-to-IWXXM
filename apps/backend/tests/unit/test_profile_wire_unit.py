@@ -27,10 +27,11 @@ def test_resolve_canonical_semantic_profile() -> None:
 
 
 def test_resolve_ca_eccc_semantic_profile() -> None:
-    sel = pw.resolve_route_profiles(semantic_profile="CA_ECCC")
-    assert sel.emit_key == "ca_eccc"
-    assert sel.semantic_canonical == "ca_eccc"
-    assert sel.deprecated_alias_used is False
+    """CA_ECCC dropped (FR-020 / M1); unknown national ids raise 400."""
+    with pytest.raises(HTTPException) as exc:
+        pw.resolve_route_profiles(semantic_profile="CA_ECCC")
+    assert exc.value.status_code == 400
+    assert exc.value.detail["code"] == "invalid_semantic_profile"
 
 
 def test_resolve_legacy_alias_marks_deprecation() -> None:

@@ -3,7 +3,7 @@
 /** Live map place filters. */
 import type { LivePlace, MapTimePreset } from '@/models/liveMap';
 
-const HAZARD_PRODUCTS = new Set(['airmet', 'gairmet', 'sigmet']);
+const HAZARD_PRODUCTS = new Set(['airmet', 'sigmet']);
 
 /**
  * Filter live map places by country/region/time/phenomena overlays.

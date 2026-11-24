@@ -32,18 +32,14 @@ def test_convert_unsupported_profile() -> None:
 
 
 def test_convert_iwxxm_us_profile_ok() -> None:
+    """iwxxm_us dropped (FR-019 / M1); convert fail-closes."""
     result = convert(
         "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005 RMK AO2 SLP149=",
         product="METAR",
         profile="iwxxm_us",
     )
-    assert result.ok is True
-    assert result.profile == "iwxxm_us"
-    assert result.xml is not None
-    assert "iwxxm-us:Addendum" in result.xml
-    assert result.ir is not None
-    assert result.ir["observing_system_type"] == "AO2"
-    assert result.ir["sea_level_pressure_hpa"] == 1014.9
+    assert result.ok is False
+    assert result.issues[0].code == "UNSUPPORTED_PROFILE"
 
 
 @pytest.mark.parametrize(
@@ -67,8 +63,11 @@ def test_convert_rejects_profile_scoped_3_0_0_for_non_ca_profiles(
         iwxxm_version="3.0.0",
     )
     assert result.ok is False
-    assert result.issues[0].code == "INVALID_IWXXM_VERSION"
-    assert "3.0.0" in result.issues[0].message
+    if profile == "annex3":
+        assert result.issues[0].code == "INVALID_IWXXM_VERSION"
+        assert "3.0.0" in result.issues[0].message
+    else:
+        assert result.issues[0].code == "UNSUPPORTED_PROFILE"
 
 
 def test_convert_rejects_report_variant_for_profile_without_catalog() -> None:
@@ -83,6 +82,7 @@ def test_convert_rejects_report_variant_for_profile_without_catalog() -> None:
 
 
 def test_convert_rejects_report_variant_product_mismatch() -> None:
+    """CA_ECCC dropped; national report_variant path fail-closes as unsupported profile."""
     result = convert(
         "SPECI CYUL 231800Z 24010KT 9999 FEW240 22/12 A3012=",
         product="SPECI",
@@ -91,10 +91,11 @@ def test_convert_rejects_report_variant_product_mismatch() -> None:
         report_variant="LWIS",
     )
     assert result.ok is False
-    assert result.issues[0].code == "INVALID_REPORT_VARIANT"
+    assert result.issues[0].code == "UNSUPPORTED_PROFILE"
 
 
 def test_convert_ca_eccc_report_variant_overrides_root() -> None:
+    """CA_ECCC / LWIS dropped (FR-012 / FR-020 / M1)."""
     result = convert(
         "METAR CYUL 231800Z 24010KT 9999 FEW240 22/12 A3012=",
         product="METAR",
@@ -102,9 +103,8 @@ def test_convert_ca_eccc_report_variant_overrides_root() -> None:
         iwxxm_version="3.0.0",
         report_variant="LWIS",
     )
-    assert result.ok is True
-    assert result.ir is not None
-    assert result.ir["ca_iwxxm_root"] == "LWIS"
+    assert result.ok is False
+    assert result.issues[0].code == "UNSUPPORTED_PROFILE"
 
 
 def test_convert_parse_error_returns_ok_false() -> None:

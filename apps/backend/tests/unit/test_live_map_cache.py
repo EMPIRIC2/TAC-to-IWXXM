@@ -367,6 +367,6 @@ def test_read_live_map_route(monkeypatch: pytest.MonkeyPatch) -> None:
         "/api/v1/live-map",
         params={"west": -80, "south": 40, "east": -70, "north": 41, "products": "gairmet"},
     )
-    assert gairmet.status_code == 200
-    assert gairmet.json()["places"][0]["product"] == "gairmet"
+    # FR-013 / DI-016: G-AIRMET layer removed from live map.
+    assert gairmet.status_code == 400
     set_live_map_cache(None)

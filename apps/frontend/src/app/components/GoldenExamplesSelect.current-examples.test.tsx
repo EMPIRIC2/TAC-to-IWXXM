@@ -28,7 +28,7 @@ describe('GoldenExamplesSelect — Current Examples label', () => {
     render(
       <GoldenExamplesSelect
         onSelectExample={vi.fn()}
-        semanticProfile="AU_BOM"
+        semanticProfile="ICAO_2025"
         applicableProducts={[]}
       />,
     );
