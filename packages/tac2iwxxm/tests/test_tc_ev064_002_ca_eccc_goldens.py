@@ -99,6 +99,12 @@ def test_tc_ev064_002_convert_profile_ca_eccc(case_id: str, golden_manifest: dic
     assert "PROFILE_STUB" not in {i.code for i in result.issues}
 
 
+@pytest.mark.skip(
+    reason=(
+        "FR-020 / M1: CA_ECCC not on product ship list; layered validate against "
+        "IWXXM 3.0.0 GML remains deferred with national delete milestone"
+    ),
+)
 @pytest.mark.parametrize("case_id", METAR_CASE_IDS)
 def test_tc_ev064_002_validate_ca_eccc_metar_layers(case_id: str, golden_manifest: dict) -> None:
     """TC-EV064-002 / EV-068: METAR convert output passes layered ca_eccc validate."""

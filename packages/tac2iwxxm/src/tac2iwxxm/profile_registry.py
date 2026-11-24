@@ -44,22 +44,48 @@ EMIT_US_NWS_G_AIRMET = "us_nws_g_airmet"
 EMIT_US_NWS_VONA = "us_nws_vona"
 EMIT_CA_MSC_SIGMET = "ca_msc_sigmet"
 
-# FR-019..022 / DI-003..006 / M1: national semantic profiles dropped. Constants
-# above remain for emit-package code and tests that still import symbols; wire
-# acceptance is ICAO baseline only (+ annex3 alias).
 _ALIAS_TO_CANONICAL: dict[str, str] = {
     EMIT_ANNEX3: CANONICAL_ICAO_2025,
+    EMIT_IWXXM_US: CANONICAL_US_FAA_NWS,
 }
 
 _CANONICAL_TO_EMIT: dict[str, str] = {
     CANONICAL_ICAO_2025: EMIT_ANNEX3,
+    CANONICAL_US_FAA_NWS: EMIT_IWXXM_US,
+    CANONICAL_US_MILITARY: EMIT_US_MILITARY,
+    CANONICAL_LATAM_TAF: EMIT_LATAM_TAF,
+    CANONICAL_CA_ECCC: EMIT_CA_ECCC,
+    CANONICAL_AU_BOM: EMIT_AU_BOM,
+    CANONICAL_NZ_CAA_MET: EMIT_NZ_CAA_MET,
+    CANONICAL_UK_METOFFICE: EMIT_UK_METOFFICE,
+    CANONICAL_BR_DECEA: EMIT_BR_DECEA,
+    CANONICAL_KR_KMA: EMIT_KR_KMA,
+    CANONICAL_JP_JMA: EMIT_JP_JMA,
+    CANONICAL_IN_IMD: EMIT_IN_IMD,
+    CANONICAL_HK_HKO: EMIT_HK_HKO,
+    CANONICAL_US_NWS_CONVECTIVE_SIGMET: EMIT_US_NWS_CONVECTIVE_SIGMET,
+    CANONICAL_US_NWS_G_AIRMET: EMIT_US_NWS_G_AIRMET,
+    CANONICAL_US_NWS_VONA: EMIT_US_NWS_VONA,
+    CANONICAL_CA_MSC_SIGMET: EMIT_CA_MSC_SIGMET,
 }
 
 _KNOWN_WIRE_IDS: frozenset[str] = frozenset(_ALIAS_TO_CANONICAL) | frozenset(_CANONICAL_TO_EMIT)
 _GENERAL_IWXXM_VERSIONS = frozenset({"2025-2", "2023-1"})
-_PROFILE_SCOPED_IWXXM_VERSIONS: dict[str, frozenset[str]] = {}
-# FR-012 / DI-015: LWIS/SAWR variants removed with CA_ECCC.
-_PROFILE_REPORT_VARIANTS: dict[str, dict[str, frozenset[str]]] = {}
+_PROFILE_SCOPED_IWXXM_VERSIONS: dict[str, frozenset[str]] = {
+    EMIT_CA_ECCC: frozenset({"3.0.0"}),
+    EMIT_CA_MSC_SIGMET: frozenset({"3.0.0"}),
+}
+_PROFILE_REPORT_VARIANTS: dict[str, dict[str, frozenset[str]]] = {
+    EMIT_CA_ECCC: {
+        "METAR": frozenset({"METAR", "LWIS", "SAWR"}),
+        "SPECI": frozenset({"SPECI"}),
+    }
+}
+
+# FR-019..022 / M1: product HTTP / first-party library / inspector ship ICAO only.
+# Full registry above remains for emit-package unit suites until a later delete.
+_SHIPPED_PRODUCT_CANONICAL: frozenset[str] = frozenset({CANONICAL_ICAO_2025})
+_SHIPPED_PRODUCT_ALIASES: frozenset[str] = frozenset({EMIT_ANNEX3})
 
 
 @dataclass(frozen=True, slots=True)
@@ -140,6 +166,27 @@ def known_semantic_profile_ids() -> frozenset[str]:
         All accepted semantic profile wire ids (canonical + aliases).
     """
     return _KNOWN_WIRE_IDS
+
+
+def is_shipped_product_semantic_profile(profile: str) -> bool:
+    """
+    Return whether a profile is on the product convert/UI ship list (M1).
+
+    Emit-package unit suites may still resolve other registry ids via
+    ``resolve_semantic_profile``; product HTTP and first-party library seeds
+    use this gate.
+    """
+    resolved = resolve_semantic_profile(profile)
+    if resolved is None:
+        return False
+    return resolved.canonical in _SHIPPED_PRODUCT_CANONICAL
+
+
+def shipped_product_semantic_wire_ids() -> tuple[str, ...]:
+    """
+    Return uppercase OpenAPI ids shipped on the product surface (ICAO only).
+    """
+    return tuple(sorted(key.upper() for key in _SHIPPED_PRODUCT_CANONICAL))
 
 
 def canonical_semantic_profile_wire_ids() -> tuple[str, ...]:
@@ -234,9 +281,11 @@ __all__ = [
     "EMIT_US_NWS_VONA",
     "ResolvedSemanticProfile",
     "canonical_semantic_profile_wire_ids",
+    "is_shipped_product_semantic_profile",
     "known_semantic_profile_ids",
     "normalize_profile_id",
     "resolve_semantic_profile",
+    "shipped_product_semantic_wire_ids",
     "supported_iwxxm_versions_for_profile",
     "supported_report_variants_for_profile",
 ]

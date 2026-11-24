@@ -14,7 +14,10 @@ from tac2iwxxm.library_assets import (
     first_party_library_id,
     get_first_party_library_asset,
 )
-from tac2iwxxm.profile_registry import resolve_semantic_profile
+from tac2iwxxm.profile_registry import (
+    is_shipped_product_semantic_profile,
+    resolve_semantic_profile,
+)
 
 DEFAULT_CONVERSION_LIBRARY_ID = first_party_library_id("conversion", "ICAO_2025")
 
@@ -202,7 +205,7 @@ def library_id_for_semantic_or_alias(profile_or_alias: str) -> str:
     if raw.upper().startswith("LIB."):
         return raw
     resolved = resolve_semantic_profile(raw)
-    if resolved is None:
+    if resolved is None or not is_shipped_product_semantic_profile(raw):
         return DEFAULT_CONVERSION_LIBRARY_ID
     return first_party_library_id("conversion", resolved.canonical.upper())
 

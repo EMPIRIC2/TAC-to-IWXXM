@@ -9,7 +9,7 @@ from typing import Any, cast
 
 import yaml
 from fastapi import HTTPException, status
-from tac2iwxxm.profile_registry import resolve_semantic_profile
+from tac2iwxxm.profile_registry import is_shipped_product_semantic_profile
 
 from ..schemas.conversion_profiles import (
     MetarFamilyVariant,
@@ -282,7 +282,7 @@ def load_profile_catalog(
             continue
         row = cast(dict[str, Any], item)
         entry_id = _as_str(row.get("id")) or ""
-        if not using_override and resolve_semantic_profile(entry_id) is None:
+        if not using_override and not is_shipped_product_semantic_profile(entry_id):
             continue
         vendor_pins = _as_str_dict(row.get("vendor_pins"))
         variants = _as_metar_family_variants(row.get("metar_family_variants")) if using_override else []
