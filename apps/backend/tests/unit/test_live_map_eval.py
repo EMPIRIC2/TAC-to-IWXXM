@@ -21,6 +21,7 @@ from src.services.live_map_eval import (
 )
 from src.services.live_map_eval_store import (
     LiveMapEvalStore,
+    close_live_map_eval_store,
     empty_snapshot,
     get_live_map_eval_store,
     set_live_map_eval_store,
@@ -332,3 +333,14 @@ def test_get_live_map_eval_store_singleton(monkeypatch: pytest.MonkeyPatch) -> N
     second = get_live_map_eval_store()
     assert first is second
     set_live_map_eval_store(None)
+
+
+def test_close_live_map_eval_store_disposes_engine() -> None:
+    store = LiveMapEvalStore()
+    engine = MagicMock()
+    store._engine = engine
+    store._use_db = True
+    set_live_map_eval_store(store)
+    close_live_map_eval_store()
+    engine.dispose.assert_called_once()
+    close_live_map_eval_store()

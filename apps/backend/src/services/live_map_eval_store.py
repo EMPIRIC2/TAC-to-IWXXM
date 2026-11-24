@@ -76,6 +76,20 @@ class LiveMapEvalStore:
         self._use_db = False
         self._engine = None
 
+    def dispose(self) -> None:
+        """Close the sync engine pool when Postgres mode was enabled.
+
+        Returns
+        -------
+        None
+            Always returns None.
+        """
+        engine = self._engine
+        self._use_db = False
+        self._engine = None
+        if engine is not None:
+            engine.dispose()
+
     def configure_from_env(self) -> None:
         """Try DATABASE_URL / LIVE_MAP_CACHE_URL for Postgres writes."""
         try:
@@ -214,3 +228,18 @@ def set_live_map_eval_store(store: LiveMapEvalStore | None) -> None:
     """
     global _store
     _store = store
+
+
+def close_live_map_eval_store() -> None:
+    """Dispose and clear the process singleton store.
+
+    Returns
+    -------
+    None
+        Always returns None.
+    """
+    global _store
+    store = _store
+    _store = None
+    if store is not None:
+        store.dispose()

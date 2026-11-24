@@ -327,6 +327,9 @@ async def database_lifespan(app: FastAPI) -> AsyncIterator[None]:
             yield
         finally:
             await stop_live_map_eval(eval_stop)
+            from .live_map_eval_store import close_live_map_eval_store
+
+            close_live_map_eval_store()
             await stop_live_map_refresh(map_stop)
     finally:
         # Shutdown

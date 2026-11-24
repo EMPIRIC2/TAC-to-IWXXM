@@ -9,6 +9,9 @@ import pytest
 # Add tests directory to path so we can import test_fixtures
 sys.path.insert(0, str(Path(__file__).parent))
 
+# Keep live-map eval cron off in unit/TestClient runs (avoids sync engine leaks).
+os.environ.setdefault("LIVE_MAP_EVAL_INTERVAL_SEC", "0")
+
 # Import all fixtures from test_fixtures to make them available globally
 pytest_plugins = ["test_fixtures"]
 
