@@ -53,9 +53,20 @@ def empty_snapshot(*, computed_at: datetime | None = None) -> dict[str, Any]:
 
 
 class LiveMapEvalStore:
-    """Latest-snapshot store (memory or Postgres JSON row)."""
+    """Latest-snapshot store (memory or Postgres JSON row).
+
+    Attributes
+    ----------
+    _latest :
+        In-process last snapshot, or None before first write.
+    _use_db :
+        Whether Postgres persistence is enabled.
+    _engine :
+        SQLAlchemy sync engine when using Postgres.
+    """
 
     def __init__(self) -> None:
+        """Create an empty in-memory store (DB off until configured)."""
         self._latest: dict[str, Any] | None = None
         self._use_db = False
         self._engine: Any = None
@@ -119,6 +130,13 @@ class LiveMapEvalStore:
         return dict(self._latest)
 
     def _write_db(self, payload: dict[str, Any]) -> None:
+        """Insert one snapshot row into Postgres.
+
+        Parameters
+        ----------
+        payload :
+            Full snapshot body including ``computed_at``.
+        """
         from sqlalchemy import text
 
         raw = payload.get("computed_at")
@@ -138,6 +156,13 @@ class LiveMapEvalStore:
             )
 
     def _read_db(self) -> dict[str, Any] | None:
+        """Load the newest snapshot payload from Postgres.
+
+        Returns
+        -------
+        dict[str, Any] | None
+            Parsed payload, or None when missing or unreadable.
+        """
         from sqlalchemy import text
 
         try:
@@ -165,7 +190,13 @@ _store: LiveMapEvalStore | None = None
 
 
 def get_live_map_eval_store() -> LiveMapEvalStore:
-    """Process singleton store."""
+    """Process singleton store.
+
+    Returns
+    -------
+    LiveMapEvalStore
+        Shared store, configuring from env on first use.
+    """
     global _store
     if _store is None:
         _store = LiveMapEvalStore()
@@ -174,6 +205,12 @@ def get_live_map_eval_store() -> LiveMapEvalStore:
 
 
 def set_live_map_eval_store(store: LiveMapEvalStore | None) -> None:
-    """Replace store (tests)."""
+    """Replace store (tests).
+
+    Parameters
+    ----------
+    store :
+        Replacement store, or None to clear the singleton.
+    """
     global _store
     _store = store

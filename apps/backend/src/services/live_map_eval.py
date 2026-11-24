@@ -29,14 +29,26 @@ _eval_task: asyncio.Task[None] | None = None
 
 
 def _live_map_cache() -> LiveMapCache:
-    """Lazy import so the router can depend on this module at load time."""
+    """Lazy import so the router can depend on this module at load time.
+
+    Returns
+    -------
+    LiveMapCache
+        Process cache from the live-map router singleton.
+    """
     from src.routers.live_map import get_live_map_cache
 
     return get_live_map_cache()
 
 
 def eval_interval_seconds() -> int:
-    """Return cron interval from ``LIVE_MAP_EVAL_INTERVAL_SEC`` (default 900)."""
+    """Return cron interval from ``LIVE_MAP_EVAL_INTERVAL_SEC`` (default 900).
+
+    Returns
+    -------
+    int
+        Seconds between computes; at least 60.
+    """
     raw = (os.getenv("LIVE_MAP_EVAL_INTERVAL_SEC") or "900").strip()
     try:
         value = int(raw)
@@ -46,7 +58,13 @@ def eval_interval_seconds() -> int:
 
 
 def refresh_enabled() -> bool:
-    """Whether ``POST /eval/refresh`` is allowed."""
+    """Whether ``POST /eval/refresh`` is allowed.
+
+    Returns
+    -------
+    bool
+        True when the refresh env flag is on.
+    """
     return (os.getenv("LIVE_MAP_EVAL_REFRESH_ENABLED") or "").strip().lower() in {
         "1",
         "true",
@@ -56,7 +74,18 @@ def refresh_enabled() -> bool:
 
 
 def _report_issues(report: Mapping[str, object]) -> list[str]:
-    """Return string issue codes from one cache report."""
+    """Return string issue codes from one cache report.
+
+    Parameters
+    ----------
+    report :
+        One report mapping from a live-map place payload.
+
+    Returns
+    -------
+    list[str]
+        Issue strings (empty when absent or not a list).
+    """
     issues_value = report.get("issues")
     if not isinstance(issues_value, list):
         return []
@@ -72,6 +101,19 @@ def _accumulate_report(
     failures: list[dict[str, str]],
 ) -> tuple[int, int, int, int, int]:
     """Fold one report into lint/IWXXM counters.
+
+    Parameters
+    ----------
+    report :
+        One report mapping.
+    place_key :
+        Station or place id.
+    product :
+        Map product id.
+    code_counts :
+        Running lint-code histogram (mutated).
+    failures :
+        Running failure rows (mutated).
 
     Returns
     -------
@@ -184,6 +226,13 @@ def compute_and_store(
 ) -> dict[str, Any]:
     """Scan world bbox cache and write a snapshot.
 
+    Parameters
+    ----------
+    cache :
+        Live-map cache; defaults to the process singleton.
+    store :
+        Snapshot store; defaults to the process singleton.
+
     Returns
     -------
     dict[str, Any]
@@ -197,7 +246,13 @@ def compute_and_store(
 
 
 async def _eval_loop(stop: asyncio.Event) -> None:
-    """Sleep ``LIVE_MAP_EVAL_INTERVAL_SEC`` between computes."""
+    """Sleep ``LIVE_MAP_EVAL_INTERVAL_SEC`` between computes.
+
+    Parameters
+    ----------
+    stop :
+        Event set by ``stop_live_map_eval`` to end the loop.
+    """
     while not stop.is_set():
         try:
             await asyncio.to_thread(compute_and_store)
@@ -231,7 +286,13 @@ def start_live_map_eval() -> asyncio.Event | None:
 
 
 async def stop_live_map_eval(stop: asyncio.Event | None) -> None:
-    """Stop the eval loop."""
+    """Stop the eval loop.
+
+    Parameters
+    ----------
+    stop :
+        Stop event from ``start_live_map_eval``, or None when never started.
+    """
     global _eval_task, _eval_stop
     if stop is not None:
         stop.set()

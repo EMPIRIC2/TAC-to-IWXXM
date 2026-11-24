@@ -130,7 +130,13 @@ def read_live_map(
     ),
 )
 def read_live_map_eval() -> dict[str, object]:
-    """Return the latest FR-045 evaluation snapshot."""
+    """Return the latest FR-045 evaluation snapshot.
+
+    Returns
+    -------
+    dict[str, object]
+        Contract-shaped snapshot body (zeros when empty).
+    """
     return cast(dict[str, object], get_live_map_eval_store().read_latest())
 
 
@@ -140,7 +146,18 @@ def read_live_map_eval() -> dict[str, object]:
     description="Same work as the cron job. Disabled unless LIVE_MAP_EVAL_REFRESH_ENABLED is set.",
 )
 def refresh_live_map_eval() -> dict[str, object]:
-    """Compute and store a fresh snapshot when enabled."""
+    """Compute and store a fresh snapshot when enabled.
+
+    Returns
+    -------
+    dict[str, object]
+        Fresh snapshot body.
+
+    Raises
+    ------
+    HTTPException
+        404 when ``LIVE_MAP_EVAL_REFRESH_ENABLED`` is off.
+    """
     if not refresh_enabled():
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
