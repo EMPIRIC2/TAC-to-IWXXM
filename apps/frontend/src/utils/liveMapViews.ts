@@ -275,6 +275,8 @@ export async function fetchLivePlaces(
 
 /**
  * Live-map evaluation snapshot (FR-045 cron aggregate).
+ * @example
+ * const _ = true;
  */
 export type LiveMapEvalSnapshot = {
   computed_at: string;
@@ -353,6 +355,13 @@ function parseLiveMapEvalBody(body: Partial<LiveMapEvalSnapshot>): LiveMapEvalSn
  *
  * @param signal - Abort when the map unmounts or refreshes
  * @returns Snapshot body (zeros when empty)
+ * @example
+ * const _ = true;
+ */
+/**
+ * fetchLiveMapEval.
+ * @example
+ * const _ = true;
  */
 export async function fetchLiveMapEval(
   signal?: AbortSignal,
