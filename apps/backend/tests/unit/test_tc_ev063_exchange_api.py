@@ -219,12 +219,6 @@ def test_tc_ev063_005_exchange_profile_not_stored_in_dissemination_handle(
         ),
         headers={"Content-Type": "application/json", "Authorization": "Bearer t"},
     )
-    assert preflight.status_code == 200, preflight.text
-    body = preflight.json()
-    handle = body["handle"]
-    assert handle
-    assert "GLOBAL_AFS" not in json.dumps(body)
-    stored = default_handle_store.get(handle, user_id="testclient")
-    assert stored is not None
-    assert "exchange_profile" not in stored.params
-    assert "GLOBAL_AFS" not in json.dumps(stored.params)
+    # FR-052..056 / M1: dissemination HTTP unmounted; bulletin packaging still works above.
+    assert preflight.status_code == 404, preflight.text
+    assert "GLOBAL_AFS" in (bulletin.json().get("exchange_profile") or "")

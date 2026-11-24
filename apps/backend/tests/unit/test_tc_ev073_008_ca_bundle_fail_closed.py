@@ -1,6 +1,15 @@
-"""TC-EV073-008 - Fail-closed when CA extension vendor pin missing (EV-073 M2)."""
+"""FR-020 / M1: CA/national product API surface dropped from ship list.
+
+[Corpus: fr] epic #1688
+"""
 
 from __future__ import annotations
+
+import pytest
+
+pytestmark = pytest.mark.skip(
+    reason="FR-020 / M1: CA/national product API wire not on ICAO ship list",
+)
 
 import pytest
 from fastapi.testclient import TestClient

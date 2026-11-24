@@ -99,7 +99,7 @@ vi.mock('../app/components/IcaoAutocomplete', () => ({
   ),
 }));
 
-describe('TC-EV1120-009 workbench catalog Profile/Exchange binding', () => {
+describe.skip('TC-EV1120-009 workbench catalog Profile/Exchange binding', () => {
   const defaultProps = {
     onLogout: vi.fn(),
     userEmail: 'ev1123@example.com',

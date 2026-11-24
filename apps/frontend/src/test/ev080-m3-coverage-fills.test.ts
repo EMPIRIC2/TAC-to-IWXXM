@@ -175,8 +175,9 @@ describe('EV-080 api.json catch fallbacks', () => {
     const request = fetchMock.mock.calls[0]?.[1] as { body?: FormData } | undefined;
     expect(request?.body).toBeInstanceOf(FormData);
     expect((request?.body as FormData).has('iwxxm_version')).toBe(false);
+    // M1: dropped national profiles coerce to ICAO_2025 library id.
     expect((request?.body as FormData).get('conversion_library_id')).toBe(
-      'LIB.CONVERSION.CA_ECCC',
+      'LIB.CONVERSION.ICAO_2025',
     );
     expect((request?.body as FormData).get('semantic_profile')).toBeNull();
   });
@@ -209,7 +210,7 @@ describe('EV-080 api.json catch fallbacks', () => {
     expect(request?.body).toBeInstanceOf(FormData);
     expect((request?.body as FormData).has('iwxxm_version')).toBe(false);
     expect((request?.body as FormData).get('conversion_library_id')).toBe(
-      'LIB.CONVERSION.CA_ECCC',
+      'LIB.CONVERSION.ICAO_2025',
     );
     expect((request?.body as FormData).get('semantic_profile')).toBeNull();
   });

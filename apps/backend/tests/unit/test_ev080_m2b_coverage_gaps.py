@@ -198,8 +198,8 @@ def test_dissemination_preflight_ok_false(convert_client: TestClient, monkeypatc
         content=b'{"sink_type":"sqlite","uri":"sqlite+aiosqlite:////tmp/x.db","ddl":false}',
         headers={"Content-Type": "application/json", "Authorization": "Bearer t"},
     )
-    assert resp.status_code == 200
-    assert not resp.json().get("handle")
+    # FR-052..056 / M1: dissemination HTTP unmounted.
+    assert resp.status_code == 404
 
 
 def test_dissemination_send_without_handle(
@@ -252,8 +252,9 @@ def test_dissemination_send_without_handle(
         ).encode(),
         headers={"Content-Type": "application/json", "Authorization": "Bearer t"},
     )
-    assert resp.status_code == 200
-    assert resp.json().get("ok") is True
+    # FR-052..056 / M1: dissemination HTTP unmounted.
+    assert resp.status_code == 404
+    del uri
 
 
 def test_airport_builder_override_source_and_validator(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:

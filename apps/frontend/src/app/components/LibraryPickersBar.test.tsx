@@ -1,5 +1,6 @@
 /**
  * LibraryPickersBar unit tests (TC-EVYCL / #1251).
+ * M1: ICAO-only display labels; guest fallbacks may still list LIB.* national ids.
  */
 
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
@@ -66,7 +67,7 @@ describe('LibraryPickersBar', () => {
       'ICAO / WMO Annex 3 (2025)',
     );
     expect(screen.getByTestId('tac-validation-library-select')).toHaveTextContent(
-      'United States (FAA/NWS)',
+      'ICAO / WMO Annex 3 (2025)',
     );
     expect(screen.getByTestId('decoding-library-select')).not.toHaveTextContent(
       'decoding ·',
@@ -119,8 +120,9 @@ describe('LibraryPickersBar', () => {
         ).map((opt) => opt.getAttribute('value')),
       ).toContain(defaultLibraryId('conversion', 'CA_ECCC'));
     });
+    // M1: CA_ECCC is not a SEMANTIC_PROFILE_OPTIONS label; API label is kept.
     expect(screen.getByTestId('conversion-library-select')).toHaveTextContent(
-      'Canada (ECCC)',
+      'conversion · CA_ECCC',
     );
     expect(screen.getByRole('option', { name: 'Kept custom' })).toBeInTheDocument();
     fireEvent.click(screen.getByTestId('conversion-library-catalog-link'));

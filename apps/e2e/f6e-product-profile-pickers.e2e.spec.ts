@@ -76,6 +76,10 @@ test.describe('H6 / T8.4: F6.e product + Conversion library pickers', () => {
 
     await page.locator('#param-product').selectOption('METAR');
     const conversionSelect = page.getByTestId('conversion-library-select');
+    // Opposite state: ICAO option is present; US_FAA_NWS can match only if national seeds return.
+    await expect(
+      conversionSelect.locator('option[value="LIB.CONVERSION.ICAO_2025"]'),
+    ).toBeVisible();
     await expect(
       conversionSelect.locator('option[value="LIB.CONVERSION.US_FAA_NWS"]'),
     ).toHaveCount(0);

@@ -40,7 +40,7 @@ def test_convert_forwards_product_and_profile(client: TestClient, monkeypatch: p
                 "METAR KJFK 121151Z 18008KT 10SM FEW250 22/14 A3012=",
             ),
             "product": (None, "METAR"),
-            "conversion_library_id": (None, "LIB.CONVERSION.US_FAA_NWS"),
+            "conversion_library_id": (None, "LIB.CONVERSION.ICAO_2025"),
             "iwxxm_version": (None, "2025-2"),
             "lint": (None, "false"),
         },
@@ -48,7 +48,7 @@ def test_convert_forwards_product_and_profile(client: TestClient, monkeypatch: p
     assert response.status_code == 200, response.text[:400]
     assert len(seen) >= 1
     assert seen[0].get("product") == "METAR"
-    assert seen[0].get("profile") == "iwxxm_us"
+    assert seen[0].get("profile") == "annex3"
 
 
 def test_convert_rejects_unknown_product(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:

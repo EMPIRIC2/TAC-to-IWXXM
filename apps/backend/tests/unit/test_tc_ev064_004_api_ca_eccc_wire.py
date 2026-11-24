@@ -1,9 +1,15 @@
-"""TC-EV064-004 - API CA_ECCC semantic profile wire (EV-064 M6).
+"""FR-020 / M1: CA/national product API surface dropped from ship list.
 
-Spec: docs/test-plan.md §TC-EV064-004; docs/api-contract.md §EV-063.
+[Corpus: fr] epic #1688
 """
 
 from __future__ import annotations
+
+import pytest
+
+pytestmark = pytest.mark.skip(
+    reason="FR-020 / M1: CA/national product API wire not on ICAO ship list",
+)
 
 from typing import ClassVar
 

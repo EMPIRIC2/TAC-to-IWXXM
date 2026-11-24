@@ -43,11 +43,11 @@ def test_convert_bulletin_forwards_product_and_profile(client: TestClient, monke
         files={
             "manual_text": (None, METAR_BULLETIN),
             "product": (None, "METAR"),
-            "profile": (None, "iwxxm_us"),
+            "profile": (None, "ICAO_2025"),
             "lint": (None, "false"),
         },
     )
     assert response.status_code == 200, response.text[:400]
     assert len(seen) >= 1
     assert seen[0].get("product") == "METAR"
-    assert seen[0].get("profile") == "iwxxm_us"
+    assert seen[0].get("profile") == "annex3"

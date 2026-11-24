@@ -165,7 +165,8 @@ def test_list_first_party_library_assets_projection() -> None:
         out = service._first_party_library_out(asset.id)
         assert out is not None
         items.append(out)
-    assert len(items) >= 5 * 2
+    # FR-019 / M1: first-party seeds are ICAO-only (5 kinds x 1 line).
+    assert len(items) == 5
     kinds = {i.kind for i in items}
     assert kinds == {
         "conversion",
@@ -207,7 +208,7 @@ def test_delete_first_party_library_forbidden() -> None:
     """AC4: cannot delete first-party defaults."""
     service = _svc()
     with pytest.raises(HTTPException) as exc:
-        service.delete_library_asset("LIB.DECODING.US_FAA_NWS")
+        service.delete_library_asset("LIB.DECODING.ICAO_2025")
     assert exc.value.status_code == 403
 
 

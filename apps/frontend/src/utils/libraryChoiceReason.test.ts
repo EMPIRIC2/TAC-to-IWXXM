@@ -16,15 +16,14 @@ describe('libraryChoiceReason', () => {
   });
 
   it('uses the country name for a known library and keeps a custom label', () => {
+    // FR-019 / M1: only ICAO remains on the semantic option list.
     expect(libraryDisplayName('LIB.DECODING.US_FAA_NWS')).toBe(
-      'United States (FAA/NWS)',
+      'LIB.DECODING.US_FAA_NWS',
     );
     expect(libraryDisplayName('LIB.TAC_VALIDATION.icao_2025')).toBe(
       'ICAO / WMO Annex 3 (2025)',
     );
-    expect(libraryDisplayName('LIB.CONVERSION.CA_ECCC', 'ignored')).toBe(
-      'Canada (ECCC)',
-    );
+    expect(libraryDisplayName('LIB.CONVERSION.CA_ECCC', 'ignored')).toBe('ignored');
     expect(libraryDisplayName('custom-asset', ' My overlay ')).toBe('My overlay');
     expect(libraryDisplayName('LIB.DECODING.NOT_A_LINE', '  ')).toBe(
       'LIB.DECODING.NOT_A_LINE',

@@ -27,6 +27,9 @@ export interface SoftPreviewControlProps {
 
 /**
  * Toggle soft-preview mode on convert requests when enabled.
+ *
+ * @example
+ * const softPreviewEnabled = false;
  */
 export function SoftPreviewControl({
   checked,

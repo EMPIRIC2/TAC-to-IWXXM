@@ -286,6 +286,9 @@ def test_tc_evbridge_008_convert_unknown_library_without_auth(
     assert "Unknown conversion library" in response.text
 
 
+@pytest.mark.skip(
+    reason="FR-052..056 / M1: dissemination send HTTP unmounted",
+)
 def test_tc_evbridge_008_send_applies_dissemination_library(
     client: TestClient,
     tmp_path: Path,
@@ -315,6 +318,9 @@ def test_tc_evbridge_008_send_applies_dissemination_library(
     assert send.json()["ok"] is True
 
 
+@pytest.mark.skip(
+    reason="FR-052..056 / M1: dissemination send HTTP unmounted",
+)
 def test_tc_evbridge_008_send_unknown_dissemination_library(
     client: TestClient,
     tmp_path: Path,
@@ -342,6 +348,9 @@ def test_tc_evbridge_008_send_unknown_dissemination_library(
     assert "Dissemination library" in send.text
 
 
+@pytest.mark.skip(
+    reason="FR-052..056 / M1: dissemination send HTTP unmounted",
+)
 def test_tc_evbridge_008_send_transform_value_error(
     client: TestClient,
     tmp_path: Path,
@@ -457,6 +466,9 @@ def test_tc_evbridge_008_convert_bulletin_custom_conversion(
     fake_svc.get_library_asset.assert_called()
 
 
+@pytest.mark.skip(
+    reason="FR-052..056 / M1: dissemination send HTTP unmounted",
+)
 def test_tc_evbridge_008_send_custom_dissemination_library(
     client: TestClient,
     tmp_path: Path,
@@ -799,6 +811,9 @@ def test_tc_evbridge_008_convert_bulletin_dissem_without_auth(
     assert "Unknown dissemination library" in response.text
 
 
+@pytest.mark.skip(
+    reason="FR-052..056 / M1: dissemination send HTTP unmounted",
+)
 def test_tc_evbridge_008_send_custom_dissem_without_auth(
     client: TestClient,
     tmp_path: Path,
@@ -834,6 +849,9 @@ def test_tc_evbridge_008_send_custom_dissem_without_auth(
     assert "Unknown dissemination library" in send.text
 
 
+@pytest.mark.skip(
+    reason="FR-052..056 / M1: dissemination send HTTP unmounted",
+)
 def test_tc_evbridge_008_send_custom_dissem_lookup_paths(
     client: TestClient,
     tmp_path: Path,

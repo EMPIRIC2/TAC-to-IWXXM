@@ -1,5 +1,7 @@
 /**
  * Tests for profileLibraryReset (TC-EVYCL-004 / #1251 T3.1).
+ *
+ * FR-019 / M1: product ship list is ICAO-only; helpers still accept line ids.
  */
 
 import { describe, expect, it, vi } from 'vitest';
@@ -14,48 +16,51 @@ import {
 
 describe('profileLibraryReset', () => {
   it('detects national line changes', () => {
-    expect(isSemanticProfileLineChange('ICAO_2025', 'US_FAA_NWS')).toBe(true);
+    // FR-019 / M1: dropped nationals coerce to ICAO_2025, so this is not a line change.
+    expect(isSemanticProfileLineChange('ICAO_2025', 'US_FAA_NWS')).toBe(false);
     expect(isSemanticProfileLineChange('ICAO_2025', 'ICAO_2025')).toBe(false);
     expect(isSemanticProfileLineChange('US_FAA_NWS', 'us_faa_nws')).toBe(false);
+    // Legacy annex3 alias stays distinct from canonical ICAO_2025 in the select.
+    expect(isSemanticProfileLineChange('annex3', 'ICAO_2025')).toBe(true);
   });
 
   it('builds library ids for the target profile', () => {
-    const { profile, libraryIds } = libraryResetForProfile('US_FAA_NWS');
-    expect(profile).toBe('US_FAA_NWS');
+    const { profile, libraryIds } = libraryResetForProfile('ICAO_2025');
+    expect(profile).toBe('ICAO_2025');
     expect(libraryIds.conversionLibraryId).toBe(
-      defaultLibraryId('conversion', 'US_FAA_NWS'),
+      defaultLibraryId('conversion', 'ICAO_2025'),
     );
     expect(libraryIds.decodingLibraryId).toBe(
-      defaultLibraryId('decoding', 'US_FAA_NWS'),
+      defaultLibraryId('decoding', 'ICAO_2025'),
     );
     expect(libraryIds.tacValidationLibraryId).toBe(
-      defaultLibraryId('tac_validation', 'US_FAA_NWS'),
+      defaultLibraryId('tac_validation', 'ICAO_2025'),
     );
     expect(libraryIds.iwxxmValidationLibraryId).toBe(
-      defaultLibraryId('iwxxm_validation', 'US_FAA_NWS'),
+      defaultLibraryId('iwxxm_validation', 'ICAO_2025'),
     );
   });
 
   it('reads camelCase and snake_case library ids from session params', () => {
     expect(
       libraryIdsFromSessionParams({
-        conversionLibraryId: ' LIB.CONVERSION.US_FAA_NWS ',
-        tac_validation_library_id: 'LIB.TAC_VALIDATION.CA_ECCC',
+        conversionLibraryId: ' LIB.CONVERSION.ICAO_2025 ',
+        tac_validation_library_id: 'LIB.TAC_VALIDATION.ICAO_2025',
         decodingLibraryId: '   ',
         iwxxmValidationLibraryId: 12,
       }),
     ).toEqual({
-      conversionLibraryId: 'LIB.CONVERSION.US_FAA_NWS',
-      tacValidationLibraryId: 'LIB.TAC_VALIDATION.CA_ECCC',
+      conversionLibraryId: 'LIB.CONVERSION.ICAO_2025',
+      tacValidationLibraryId: 'LIB.TAC_VALIDATION.ICAO_2025',
     });
   });
 
   it('matches a country preset only when the four libraries agree', () => {
-    const unitedStates = libraryResetForProfile('US_FAA_NWS').libraryIds;
-    expect(countryPresetLineForLibraries(unitedStates)).toBe('US_FAA_NWS');
+    const icao = libraryResetForProfile('ICAO_2025').libraryIds;
+    expect(countryPresetLineForLibraries(icao)).toBe('ICAO_2025');
     expect(
       countryPresetLineForLibraries({
-        ...unitedStates,
+        ...icao,
         tacValidationLibraryId: defaultLibraryId('tac_validation', 'CA_ECCC'),
       }),
     ).toBe('');
@@ -71,8 +76,8 @@ describe('profileLibraryReset', () => {
 
   it('confirm helper uses injectable confirm', () => {
     const confirmFn = vi.fn().mockReturnValue(true);
-    expect(confirmLibraryResetForProfile('CA_ECCC', confirmFn)).toBe(true);
-    expect(confirmFn).toHaveBeenCalledWith(expect.stringContaining('CA_ECCC'));
+    expect(confirmLibraryResetForProfile('ICAO_2025', confirmFn)).toBe(true);
+    expect(confirmFn).toHaveBeenCalledWith(expect.stringContaining('ICAO_2025'));
     expect(confirmFn.mock.calls[0]![0]).toMatch(/reset/i);
     expect(confirmFn.mock.calls[0]![0]).not.toMatch(/ADR|Corpus|EV-|TC-/i);
   });

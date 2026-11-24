@@ -185,9 +185,8 @@ describe('FileConverter F5 workflow', () => {
     );
 
     expect(screen.getByTestId('convert-button')).toBeDisabled();
-    // EV-091: Convert&Send is visible again when destinations are enabled, but still
-    // disabled for finished / read-only sessions (F5-R35).
-    expect(screen.getByTestId('convert-and-send-button')).toBeDisabled();
+    // M1: Convert&Send / dissemination controls are hidden when destinations UI is off.
+    expect(screen.queryByTestId('convert-and-send-button')).not.toBeInTheDocument();
     expect(screen.getByText(/read-only/i)).toBeInTheDocument();
   });
 
@@ -231,15 +230,11 @@ describe('FileConverter F5 workflow', () => {
     };
 
     const convertBtn = screen.getByTestId('convert-button');
-    const convertSendBtn = screen.getByTestId('convert-and-send-button');
     convertBtn.removeAttribute('disabled');
-    convertSendBtn.removeAttribute('disabled');
-
     invokeReactClick(convertBtn);
-    invokeReactClick(convertSendBtn);
 
     expect(mockConvert).not.toHaveBeenCalled();
-    expect(mockUpload).not.toHaveBeenCalled();
+    expect(screen.queryByTestId('convert-and-send-button')).not.toBeInTheDocument();
   });
 
   it('starts a new METAR draft from the toolbar', async () => {

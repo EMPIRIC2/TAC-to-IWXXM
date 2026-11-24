@@ -1,8 +1,10 @@
 /**
  * T3.1 / TC-EV060-1002 (browser unit): Conversion library labeled at converter top.
  *
+ * M1: selecting a national LIB id does not change semantic profile (coerces to ICAO_2025).
+ *
  * Spec: docs/test-plan.md TC-EV060-1002-001..003; UJ-061;
- * [Corpus: product §F7] [Corpus: tests].
+ * [Corpus: product §F7] [Corpus: tests] [Corpus: fr]
  */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -66,11 +68,7 @@ vi.mock('/utils/api', () => ({
       kind,
       options: [],
     })),
-  fetchSchemaStatus: vi.fn().mockResolvedValue({
-    profile_pins: {
-      ca_eccc: { extension_bundle_available: true, iwxxm_version: '3.0.0' },
-    },
-  }),
+  fetchSchemaStatus: vi.fn().mockResolvedValue({ profile_pins: {} }),
   lintTac: vi.fn().mockResolvedValue({
     ok: true,
     issues: [],
@@ -217,11 +215,12 @@ describe('T3.1 / TC-EV060-1002: Conversion library at converter top', () => {
     expect(mockConvertMetarToIwxxm).toHaveBeenCalledWith(
       expect.objectContaining({
         conversionLibraryId: defaultLibraryId('conversion', 'US_FAA_NWS'),
+        profile: 'ICAO_2025',
       }),
     );
   });
 
-  it('sends selected profile on Validate IWXXM after Conversion library change (TC-EV060-1002-001)', async () => {
+  it('keeps ICAO_2025 on Validate IWXXM after Conversion library change (TC-EV060-1002-001)', async () => {
     const user = userEvent.setup();
     render(<FileConverter {...defaultProps} />);
     await user.click(screen.getByTestId('convert-settings-cog'));
@@ -242,7 +241,7 @@ describe('T3.1 / TC-EV060-1002: Conversion library at converter top', () => {
     });
     expect(mockValidateIwxxm).toHaveBeenCalledWith(
       expect.objectContaining({
-        profile: 'US_FAA_NWS',
+        profile: 'ICAO_2025',
         xmlContent: XML_SAMPLE,
       }),
     );

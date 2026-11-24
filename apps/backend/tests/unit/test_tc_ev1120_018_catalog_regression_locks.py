@@ -73,6 +73,9 @@ def test_tc_ev1120_018_icao_excludes_national_only_demo_codes(client: TestClient
     assert icao.isdisjoint(_CA_NATIONAL_ONLY)
 
 
+@pytest.mark.skip(
+    reason="FR-019..022 / M1: national semantic profiles not on product ship list",
+)
 def test_tc_ev1120_018_us_profile_includes_us_national_only(client: TestClient) -> None:
     """US_FAA_NWS returns shared union US national-only; CA-only stays hidden."""
     payload = client.get(
@@ -85,6 +88,9 @@ def test_tc_ev1120_018_us_profile_includes_us_national_only(client: TestClient) 
     assert us.isdisjoint(_CA_NATIONAL_ONLY)
 
 
+@pytest.mark.skip(
+    reason="FR-019..022 / M1: national semantic profiles not on product ship list",
+)
 def test_tc_ev1120_018_ca_profile_includes_ca_national_only(client: TestClient) -> None:
     """CA_ECCC returns shared union CA national-only; US-only stays hidden."""
     payload = client.get(
@@ -97,6 +103,9 @@ def test_tc_ev1120_018_ca_profile_includes_ca_national_only(client: TestClient) 
     assert ca.isdisjoint(_US_NATIONAL_ONLY)
 
 
+@pytest.mark.skip(
+    reason="FR-019..022 / M1: national semantic profiles not on product ship list",
+)
 def test_tc_ev1120_018_mined_rows_keep_https_provenance(client: TestClient) -> None:
     """Mined deepen codes keep public https provenance (no planning-token attribution)."""
     required = {

@@ -97,6 +97,7 @@ def test_us_conversion_library_forwards_emit_key(
     client: TestClient,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
+    """FR-019 / M1: US library is not on the product ship list (fail closed)."""
     seen: list[dict] = []
 
     def fake_convert(tac: str, **kwargs):
@@ -109,9 +110,17 @@ def test_us_conversion_library_forwards_emit_key(
         "/api/v1/convert",
         files=_convert_files(conversion_library_id=(None, "LIB.CONVERSION.US_FAA_NWS")),
     )
-    assert response.status_code == 200, response.text[:400]
+    assert response.status_code in {400, 422}, response.text[:400]
+    assert "US_FAA_NWS" in response.text
+    assert not seen
+
+    icao = client.post(
+        "/api/v1/convert",
+        files=_convert_files(conversion_library_id=(None, "LIB.CONVERSION.ICAO_2025")),
+    )
+    assert icao.status_code == 200, icao.text[:400]
     assert seen
-    assert seen[0].get("profile") == "iwxxm_us"
+    assert seen[0].get("profile") == "annex3"
 
 
 def test_tc_ev063_003_unknown_semantic_profile_on_validate(client: TestClient) -> None:

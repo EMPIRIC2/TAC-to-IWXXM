@@ -41,7 +41,7 @@ def _convert(client: TestClient, tac: str) -> dict:
         files={
             "manual_text": (None, tac),
             "product": (None, "SIGMET"),
-            "conversion_library_id": (None, "LIB.CONVERSION.US_FAA_NWS"),
+            "conversion_library_id": (None, "LIB.CONVERSION.ICAO_2025"),
             "iwxxm_version": (None, "2025-2"),
             "lint": (None, "false"),
         },
@@ -70,7 +70,7 @@ def test_e2e_health_then_srq_convert_and_unknown_vor(client: TestClient) -> None
         files={
             "manual_text": (None, SRQ_TAC.replace("FROM SRQ", "FROM ZZZ")),
             "product": (None, "SIGMET"),
-            "conversion_library_id": (None, "LIB.CONVERSION.US_FAA_NWS"),
+            "conversion_library_id": (None, "LIB.CONVERSION.ICAO_2025"),
             "iwxxm_version": (None, "2025-2"),
             "lint": (None, "false"),
         },
