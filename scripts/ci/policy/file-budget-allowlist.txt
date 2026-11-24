@@ -35,7 +35,6 @@ apps/backend/tests/unit/test_api_processing_branches_unit.py  # 1429
 apps/backend/tests/unit/test_codelist_parser_unit.py  # 559
 apps/backend/tests/unit/test_conversion_profiles_router.py  # 601
 apps/backend/tests/unit/test_conversion_profiles_service.py  # 1512
-apps/backend/tests/unit/test_dissemination_api.py  # 532
 apps/backend/tests/unit/test_ev080_m2b_coverage_gaps.py  # 1710
 apps/backend/tests/unit/test_evaluation_router_unit.py  # 627
 apps/backend/tests/unit/test_live_map_refresh.py  # 529

@@ -1,10 +1,10 @@
 /**
- * TC-EV1120-009 — workbench Validation Issues Catalog follows Profile + packaging Exchange.
+ * TC-EV1120-009 — workbench Validation Issues Catalog after M1 drops.
  *
- * AC (#1123): Changing Profile refetches catalog; Exchange filter applies when Disseminate
- * packaging UI exposes Exchange. Complements hook unit tests and Rule catalogs page filters.
+ * Changing Conversion library to a national LIB id does not change semantic_profile
+ * (ICAO-only coerce). Dissemination packaging UI is off by default.
  *
- * [Corpus: tests] [Corpus: product §F15] [Corpus: journeys UJ-073]
+ * [Corpus: tests] [Corpus: product §F15] [Corpus: fr]
  */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -41,11 +41,7 @@ vi.mock('/utils/api', () => ({
       kind,
       options: [],
     })),
-  fetchSchemaStatus: vi.fn().mockResolvedValue({
-    profile_pins: {
-      ca_eccc: { extension_bundle_available: true, iwxxm_version: '3.0.0' },
-    },
-  }),
+  fetchSchemaStatus: vi.fn().mockResolvedValue({ profile_pins: {} }),
   lintTac: vi.fn().mockResolvedValue({ ok: true, issues: [], fixes: [] }),
   decodeTac: vi
     .fn()
@@ -114,7 +110,7 @@ describe('TC-EV1120-009 workbench catalog Profile/Exchange binding', () => {
     vi.spyOn(window, 'confirm').mockReturnValue(true);
   });
 
-  it('refetches lint catalog when Conversion Profile (library) changes', async () => {
+  it('keeps ICAO_2025 catalog binding when Conversion library changes to national LIB id', async () => {
     const user = userEvent.setup();
     render(<FileConverter {...defaultProps} />);
 
@@ -127,56 +123,41 @@ describe('TC-EV1120-009 workbench catalog Profile/Exchange binding', () => {
       );
     });
 
+    const callsBefore = fetchLintIssueCatalog.mock.calls.length;
     await user.selectOptions(
       screen.getByTestId('conversion-library-select'),
       defaultLibraryId('conversion', 'US_FAA_NWS'),
     );
 
+    // M1: US coerces to ICAO_2025 — catalog profile filter does not switch to US_FAA_NWS.
     await waitFor(() => {
-      expect(fetchLintIssueCatalog).toHaveBeenCalledWith(
-        expect.objectContaining({
-          semantic_profile: 'US_FAA_NWS',
-        }),
+      expect(screen.getByTestId('conversion-library-select')).toHaveValue(
+        defaultLibraryId('conversion', 'US_FAA_NWS'),
       );
     });
+    const usProfileCalls = fetchLintIssueCatalog.mock.calls.filter(
+      (call) => call[0]?.semantic_profile === 'US_FAA_NWS',
+    );
+    expect(usProfileCalls).toHaveLength(0);
+    expect(fetchLintIssueCatalog.mock.calls.length).toBeGreaterThanOrEqual(callsBefore);
+    expect(fetchLintIssueCatalog).toHaveBeenCalledWith(
+      expect.objectContaining({
+        semantic_profile: 'ICAO_2025',
+      }),
+    );
   });
 
-  it('applies Disseminate Exchange control to catalog while packaging UI is open', async () => {
-    const user = userEvent.setup();
+  it('does not expose Disseminate Exchange packaging controls by default', async () => {
     render(<FileConverter {...defaultProps} />);
 
     await waitFor(() => {
       expect(fetchLintIssueCatalog).toHaveBeenCalled();
     });
-    fetchLintIssueCatalog.mockClear();
 
-    await user.click(screen.getByTestId('open-dissemination-drawer'));
-    expect(await screen.findByTestId('dissemination-drawer')).toBeInTheDocument();
-
-    await user.selectOptions(
-      screen.getByTestId('dissemination-exchange-profile'),
-      'EUR_RODEX',
-    );
-
-    await waitFor(() => {
-      expect(fetchLintIssueCatalog).toHaveBeenCalledWith(
-        expect.objectContaining({
-          exchange_profile: 'EUR_RODEX',
-        }),
-      );
-    });
-
-    fetchLintIssueCatalog.mockClear();
-    await user.click(screen.getByTestId('dissemination-drawer-close'));
-    await waitFor(() => {
-      expect(screen.queryByTestId('dissemination-drawer')).not.toBeInTheDocument();
-    });
-    await waitFor(() => {
-      expect(fetchLintIssueCatalog).toHaveBeenCalledWith(
-        expect.objectContaining({
-          exchange_profile: 'GLOBAL_AFS',
-        }),
-      );
-    });
+    expect(screen.queryByTestId('open-dissemination-drawer')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('dissemination-drawer')).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId('dissemination-exchange-profile'),
+    ).not.toBeInTheDocument();
   });
 });

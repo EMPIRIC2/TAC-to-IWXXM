@@ -90,8 +90,7 @@ def test_bug_2026_09_05_profile_catalog_stays_available_without_storage(
     assert response.status_code == 200
     body = response.json()
     ids = {profile["id"] for profile in body["profiles"]}
-    assert "ICAO_2025" in ids
-    assert "US_FAA_NWS" in ids
+    assert ids == {"ICAO_2025"}
 
     by_id = {profile["id"]: profile for profile in body["profiles"]}
     assert by_id["ICAO_2025"]["rule_pack_count"] is None
@@ -109,7 +108,6 @@ def test_bug_2026_09_05_profile_catalog_uses_zero_for_missing_profile_counts(
     assert response.status_code == 200
     body = response.json()
     by_id = {profile["id"]: profile for profile in body["profiles"]}
+    assert set(by_id) == {"ICAO_2025"}
     assert by_id["ICAO_2025"]["rule_pack_count"] == 1
     assert by_id["ICAO_2025"]["overlay_count"] == 1
-    assert by_id["US_FAA_NWS"]["rule_pack_count"] == 0
-    assert by_id["US_FAA_NWS"]["overlay_count"] == 0

@@ -1,14 +1,16 @@
 /**
- * TC-EV073-006..008 — CA_ECCC Conversion library wire: extensions, metadata, vendor pin.
+ * TC-EV073-006..008 — CA_ECCC wire paths after M1 ICAO-only drop.
  *
- * Spec: docs/test-plan.md §TC-EV073-006..008; #1042.
+ * Selecting a CA LIB id no longer auto-wires IWXXM_CA, exchange output, CA metadata,
+ * or extension-bundle convert blocks. Profile coerces to ICAO_2025.
+ *
+ * Spec: docs/test-plan.md §TC-EV073-006..008; FR-019 / M1. [Corpus: fr]
  */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { FileConverter } from '../app/components/FileConverter';
-import { CA_ECCC_NATIONAL_EXTENSION } from '@/utils/profileWire';
 import { defaultLibraryId } from '../utils/libraryIds';
 
 const mockConvertMetarToIwxxm = vi.hoisted(() =>
@@ -16,7 +18,7 @@ const mockConvertMetarToIwxxm = vi.hoisted(() =>
     results: [
       {
         name: 'manual_input.txt',
-        content: '<collect:MeteorologicalBulletin/>',
+        content: '<iwxxm:METAR xmlns:iwxxm="http://icao.int/iwxxm/2025-2"/>',
         source: 'manual_input',
         size_bytes: 48,
       },
@@ -38,7 +40,7 @@ const mockFetchSchemaStatus = vi.hoisted(() =>
     profile_pins: {
       ca_eccc: {
         iwxxm_version: '3.0.0',
-        extension_bundle_available: true,
+        extension_bundle_available: false,
       },
     },
   }),
@@ -110,6 +112,7 @@ vi.mock('../app/components/IcaoAutocomplete', () => ({
 }));
 
 const CA_TAC = 'METAR CYUL 231800Z 24010KT 9999 FEW240 22/12 A3012=';
+const CA_CONVERSION = defaultLibraryId('conversion', 'CA_ECCC');
 
 beforeEach(() => {
   vi.stubGlobal(
@@ -117,9 +120,8 @@ beforeEach(() => {
     vi.fn(() => true),
   );
 });
-const CA_CONVERSION = defaultLibraryId('conversion', 'CA_ECCC');
 
-describe('TC-EV073-006..008: CA_ECCC Conversion library wiring', () => {
+describe('TC-EV073-006..008: CA_ECCC Conversion library wiring (M1 ICAO-only)', () => {
   const defaultProps = {
     onLogout: vi.fn(),
     userEmail: 'ca@example.com',
@@ -134,13 +136,13 @@ describe('TC-EV073-006..008: CA_ECCC Conversion library wiring', () => {
       profile_pins: {
         ca_eccc: {
           iwxxm_version: '3.0.0',
-          extension_bundle_available: true,
+          extension_bundle_available: false,
         },
       },
     });
   });
 
-  it('TC-EV073-006 sends IWXXM_CA extension and exchange output on convert', async () => {
+  it('TC-EV073-006 does not send IWXXM_CA or exchange output on convert', async () => {
     const user = userEvent.setup();
     render(<FileConverter {...defaultProps} />);
     fireEvent.click(screen.getByTestId('live-iwxxm-toggle'));
@@ -160,13 +162,14 @@ describe('TC-EV073-006..008: CA_ECCC Conversion library wiring', () => {
     expect(mockConvertMetarToIwxxm).toHaveBeenCalledWith(
       expect.objectContaining({
         conversionLibraryId: CA_CONVERSION,
-        extensions: [CA_ECCC_NATIONAL_EXTENSION],
-        exchangeOutput: true,
+        profile: 'ICAO_2025',
+        extensions: [],
+        exchangeOutput: false,
       }),
     );
   });
 
-  it('TC-EV073-006 sends IWXXM_CA on validate-only path', async () => {
+  it('TC-EV073-006 validate-only path uses ICAO_2025 without IWXXM_CA', async () => {
     const user = userEvent.setup();
     render(<FileConverter {...defaultProps} />);
 
@@ -176,7 +179,7 @@ describe('TC-EV073-006..008: CA_ECCC Conversion library wiring', () => {
     );
     await user.click(screen.getByTestId('input-mode-validate_iwxxm'));
     fireEvent.change(screen.getByTestId('tac-editor'), {
-      target: { value: '<iwxxm:METAR xmlns:iwxxm="http://icao.int/iwxxm/3.0"/>' },
+      target: { value: '<iwxxm:METAR xmlns:iwxxm="http://icao.int/iwxxm/2025-2"/>' },
     });
     await user.click(screen.getByRole('button', { name: /validate iwxxm xml/i }));
 
@@ -185,13 +188,13 @@ describe('TC-EV073-006..008: CA_ECCC Conversion library wiring', () => {
     });
     expect(mockValidateIwxxm).toHaveBeenCalledWith(
       expect.objectContaining({
-        profile: 'CA_ECCC',
-        extensions: [CA_ECCC_NATIONAL_EXTENSION],
+        profile: 'ICAO_2025',
+        extensions: [],
       }),
     );
   });
 
-  it('TC-EV073-007 surfaces operator profile metadata when CA_ECCC selected', async () => {
+  it('TC-EV073-007 does not surface CA_ECCC operator profile metadata', async () => {
     const user = userEvent.setup();
     render(<FileConverter {...defaultProps} />);
 
@@ -200,49 +203,10 @@ describe('TC-EV073-006..008: CA_ECCC Conversion library wiring', () => {
       CA_CONVERSION,
     );
 
-    const panel = screen.getByTestId('ca-eccc-profile-metadata');
-    expect(panel).toHaveTextContent('3.0.0');
-    expect(panel).toHaveTextContent('Canadian national IWXXM extensions');
-    expect(panel).toHaveTextContent('METAR');
-    expect(panel).toHaveTextContent('AIRMET');
-    expect(panel.textContent).not.toMatch(/EV-|TC-|ADR-/);
+    expect(screen.queryByTestId('ca-eccc-profile-metadata')).not.toBeInTheDocument();
   });
 
-  it('TC-EV073-008 blocks convert when extension bundle unavailable', async () => {
-    mockFetchSchemaStatus.mockResolvedValue({
-      profile_pins: {
-        ca_eccc: {
-          iwxxm_version: '3.0.0',
-          extension_bundle_available: false,
-        },
-      },
-    });
-
-    const user = userEvent.setup();
-    render(<FileConverter {...defaultProps} />);
-
-    await waitFor(() => {
-      expect(mockFetchSchemaStatus).toHaveBeenCalled();
-    });
-
-    await user.selectOptions(
-      screen.getByTestId('conversion-library-select'),
-      CA_CONVERSION,
-    );
-    fireEvent.change(screen.getByLabelText(/enter metar data manually/i), {
-      target: { value: CA_TAC },
-    });
-
-    const convertButton = screen.getByTestId('convert-button');
-    expect(convertButton).toBeDisabled();
-    expect(screen.getByTestId('ca-eccc-profile-metadata')).toHaveTextContent(
-      'Conversion is blocked',
-    );
-  });
-
-  it('TC-EV073-008 allows convert when schema-status fetch fails (fail-open)', async () => {
-    mockFetchSchemaStatus.mockRejectedValue(new Error('network'));
-
+  it('TC-EV073-008 does not block convert when CA extension bundle unavailable', async () => {
     const user = userEvent.setup();
     render(<FileConverter {...defaultProps} />);
 
@@ -259,26 +223,6 @@ describe('TC-EV073-006..008: CA_ECCC Conversion library wiring', () => {
     });
 
     expect(screen.getByTestId('convert-button')).not.toBeDisabled();
-  });
-
-  it('ignores late schema-status response after unmount', async () => {
-    let resolveStatus: (value: unknown) => void = () => undefined;
-    mockFetchSchemaStatus.mockImplementation(
-      () =>
-        new Promise((resolve) => {
-          resolveStatus = resolve;
-        }),
-    );
-
-    const { unmount } = render(<FileConverter {...defaultProps} />);
-    unmount();
-
-    resolveStatus({
-      profile_pins: {
-        ca_eccc: { extension_bundle_available: false, iwxxm_version: '3.0.0' },
-      },
-    });
-
-    await Promise.resolve();
+    expect(screen.queryByTestId('ca-eccc-profile-metadata')).not.toBeInTheDocument();
   });
 });

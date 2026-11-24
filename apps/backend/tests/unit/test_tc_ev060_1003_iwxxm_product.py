@@ -7,7 +7,6 @@ Spec: docs/test-plan.md TC-EV060-1003-001..002; [Corpus: api] [Corpus: tests]
 from __future__ import annotations
 
 from pathlib import Path
-from types import SimpleNamespace
 
 import pytest
 from fastapi.testclient import TestClient
@@ -215,79 +214,10 @@ def test_tc_ev060_1003_openapi_product_describes_iwxxm() -> None:
     assert "iwxxm" in bulletin_body["properties"]["product"]["description"].lower()
 
 
-def test_tc_ev908_iwxxm_product_migrates_between_supported_lines(
-    client: TestClient, monkeypatch: pytest.MonkeyPatch
+def test_tc_ev908_iwxxm_product_rejects_version_mismatch_no_migrate(
+    client: TestClient,
 ) -> None:
-    """IWXXM upload can migrate to a requested supported target version."""
-    validate_calls: list[dict[str, str]] = []
-
-    def fake_validate(xml_payload: str, **kwargs):
-        validate_calls.append(
-            {
-                "xml": xml_payload,
-                "iwxxm_version": str(kwargs.get("iwxxm_version")),
-                "output_policy_id": str(kwargs.get("output_policy_id")),
-            }
-        )
-        return type("Report", (), {"ok": True, "issues": []})()
-
-    monkeypatch.setattr(conversion_router.api_surface, "_call_iwxxm_validate", fake_validate)
-
-    response = _multipart(
-        client,
-        "/api/v1/convert",
-        {
-            "manual_text": IWXXM_2023_1_SAMPLE,
-            "product": "iwxxm",
-            "iwxxm_version": "2025-2",
-            "validate_output": "false",
-        },
-    )
-
-    assert response.status_code == 200, response.text[:500]
-    payload = response.json()
-    content = payload["results"][0]["content"]
-    assert "http://icao.int/iwxxm/2025-2" in content
-    assert "https://schemas.wmo.int/iwxxm/2025-2/iwxxm.xsd" in content
-    assert "runwayState" not in content
-    assert payload["metadata"]["pass_through"] is True
-    assert payload["metadata"]["source_iwxxm_version"] == "2023-1"
-    assert payload["metadata"]["target_iwxxm_version"] == "2025-2"
-    assert payload["metadata"]["migrated_iwxxm"] is True
-    assert validate_calls
-    assert validate_calls[0]["iwxxm_version"] == "2025-2"
-    assert validate_calls[0]["output_policy_id"] == "annex3-iwxxm-output"
-    assert "http://icao.int/iwxxm/2025-2" in validate_calls[0]["xml"]
-
-
-def test_tc_ev908_iwxxm_product_migration_fails_closed_on_invalid_output(
-    client: TestClient, monkeypatch: pytest.MonkeyPatch
-) -> None:
-    """Migrated IWXXM must validate cleanly before convert returns success."""
-
-    def fake_validate(_xml_payload: str, **_kwargs):
-        return type(
-            "Report",
-            (),
-            {
-                "ok": False,
-                "issues": [
-                    type(
-                        "Issue",
-                        (),
-                        {
-                            "message": "schema mismatch after migration",
-                            "code": "IWXXM_SCHEMA",
-                            "location": "line 1",
-                            "layer": "xsd",
-                        },
-                    )()
-                ],
-            },
-        )()
-
-    monkeypatch.setattr(conversion_router.api_surface, "_call_iwxxm_validate", fake_validate)
-
+    """FR-017 / DI-001: version mismatch rejects; no automatic migration."""
     response = _multipart(
         client,
         "/api/v1/convert",
@@ -301,9 +231,38 @@ def test_tc_ev908_iwxxm_product_migration_fails_closed_on_invalid_output(
 
     assert response.status_code == 400, response.text[:500]
     detail = response.json()["detail"]
-    assert detail["message"] == "Migrated IWXXM did not validate for the requested target version"
-    assert detail["issues"][0]["code"] == "IWXXM_SCHEMA"
-    assert detail["issues"][0]["severity"] == "error"
+    assert detail["message"] == "IWXXM version migration is not supported"
+    assert detail["issues"][0]["code"] == "UNSUPPORTED_IWXXM_MIGRATION"
+    assert "2023-1" in detail["issues"][0]["message"]
+    assert "2025-2" in detail["issues"][0]["message"]
+
+
+def test_tc_ev908_iwxxm_product_same_version_pass_through(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
+    """Matching pin still passes through without migration."""
+
+    def fake_validate(xml_payload: str, **kwargs):
+        return type("Report", (), {"ok": True, "issues": []})()
+
+    monkeypatch.setattr(conversion_router.api_surface, "_call_iwxxm_validate", fake_validate)
+
+    response = _multipart(
+        client,
+        "/api/v1/convert",
+        {
+            "manual_text": IWXXM_2025_2_SAMPLE,
+            "product": "iwxxm",
+            "iwxxm_version": "2025-2",
+            "validate_output": "false",
+        },
+    )
+
+    assert response.status_code == 200, response.text[:500]
+    payload = response.json()
+    assert payload["metadata"]["pass_through"] is True
+    assert payload["metadata"]["source_iwxxm_version"] == "2025-2"
+    assert payload["metadata"]["target_iwxxm_version"] == "2025-2"
+    assert payload["metadata"]["migrated_iwxxm"] is False
+    assert "http://icao.int/iwxxm/2025-2" in payload["results"][0]["content"]
 
 
 def test_tc_ev908_iwxxm_product_rejects_unknown_source_namespace(client: TestClient) -> None:
@@ -337,60 +296,7 @@ def test_tc_ev908_003_reverse_migration_fails_closed(client: TestClient) -> None
 
     assert response.status_code == 400, response.text[:500]
     detail = response.json()["detail"]
-    assert detail["message"] == "Unsupported IWXXM version migration"
+    assert detail["message"] == "IWXXM version migration is not supported"
     assert detail["issues"][0]["code"] == "UNSUPPORTED_IWXXM_MIGRATION"
     assert "2025-2" in detail["issues"][0]["message"]
     assert "2023-1" in detail["issues"][0]["message"]
-
-
-def test_tc_ev908_iwxxm_product_migration_validate_exception_fails_closed(
-    client: TestClient, monkeypatch: pytest.MonkeyPatch
-) -> None:
-    def boom(_xml_payload: str, **_kwargs):
-        raise RuntimeError("validator unavailable")
-
-    monkeypatch.setattr(conversion_router.api_surface, "_call_iwxxm_validate", boom)
-
-    response = _multipart(
-        client,
-        "/api/v1/convert",
-        {
-            "manual_text": IWXXM_2023_1_SAMPLE,
-            "product": "iwxxm",
-            "iwxxm_version": "2025-2",
-            "validation_level": "schematron",
-        },
-    )
-
-    assert response.status_code == 400, response.text[:500]
-    detail = response.json()["detail"]
-    assert detail["message"] == "Migrated IWXXM validation could not complete"
-
-
-def test_tc_ev060_1003_migrated_iwxxm_validation_failure_fails_closed(
-    client: TestClient, monkeypatch: pytest.MonkeyPatch
-) -> None:
-    monkeypatch.setattr(
-        api_module,
-        "_call_iwxxm_validate",
-        lambda *_a, **_k: SimpleNamespace(
-            ok=False,
-            issues=[SimpleNamespace(message="schema fail", code="IWXXM_SCHEMA", layer="xsd", location="/")],
-        ),
-    )
-
-    response = _multipart(
-        client,
-        "/api/v1/convert",
-        {
-            "manual_text": IWXXM_2023_1_SAMPLE,
-            "product": "iwxxm",
-            "iwxxm_version": "2025-2",
-            "validate_output": "true",
-        },
-    )
-
-    assert response.status_code == 400, response.text[:500]
-    detail = response.json()["detail"]
-    assert detail["message"] == "Migrated IWXXM did not validate for the requested target version"
-    assert detail["issues"][0]["code"] == "IWXXM_SCHEMA"

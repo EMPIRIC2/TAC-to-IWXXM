@@ -6,10 +6,11 @@
  * FileConverter currently hardcodes both to "not run".
  */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { FileConverter } from '../app/components/FileConverter';
+import { softPreviewUiConfig } from '@/utils/softPreviewUi';
 
 const mockConvertMetarToIwxxm = vi.hoisted(() =>
   vi.fn().mockResolvedValue({
@@ -122,6 +123,7 @@ async function openExpandedParameters(
 describe('QG-iwxxm-schematron-not-run: Console schema/Schematron pills', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    softPreviewUiConfig.enabled = true;
     localStorage.clear();
     sessionStorage.clear();
     sessionStorage.setItem(
@@ -134,6 +136,10 @@ describe('QG-iwxxm-schematron-not-run: Console schema/Schematron pills', () => {
         conversionParams: {},
       }),
     );
+  });
+
+  afterEach(() => {
+    softPreviewUiConfig.enabled = false;
   });
 
   it('soft-preview Convert leaves schema/Schematron idle (validate_output off)', async () => {

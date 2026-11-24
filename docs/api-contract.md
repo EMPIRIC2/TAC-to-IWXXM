@@ -164,13 +164,11 @@ the same public convert path. Work history: guest → IndexedDB. logged-in → s
   do **not** run TAC→IWXXM. they lint XML (well-formed / COLLECT vs report) and may run IWXXM validation
   validate. TAC text → structured not-XML error (not METAR lint). `/lint-tac` with
   `product=iwxxm` uses XML lint rules, not TAC product syntax. `/validate` unchanged engine
-  (IWXXM validation). product field documents the pass-through path. **:** on `POST /api/v1/convert`,
-  when the uploaded IWXXM line differs from the requested `iwxxm_version`, the backend migrates
-  only **supported** pairs per
-  [CROSS_VERSION_CONVERSION.md](domain/iwxxm/CROSS_VERSION_CONVERSION.md) (currently
-  **2023-1 → 2025-2** lossy), rewrites namespace/schema references, and validates the
-  migrated output before returning success. Unsupported pairs (e.g. **2025-2 → 2023-1**)
-  fail closed with HTTP **400** and issue code `UNSUPPORTED_IWXXM_MIGRATION`.
+  (IWXXM validation). product field documents the pass-through path. On `POST /api/v1/convert`,
+  when the uploaded IWXXM line differs from the requested `iwxxm_version`, the backend
+  **rejects** the request (FR-017 / DI-001: no automatic version migration). Select a matching
+  pin or convert from TAC. Fail closed with HTTP **400** and issue code
+  `UNSUPPORTED_IWXXM_MIGRATION`. Same-version pass-through sets `migrated_iwxxm=false`.
 - **`product=vona`**: Volcano Observatory Notice for Aviation →
   `iwxxm:VolcanoObservatoryNoticeForAviation` (VONA quality bar). Canonical wire value is **`vona`**.
   Unknown aliases → `unknown_product` **400**.
@@ -202,15 +200,16 @@ the same public convert path. Work history: guest → IndexedDB. logged-in → s
 | Residuals → remarks | `propagate_residuals_to_remarks`                                                                            | `propagate_residuals_to_remarks` |
 | Profile extensions  | `extensions`                                                                                                | `extensions`                     |
 
-**Soft-preview (`preview=true`)** :
+**Soft-preview (`preview=true`)** — **operator UI removed** (FR-043 / DI-007 / M1):
 
-- HTTP **200** allowed when parse/convert is partial. response may include best-effort IWXXM,
-  `ok: false`, and `failed_spans: [{ start, end, code?, message? }]`.
-- Does **not** imply Schematron-passed publish. hard convert (default) keeps failure HTTP
-  semantics for non-quarantine errors. **:** product-shaped unreliable
-  TAC emits a successful quarantine document (`@translationFailedTAC`) with HTTP **200**
+- Operator Convert no longer exposes a soft-preview toggle; workbench requests use hard convert.
+- Library/API may still accept `preview=true` for eval/harness. When set: HTTP **200** allowed
+  on partial parse/convert with best-effort IWXXM, `ok: false`, and
+  `failed_spans: [{ start, end, code?, message? }]`.
+- Does **not** imply Schematron-passed publish. Hard convert (default) keeps failure HTTP
+  semantics for non-quarantine errors. Product-shaped unreliable TAC may still emit a
+  quarantine document (`@translationFailedTAC`) with HTTP **200**
   (not the soft-preview `ok:false` envelope).
-- Prefer this flag over a separate `/preview-convert` route.
 
 ** spans on convert issues/errors** (when present): optional integer `start` / `end` alongside
 existing string fields.
@@ -895,16 +894,19 @@ Preflight: `OPTIONS` on `/api/v1/*` and `/auth/*`.
 Frontend and API may be different origins on DOKS. configure `corsOrigins` accordingly. H4–H5
 **required** this cycle after Auth + URL changes.
 
-## Dissemination (dissemination drawer through AMHS SWIM AFS adapters) , Done. multi-select deepen
+## Dissemination (drawer / AMHS / SWIM / AFS) — removed (M1)
 
-> **Status**: Shipped. : UI multi-file selection , **no**
-> new batch endpoint. existing single-payload routes reused via N sequential client calls.
+> **Status**: **Removed** for FR-052..056 / DI-008 (epic #1688). HTTP routes under
+> `/api/v1/dissemination/*` are **not mounted** (404). Operator Convert&Send /
+> Disseminate UI stays off (`destinationsEnabled: false`). The `packages/dissemination`
+> library may still provide exchange packaging / allowlist helpers for convert; it is
+> not a public disseminate product surface. PyPI publish wiring cleanup is follow-on
+> (DI-010 / T1.9).
 
-Auth: **None** (public operator app public, same as other `/api/v1/*`). Destination credentials are
-**memory-only** (never persisted. never returned in responses). Egress subject to
-allowlist. Abuse controls apply (rate limits / body size).
+Historical contract below is retained for archaeology only. Do not implement new clients
+against these paths.
 
-### `POST /api/v1/dissemination/preflight`
+### `POST /api/v1/dissemination/preflight` (removed)
 
 | Field   | Notes                                                                                                                                                                                                                                                                                                                                           |
 | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |

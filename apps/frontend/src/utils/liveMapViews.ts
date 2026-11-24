@@ -100,7 +100,7 @@ export function boundsOf(map: {
 export const LIVE_MAP_VIEWS = [
   { id: 'observations', label: 'Observations', products: ['metar', 'speci'] },
   { id: 'forecasts', label: 'Forecasts', products: ['taf'] },
-  { id: 'hazards', label: 'Hazards', products: ['airmet', 'gairmet', 'sigmet'] },
+  { id: 'hazards', label: 'Hazards', products: ['airmet', 'sigmet'] },
   { id: 'advisories', label: 'Advisories', products: ['vaa', 'tca', 'vona'] },
 ] as const;
 
@@ -109,7 +109,6 @@ const PRODUCT_FORM: Record<string, string> = {
   speci: 'SPECI',
   taf: 'TAF',
   airmet: 'AIRMET',
-  gairmet: 'AIRMET',
   sigmet: 'SIGMET',
   vaa: 'VAA',
   tca: 'TCA',

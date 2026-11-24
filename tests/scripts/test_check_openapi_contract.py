@@ -12,11 +12,11 @@ from tests.scripts.conftest import REPO_ROOT, load_script
 SPEC = REPO_ROOT / "apps" / "frontend" / "openapi" / "openapi.json"
 INTERACTIONS = REPO_ROOT / "tests" / "contracts" / "openapi-interactions.json"
 
-# 2026-11-20 scan after GET /api/v1/live-check (200 + 422) on stage rebase.
-SCAN_OPERATIONS = 95
-SCAN_STATUSES = 176
-SCAN_REQUEST_FIELDS = 36
-SCAN_RESPONSE_FIELDS = 336
+# 2026-11-24 scan after M1 dissemination OpenAPI drop (FR-052..056).
+SCAN_OPERATIONS = 83
+SCAN_STATUSES = 155
+SCAN_REQUEST_FIELDS = 33
+SCAN_RESPONSE_FIELDS = 279
 
 
 @pytest.fixture

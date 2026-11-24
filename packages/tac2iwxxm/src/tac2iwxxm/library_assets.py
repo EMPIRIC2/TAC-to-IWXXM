@@ -14,7 +14,7 @@ from tac2iwxxm.conversion_templates import (
     ConversionTemplate,
     list_first_party_templates,
 )
-from tac2iwxxm.profile_registry import canonical_semantic_profile_wire_ids
+from tac2iwxxm.profile_registry import shipped_product_semantic_wire_ids
 
 LibraryKind = Literal[
     "conversion",
@@ -44,7 +44,8 @@ def canonical_national_line_ids() -> tuple[str, ...]:
     tuple[str, ...]
         Sorted OpenAPI-style ids such as ``ICAO_2025``.
     """
-    return canonical_semantic_profile_wire_ids()
+    # FR-019..022 / M1: first-party library seeds follow the product ship list.
+    return shipped_product_semantic_wire_ids()
 
 
 @dataclass(frozen=True, slots=True)

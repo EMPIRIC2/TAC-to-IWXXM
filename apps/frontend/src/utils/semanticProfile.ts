@@ -1,34 +1,17 @@
 /**
- * Semantic IWXXM profile ids for the operator Profile picker (EV-093 / #1024).
+ * Semantic IWXXM profile ids for the operator Profile picker.
  *
- * Canonical wire values are uppercase OpenAPI ids. Legacy aliases `annex3` /
- * `iwxxm_us` remain selectable through the #1025 deprecation window so alias
- * metrics still fire when chosen. Separate from exchange profiles ().
+ * FR-019..022 / M1: national profiles dropped; ICAO baseline only.
+ * Legacy `annex3` alias remains for ICAO_2025.
  *
- * [Corpus: product §F35] [Corpus: product §F36] [Corpus: api]
+ * [Corpus: fr] epic #1688
  */
 
 /** Registered canonical semantic profile ids (uppercase OpenAPI). */
-export const CANONICAL_SEMANTIC_PROFILES = [
-  'ICAO_2025',
-  'US_FAA_NWS',
-  'CA_ECCC',
-  'US_NWS_CONVECTIVE_SIGMET',
-  'US_NWS_G_AIRMET',
-  'US_NWS_VONA',
-  'CA_MSC_SIGMET',
-  'AU_BOM',
-  'NZ_CAA_MET',
-  'UK_METOFFICE',
-  'BR_DECEA',
-  'KR_KMA',
-  'JP_JMA',
-  'IN_IMD',
-  'HK_HKO',
-] as const;
+export const CANONICAL_SEMANTIC_PROFILES = ['ICAO_2025'] as const;
 
-/** Legacy emit aliases kept as distinct select values through #1025. */
-export const LEGACY_SEMANTIC_ALIASES = ['annex3', 'iwxxm_us'] as const;
+/** Legacy emit aliases kept as distinct select values for ICAO baseline. */
+export const LEGACY_SEMANTIC_ALIASES = ['annex3'] as const;
 
 /**
  * Type `CanonicalSemanticProfile`.
@@ -56,7 +39,6 @@ export const DEFAULT_SEMANTIC_PROFILE: IwxxmProfile = 'ICAO_2025';
 
 const ALIAS_TO_CANONICAL: Record<LegacySemanticAlias, CanonicalSemanticProfile> = {
   annex3: 'ICAO_2025',
-  iwxxm_us: 'US_FAA_NWS',
 };
 
 const CANONICAL_SET = new Set<string>(CANONICAL_SEMANTIC_PROFILES);
@@ -68,22 +50,7 @@ export const SEMANTIC_PROFILE_OPTIONS: readonly {
   label: string;
 }[] = [
   { value: 'ICAO_2025', label: 'ICAO / WMO Annex 3 (2025)' },
-  { value: 'US_FAA_NWS', label: 'United States (FAA/NWS)' },
-  { value: 'CA_ECCC', label: 'Canada (ECCC)' },
-  { value: 'US_NWS_CONVECTIVE_SIGMET', label: 'United States convective SIGMET' },
-  { value: 'US_NWS_G_AIRMET', label: 'United States G-AIRMET' },
-  { value: 'US_NWS_VONA', label: 'United States volcano observatory notice' },
-  { value: 'CA_MSC_SIGMET', label: 'Canadian SIGMET' },
-  { value: 'AU_BOM', label: 'Australia (BoM)' },
-  { value: 'NZ_CAA_MET', label: 'New Zealand (CAA MET)' },
-  { value: 'UK_METOFFICE', label: 'United Kingdom (Met Office)' },
-  { value: 'BR_DECEA', label: 'Brazil (DECEA)' },
-  { value: 'KR_KMA', label: 'Republic of Korea (KMA)' },
-  { value: 'JP_JMA', label: 'Japan (JMA)' },
-  { value: 'IN_IMD', label: 'India (IMD)' },
-  { value: 'HK_HKO', label: 'Hong Kong (HKO)' },
   { value: 'annex3', label: 'Annex 3 (legacy alias)' },
-  { value: 'iwxxm_us', label: 'IWXXM-US (legacy alias)' },
 ] as const;
 
 /**
@@ -153,9 +120,6 @@ export function coerceIwxxmProfile(value: unknown): IwxxmProfile {
   const norm = normalizeSemanticProfileId(raw);
   if (norm === 'annex3') {
     return 'annex3';
-  }
-  if (norm === 'iwxxm_us') {
-    return 'iwxxm_us';
   }
   return DEFAULT_SEMANTIC_PROFILE;
 }

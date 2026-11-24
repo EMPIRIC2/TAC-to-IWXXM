@@ -92,11 +92,12 @@ describe('isConvertProductSelection', () => {
 });
 
 describe('coerceIwxxmProfile', () => {
-  it('accepts supported profiles including CA_ECCC (EV-064 / EV-093)', () => {
+  it('keeps ICAO aliases; maps dropped nationals to ICAO_2025 (M1)', () => {
     expect(coerceIwxxmProfile('annex3')).toBe('annex3');
-    expect(coerceIwxxmProfile('iwxxm_us')).toBe('iwxxm_us');
-    expect(coerceIwxxmProfile('ca_eccc')).toBe('CA_ECCC');
-    expect(coerceIwxxmProfile('CA_ECCC')).toBe('CA_ECCC');
+    expect(coerceIwxxmProfile('ICAO_2025')).toBe('ICAO_2025');
+    expect(coerceIwxxmProfile('iwxxm_us')).toBe('ICAO_2025');
+    expect(coerceIwxxmProfile('ca_eccc')).toBe('ICAO_2025');
+    expect(coerceIwxxmProfile('CA_ECCC')).toBe('ICAO_2025');
   });
 
   it('falls back to ICAO_2025 for unknown values', () => {

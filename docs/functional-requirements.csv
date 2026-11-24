@@ -1,0 +1,78 @@
+id,decision,requirement,product,iwxxm_version,actor,status,notes,source_answer
+FR-001,keep,Convert METAR TAC to IWXXM without login,METAR,operator-selected pin,operator,accepted,Public convert UI and API,F1
+FR-002,keep,Convert SPECI TAC to IWXXM without login,SPECI,operator-selected pin,operator,accepted,Public convert UI and API,F2
+FR-003,keep,Convert TAF TAC to IWXXM without login,TAF,operator-selected pin,operator,accepted,Public convert UI and API,F3
+FR-004,keep,Convert AIRMET TAC to IWXXM without login,AIRMET,operator-selected pin,operator,accepted,Public convert UI and API,F4
+FR-005,keep,Convert ordinary SIGMET TAC to iwxxm:SIGMET,SIGMET,operator-selected pin,operator,accepted,,F5
+FR-006,keep,Convert volcanic-ash SIGMET TAC to iwxxm:VolcanicAshSIGMET under product=sigmet,SIGMET (VA),operator-selected pin,operator,accepted,,F6
+FR-007,keep,Convert tropical-cyclone SIGMET TAC under product=sigmet,SIGMET (TC),operator-selected pin,operator,accepted,,F7
+FR-008,keep,Convert VAA TAC to IWXXM without login,VAA,operator-selected pin,operator,accepted,,F8
+FR-009,keep,Convert TCA TAC to IWXXM without login,TCA,operator-selected pin,operator,accepted,,F9
+FR-010,keep,Convert SWXA TAC to iwxxm:SpaceWeatherAdvisory,SWXA,operator-selected pin,operator,accepted,,F10
+FR-011,keep,Convert VONA TAC to iwxxm:VolcanoObservatoryNoticeForAviation,VONA,operator-selected pin,operator,accepted,,F11
+FR-012,drop,Remove LWIS and SAWR convert paths with national Canada cleanup,METAR (LWIS|SAWR),n/a,operator/API,accepted,C5=1. Canada-only; national profiles dropped.,F12+C5
+FR-013,drop,Remove G-AIRMET live-map layer,G-AIRMET,n/a,operator,accepted,C5=1. US graphical polygons; no TAC.,F13+C5
+FR-014,keep,Support IWXXM release line 2025-2 as selectable convert output,all convert products,2025-2,operator/API,accepted,Default pin today,F14
+FR-015,keep,Support IWXXM release line 2023-1 as selectable convert output,all convert products,2023-1,operator/API,accepted,,F15
+FR-016,change,"Support selectable IWXXM lines 3.0, 2021-2, 2023-1, and 2025-2 (no 1.x/2.x)",all convert products where the product existed on that line,3.0; 2021-2; 2023-1; 2025-2,operator/API,accepted,C2=3. Operator selects pin; no auto-migrate.,F14-F15 add-on+C2
+FR-017,drop,Reject automatic IWXXM version migration on upload; operator selects the convert IWXXM type only,iwxxm pass-through / convert,n/a,operator/API,accepted,Removes 2023-1→2025-2 migrate path,F16
+FR-018,drop,Remove profile pin IWXXM 3.0.0 for CA_ECCC,CA products,3.0.0,system,accepted,Drop national CA pin path,F17
+FR-019,drop,Remove US extension iwxxm-us 3.0 / US_FAA_NWS,AIRMET METAR SIGMET SPECI TAF,iwxxm-us 3.0,system,accepted,,F18
+FR-020,drop,Remove Canadian extension iwxxm-ca / CA_ECCC / IWXXM_CA,METAR SPECI TAF AIRMET (+ LWIS SAWR),iwxxm-ca,system,accepted,,F19
+FR-021,drop,Remove separate semantic vs exchange profile catalogs as product requirements,all,n/a,system,accepted,,F20
+FR-022,drop,Stop national and regional profile deepen beyond ICAO baseline,all,n/a,system,accepted,,F21
+FR-023,keep,Lint METAR with the issue registry before convert,METAR,n/a,operator/API,accepted,,F22
+FR-024,keep,Lint SPECI with the issue registry before convert,SPECI,n/a,operator/API,accepted,,F23
+FR-025,keep,Lint TAF with the issue registry before convert,TAF,n/a,operator/API,accepted,,F24
+FR-026,keep,Lint AIRMET with the issue registry before convert,AIRMET,n/a,operator/API,accepted,,F25
+FR-027,keep,Lint SIGMET including VA path with the issue registry before convert,SIGMET,n/a,operator/API,accepted,,F26
+FR-028,keep,Lint VAA with the issue registry before convert,VAA,n/a,operator/API,accepted,,F27
+FR-029,keep,Lint TCA with the issue registry before convert,TCA,n/a,operator/API,accepted,,F28
+FR-030,keep,Lint SWXA with the issue registry before convert,SWXA,n/a,operator/API,accepted,,F29
+FR-031,keep,Lint VONA with the issue registry before convert,VONA,n/a,operator/API,accepted,,F30
+FR-032,change,Validate each converted product with the official Schematron release for the selected IWXXM line,METAR SPECI TAF AIRMET SIGMET VAA TCA SWXA VONA,3.0 | 2021-2 | 2023-1 | 2025-2,operator/API,accepted,C3=1. Official Schematron and matching official XSD for selected line. Single quality-bar regression.,F31-F39
+FR-033,keep,Show plain-language decode for METAR under edit,METAR,n/a,operator,accepted,,F40
+FR-034,keep,Show plain-language decode for SPECI under edit,SPECI,n/a,operator,accepted,,F41
+FR-035,keep,Show plain-language decode for TAF under edit,TAF,n/a,operator,accepted,,F42
+FR-036,keep,Show plain-language decode for AIRMET under edit,AIRMET,n/a,operator,accepted,,F43
+FR-037,keep,Show plain-language decode for SIGMET under edit,SIGMET,n/a,operator,accepted,,F44
+FR-038,keep,Show plain-language decode for VAA under edit,VAA,n/a,operator,accepted,,F45
+FR-039,keep,Show plain-language decode for TCA under edit,TCA,n/a,operator,accepted,,F46
+FR-040,keep,Show plain-language decode for SWXA under edit,SWXA,n/a,operator,accepted,,F47
+FR-041,keep,Show plain-language decode for VONA under edit,VONA,n/a,operator,accepted,,F48
+FR-042,change,Workbench uses a separate tab per shell area; each rule catalog has its own DigitalOcean Postgres table; History is per authenticated user only,all nine products,n/a,operator,accepted,Tabs replace combined shell. Rules in DO tables. History owner-scoped.,F49
+FR-043,drop,Remove soft-fail IWXXM preview UX that confused operators,all,n/a,operator,accepted,,F50
+FR-044,change,Code names show only which products use a code plus WMO document link or citation,all,n/a,operator,accepted,Drop country and amendment tag UI depth,F51
+FR-045,change,Live map gains a live evaluation table for displayed TACs: partial decode counts; lint counts; top lint codes; convert failures; IWXXM validation results; location of failures; rows stored in DigitalOcean Postgres; enabled on staging and prod,all displayed products,n/a,operator,accepted,Live quality check at query time,F52
+FR-046,keep,Live map Active reports filter shows only reports whose validity covers now,all map products,n/a,operator,accepted,,F53
+FR-047,change,Station health / quality metrics expand from FR-045 into further metric breakdowns (availability windows; product breakdown; eval benchmark surfaces),station-scoped products,n/a,operator,accepted,Large eval-benchmark addition; detail still open.,F54 / F79
+FR-048,keep,Convert UI and API stay public without auth; long-term storage requires auth,all convert products,n/a,operator,accepted,,F55
+FR-049,change,Privacy preference center must meet applicable international privacy standards (scope of standards TBD),guest/local and account data,n/a,operator,accepted,Compliance research required,F56
+FR-050,change,User history and account data use Supabase Auth plus PostgREST; shared/public and live-eval data use DigitalOcean Postgres,all nine products,n/a,operator,accepted,C1=1 resolves F57 vs F72. No IndexedDB as system of record.,F57+F72+C1
+FR-051,keep,Long-term history for all nine products is available to the owning authenticated user only,all nine products,n/a,operator,accepted,,F58
+FR-052,drop,Remove multi-DB BYOC URI upload from the dissemination drawer,all,n/a,operator,accepted,Dissemination deferred,F59
+FR-053,drop,Remove WIS2 dissemination pathway,all,n/a,operator,accepted,,F60
+FR-054,drop,Remove EDIS to RTH Washington dissemination pathway,all,n/a,operator,accepted,,F61
+FR-055,drop,Remove AMHS SWIM and AFS dissemination adapters,all,n/a,operator,accepted,,F62
+FR-056,drop,Remove one-shot in-memory dissemination credential handling with the drawer,all,n/a,operator,accepted,,F63
+FR-057,change,Near-RT worker processes and stores 1000 to 5000 live files in about one minute total,all ingest products,n/a,worker,accepted,Throughput SLO for live ingest,F64
+FR-058,change,Local mass upload and storage meet the same throughput band; priority queue prefers live evals over local uploads; UI states when the queue is slow,all ingest products,n/a,operator/worker,accepted,,F65
+FR-059,drop,Worker auto-push to dissemination sinks is moot because dissemination is dropped,worker,n/a,worker,accepted,,F66
+FR-060,keep,HTTP API covers convert lint validate decode; add live tests for these paths,all nine products + iwxxm where applicable,selected pin,integrator,accepted,,F67
+FR-061,keep,API product enum remains airmet|metar|sigmet|speci|taf|vaa|tca|swxa|vona|iwxxm plus new WAFS SIGWX and QVACI wire values,enum+wafs_sigwx|qvaci,n/a,integrator,accepted,C6=1 keep nine+iwxxm; C7=4 adds two products — extend enum.,F68+C6+C7
+FR-062,change,Publish tac2iwxxm as the master package; tac-decoding is a separate sub-module of tac2iwxxm; tac-validate and iwxxm-validate remain publishable,packages,n/a,maintainer,accepted,,F69
+FR-063,drop,Do not publish iwxxm-dissemination on PyPI this cycle,dissemination package,n/a,maintainer,accepted,,F70
+FR-064,keep,WMO-passing examples remain in UI and CI; add a live eval benchmark from live examples and the product database,all nine products,selected pin,operator/CI,accepted,,F71
+FR-065,change,DigitalOcean Postgres stores shared/public/live-eval data; Supabase stores Auth and user/history via PostgREST,all,n/a,ops,accepted,C1=1.,F72+C1
+FR-066,drop,Remove the ban on in-app paste of Supabase auth keys for dissemination (dissemination dropped),n/a,n/a,operator,accepted,,F73
+FR-067,change,Full test requirements: every kept FR maps to test cases; every user journey applies all applicable modes; integration tests cover touching surfaces,all,n/a,maintainer,accepted,Taxonomy supplied by user,F74
+FR-068,drop,Remove the rule that new behavioral scope needs a planning cycle and product-requirements update,n/a,n/a,maintainer,accepted,,F75
+FR-069,change,Add convert/lint/decode/validate for WAFS SIGWX and QVACI,WAFS_SIGWX; QVACI,WAFS from 2021-2+; QVACI on 2025-2,operator/API,accepted,C7=4 add both.,F76+C7
+FR-070,drop,Remove convert/UI code for LWIS SAWR G-AIRMET national US/CA profiles dissemination soft-preview and related dead paths,TBD,n/a,maintainer,accepted,Aligned with C5 and FR drops.,F77+C5
+FR-071,keep,Treat bulletin COLLECT and AHL split as first-class product requirements (separate rows in product lists),bulletin / AHL / COLLECT,n/a,operator/API,accepted,,F78
+FR-072,keep,Quality metrics / eval benchmark is a large required addition,metrics,n/a,operator,accepted,Tied to FR-045 FR-047,F79
+FR-073,research,Review privacy and storage best practices for guest vs signed-in data (no IndexedDB SoR if FR-050 stands),sessions,n/a,operator,open,,F80
+FR-074,intake,Evolve goal: re-interview FR and NFR from baseline; write two CSVs; evaluate dropping uncovered code,n/a,n/a,maintainer,accepted,Scale large; gate closed until Build,0a-0f
+FR-075,change,Convert WAFS Significant Weather Forecast (SIGWX) TAC/forms to IWXXM,WAFS_SIGWX,2021-2 | 2023-1 | 2025-2,operator/API,accepted,C7=4. First appears in WMO package table at 2021-2.,F76+C7
+FR-076,change,Convert Quantitative Volcanic Ash Concentration Information (QVACI) to IWXXM,QVACI,2025-2,operator/API,accepted,C7=4. WMO package from 2025-2.,F76+C7
+FR-077,change,Fetch official WMO IWXXM XSD and Schematron at build or runtime; do not keep long-lived vendored schema trees as the source of truth,validation stack,3.0; 2021-2; 2023-1; 2025-2,maintainer,accepted,C4=2. Pins still required; acquisition method changes.,N16+C4

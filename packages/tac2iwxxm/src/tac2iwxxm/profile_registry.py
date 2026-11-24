@@ -82,6 +82,11 @@ _PROFILE_REPORT_VARIANTS: dict[str, dict[str, frozenset[str]]] = {
     }
 }
 
+# FR-019..022 / M1: product HTTP / first-party library / inspector ship ICAO only.
+# Full registry above remains for emit-package unit suites until a later delete.
+_SHIPPED_PRODUCT_CANONICAL: frozenset[str] = frozenset({CANONICAL_ICAO_2025})
+_SHIPPED_PRODUCT_ALIASES: frozenset[str] = frozenset({EMIT_ANNEX3})
+
 
 @dataclass(frozen=True, slots=True)
 class ResolvedSemanticProfile:
@@ -161,6 +166,42 @@ def known_semantic_profile_ids() -> frozenset[str]:
         All accepted semantic profile wire ids (canonical + aliases).
     """
     return _KNOWN_WIRE_IDS
+
+
+def is_shipped_product_semantic_profile(profile: str) -> bool:
+    """
+    Return whether a profile is on the product convert/UI ship list (M1).
+
+    Emit-package unit suites may still resolve other registry ids via
+    ``resolve_semantic_profile``; product HTTP and first-party library seeds
+    use this gate.
+
+    Parameters
+    ----------
+    profile : str
+        Semantic profile id or alias (for example ``ICAO_2025`` or ``annex3``).
+
+    Returns
+    -------
+    bool
+        ``True`` when the resolved canonical id is on the product ship list.
+    """
+    resolved = resolve_semantic_profile(profile)
+    if resolved is None:
+        return False
+    return resolved.canonical in _SHIPPED_PRODUCT_CANONICAL
+
+
+def shipped_product_semantic_wire_ids() -> tuple[str, ...]:
+    """
+    Return uppercase OpenAPI ids shipped on the product surface (ICAO only).
+
+    Returns
+    -------
+    tuple[str, ...]
+        Sorted OpenAPI-style wire ids such as ``ICAO_2025``.
+    """
+    return tuple(sorted(key.upper() for key in _SHIPPED_PRODUCT_CANONICAL))
 
 
 def canonical_semantic_profile_wire_ids() -> tuple[str, ...]:
@@ -255,9 +296,11 @@ __all__ = [
     "EMIT_US_NWS_VONA",
     "ResolvedSemanticProfile",
     "canonical_semantic_profile_wire_ids",
+    "is_shipped_product_semantic_profile",
     "known_semantic_profile_ids",
     "normalize_profile_id",
     "resolve_semantic_profile",
+    "shipped_product_semantic_wire_ids",
     "supported_iwxxm_versions_for_profile",
     "supported_report_variants_for_profile",
 ]

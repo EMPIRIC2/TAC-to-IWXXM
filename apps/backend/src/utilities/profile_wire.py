@@ -14,7 +14,10 @@ from dissemination.exchange_registry import (
     resolve_exchange_profile,
 )
 from fastapi import HTTPException
-from tac2iwxxm.profile_registry import resolve_semantic_profile
+from tac2iwxxm.profile_registry import (
+    is_shipped_product_semantic_profile,
+    resolve_semantic_profile,
+)
 
 _LEGACY_DEFAULT_PROFILE = "annex3"
 _WIRE_V2_DEFAULT_SEMANTIC = "ICAO_2025"
@@ -189,7 +192,7 @@ def resolve_route_profiles(
         chosen = default_semantic_profile()
 
     resolved = resolve_semantic_profile(chosen)
-    if resolved is None:
+    if resolved is None or not is_shipped_product_semantic_profile(chosen):
         raise HTTPException(
             status_code=400,
             detail={

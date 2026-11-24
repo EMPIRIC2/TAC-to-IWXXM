@@ -74,13 +74,20 @@ def test_annex3_convert_echoes_remarks_excluded(client: TestClient) -> None:
 
 
 def test_iwxxm_us_convert_retains_human_readable_text(client: TestClient) -> None:
+    """FR-019 / M1: US_FAA_NWS library is not product-shipped (fail closed)."""
     tac = "METAR KJFK 231751Z 18012KT 10SM CLR 15/07 A3005 RMK AO2 WND DATA ESTMD="
-    body = _convert(client, tac=tac, profile="iwxxm_us")
-    codes = [i.get("code") for i in (body.get("issues") or [])]
-    assert "REMARKS_EXCLUDED" not in codes
-    xml = (body.get("results") or [{}])[0].get("content") or ""
-    assert "iwxxm-us:humanReadableText" in xml
-    assert "WND DATA ESTMD" in xml
+    response = client.post(
+        "/api/v1/convert",
+        files={
+            "manual_text": (None, tac),
+            "product": (None, "METAR"),
+            "conversion_library_id": (None, "LIB.CONVERSION.US_FAA_NWS"),
+            "iwxxm_version": (None, "2025-2"),
+            "lint": (None, "false"),
+        },
+    )
+    assert response.status_code in {400, 422}, response.text[:500]
+    assert "US_FAA_NWS" in response.text
 
 
 def test_convert_absorbs_enum_like_and_warning_error_severities(

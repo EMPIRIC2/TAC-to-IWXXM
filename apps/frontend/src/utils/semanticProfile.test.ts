@@ -1,7 +1,7 @@
 /**
- * TC-EV093-001 / TC-EV093-003 — semantic profile catalog + coerce/hydrate (EV-093).
+ * Semantic profile catalog + coerce/hydrate after national drop (FR-019..022 / M1).
  *
- * [Corpus: tests] [Corpus: product §F35]
+ * [Corpus: fr] epic #1688
  */
 import { describe, expect, it } from 'vitest';
 import {
@@ -15,9 +15,11 @@ import {
   wireSemanticProfile,
 } from './semanticProfile';
 
-describe('semanticProfile (TC-EV093-001 / TC-EV093-003)', () => {
-  it('lists all canonicals plus legacy aliases with default ICAO_2025', () => {
+describe('semanticProfile (M1 national drop)', () => {
+  it('lists ICAO baseline plus annex3 alias only', () => {
     const values = SEMANTIC_PROFILE_OPTIONS.map((o) => o.value);
+    expect(CANONICAL_SEMANTIC_PROFILES).toEqual(['ICAO_2025']);
+    expect(LEGACY_SEMANTIC_ALIASES).toEqual(['annex3']);
     for (const id of CANONICAL_SEMANTIC_PROFILES) {
       expect(values).toContain(id);
     }
@@ -28,18 +30,18 @@ describe('semanticProfile (TC-EV093-001 / TC-EV093-003)', () => {
     expect(values[0]).toBe('ICAO_2025');
   });
 
-  it('coerces lowercase canonicals to uppercase OpenAPI ids', () => {
-    expect(coerceIwxxmProfile('ca_eccc')).toBe('CA_ECCC');
-    expect(coerceIwxxmProfile('au_bom')).toBe('AU_BOM');
+  it('coerces known ids and defaults dropped nationals to ICAO_2025', () => {
     expect(coerceIwxxmProfile('ICAO_2025')).toBe('ICAO_2025');
+    expect(coerceIwxxmProfile('ca_eccc')).toBe('ICAO_2025');
+    expect(coerceIwxxmProfile('au_bom')).toBe('ICAO_2025');
+    expect(coerceIwxxmProfile('US_FAA_NWS')).toBe('ICAO_2025');
   });
 
-  it('keeps legacy aliases as distinct select values', () => {
+  it('keeps annex3 alias; maps dropped iwxxm_us to ICAO default', () => {
     expect(coerceIwxxmProfile('annex3')).toBe('annex3');
-    expect(coerceIwxxmProfile('iwxxm_us')).toBe('iwxxm_us');
-    // Mixed / hyphenated forms miss the exact alias set but normalize to aliases.
+    expect(coerceIwxxmProfile('iwxxm_us')).toBe('ICAO_2025');
     expect(coerceIwxxmProfile('ANNEX3')).toBe('annex3');
-    expect(coerceIwxxmProfile('IWXXM-US')).toBe('iwxxm_us');
+    expect(coerceIwxxmProfile('IWXXM-US')).toBe('ICAO_2025');
   });
 
   it('defaults unknown profile strings to ICAO_2025', () => {
@@ -48,21 +50,21 @@ describe('semanticProfile (TC-EV093-001 / TC-EV093-003)', () => {
     expect(coerceIwxxmProfile(null)).toBe('ICAO_2025');
   });
 
-  it('hydrates aliases to canonical for prefs/sessions', () => {
+  it('hydrates annex3 to ICAO; dropped nationals fall back to ICAO', () => {
     expect(hydrateSemanticProfile('annex3')).toBe('ICAO_2025');
-    expect(hydrateSemanticProfile('iwxxm_us')).toBe('US_FAA_NWS');
-    expect(hydrateSemanticProfile('ca_eccc')).toBe('CA_ECCC');
+    expect(hydrateSemanticProfile('iwxxm_us')).toBe('ICAO_2025');
+    expect(hydrateSemanticProfile('ca_eccc')).toBe('ICAO_2025');
     expect(hydrateSemanticProfile(undefined)).toBe('ICAO_2025');
   });
 
   it('wires semantic_profile values for FormData', () => {
     expect(wireSemanticProfile('ICAO_2025')).toBe('ICAO_2025');
-    expect(wireSemanticProfile('CA_ECCC')).toBe('CA_ECCC');
+    expect(wireSemanticProfile('CA_ECCC')).toBe('ICAO_2025');
     expect(wireSemanticProfile('annex3')).toBe('annex3');
     expect(wireSemanticProfile(undefined)).toBe('ICAO_2025');
   });
 
-  it('detects CA_ECCC for pin/metadata paths', () => {
+  it('still detects CA_ECCC strings for leftover pin/metadata paths', () => {
     expect(isCaEcccProfile('CA_ECCC')).toBe(true);
     expect(isCaEcccProfile('ca_eccc')).toBe(true);
     expect(isCaEcccProfile('ICAO_2025')).toBe(false);

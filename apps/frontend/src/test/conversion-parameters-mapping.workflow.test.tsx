@@ -170,7 +170,7 @@ describe('UI Workflow: Conversion Parameter Mapping', () => {
     );
   });
 
-  it('maps bulletin, issuing centre, onError fail, and soft-preview validation off', async () => {
+  it('maps bulletin, issuing centre, and onError fail without soft-preview', async () => {
     const user = userEvent.setup();
     const { container } = render(<FileConverter {...defaultProps} />);
     fireEvent.click(screen.getByTestId('live-iwxxm-toggle'));
@@ -186,7 +186,7 @@ describe('UI Workflow: Conversion Parameter Mapping', () => {
     const onError = container.querySelector('#param-on-error') as HTMLSelectElement;
     await user.selectOptions(onError, 'fail');
 
-    fireEvent.click(screen.getByTestId('soft-preview-toggle'));
+    expect(screen.queryByTestId('soft-preview-toggle')).not.toBeInTheDocument();
 
     fireEvent.change(screen.getByLabelText(/enter metar data manually/i), {
       target: {
@@ -204,13 +204,10 @@ describe('UI Workflow: Conversion Parameter Mapping', () => {
       expect.objectContaining({
         bulletinId: 'SAAA00',
         stopOnError: true,
-        preview: true,
-        validateOutput: false,
-        validationLevel: 'basic',
+        preview: false,
       }),
     );
   });
-
   it('sends the same bar fields on live preview convert', async () => {
     vi.useFakeTimers();
     try {
@@ -356,7 +353,7 @@ describe('UI Workflow: Conversion Parameter Mapping', () => {
     expect(iwxxmVersion.value).toBe('2023-1');
   });
 
-  it('normalizes stored session IWXXM line to the profile matrix', async () => {
+  it('coerces dropped national session profiles to the ICAO IWXXM matrix', async () => {
     const user = userEvent.setup();
     const { container } = render(
       <FileConverter
@@ -379,7 +376,8 @@ describe('UI Workflow: Conversion Parameter Mapping', () => {
     const iwxxmVersion = container.querySelector(
       '#param-iwxxm-version',
     ) as HTMLSelectElement;
-    expect(iwxxmVersion.value).toBe('3.0.0');
+    // FR-020 / M1: CA_ECCC dropped; session falls back to ICAO pin options.
+    expect(iwxxmVersion.value).toBe('2025-2');
   });
 
   it('hydrates camelCase stored session IWXXM line for non-CA profiles', async () => {

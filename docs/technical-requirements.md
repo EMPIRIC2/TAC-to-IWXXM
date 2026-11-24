@@ -1,13 +1,19 @@
 # Technical requirements
 
 > Index: [README.md](README.md) 
-> Last updated: 2026-11-12
+> Last updated: 2026-11-24
 
 This document states functional and technical requirements, required decisions,
 and pass criteria. Behavioral product scope lives in
 [product-requirements.md](product-requirements.md). Component layout lives in
 [architecture.md](architecture.md). Environment names live in
 [env-variable.md](env-variable.md).
+
+**Authoritative NFR matrix for the open rebaseline:**
+[non-functional-requirements.csv](non-functional-requirements.csv)
+(epic [#1688](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1688)).
+Where TR rows below disagree with that CSV, the CSV wins until Build updates
+this table.
 
 ## How to use this document
 
@@ -34,9 +40,9 @@ and pass criteria. Behavioral product scope lives in
 | ID | Requirement | Pass criterion |
 |----|-------------|----------------|
 | TR-P01 | Host API, frontend, and worker on DigitalOcean Kubernetes Service (DOKS) | Staging and prod manifests under `config/deploy/doks/` match running services |
-| TR-P02 | Store product data in DigitalOcean Postgres via `DATABASE_URL` | Work sessions and worker writes use DO Postgres, not Supabase DB |
-| TR-P03 | Use Supabase only to verify Auth JWTs | Auth routes verify JWT; no product PostgREST dependency |
-| TR-P04 | Keep public convert, lint, validate, and disseminate routes free of JWT | Live and unit tests call those routes without Bearer tokens |
+| TR-P02 | Store shared/public and live-eval data in DigitalOcean Postgres via `DATABASE_URL` | Worker and live-eval writes use DO Postgres (NFR-002 / FR-065) |
+| TR-P03 | Use Supabase for Auth and user/history (PostgREST allowed for user data) | Auth + user history on Supabase; shared data on DO Postgres (C1 / NFR-003) |
+| TR-P04 | Keep public convert, lint, validate, and decode reachable with API keys (no user JWT); dissemination routes removed in rebaseline | Live and unit tests call public routes with API key policy (NFR-007); no disseminate surface |
 | TR-P05 | Gate long-term work sessions on Auth JWT | `/api/v1/work-sessions*` rejects anonymous writes |
 
 ## Quality gates

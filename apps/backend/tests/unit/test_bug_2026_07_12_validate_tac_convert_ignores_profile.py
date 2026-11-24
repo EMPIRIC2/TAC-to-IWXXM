@@ -78,11 +78,11 @@ def test_validate_tac_auto_convert_forwards_profile(client: TestClient, monkeypa
         "/api/v1/validate",
         files={
             "manual_text": (None, METAR),
-            "profile": (None, "iwxxm_us"),
+            "profile": (None, "ICAO_2025"),
             "iwxxm_version": (None, "2025-2"),
             "layers": (None, "XML_WELLFORMED"),
         },
     )
     assert response.status_code == 200, response.text
     assert seen, "expected convert_metar_tac_with_metadata to be called"
-    assert seen[0].get("profile") == "iwxxm_us"
+    assert seen[0].get("profile") == "annex3"

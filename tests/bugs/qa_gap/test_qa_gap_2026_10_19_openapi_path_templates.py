@@ -14,11 +14,7 @@ ROOT = Path(__file__).resolve().parents[3]
 OPENAPI = ROOT / "apps" / "frontend" / "openapi" / "openapi.json"
 
 TEMPLATE_PATHS = (
-    "/api/v1/dissemination/mappings/{mapping_id}",
-    "/api/v1/dissemination/mappings/{name}",
-    "/api/v1/dissemination/plans/{plan_id}",
-    "/api/v1/dissemination/plans/{plan_id}/execute",
-    "/api/v1/dissemination/plans/{slug}",
+    # FR-052..056 / M1: /api/v1/dissemination/* paths removed from OpenAPI.
     "/api/v1/profiles/conversion-templates/{template_id}",
     "/api/v1/profiles/library-assets/{asset_id}",
     "/api/v1/profiles/overlays/{overlay_id}",

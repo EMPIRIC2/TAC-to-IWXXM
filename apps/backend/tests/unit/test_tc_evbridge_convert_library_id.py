@@ -14,7 +14,6 @@ def test_conversion_library_icao_resolves_engine_profile() -> None:
 
 
 def test_conversion_library_us_resolves_engine_profile() -> None:
-    """LIB.CONVERSION.US_FAA_NWS maps to US_FAA_NWS."""
+    """US Conversion library dropped with national profiles (FR-019 / M1)."""
     asset = get_first_party_library_asset("LIB.CONVERSION.US_FAA_NWS")
-    assert asset is not None
-    assert asset.engine_profile_id == "US_FAA_NWS"
+    assert asset is None

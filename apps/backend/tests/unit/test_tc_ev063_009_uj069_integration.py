@@ -8,10 +8,8 @@ from __future__ import annotations
 import pytest
 from dissemination.collect_namespaces import is_collect_bulletin
 from dissemination.handles import default_handle_store
-from dissemination.rate_limit import DisseminationRateLimiter
 from fastapi.testclient import TestClient
 from src import api as api_module
-from src.routers import dissemination as diss_router
 from src.utilities.abuse_controls import get_limiter
 from src.utilities.security import verify_supabase_token
 
@@ -30,8 +28,6 @@ _BULLETIN = f"SAUS31 KZNY 121200\n{_TAC}"
 @pytest.fixture
 def client(monkeypatch: pytest.MonkeyPatch):
     monkeypatch.setenv("DISSEMINATION_EGRESS_ALLOWLIST", "")
-    lim = DisseminationRateLimiter(max_per_minute=1000)
-    monkeypatch.setattr(diss_router, "default_rate_limiter", lim)
     default_handle_store.clear()
 
     async def override_verify_token():
@@ -49,11 +45,11 @@ def test_uj069_semantic_convert_then_exchange_package(
     client: TestClient,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    """Convert with US_FAA_NWS then package bulletin with GLOBAL_AFS (no live sink)."""
+    """Convert with ICAO_2025 then package bulletin with GLOBAL_AFS (no live sink)."""
 
     def fake_convert(tac: str, **kwargs):
         profile = kwargs.get("profile") or kwargs.get("semantic_profile")
-        assert profile in {"US_FAA_NWS", "us_faa_nws", "iwxxm_us"}
+        assert profile in {"ICAO_2025", "icao_2025", "annex3"}
         return _SAMPLE_US_XML, None
 
     monkeypatch.setattr(api_module, "convert_metar_tac_with_metadata", fake_convert)
@@ -63,7 +59,7 @@ def test_uj069_semantic_convert_then_exchange_package(
         files={
             "manual_text": (None, _TAC),
             "product": (None, "METAR"),
-            "conversion_library_id": (None, "LIB.CONVERSION.US_FAA_NWS"),
+            "conversion_library_id": (None, "LIB.CONVERSION.ICAO_2025"),
             "lint": (None, "false"),
         },
     )
@@ -77,7 +73,7 @@ def test_uj069_semantic_convert_then_exchange_package(
         files={
             "manual_text": (None, _BULLETIN),
             "product": (None, "METAR"),
-            "conversion_library_id": (None, "LIB.CONVERSION.US_FAA_NWS"),
+            "conversion_library_id": (None, "LIB.CONVERSION.ICAO_2025"),
             "exchange_profile": (None, "GLOBAL_AFS"),
             "lint": (None, "false"),
         },
@@ -88,4 +84,4 @@ def test_uj069_semantic_convert_then_exchange_package(
     xml = package_body["results"][0]["xml"]
     assert xml
     assert is_collect_bulletin(xml)
-    assert "iwxxm-us:Addendum" in xml or "iwxxm:METAR" in xml
+    assert "iwxxm:METAR" in xml

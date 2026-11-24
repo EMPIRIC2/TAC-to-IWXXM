@@ -1,9 +1,15 @@
-"""TC-EV071-003 - API pre-convert CA lint wire (EV-071 M1 / FR-L6).
+"""FR-020 / M1: CA/national product API surface dropped from ship list.
 
-[Corpus: api] [Corpus: tests §TC-EV071]
+[Corpus: fr] epic #1688
 """
 
 from __future__ import annotations
+
+import pytest
+
+pytestmark = pytest.mark.skip(
+    reason="FR-020 / M1: CA/national product API wire not on ICAO ship list",
+)
 
 import pytest
 from fastapi.testclient import TestClient

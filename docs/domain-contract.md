@@ -3,11 +3,19 @@
 > Index: [README.md](README.md) 
 > Machine index: [config/profiles/catalog.yaml](../config/profiles/catalog.yaml) 
 > Rule catalogs: [config/rules/](../config/rules) 
-> Last updated: 2026-11-20
+> Last updated: 2026-11-24
 
 This document states domain rules for TAC lint, TAC to IWXXM conversion, IWXXM
 validation, and conversion profiles. Detailed mining notes may stay in the local
 `docs/domain/` feeder.
+
+**Rebaseline (EV-requirements-baseline-csv / epic #1688):** M1 drops national
+US/CA (and other national) semantic wire ids, LWIS/SAWR variants, and the
+G-AIRMET live-map layer. Convert/API/catalog ship ICAO baseline only. Target
+pins remain `3.0`, `2021-2`, `2023-1`, `2025-2` with official Schematron and
+matching XSD fetched at build or runtime (later milestone). Do not add new
+work on dropped national paths. Emit packages and `catalog.yaml` rows may
+remain on disk until a later delete pass.
 
 ## Terms
 

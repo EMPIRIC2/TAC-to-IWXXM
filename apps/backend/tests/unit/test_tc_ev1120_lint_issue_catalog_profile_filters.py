@@ -36,6 +36,9 @@ def test_tc_ev1120_001_omit_params_preserves_prior_behavior(client: TestClient) 
     assert len(filtered.json()["issues"]) == len(baseline.json()["issues"])
 
 
+@pytest.mark.skip(
+    reason="FR-019..022 / M1: national semantic profiles not on product ship list",
+)
 def test_tc_ev1120_002_semantic_profile_shared_union_matching(client: TestClient) -> None:
     """Filter returns shared plus profile-applicable; national-only omitted elsewhere."""
     icao = client.get(
@@ -82,6 +85,9 @@ def test_tc_ev1120_002_semantic_profile_shared_union_matching(client: TestClient
     assert "IWXXM_CA_EXTENSION" in ca_codes
 
 
+@pytest.mark.skip(
+    reason="FR-019..022 / M1: national semantic profiles not on product ship list",
+)
 def test_tc_ev1120_006_us_faa_nws_national_only_catalog_row(client: TestClient) -> None:
     """TC-EV1120-006 / #1122 — US TAC national-only row with provenance URL."""
     icao = _codes(
@@ -105,6 +111,9 @@ def test_tc_ev1120_006_us_faa_nws_national_only_catalog_row(client: TestClient) 
     assert "faa.gov" in row["source_url"] or "nws" in row["source_url"].lower()
 
 
+@pytest.mark.skip(
+    reason="FR-019..022 / M1: national semantic profiles not on product ship list",
+)
 def test_tc_ev1120_007_ca_eccc_national_only_catalog_row(client: TestClient) -> None:
     """TC-EV1120-007 / #1122 — CA TAC national-only row with provenance URL."""
     icao = _codes(
@@ -128,6 +137,9 @@ def test_tc_ev1120_007_ca_eccc_national_only_catalog_row(client: TestClient) -> 
     assert "canada.ca" in row["source_url"] or "gc.ca" in row["source_url"]
 
 
+@pytest.mark.skip(
+    reason="FR-019..022 / M1: national semantic profiles not on product ship list",
+)
 def test_tc_ev1120_008_us_and_ca_iwxxm_national_rows(client: TestClient) -> None:
     """TC-EV1120-008 / #1122 — IWXXM-family national rows + provenance URLs."""
     icao = _codes(
@@ -164,6 +176,9 @@ def test_tc_ev1120_008_us_and_ca_iwxxm_national_rows(client: TestClient) -> None
     assert "ca_eccc" in ca_reg["semantic_profiles"]
 
 
+@pytest.mark.skip(
+    reason="FR-019..022 / M1: national semantic profiles not on product ship list",
+)
 def test_tc_ev1120_018_mined_us_prob40_and_ca_up_awos(client: TestClient) -> None:
     """TC-EV1120-018 / #1122 deepen — AIM PROB40 + MANOBS UP AWOS-only rows.
 

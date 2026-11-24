@@ -35,7 +35,6 @@ max-complexity = 10
 "apps/backend/src/services/validation_orchestrator_part_2.py" = ["C901"]
 "apps/backend/src/utilities/codelist_parser_part_2.py" = ["C901"]
 "apps/backend/src/utilities/codelist_parser_part_2_mixin_1.py" = ["C901"]
-"apps/backend/src/routers/dissemination.py" = ["C901"]
 "apps/backend/src/routers/evaluation.py" = ["C901"]
 "apps/backend/src/routers/tac_quality.py" = ["C901"]
 "apps/backend/src/services/conversion_profiles_service.py" = ["C901"]

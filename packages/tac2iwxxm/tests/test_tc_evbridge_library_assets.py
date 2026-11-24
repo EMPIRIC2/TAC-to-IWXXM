@@ -18,10 +18,10 @@ from tac2iwxxm.library_assets import (
 
 
 def test_tc_evbridge_002_national_split_five_defaults() -> None:
-    """Each national line has five first-party library defaults."""
+    """Each shipped product line has five first-party library defaults (M1: ICAO)."""
     lines = canonical_national_line_ids()
-    assert "ICAO_2025" in lines
-    assert "US_FAA_NWS" in lines
+    assert lines == ("ICAO_2025",)
+    assert "US_FAA_NWS" not in lines
     assets = list_first_party_library_assets()
     assert len(assets) == len(lines) * len(LIBRARY_KINDS)
     for national in lines:
@@ -63,7 +63,7 @@ def test_tc_evbridge_003b_unknown_asset_and_fork() -> None:
 
 def test_tc_evbridge_004_first_party_non_deletable() -> None:
     """Mutate/delete of first-party fails closed."""
-    base = get_first_party_library_asset(first_party_library_id("decoding", "CA_ECCC"))
+    base = get_first_party_library_asset(first_party_library_id("decoding", "ICAO_2025"))
     assert base is not None
     with pytest.raises(PermissionError):
         assert_first_party_immutable(base, mutating=True)
@@ -71,6 +71,7 @@ def test_tc_evbridge_004_first_party_non_deletable() -> None:
     custom = fork_first_party_library(base.id, new_id="custom-dec-1", name="Custom dec")
     assert custom.name == "Custom dec"
     assert_first_party_immutable(custom, mutating=True)
+    assert get_first_party_library_asset(first_party_library_id("decoding", "CA_ECCC")) is None
 
 
 def test_tc_evbridge_011_require_rule_for_group() -> None:

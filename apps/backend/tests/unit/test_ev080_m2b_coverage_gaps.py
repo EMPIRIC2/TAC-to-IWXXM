@@ -21,7 +21,6 @@ from src import api_wire
 from src.config import icao_opmet as icao_cfg
 from src.config import iwxxm_versions as versions
 from src.routers import conversion as conversion_router
-from src.routers import dissemination as diss_router
 from src.routers import dissemination_router_helpers as diss_helpers
 from src.routers import icao_opmet as icao_router
 from src.schemas.work_session import WorkSessionUpdate
@@ -183,63 +182,18 @@ def test_iwxxm_readable_empty_field_amount_and_root_amount() -> None:
     readable_decode_from_iwxxm(root_amount)
 
 
-def test_dissemination_preflight_ok_false(convert_client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
-    from dissemination.rate_limit import DisseminationRateLimiter
-
-    monkeypatch.setattr(diss_router, "default_rate_limiter", DisseminationRateLimiter(max_per_minute=1000))
-    monkeypatch.setenv("DISSEMINATION_EGRESS_ALLOWLIST", "localhost")
-
-    async def fake_preflight(req):
-        return SimpleNamespace(ok=False, connectivity_ok=False, diffs=["x"], detail="no")
-
-    monkeypatch.setattr(diss_router, "run_db_preflight", fake_preflight)
+def test_dissemination_preflight_unmounted(convert_client: TestClient) -> None:
     resp = convert_client.post(
         "/api/v1/dissemination/preflight",
         content=b'{"sink_type":"sqlite","uri":"sqlite+aiosqlite:////tmp/x.db","ddl":false}',
         headers={"Content-Type": "application/json", "Authorization": "Bearer t"},
     )
-    assert resp.status_code == 200
-    assert not resp.json().get("handle")
+    # FR-052..056 / M1: dissemination HTTP unmounted.
+    assert resp.status_code == 404
 
 
-def test_dissemination_send_without_handle(
-    convert_client: TestClient, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
-) -> None:
-    """Cover False path of `if req.handle` after successful send (235→238)."""
-    from dissemination.rate_limit import DisseminationRateLimiter
-
-    monkeypatch.setattr(diss_router, "default_rate_limiter", DisseminationRateLimiter(max_per_minute=1000))
-    monkeypatch.setenv("DISSEMINATION_EGRESS_ALLOWLIST", "localhost,127.0.0.1")
-    db = tmp_path / "send.db"
-    uri = f"sqlite+aiosqlite:///{db}"
-
-    async def fake_preflight(_req):
-        return SimpleNamespace(ok=True, connectivity_ok=True, diffs=[], detail="ok")
-
-    async def fake_apply(_engine, **_k):
-        return None
-
-    monkeypatch.setattr(diss_router, "run_db_preflight", fake_preflight)
-    monkeypatch.setattr(diss_router, "apply_writer_contract", fake_apply)
-
-    class _Conn:
-        async def execute(self, *_a, **_k):
-            return None
-
-        async def __aenter__(self):
-            return self
-
-        async def __aexit__(self, *_a):
-            return False
-
-    class _Eng:
-        def begin(self):
-            return _Conn()
-
-        async def dispose(self):
-            return None
-
-    monkeypatch.setattr(diss_router, "create_async_engine", lambda *_a, **_k: _Eng())
+def test_dissemination_send_unmounted(convert_client: TestClient, tmp_path: Path) -> None:
+    uri = f"sqlite+aiosqlite:///{tmp_path / 'send.db'}"
     resp = convert_client.post(
         "/api/v1/dissemination/send",
         content=json.dumps(
@@ -252,8 +206,8 @@ def test_dissemination_send_without_handle(
         ).encode(),
         headers={"Content-Type": "application/json", "Authorization": "Bearer t"},
     )
-    assert resp.status_code == 200
-    assert resp.json().get("ok") is True
+    # FR-052..056 / M1: dissemination HTTP unmounted.
+    assert resp.status_code == 404
 
 
 def test_airport_builder_override_source_and_validator(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -1709,3 +1663,231 @@ def test_convert_accumulator_add_aggregated_validation_issues_ignores_falsy_payl
     acc.add_aggregated_validation_issues("validate", None)
 
     assert acc.issues == []
+
+
+# --- EV-requirements-baseline M1: residual coverage after dissemination router delete ---
+
+_CONVERT_TAC = "METAR KJFK 121151Z 18008KT 10SM FEW250 22/14 A3012="
+_CONVERT_XML = "<iwxxm:METAR xmlns:iwxxm='http://icao.int/iwxxm/2025-2'/>"
+
+
+def test_package_stages_payload_maps_stage_issues() -> None:
+    issue = SimpleNamespace(layer="xsd", severity="error", message="m", location="l", code="C", start=1, end=2)
+    report = SimpleNamespace(
+        stages=[
+            SimpleNamespace(stage="xsd", label="XSD", ok=False, issues=[issue]),
+            SimpleNamespace(stage="sch", label="SCH", ok=True, issues=None),
+        ]
+    )
+    out = api_wire._package_stages_payload(report)
+    assert out is not None
+    assert out[0]["stage"] == "xsd"
+    assert out[0]["ok"] is False
+    assert out[0]["issues"][0]["code"] == "C"
+    assert out[1]["issues"] == []
+
+
+def test_get_version_config_for_emit_profile_returns_profile_scoped_line() -> None:
+    cfg = versions.get_version_config_for_emit_profile("3.0.0", "ca_eccc")
+    assert cfg is versions.PROFILE_SCOPED_VERSIONS["3.0.0"]
+    with pytest.raises(versions.VersionDeprecatedError):
+        versions.get_version_config_for_emit_profile("3.0.0", "annex3")
+
+
+def test_migrate_xml_with_emit_profile_uses_profile_scoped_config() -> None:
+    from src.utilities.version_migration import migrate_xml
+
+    xml = '<?xml version="1.0"?><iwxxm:METAR xmlns:iwxxm="http://icao.int/iwxxm/2023-1"/>'
+    out, _warnings = migrate_xml(xml, "2023-1", "2025-2", emit_profile="annex3")
+    assert "2025-2" in out
+
+
+def test_profile_catalog_iwxxm_line_us_faa_and_vendor_pins() -> None:
+    from src.services import profile_catalog
+
+    assert profile_catalog._iwxxm_line("US_FAA_NWS", {}) == "WMO IWXXM 2025-2 core + iwxxm-us 3.0"
+    assert profile_catalog._iwxxm_line("OTHER", {"a": "x", "b": 2}) == "x; 2"
+    assert profile_catalog._iwxxm_line("OTHER", {}) is None
+
+
+def test_resolve_report_variant_accepts_rejects_and_blank(monkeypatch: pytest.MonkeyPatch) -> None:
+    from src.routers import conversion_part_1
+
+    assert conversion_part_1._resolve_report_variant("annex3", "METAR", "  ") is None
+    monkeypatch.setattr(
+        conversion_part_1,
+        "supported_report_variants_for_profile",
+        lambda _profile, _product: frozenset({"METAR", "LWIS"}),
+    )
+    assert conversion_part_1._resolve_report_variant("annex3", "METAR", "lwis") == "LWIS"
+    with pytest.raises(HTTPException) as exc:
+        conversion_part_1._resolve_report_variant("annex3", "METAR", "nope")
+    assert exc.value.status_code == 400
+    monkeypatch.setattr(
+        conversion_part_1,
+        "supported_report_variants_for_profile",
+        lambda _profile, _product: frozenset(),
+    )
+    with pytest.raises(HTTPException) as exc:
+        conversion_part_1._resolve_report_variant("annex3", "METAR", "nope")
+    assert exc.value.status_code == 400
+
+
+def test_infer_report_variant_from_sample_lead_token_and_product(monkeypatch: pytest.MonkeyPatch) -> None:
+    from src.routers import conversion_part_1
+
+    monkeypatch.setattr(
+        conversion_part_1,
+        "supported_report_variants_for_profile",
+        lambda _profile, _product: frozenset({"METAR", "LWIS"}),
+    )
+    assert conversion_part_1._infer_report_variant_from_sample("annex3", "METAR", "LWIS CYUL 1800Z") == "LWIS"
+    assert conversion_part_1._infer_report_variant_from_sample("annex3", "METAR", "AUTO CYUL 1800Z") == "METAR"
+    monkeypatch.setattr(
+        conversion_part_1,
+        "supported_report_variants_for_profile",
+        lambda _profile, _product: frozenset({"SAWR"}),
+    )
+    assert conversion_part_1._infer_report_variant_from_sample("annex3", "METAR", "AUTO CYUL 1800Z") is None
+    # Sample without a leading alphabetic token skips the lead-match branch.
+    assert conversion_part_1._infer_report_variant_from_sample("annex3", "METAR", "18008KT") is None
+
+
+def test_convert_json_body_report_variant_and_output_spec(
+    convert_client: TestClient, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from src.routers import conversion_convert_continue_part2 as part2
+    from src.routers import conversion_part_1
+
+    monkeypatch.setattr(api_module, "convert_metar_tac_with_metadata", lambda *_a, **_k: (_CONVERT_XML, None))
+    monkeypatch.setattr(
+        conversion_part_1,
+        "supported_report_variants_for_profile",
+        lambda _profile, _product: frozenset({"METAR"}),
+    )
+    monkeypatch.setattr(
+        part2,
+        "ca_eccc_output_spec_for_request",
+        lambda **_k: {"suggested_filename": "A_TEST.xml"},
+    )
+    resp = convert_client.post(
+        "/api/v1/convert",
+        json={"metars": [_CONVERT_TAC], "product": "METAR", "report_variant": "metar", "lint": False},
+    )
+    assert resp.status_code == 200, resp.text[:400]
+    metadata = resp.json()["metadata"]
+    assert metadata["report_variant"] == "METAR"
+    assert metadata["output_spec"]["suggested_filename"] == "A_TEST.xml"
+
+
+def _force_ca_semantic(monkeypatch: pytest.MonkeyPatch) -> None:
+    import dataclasses
+
+    from src.routers import conversion_convert_continue as convert_continue
+
+    original = api_module._resolve_request_profiles
+
+    def _wrapped(**kwargs: Any) -> Any:
+        return dataclasses.replace(original(**kwargs), semantic_canonical="ca_eccc")
+
+    monkeypatch.setattr(api_module, "_resolve_request_profiles", _wrapped)
+    # ca_eccc maps to IWXXM 3.0.0, which is no longer a supported ship version.
+    monkeypatch.setattr(convert_continue, "_resolve_effective_iwxxm_version", lambda *_a, **_k: "2025-2")
+
+
+def test_convert_ca_extension_bundle_missing_returns_400(
+    convert_client: TestClient, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    import sys
+
+    _force_ca_semantic(monkeypatch)
+    monkeypatch.setitem(sys.modules, "iwxxm_validate.ca_eccc_bundle", None)
+    resp = convert_client.post(
+        "/api/v1/convert",
+        data={"manual_text": _CONVERT_TAC, "product": "METAR", "extensions": "IWXXM_CA", "lint": "false"},
+    )
+    assert resp.status_code == 400
+    assert resp.json()["detail"]["code"] == "missing_ca_extension_bundle"
+
+
+def test_convert_ca_extension_bundle_available_proceeds(
+    convert_client: TestClient, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    import sys
+
+    _force_ca_semantic(monkeypatch)
+    monkeypatch.setitem(
+        sys.modules,
+        "iwxxm_validate.ca_eccc_bundle",
+        SimpleNamespace(ca_eccc_bundle_available=lambda **_k: True),
+    )
+    monkeypatch.setattr(api_module, "convert_metar_tac_with_metadata", lambda *_a, **_k: (_CONVERT_XML, None))
+    resp = convert_client.post(
+        "/api/v1/convert",
+        data={"manual_text": _CONVERT_TAC, "product": "METAR", "extensions": "IWXXM_CA", "lint": "false"},
+    )
+    assert resp.status_code == 200, resp.text[:400]
+
+
+def test_convert_iwxxm_pass_through_validate_output_branches(
+    convert_client: TestClient, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    issue = SimpleNamespace(message="", code=None, location="loc", layer="xsd")
+    reports: list[Any] = [
+        SimpleNamespace(ok=True, issues=[]),
+        SimpleNamespace(ok=False, issues=[issue]),
+    ]
+    calls = {"n": 0}
+
+    def fake_validate(*_a: Any, **_k: Any) -> Any:
+        report = reports[calls["n"]]
+        calls["n"] += 1
+        return report
+
+    monkeypatch.setattr(api_module, "_call_iwxxm_validate", fake_validate)
+    form = {"manual_text": _CONVERT_XML, "product": "iwxxm", "validate_output": "true"}
+    ok_resp = convert_client.post("/api/v1/convert", data=form)
+    assert ok_resp.status_code == 200, ok_resp.text[:400]
+    bad_resp = convert_client.post("/api/v1/convert", data=form)
+    assert bad_resp.status_code == 200, bad_resp.text[:400]
+
+    def http_boom(*_a: Any, **_k: Any) -> Any:
+        raise HTTPException(status_code=418, detail="teapot")
+
+    monkeypatch.setattr(api_module, "_call_iwxxm_validate", http_boom)
+    assert convert_client.post("/api/v1/convert", data=form).status_code == 418
+
+
+def test_validate_comprehensive_includes_package_stages_and_extensions(
+    convert_client: TestClient, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    stage = SimpleNamespace(stage="xsd", label="XSD", ok=True, issues=[])
+    report = SimpleNamespace(ok=True, issues=[], stages=[stage])
+    monkeypatch.setattr(api_module, "_call_iwxxm_validate", lambda *_a, **_k: report)
+    monkeypatch.setattr(api_module, "_resolve_request_extensions", lambda *_a, **_k: ["IWXXM_US"])
+    resp = convert_client.post(
+        "/api/v1/validate",
+        data={"xml_content": _CONVERT_XML, "iwxxm_version": "2025-2", "layers": ["XML_WELLFORMED"]},
+    )
+    assert resp.status_code == 200, resp.text[:400]
+    payload = resp.json()
+    assert payload["package_stages"][0]["stage"] == "xsd"
+    assert payload["extensions"] == ["IWXXM_US"]
+
+
+def test_convert_validate_output_all_layers_pass_keeps_existing_layers(
+    convert_client: TestClient, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(api_module, "convert_metar_tac_with_metadata", lambda *_a, **_k: (_CONVERT_XML, None))
+    monkeypatch.setattr(api_module, "_call_iwxxm_validate", lambda *_a, **_k: SimpleNamespace(ok=True, issues=[]))
+
+    class _Orchestrator:
+        def validate_complete(self, **_kwargs: Any) -> Any:
+            return SimpleNamespace(is_valid=True, all_issues=[], issues_by_layer={})
+
+    monkeypatch.setattr(api_module, "get_validation_orchestrator", lambda: _Orchestrator())
+    resp = convert_client.post(
+        "/api/v1/convert",
+        data={"manual_text": _CONVERT_TAC, "product": "METAR", "validate_output": "true", "lint": "false"},
+    )
+    assert resp.status_code == 200, resp.text[:400]

@@ -45,8 +45,8 @@ def client() -> TestClient:
 def test_bug_2026_10_29_vaa_convert_us_faa_nws_libraries_not_500(
     client: TestClient,
 ) -> None:
-    """Browser-shaped multipart VAA + US libraries must return non-500 (prefer 200)."""
-    response = client.post(
+    """Dropped US libraries fail closed (non-500); VAA still converts on ICAO."""
+    dropped = client.post(
         "/api/v1/convert",
         files={
             "manual_text": (None, VAA_TOKYO),
@@ -56,6 +56,30 @@ def test_bug_2026_10_29_vaa_convert_us_faa_nws_libraries_not_500(
             "iwxxm_validation_library_id": (None, "LIB.IWXXM_VALIDATION.US_FAA_NWS"),
             "dissemination_library_id": (None, "LIB.DISSEMINATION.US_FAA_NWS"),
             "decoding_library_id": (None, "LIB.DECODING.US_FAA_NWS"),
+            "iwxxm_version": (None, "2025-2"),
+            "validate_output": (None, "false"),
+            "validation_level": (None, "basic"),
+            "stop_on_error": (None, "false"),
+            "include_nil_reasons": (None, "true"),
+            "log_level": (None, "INFO"),
+            "preview": (None, "true"),
+            "propagate_residuals_to_remarks": (None, "false"),
+        },
+    )
+    assert dropped.status_code != 500, dropped.text[:800]
+    assert dropped.status_code in {400, 422}, dropped.text[:800]
+    assert "US_FAA_NWS" in dropped.text
+
+    response = client.post(
+        "/api/v1/convert",
+        files={
+            "manual_text": (None, VAA_TOKYO),
+            "product": (None, "VAA"),
+            "conversion_library_id": (None, "LIB.CONVERSION.ICAO_2025"),
+            "tac_validation_library_id": (None, "LIB.TAC_VALIDATION.ICAO_2025"),
+            "iwxxm_validation_library_id": (None, "LIB.IWXXM_VALIDATION.ICAO_2025"),
+            "dissemination_library_id": (None, "LIB.DISSEMINATION.ICAO_2025"),
+            "decoding_library_id": (None, "LIB.DECODING.ICAO_2025"),
             "iwxxm_version": (None, "2025-2"),
             "validate_output": (None, "false"),
             "validation_level": (None, "basic"),

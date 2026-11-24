@@ -81,6 +81,7 @@ vi.mock('./LiveWorldMap', () => ({
 }));
 import { clearOverlayOnAuthLoss } from '@/app/utils/clearOverlayOnAuthLoss';
 import { operatorDisseminationUiConfig } from '@/utils/operatorDisseminationUi';
+import { softPreviewUiConfig } from '@/utils/softPreviewUi';
 import { defaultLibraryId } from '@/utils/libraryIds';
 import {
   CONVERSION_METADATA_PREFS_KEY,
@@ -565,6 +566,8 @@ describe('FileConverter Component', () => {
     vi.clearAllMocks();
     vi.spyOn(window, 'confirm').mockReturnValue(true);
     operatorDisseminationUiConfig.destinationsEnabled = false;
+    // Harness keeps soft-preview control mountable; product default remains off.
+    softPreviewUiConfig.enabled = true;
     // Reset queued Once/implementations so coverage runs do not leak mocks across cases.
     mockConvertMetarToIwxxm.mockReset();
     mockConvertBulletin.mockReset();
@@ -691,6 +694,7 @@ describe('FileConverter Component', () => {
 
   afterEach(() => {
     operatorDisseminationUiConfig.destinationsEnabled = false;
+    softPreviewUiConfig.enabled = false;
     cleanup();
   });
 
@@ -878,7 +882,7 @@ describe('FileConverter Component', () => {
       expect(await screen.findByTestId('convert-profile-drawer')).toBeInTheDocument();
     });
 
-    it('UJ-088: profile Change opens drawer; radio Apply/Reset update profile', async () => {
+    it('UJ-088: profile Change opens drawer; Apply/Reset keep ICAO-only profile', async () => {
       mockReadGuestConverterState.mockReturnValue(null);
       const user = userEvent.setup();
       render(<FileConverter {...defaultProps} />);
@@ -887,10 +891,9 @@ describe('FileConverter Component', () => {
       const drawer = await screen.findByTestId('convert-profile-drawer');
       expect(drawer).toBeInTheDocument();
       const radios = within(drawer).getAllByRole('radio');
-      expect(radios.length).toBeGreaterThan(1);
-      const other = radios.find((radio) => !(radio as HTMLInputElement).checked);
-      expect(other).toBeTruthy();
-      await user.click(other as HTMLElement);
+      // M1: ICAO ship list only (annex3 filtered out of country-preset lines).
+      expect(radios.length).toBe(1);
+      expect(within(drawer).getByText(/ICAO \/ WMO Annex 3/i)).toBeInTheDocument();
       await user.click(screen.getByTestId('convert-profile-apply'));
       await waitFor(() => {
         expect(screen.queryByTestId('convert-profile-drawer')).not.toBeInTheDocument();
@@ -1192,13 +1195,10 @@ describe('FileConverter Component', () => {
       expect(screen.queryByTestId('upload-to-database-button')).not.toBeInTheDocument();
     });
 
-    it('keeps dissemination drawer available without upload dialog', async () => {
-      operatorDisseminationUiConfig.destinationsEnabled = true;
+    it('keeps dissemination drawer hidden when destinations UI is off (M1)', () => {
       render(<FileConverter {...defaultProps} />);
-      expect(
-        await screen.findByTestId('open-dissemination-drawer'),
-      ).toBeInTheDocument();
-      expect(screen.queryByTestId('close-upload-dialog')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('open-dissemination-drawer')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('upload-to-database-button')).not.toBeInTheDocument();
     });
 
     it('should open preferences dialog', async () => {
@@ -2925,19 +2925,10 @@ describe('FileConverter Component', () => {
       });
     });
 
-    it('opens dissemination drawer from Disseminate control when destinations UI on', async () => {
-      operatorDisseminationUiConfig.destinationsEnabled = true;
-      const user = userEvent.setup({ delay: null });
+    it('does not open dissemination drawer when destinations UI is off', () => {
       render(<FileConverter {...defaultProps} />);
-
-      const disseminate = screen.getByTestId('open-dissemination-drawer');
-      expect(disseminate).toBeEnabled();
-      await user.click(disseminate);
-
-      expect(screen.getByTestId('dissemination-drawer')).toBeInTheDocument();
-      expect(
-        screen.getByRole('heading', { name: /dissemination/i }),
-      ).toBeInTheDocument();
+      expect(screen.queryByTestId('open-dissemination-drawer')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('dissemination-drawer')).not.toBeInTheDocument();
     });
 
     it('batch convert with no selection shows error toast', async () => {
@@ -4301,7 +4292,7 @@ describe('FileConverter Component', () => {
       expect((screen.getByTestId('tac-editor') as HTMLTextAreaElement).value).toBe('');
     });
 
-    it('scopes examples to the selected semantic profile', async () => {
+    it('scopes examples to the ICAO semantic profile (M1)', async () => {
       const user = userEvent.setup({ delay: null });
       render(<FileConverter accessToken="tok" />);
 
@@ -4313,11 +4304,11 @@ describe('FileConverter Component', () => {
 
       expect(
         await screen.findByRole('option', {
-          name: /METAR WMO A3-1 \(annex3\).*Reused for United States \(FAA\/NWS\)/i,
+          name: /METAR WMO A3-1 \(annex3\)/i,
         }),
       ).toBeInTheDocument();
       expect(
-        screen.queryByRole('option', { name: /TC SIGMET WMO A6-2-TC/i }),
+        screen.queryByRole('option', { name: /Reused for United States/i }),
       ).not.toBeInTheDocument();
     });
 
@@ -4333,11 +4324,11 @@ describe('FileConverter Component', () => {
 
       expect(
         await screen.findByRole('option', {
-          name: /METAR WMO A3-1 \(annex3\).*Reused for Canada \(ECCC\)/i,
+          name: /METAR WMO A3-1 \(annex3\)/i,
         }),
       ).toBeInTheDocument();
       expect(
-        screen.queryByRole('option', { name: /TCA WMO A2-2 \(annex3\)/i }),
+        screen.queryByRole('option', { name: /Reused for Canada/i }),
       ).not.toBeInTheDocument();
       expect(mockFetchProfileCatalog).not.toHaveBeenCalled();
     });
@@ -5232,7 +5223,7 @@ describe('FileConverter Component', () => {
       );
     });
 
-    it('loads iwxxm_us profile and default ?? true flags when prefs omit booleans', async () => {
+    it('loads iwxxm_us prefs as ICAO_2025 with default ?? true flags', async () => {
       const user = userEvent.setup({ delay: null });
       localStorage.setItem(
         'metar_converter_preferences',
@@ -5249,7 +5240,7 @@ describe('FileConverter Component', () => {
       await waitFor(() => {
         expect(mockConvertMetarToIwxxm).toHaveBeenCalledWith(
           expect.objectContaining({
-            profile: 'US_FAA_NWS',
+            profile: 'ICAO_2025',
             includeNilReasons: true,
           }),
         );
@@ -5629,10 +5620,7 @@ describe('FileConverter Component', () => {
       spy.mockRestore();
     });
 
-    it('resets a sticky US profile to ICAO/WMO when an Annex 3 demo is loaded', async () => {
-      // Regression: loading the official Annex 3 YUDO TAF (which contains BECMG)
-      // under a sticky US profile wrongly flagged US_TAF_BECMG_FORBIDDEN because the
-      // demo kept the prior US overlay instead of its native Annex 3 profile.
+    it('keeps ICAO/WMO active when loading an Annex 3 demo (M1)', async () => {
       localStorage.setItem(
         'metar_converter_preferences',
         JSON.stringify({
@@ -5644,15 +5632,13 @@ describe('FileConverter Component', () => {
       const user = userEvent.setup({ delay: null });
       render(<FileConverter {...defaultProps} />);
 
-      // Seed input so the full workbench (examples menu + profile bar) renders.
       fireEvent.change(screen.getByTestId('tac-editor'), {
         target: { value: 'TAF KDEN 151800Z 1600/1618 31008KT 9999 FEW040=' },
       });
 
-      // Sticky US profile is active before loading the demo.
       await waitFor(() => {
         expect(screen.getByTestId('convert-active-profile')).toHaveTextContent(
-          'United States (FAA/NWS)',
+          'ICAO / WMO Annex 3 (2025)',
         );
       });
 
@@ -5661,11 +5647,9 @@ describe('FileConverter Component', () => {
         await screen.findByRole('option', { name: /TAF WMO A5-1 \(annex3\)/i }),
       );
 
-      // Demo loaded its Annex 3 TAC …
       expect((screen.getByTestId('tac-editor') as HTMLTextAreaElement).value).toContain(
         'TAF YUDO',
       );
-      // … and the active profile reset to the Annex 3 line so BECMG is not US-forbidden.
       await waitFor(() => {
         expect(screen.getByTestId('convert-active-profile')).toHaveTextContent(
           'ICAO / WMO Annex 3 (2025)',
@@ -6039,17 +6023,11 @@ describe('FileConverter Component', () => {
       expect(aside.className.split(/\s+/)).not.toContain('w-full');
     });
 
-    it('passes speci product to dissemination drawer when SPECI is selected', async () => {
-      operatorDisseminationUiConfig.destinationsEnabled = true;
+    it('does not expose dissemination drawer for SPECI when destinations UI is off', async () => {
       const user = userEvent.setup({ delay: null });
       render(<FileConverter {...defaultProps} />);
-
-      fireEvent.change(screen.getByTestId('product-type-select'), {
-        target: { value: 'SPECI' },
-      });
-      await user.click(screen.getByTestId('open-dissemination-drawer'));
-
-      expect(screen.getByTestId('dissemination-drawer')).toBeInTheDocument();
+      await user.selectOptions(screen.getByTestId('product-type-select'), 'SPECI');
+      expect(screen.queryByTestId('open-dissemination-drawer')).not.toBeInTheDocument();
     });
 
     it('no-ops convert and convert-and-send when workbench is read-only', async () => {
@@ -7165,28 +7143,28 @@ describe('FileConverter Component', () => {
       });
     });
 
-    it('hydrates ca_eccc profile from loaded work session', () => {
+    it('hydrates ca_eccc profile from loaded work session as ICAO', () => {
       render(
         <FileConverter
           {...defaultProps}
           loadedWorkSession={
             {
-              id: 'ca-sess',
+              id: 'sess-ca',
               status: 'draft',
+              manual_tac: 'METAR CYUL=',
               conversion_params: {
-                conversionLibraryId: defaultLibraryId('conversion', 'CA_ECCC'),
-                product: 'METAR',
+                profile: 'ca_eccc',
               },
-            } as any
+            } as never
           }
         />,
       );
       expect(screen.getByTestId('conversion-library-select')).toHaveValue(
-        defaultLibraryId('conversion', 'CA_ECCC'),
+        defaultLibraryId('conversion', 'ICAO_2025'),
       );
     });
 
-    it('reloads sparse ca_eccc preferences via dialog save', async () => {
+    it('reloads sparse ca_eccc preferences as ICAO via dialog save', async () => {
       const user = userEvent.setup({ delay: null });
       localStorage.setItem(
         'metar_converter_preferences',
@@ -7199,7 +7177,7 @@ describe('FileConverter Component', () => {
         expect(mockToast.info).toHaveBeenCalled();
       });
       expect(screen.getByTestId('conversion-library-select')).toHaveValue(
-        defaultLibraryId('conversion', 'CA_ECCC'),
+        defaultLibraryId('conversion', 'ICAO_2025'),
       );
     });
   });
@@ -7649,94 +7627,34 @@ describe('FileConverter Component', () => {
       expect(screen.queryByTestId('semantic-preset-select')).not.toBeInTheDocument();
     });
 
-    it('hydrates dissemination template ids from conversion_params into the drawer', async () => {
-      const user = userEvent.setup({ delay: null });
-      operatorDisseminationUiConfig.destinationsEnabled = true;
-      mockListTemplates.mockResolvedValue({
-        items: [
-          {
-            id: 'tpl-from-session',
-            user_id: 'u',
-            slug: 'saved-db',
-            name: 'Saved DB',
-            sinkType: 'sqlite',
-            product: 'metar',
-            ddl: true,
-            params: {},
-            shared: false,
-            created_at: '',
-            updated_at: '',
-          },
-        ],
-      });
+    it('does not hydrate dissemination template UI when destinations are off', () => {
       render(
         <FileConverter
           {...defaultProps}
           accessToken="jwt-tpl"
           loadedWorkSession={
             {
-              id: 'sess-tpl-1',
+              id: 'sess-tpl',
               status: 'draft',
-              manual_tac: 'METAR KJFK 121851Z 18004KT 10SM FEW250 18/08 A3012=',
-              conversion_params: { dissemination_template_id: 'tpl-from-session' },
+              manual_tac: 'METAR KJFK=',
+              conversion_params: { dissemination_template_id: 'tpl-1' },
             } as never
           }
         />,
       );
-
-      await user.click(screen.getByTestId('open-dissemination-drawer'));
-      await waitFor(() => {
-        expect(screen.getByTestId('dissemination-template-select')).toHaveValue(
-          'tpl-from-session',
-        );
-      });
-    });
-
-    it('clears selected disseminationTemplateId when auth token is removed', async () => {
-      const user = userEvent.setup({ delay: null });
-      operatorDisseminationUiConfig.destinationsEnabled = true;
-      mockListTemplates.mockResolvedValue({
-        items: [
-          {
-            id: 'tpl-logout',
-            user_id: 'u',
-            slug: 'bye',
-            name: 'Bye',
-            sinkType: 'sqlite',
-            product: 'metar',
-            ddl: false,
-            params: {},
-            shared: false,
-            created_at: '',
-            updated_at: '',
-          },
-        ],
-      });
-      const { rerender } = render(
-        <FileConverter
-          {...defaultProps}
-          accessToken="jwt-tpl"
-          loadedWorkSession={
-            {
-              id: 'sess-tpl-logout',
-              status: 'draft',
-              manual_tac: 'METAR KJFK 121851Z 18004KT 10SM FEW250 18/08 A3012=',
-              conversion_params: { disseminationTemplateId: 'tpl-logout' },
-            } as never
-          }
-        />,
-      );
-      await user.click(screen.getByTestId('open-dissemination-drawer'));
-      await waitFor(() => {
-        expect(screen.getByTestId('dissemination-template-select')).toHaveValue(
-          'tpl-logout',
-        );
-      });
-
-      rerender(<FileConverter {...defaultProps} />);
+      expect(screen.queryByTestId('open-dissemination-drawer')).not.toBeInTheDocument();
       expect(
         screen.queryByTestId('dissemination-template-select'),
       ).not.toBeInTheDocument();
+    });
+
+    it('keeps dissemination controls absent when auth token is removed', () => {
+      const { rerender } = render(
+        <FileConverter {...defaultProps} accessToken="jwt-tpl" />,
+      );
+      expect(screen.queryByTestId('open-dissemination-drawer')).not.toBeInTheDocument();
+      rerender(<FileConverter {...defaultProps} />);
+      expect(screen.queryByTestId('open-dissemination-drawer')).not.toBeInTheDocument();
     });
 
     it('ignores overlay list resolution after unmount without crashing', async () => {
@@ -7926,80 +7844,16 @@ describe('FileConverter Component', () => {
       expect(librarySelect).toHaveValue(defaultLibraryId('conversion', 'ICAO_2025'));
     });
 
-    it('keeps dissemination template state stable when the same id is reselected', async () => {
-      const user = userEvent.setup({ delay: null });
-      operatorDisseminationUiConfig.destinationsEnabled = true;
-      mockListTemplates.mockResolvedValue({
-        items: [
-          {
-            id: 'tpl-stable',
-            user_id: 'u',
-            slug: 'saved-db',
-            name: 'Saved DB',
-            sinkType: 'sqlite',
-            product: 'metar',
-            ddl: true,
-            params: {},
-            shared: false,
-            created_at: '',
-            updated_at: '',
-          },
-        ],
-      });
-
-      render(
-        <FileConverter
-          {...defaultProps}
-          accessToken="jwt-tpl"
-          loadedWorkSession={
-            {
-              id: 'sess-tpl-stable',
-              status: 'draft',
-              manual_tac: 'METAR KJFK 121851Z 18004KT 10SM FEW250 18/08 A3012=',
-              conversion_params: { dissemination_template_id: 'tpl-stable' },
-            } as never
-          }
-        />,
-      );
-
-      await user.click(screen.getByTestId('open-dissemination-drawer'));
-      const templateSelect = await screen.findByTestId('dissemination-template-select');
-      expect(templateSelect).toHaveValue('tpl-stable');
-
-      fireEvent.change(templateSelect, { target: { value: 'tpl-stable' } });
-      expect(screen.getByTestId('dissemination-template-select')).toHaveValue(
-        'tpl-stable',
-      );
+    it('does not mount dissemination template select by default', () => {
+      render(<FileConverter {...defaultProps} accessToken="jwt-tpl" />);
+      expect(
+        screen.queryByTestId('dissemination-template-select'),
+      ).not.toBeInTheDocument();
     });
 
-    it('keeps dissemination template params stable when the drawer reports the same id', async () => {
-      vi.resetModules();
-      vi.doMock('./DisseminationDrawer', () => ({
-        DisseminationDrawer: ({
-          open,
-          disseminationTemplateId,
-          onDisseminationTemplateChange,
-        }: {
-          open: boolean;
-          disseminationTemplateId?: string;
-          onDisseminationTemplateChange?: (templateId: string) => void;
-        }) =>
-          open ? (
-            <button
-              type="button"
-              data-testid="mock-dissemination-drawer-trigger"
-              onClick={() =>
-                onDisseminationTemplateChange?.(disseminationTemplateId ?? '')
-              }
-            >
-              {disseminationTemplateId ?? ''}
-            </button>
-          ) : null,
-      }));
-
-      const { FileConverter: MockedFileConverter } = await import('./FileConverter');
+    it('does not expose dissemination drawer controls by default (M1)', async () => {
       render(
-        <MockedFileConverter
+        <FileConverter
           {...defaultProps}
           accessToken="jwt-tpl"
           loadedWorkSession={
@@ -8012,61 +7866,18 @@ describe('FileConverter Component', () => {
           }
         />,
       );
-
-      fireEvent.click(screen.getByTestId('open-dissemination-drawer'));
-      await waitFor(() => {
-        expect(
-          screen.getByTestId('mock-dissemination-drawer-trigger'),
-        ).toHaveTextContent('tpl-stable');
-      });
-      fireEvent.click(screen.getByTestId('mock-dissemination-drawer-trigger'));
-      vi.doUnmock('./DisseminationDrawer');
+      expect(screen.queryByTestId('open-dissemination-drawer')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('dissemination-drawer')).not.toBeInTheDocument();
     });
 
-    it('updates dissemination template params when the drawer reports a new id', async () => {
-      vi.resetModules();
-      vi.doMock('./DisseminationDrawer', () => ({
-        DisseminationDrawer: ({
-          open,
-          disseminationTemplateId,
-          onDisseminationTemplateChange,
-        }: {
-          open: boolean;
-          disseminationTemplateId?: string;
-          onDisseminationTemplateChange?: (templateId: string) => void;
-        }) =>
-          open ? (
-            <button
-              type="button"
-              data-testid="mock-dissemination-drawer-update"
-              onClick={() => onDisseminationTemplateChange?.('tpl-updated')}
-            >
-              {disseminationTemplateId ?? ''}
-            </button>
-          ) : null,
-      }));
-
-      const { FileConverter: MockedFileConverter } = await import('./FileConverter');
-      render(<MockedFileConverter {...defaultProps} accessToken="jwt-tpl" />);
-
-      fireEvent.click(screen.getByTestId('open-dissemination-drawer'));
-      await waitFor(() => {
-        expect(
-          screen.getByTestId('mock-dissemination-drawer-update'),
-        ).toHaveTextContent('');
-      });
-
-      fireEvent.click(screen.getByTestId('mock-dissemination-drawer-update'));
-      await waitFor(() => {
-        expect(
-          screen.getByTestId('mock-dissemination-drawer-update'),
-        ).toHaveTextContent('tpl-updated');
-      });
-      vi.doUnmock('./DisseminationDrawer');
+    it('hides convert-and-send / open-dissemination when destinations UI is off', () => {
+      render(<FileConverter {...defaultProps} accessToken="jwt-tpl" />);
+      expect(screen.queryByTestId('open-dissemination-drawer')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('convert-and-send-button')).not.toBeInTheDocument();
     });
 
-    it('hydrates report_variant and reportVariant from conversion_params', async () => {
-      const { rerender } = render(
+    it('does not show report-variant select for ICAO-only product (M1)', async () => {
+      render(
         <FileConverter
           {...defaultProps}
           accessToken="jwt-ov"
@@ -8085,30 +7896,11 @@ describe('FileConverter Component', () => {
         />,
       );
       await waitFor(() => {
-        expect(screen.getByTestId('report-variant-select')).toHaveValue('LWIS');
+        expect(screen.getByTestId('conversion-library-select')).toHaveValue(
+          defaultLibraryId('conversion', 'ICAO_2025'),
+        );
       });
-
-      rerender(
-        <FileConverter
-          {...defaultProps}
-          accessToken="jwt-ov"
-          loadedWorkSession={
-            {
-              id: 'sess-rv-2',
-              status: 'draft',
-              manual_tac: '',
-              conversion_params: {
-                profile: 'ca_eccc',
-                product: 'METAR',
-                reportVariant: 'SAWR',
-              },
-            } as never
-          }
-        />,
-      );
-      await waitFor(() => {
-        expect(screen.getByTestId('report-variant-select')).toHaveValue('SAWR');
-      });
+      expect(screen.queryByTestId('report-variant-select')).not.toBeInTheDocument();
     });
 
     it('live IWXXM includes overlayId when hydrated', async () => {
@@ -8156,9 +7948,8 @@ describe('FileConverter Component', () => {
   });
 
   describe('country preset', () => {
-    it('sets the four libraries together and leaves a later single change alone', async () => {
+    it('country preset lists ICAO only and keeps libraries on that line', async () => {
       const user = userEvent.setup({ delay: null });
-      const confirm = vi.spyOn(window, 'confirm').mockReturnValue(true);
       render(<FileConverter accessToken="tok" />);
 
       const preset = screen.getByTestId('country-preset-select');
@@ -8166,70 +7957,21 @@ describe('FileConverter Component', () => {
       expect(screen.getByTestId('country-preset-help')).toHaveTextContent(
         /change any one of them afterward/i,
       );
-      expect(mockFetchProfileCatalog).toHaveBeenCalledWith('tok');
+      const optionValues = Array.from(
+        (preset as HTMLSelectElement).querySelectorAll('option'),
+      ).map((o) => o.getAttribute('value'));
+      expect(optionValues).toContain('ICAO_2025');
+      expect(optionValues).not.toContain('US_FAA_NWS');
+      expect(optionValues).not.toContain('CA_ECCC');
 
-      await user.selectOptions(preset, 'US_FAA_NWS');
-      expect(confirm).not.toHaveBeenCalled();
       expect(screen.getByTestId('conversion-library-select')).toHaveValue(
-        defaultLibraryId('conversion', 'US_FAA_NWS'),
+        defaultLibraryId('conversion', 'ICAO_2025'),
       );
-      expect(screen.getByTestId('decoding-library-select')).toHaveValue(
-        defaultLibraryId('decoding', 'US_FAA_NWS'),
-      );
-      expect(screen.getByTestId('tac-validation-library-select')).toHaveValue(
-        defaultLibraryId('tac_validation', 'US_FAA_NWS'),
-      );
-      expect(screen.getByTestId('iwxxm-validation-library-select')).toHaveValue(
-        defaultLibraryId('iwxxm_validation', 'US_FAA_NWS'),
-      );
-
-      await user.selectOptions(preset, '');
-      expect(screen.getByTestId('country-preset-select')).toHaveValue('US_FAA_NWS');
-      expect(screen.getByTestId('decode-panel-mock')).toHaveTextContent(
-        'United States (FAA/NWS)',
-      );
-      expect(screen.getByTestId('conversion-library-select')).toHaveValue(
-        defaultLibraryId('conversion', 'US_FAA_NWS'),
-      );
-
       await user.selectOptions(
         screen.getByTestId('tac-validation-library-select'),
         defaultLibraryId('tac_validation', 'CA_ECCC'),
       );
       expect(screen.getByTestId('country-preset-select')).toHaveValue('');
-      expect(screen.getByTestId('conversion-library-select')).toHaveValue(
-        defaultLibraryId('conversion', 'US_FAA_NWS'),
-      );
-      expect(screen.getByTestId('decoding-library-select')).toHaveValue(
-        defaultLibraryId('decoding', 'US_FAA_NWS'),
-      );
-      expect(screen.getByTestId('iwxxm-validation-library-select')).toHaveValue(
-        defaultLibraryId('iwxxm_validation', 'US_FAA_NWS'),
-      );
-
-      fireEvent.change(screen.getByTestId('tac-editor'), {
-        target: { value: 'METAR KJFK 121851Z 18004KT 10SM FEW250 18/08 A3012' },
-      });
-      await user.click(screen.getByTestId('convert-button'));
-      await waitFor(() => {
-        expect(mockConvertMetarToIwxxm).toHaveBeenCalled();
-      });
-      const request = mockConvertMetarToIwxxm.mock.calls.at(-1)?.[0] as Record<
-        string,
-        unknown
-      >;
-      expect(request).toEqual(
-        expect.objectContaining({
-          profile: 'US_FAA_NWS',
-          conversionLibraryId: defaultLibraryId('conversion', 'US_FAA_NWS'),
-          decodingLibraryId: defaultLibraryId('decoding', 'US_FAA_NWS'),
-          tacValidationLibraryId: defaultLibraryId('tac_validation', 'CA_ECCC'),
-          iwxxmValidationLibraryId: defaultLibraryId('iwxxm_validation', 'US_FAA_NWS'),
-        }),
-      );
-      expect(request).not.toHaveProperty('xml');
-      expect(JSON.stringify(request)).not.toMatch(/<iwxxm/i);
-      confirm.mockRestore();
     });
 
     it('shows the ICAO preset for a guest', () => {
@@ -8237,16 +7979,17 @@ describe('FileConverter Component', () => {
       expect(screen.getByTestId('country-preset-select')).toHaveValue('ICAO_2025');
     });
 
-    it('keeps the country preset when the profile catalog fails', async () => {
+    it('keeps ICAO country preset when the profile catalog fails', async () => {
       mockFetchProfileCatalog.mockRejectedValueOnce(new Error('catalog down'));
       render(<FileConverter accessToken="tok" />);
       await waitFor(() => {
-        expect(mockFetchProfileCatalog).toHaveBeenCalledWith('tok');
+        expect(screen.getByTestId('country-preset-select')).toHaveValue('ICAO_2025');
       });
-      await act(async () => {
-        await Promise.resolve();
-      });
-      expect(screen.getByTestId('country-preset-select')).toHaveValue('ICAO_2025');
+      const optionValues = Array.from(
+        screen.getByTestId('country-preset-select').querySelectorAll('option'),
+      ).map((o) => o.getAttribute('value'));
+      expect(optionValues).toContain('ICAO_2025');
+      expect(optionValues).not.toContain('US_FAA_NWS');
     });
 
     it('ignores profile catalog resolution after unmount', async () => {
@@ -8283,78 +8026,53 @@ describe('FileConverter Component', () => {
   });
 
   describe('EV-1050 report variant selector', () => {
-    it('shows CA_ECCC METAR-family report variants for authenticated users', async () => {
+    it('does not show CA_ECCC METAR-family report variants (M1)', async () => {
       seedLiveConvertChrome();
-
       const user = userEvent.setup({ delay: null });
       render(<FileConverter accessToken="tok" />);
-
       await user.selectOptions(
         screen.getByTestId('conversion-library-select'),
         defaultLibraryId('conversion', 'CA_ECCC'),
       );
-      await user.selectOptions(screen.getByTestId('product-type-select'), 'METAR');
-
-      const select = await screen.findByTestId('report-variant-select');
-      expect(select).toBeInTheDocument();
-      const options = within(select);
-      expect(
-        options.getByRole('option', { name: /Auto-detect from TAC/i }),
-      ).toBeInTheDocument();
-      expect(options.getByRole('option', { name: 'METAR' })).toBeInTheDocument();
-      expect(
-        options.getByRole('option', { name: 'LWIS (minimal)' }),
-      ).toBeInTheDocument();
-      expect(options.getByRole('option', { name: 'SAWR' })).toBeInTheDocument();
+      expect(screen.queryByTestId('report-variant-select')).not.toBeInTheDocument();
     });
 
-    it('forwards the selected report variant on convert', async () => {
+    it('omits reportVariant on convert when ICAO has no family variants', async () => {
       const user = userEvent.setup({ delay: null });
       render(<FileConverter accessToken="tok" />);
-
       await user.selectOptions(
         screen.getByTestId('conversion-library-select'),
         defaultLibraryId('conversion', 'CA_ECCC'),
       );
-      await user.selectOptions(screen.getByTestId('product-type-select'), 'METAR');
-      await user.selectOptions(screen.getByTestId('report-variant-select'), 'LWIS');
+      expect(screen.queryByTestId('report-variant-select')).not.toBeInTheDocument();
       fireEvent.change(screen.getByTestId('tac-editor'), {
         target: { value: 'METAR CYUL 121151Z 18008KT 10SM FEW250 22/14 A3012=' },
       });
-
       await user.click(screen.getByTestId('convert-button'));
-
       await waitFor(() => {
         expect(mockConvertMetarToIwxxm).toHaveBeenCalledWith(
           expect.objectContaining({
-            reportVariant: 'LWIS',
             conversionLibraryId: defaultLibraryId('conversion', 'CA_ECCC'),
-            product: 'METAR',
+            profile: 'ICAO_2025',
+            reportVariant: undefined,
           }),
         );
       });
     });
 
-    it('clears the report variant when switching to a profile without variants', async () => {
+    it('never mounts report-variant select under ICAO-only product', async () => {
       const user = userEvent.setup({ delay: null });
       render(<FileConverter accessToken="tok" />);
-
       await user.selectOptions(
         screen.getByTestId('conversion-library-select'),
         defaultLibraryId('conversion', 'CA_ECCC'),
       );
-      await user.selectOptions(screen.getByTestId('product-type-select'), 'METAR');
-      await user.selectOptions(screen.getByTestId('report-variant-select'), 'LWIS');
-      expect(screen.getByTestId('report-variant-select')).toHaveValue('LWIS');
-
+      expect(screen.queryByTestId('report-variant-select')).not.toBeInTheDocument();
       await user.selectOptions(
         screen.getByTestId('conversion-library-select'),
         defaultLibraryId('conversion', 'ICAO_2025'),
       );
-
-      await waitFor(() => {
-        expect(screen.queryByTestId('report-variant-select')).not.toBeInTheDocument();
-      });
+      expect(screen.queryByTestId('report-variant-select')).not.toBeInTheDocument();
     });
   });
 
@@ -8509,7 +8227,7 @@ describe('FileConverter Component', () => {
       clickSpy.mockRestore();
     });
 
-    it('keeps the conversion library when a profile reset is declined', async () => {
+    it('allows national LIB id without confirm when profile stays ICAO (M1)', async () => {
       vi.stubGlobal(
         'confirm',
         vi.fn(() => false),
@@ -8521,8 +8239,9 @@ describe('FileConverter Component', () => {
         defaultLibraryId('conversion', 'US_FAA_NWS'),
       );
       expect(screen.getByTestId('conversion-library-select')).toHaveValue(
-        defaultLibraryId('conversion'),
+        defaultLibraryId('conversion', 'US_FAA_NWS'),
       );
+      expect(window.confirm).not.toHaveBeenCalled();
     });
 
     it('updates conversion engine profile when Conversion library changes', async () => {
@@ -8672,26 +8391,17 @@ describe('FileConverter Component', () => {
       clickSpy.mockRestore();
     });
 
-    it('includes reportVariant in export context when a METAR-family variant is selected', async () => {
+    it('converts without reportVariant under ICAO-only product', async () => {
       const user = userEvent.setup({ delay: null });
       mockConvertMetarToIwxxm.mockResolvedValueOnce({
         results: [{ iwxxm_xml: '<iwxxm>variant</iwxxm>' }],
       });
-      const createUrlSpy = vi
-        .spyOn(URL, 'createObjectURL')
-        .mockReturnValue('blob:variant');
-      const clickSpy = vi
-        .spyOn(HTMLAnchorElement.prototype, 'click')
-        .mockImplementation(() => undefined);
-
       render(<FileConverter accessToken="tok" userEmail="op@example.com" />);
       await user.selectOptions(
         screen.getByTestId('conversion-library-select'),
         defaultLibraryId('conversion', 'CA_ECCC'),
       );
-      await user.selectOptions(screen.getByTestId('product-type-select'), 'METAR');
-      await user.selectOptions(screen.getByTestId('report-variant-select'), 'LWIS');
-      await user.click(screen.getByTestId('conversion-metadata-toggle'));
+      expect(screen.queryByTestId('report-variant-select')).not.toBeInTheDocument();
       fireEvent.change(screen.getByTestId('tac-editor'), {
         target: { value: 'METAR CYUL 121151Z 18008KT 10SM FEW250 22/14 A3012=' },
       });
@@ -8701,15 +8411,6 @@ describe('FileConverter Component', () => {
           '<iwxxm>variant</iwxxm>',
         );
       });
-      await user.click(
-        await screen.findByRole('button', {
-          name: /download .+ as zip with metadata/i,
-          hidden: true,
-        }),
-      );
-      expect(mockToast.success).toHaveBeenCalledWith('File downloaded with metadata');
-      createUrlSpy.mockRestore();
-      clickSpy.mockRestore();
     });
 
     it('fills missing export_context fields from convert params and zip-stems bare .xml', async () => {
@@ -8795,7 +8496,7 @@ describe('FileConverter Component', () => {
       render(<FileConverter />);
       await waitFor(() => {
         expect(screen.getByTestId('conversion-library-select')).toHaveValue(
-          defaultLibraryId('conversion', 'US_FAA_NWS'),
+          defaultLibraryId('conversion', 'ICAO_2025'),
         );
       });
     });

@@ -74,11 +74,11 @@ describe('live map helpers', () => {
     expect(layerQuery('forecasts', new Set())).toBe('taf');
     expect(layerQuery('observations', new Set(['metar', 'speci']))).toBe('');
     expect(selectedLayerQuery(new Set())).toContain('metar');
-    expect(selectedLayerQuery(new Set())).toContain('gairmet');
+    expect(selectedLayerQuery(new Set())).not.toContain('gairmet');
     expect(selectedLayerQuery(new Set())).toContain('vona');
     expect(selectedLayerQuery(new Set(['metar']))).not.toContain('metar,');
-    expect(viewById('hazards').products).toEqual(['airmet', 'gairmet', 'sigmet']);
-    expect(layerQuery('hazards', new Set(['gairmet']))).toBe('airmet,sigmet');
+    expect(viewById('hazards').products).toEqual(['airmet', 'sigmet']);
+    expect(layerQuery('hazards', new Set(['sigmet']))).toBe('airmet');
   });
 
   it('replaces collapsed Leaflet bounds with a default world box', () => {
@@ -108,13 +108,12 @@ describe('live map helpers', () => {
     expect(pinColor('speci')).toBe('#0369a1');
     expect(pinColor('taf')).toBe('#0f766e');
     expect(pinColor('airmet')).toBe('#c2410c');
-    expect(pinColor('gairmet')).toBe('#a16207');
     expect(pinColor('sigmet')).toBe('#b91c1c');
     expect(pinColor('vaa')).toBe('#6d28d9');
     expect(pinColor('tca')).toBe('#be185d');
     expect(pinColor('vona')).toBe('#4338ca');
     expect(pinColor('metar')).not.toBe(pinColor('speci'));
-    expect(pinColor('airmet')).not.toBe(pinColor('gairmet'));
+    expect(pinColor('airmet')).not.toBe(pinColor('sigmet'));
     expect(pinColor('other')).toBe('#1d4ed8');
     expect(shapePaint('sigmet')).toEqual({
       color: '#ffffff',
@@ -131,17 +130,7 @@ describe('live map helpers', () => {
     expect(spaceWeatherListColor(0)).toBeUndefined();
     // TC-F37-013 — pin layers exclude space weather (EV-map-results-qa)
     expect([...LIVE_MAP_PRODUCTS].sort()).toEqual(
-      [
-        'metar',
-        'speci',
-        'taf',
-        'airmet',
-        'gairmet',
-        'sigmet',
-        'vaa',
-        'tca',
-        'vona',
-      ].sort(),
+      ['metar', 'speci', 'taf', 'airmet', 'sigmet', 'vaa', 'tca', 'vona'].sort(),
     );
     expect(LIVE_MAP_PRODUCTS).not.toContain('swxa');
     expect(LIVE_MAP_VIEWS.map((view) => view.id)).toEqual([
@@ -209,7 +198,6 @@ describe('live map helpers', () => {
     expect(copyOpacity(0)).toBe(1);
     expect(copyOpacity(1)).toBe(0.45);
     expect(copyOpacity(2)).toBe(0.25);
-    expect(productLabel('gairmet')).toBe('G-AIRMET');
     expect(productLabel('vaa')).toBe('Volcanic ash');
     expect(productLabel('other')).toBe('OTHER');
     expect(placeTitle('KJFK', 'Kennedy')).toBe('Kennedy');
@@ -347,7 +335,7 @@ describe('live map helpers', () => {
     );
     await fetchLivePlaces(
       { west: 0, south: 19.973348786110602, east: 0, north: 19.973348786110602 },
-      'metar,speci,taf,airmet,gairmet,sigmet,vaa,tca,vona',
+      'metar,speci,taf,airmet,sigmet,vaa,tca,vona',
       signal,
     );
     const url = String(vi.mocked(fetch).mock.calls[0]?.[0]);
@@ -422,12 +410,6 @@ describe('live map helpers', () => {
       station('sigmet-1', 'sigmet', '2026-10-06T11:30:00Z', 'SIGMET FOR EMBD TS', 15),
       station('sigmet-ifr', 'sigmet', '2026-10-06T09:00:00Z', 'SIGMET FOR IFR'),
       station('airmet-turb', 'airmet', '2026-10-06T05:00:00Z', 'AIRMET TANGO FOR TURB'),
-      station(
-        'gairmet-ice',
-        'gairmet',
-        '2026-10-05T10:00:00Z',
-        'G-AIRMET ZULU FOR ICE',
-      ),
       station('sigmet-icing', 'sigmet', '2026-10-06T11:00:00Z', 'SIGMET FOR ICING'),
       station('sigmet-storm', 'sigmet', '2026-10-06T11:00:00Z', 'SIGMET THUNDERSTORM'),
       station('sigmet-vc', 'sigmet', '2026-10-06T11:00:00Z', 'SIGMET VCTS AND +TSRA'),
@@ -436,9 +418,7 @@ describe('live map helpers', () => {
       station('sigmet-old', 'sigmet', 'newest', 'SIGMET'),
     ];
     expect(filterPlaces(loaded, base).map((place) => place.place_key)).toEqual(
-      loaded
-        .filter((place) => place.place_key !== 'gairmet-ice')
-        .map((place) => place.place_key),
+      loaded.map((place) => place.place_key),
     );
     expect(
       filterPlaces(loaded, { ...base, country: 'United States' }).map(

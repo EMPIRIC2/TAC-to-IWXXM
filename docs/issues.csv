@@ -2,3 +2,6 @@ id,date,status,summary,owner,links,corpus_cite,notes,severity
 I-001,2026-11-10,open,test-plan.csv TC rows are heading-extracted; many asserts/paths still empty,docs,docs/test-plan.csv,[Corpus: tests],Backfill from local-feeders/test-plan.full.md,med
 I-002,2026-11-10,open,Full STE pass on architecture body and api-contract still incomplete,docs,docs/architecture.md,[Corpus: system-spec],Lead sections STE-cleaned; body pending,low
 I-003,2026-11-13,open,No public TAC grammar API and no Annex 3 / PANS-MET API; live-feed epic cannot close these gaps,docs,"docs/domain-contract.md §Automation gaps; #884; #876",[Corpus: domain],Recorded for lint/encode automation boundaries; cite-only ICAO PDFs,low
+I-006,2026-11-24,open,test-mode-matrix lacks automation/waive column,qa,docs/test-mode-matrix.csv,[Corpus: test-modes],Add in M1/M2 verify,med
+I-007,2026-11-24,open,Per-request latency SLO still TBD beyond batch ingest target,ops,docs/non-functional-requirements.csv,[Corpus: nfr],NFR-006,med
+I-008,2026-11-24,open,Capability index in product-requirements still lists dropped features as Implemented,docs,docs/product-requirements.md,[Corpus: product],Clean during M1 docs pass,low

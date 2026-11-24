@@ -1,8 +1,8 @@
 /**
- * TC-EV093-001..005 — Conversion library picker on Convert chrome (EV-bridge hard cut).
+ * TC-EV093-001..005 — Conversion library picker on Convert chrome (M1 ICAO-only).
  *
  * Spec: docs/test-plan.md TC-EV093-*; UJ-069;
- * [Corpus: product §F7] [Corpus: product §F35] [Corpus: tests].
+ * [Corpus: product §F7] [Corpus: product §F35] [Corpus: fr]
  */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -46,11 +46,7 @@ vi.mock('/utils/api', () => ({
       kind,
       options: [],
     })),
-  fetchSchemaStatus: vi.fn().mockResolvedValue({
-    profile_pins: {
-      ca_eccc: { extension_bundle_available: true, iwxxm_version: '3.0.0' },
-    },
-  }),
+  fetchSchemaStatus: vi.fn().mockResolvedValue({ profile_pins: {} }),
   lintTac: vi.fn().mockResolvedValue({ ok: true, issues: [], fixes: [] }),
   decodeTac: vi
     .fn()
@@ -131,7 +127,6 @@ function seedLiveConvertChrome(): void {
  *
  */
 function openAdvancedEngines(): void {
-  // Libraries live under Settings → Advanced engines (UJ-089).
   screen.getByTestId('convert-settings').setAttribute('open', '');
   screen.getByTestId('convert-advanced-engines').setAttribute('open', '');
 }
@@ -189,11 +184,12 @@ describe('TC-EV093 — Conversion library picker deepen', () => {
     expect(mockConvertMetarToIwxxm).toHaveBeenCalledWith(
       expect.objectContaining({
         conversionLibraryId: defaultLibraryId('conversion', 'US_FAA_NWS'),
+        profile: 'ICAO_2025',
       }),
     );
   });
 
-  it('TC-EV093-004 CA_ECCC still shows metadata and pins 3.0.0', async () => {
+  it('TC-EV093-004 CA LIB id does not show CA metadata or pin 3.0.0', async () => {
     const user = userEvent.setup();
     render(<FileConverter {...defaultProps} />);
     openAdvancedEngines();
@@ -201,10 +197,10 @@ describe('TC-EV093 — Conversion library picker deepen', () => {
       screen.getByTestId('conversion-library-select'),
       defaultLibraryId('conversion', 'CA_ECCC'),
     );
-    expect(screen.getByTestId('ca-eccc-profile-metadata')).toBeVisible();
+    expect(screen.queryByTestId('ca-eccc-profile-metadata')).not.toBeInTheDocument();
     await user.click(screen.getByLabelText(/expand parameters/i));
     const version = document.querySelector('#param-iwxxm-version') as HTMLSelectElement;
-    expect(version.value).toBe('3.0.0');
+    expect(version.value).toBe('2025-2');
   });
 
   it('TC-EV093-005 shows library bar trust copy without internal doc refs', async () => {
@@ -232,7 +228,6 @@ describe('TC-EV093 — Conversion library picker deepen', () => {
     expect(bar).not.toContainElement(screen.getByTestId('semantic-profile-help'));
     expect(bar).not.toContainElement(screen.getByTestId('exchange-profile-help'));
 
-    // Trust details stay under "What's this?" (calm Convert: summary is sr-only).
     const trust = screen.getByTestId('product-profile-trust-details');
     trust.setAttribute('open', '');
     const help = within(trust).getByTestId('semantic-profile-help');

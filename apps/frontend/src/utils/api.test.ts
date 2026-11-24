@@ -270,7 +270,8 @@ describe('API Utils', () => {
       const [, options] = (global.fetch as any).mock.calls[0];
       const body = options.body as FormData;
       expect(body.get('product')).toBe('TAF');
-      expect(body.get('conversion_library_id')).toBe('LIB.CONVERSION.US_FAA_NWS');
+      // FR-019 / M1: dropped nationals coerce to ICAO ship list.
+      expect(body.get('conversion_library_id')).toBe('LIB.CONVERSION.ICAO_2025');
       expect(body.get('semantic_profile')).toBeNull();
       expect(body.get('profile')).toBeNull();
       expect(body.get('iwxxm_version')).toBe('2025-2');
