@@ -47,4 +47,40 @@ describe('fetchLiveMapEval', () => {
     );
     await expect(fetchLiveMapEval()).rejects.toThrow(/evaluation could not be loaded/i);
   });
+
+  it('coerces sparse lint and failure rows', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({
+          top_lint_codes: [{}],
+          failure_locations: [{}],
+          products: 'not-an-array',
+        }),
+      }),
+    );
+    const snapshot = await fetchLiveMapEval();
+    expect(snapshot.products).toEqual([]);
+    expect(snapshot.top_lint_codes).toEqual([{ code: '', count: 0 }]);
+    expect(snapshot.failure_locations).toEqual([
+      { place_key: '', product: '', stage: '', code: '' },
+    ]);
+  });
+
+  it('defaults when lint and failure lists are missing', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({
+          top_lint_codes: 'nope',
+          failure_locations: null,
+        }),
+      }),
+    );
+    const snapshot = await fetchLiveMapEval();
+    expect(snapshot.top_lint_codes).toEqual([]);
+    expect(snapshot.failure_locations).toEqual([]);
+  });
 });

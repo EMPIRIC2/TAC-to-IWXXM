@@ -295,6 +295,23 @@ describe('LiveWorldMap', () => {
     expect(screen.getByTestId('live-map-status')).toBeInTheDocument();
   });
 
+  it('ignores AbortError from the live-map evaluation fetch', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockImplementation(async (url: string) => {
+        if (String(url).includes('/live-map/eval')) {
+          throw new DOMException('aborted', 'AbortError');
+        }
+        return { ok: true, json: async () => ({ places: [] }) };
+      }),
+    );
+    render(<LiveWorldMap />);
+    await waitFor(() => {
+      expect(screen.getByTestId('live-map-status')).toBeInTheDocument();
+    });
+    expect(screen.queryByTestId('live-map-eval-table')).toBeNull();
+  });
+
   it('reads bounds from the map', () => {
     expect(boundsOf(map as never)).toEqual({
       west: -80,

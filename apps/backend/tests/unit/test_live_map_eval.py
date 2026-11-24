@@ -300,6 +300,8 @@ def test_store_configure_and_db_paths(monkeypatch: pytest.MonkeyPatch) -> None:
     assert store.read_latest()["window_hours"] == 24
     conn.execute.return_value.fetchone.return_value = ('{"lint_count": 2}',)
     assert store._read_db() == {"lint_count": 2}
+    conn.execute.return_value.fetchone.return_value = ("[]",)
+    assert store._read_db() is None
     conn.execute.return_value.fetchone.return_value = (123,)
     assert store._read_db() is None
     conn.execute.side_effect = RuntimeError("missing table")
