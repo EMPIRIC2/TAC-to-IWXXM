@@ -121,3 +121,56 @@ async def test_staging_cors_preflight_mass_ingest_post() -> None:
     )
     allow_methods = response.headers.get("access-control-allow-methods", "").upper()
     assert "POST" in allow_methods or allow_methods == "*", allow_methods
+
+
+@pytest.mark.asyncio
+async def test_staging_live_map_eval_get_returns_snapshot() -> None:
+    """FR-045 — GET /api/v1/live-map/eval returns cron snapshot shape."""
+    warn_deprecated_env()
+    api_url = live_api_url()
+    if not api_url:
+        pytest.skip("LIVE_API_URL not set - skip live FR-045 connectivity")
+
+    import httpx
+
+    async with httpx.AsyncClient(timeout=30.0) as client:
+        response = await client.get(
+            f"{api_url}/api/v1/live-map/eval",
+            headers=live_api_host_headers(),
+        )
+
+    assert response.status_code == 200, response.text
+    body = response.json()
+    computed_at = body.get("computed_at")
+    assert isinstance(computed_at, str)
+    assert computed_at
+    assert isinstance(body.get("window_hours"), int)
+    assert isinstance(body.get("products"), list)
+    assert isinstance(body.get("partial_decode_count"), int)
+    assert isinstance(body.get("lint_count"), int)
+    assert isinstance(body.get("top_lint_codes"), list)
+    assert isinstance(body.get("convert_failure_count"), int)
+    iwxxm = body.get("iwxxm_validation")
+    assert isinstance(iwxxm, dict)
+    for key in ("pass", "fail", "skip"):
+        assert key in iwxxm
+    assert isinstance(body.get("failure_locations"), list)
+
+
+@pytest.mark.asyncio
+async def test_staging_live_map_eval_refresh_disabled() -> None:
+    """FR-045 — staging keeps POST refresh off (cron owns writes)."""
+    warn_deprecated_env()
+    api_url = live_api_url()
+    if not api_url:
+        pytest.skip("LIVE_API_URL not set - skip live FR-045 connectivity")
+
+    import httpx
+
+    async with httpx.AsyncClient(timeout=30.0) as client:
+        response = await client.post(
+            f"{api_url}/api/v1/live-map/eval/refresh",
+            headers=live_api_host_headers(),
+        )
+
+    assert response.status_code == 404, response.text
