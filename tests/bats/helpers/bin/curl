@@ -57,6 +57,8 @@ write_body() {
   [[ "$target" == "/dev/null" ]] && return 0
   if [[ "$url" == *config.json* ]]; then
     printf '%s' '{"api":{"baseUrl":"https://api.example.com"}}' >"$target"
+  elif [[ "$url" == *live-map/eval* ]]; then
+    printf '%s' '{"computed_at":"2026-11-25T17:12:39.151710Z","window_hours":24,"products":[],"partial_decode_count":0,"lint_count":0,"top_lint_codes":[],"convert_failure_count":0,"iwxxm_validation":{"pass":0,"fail":0,"skip":0},"failure_locations":[]}' >"$target"
   elif [[ "$url" == *health* ]]; then
     printf '%s' '{"status":"ok"}' >"$target"
   elif [[ "$method" == "PUT" && -n "$data_body" ]]; then
@@ -97,7 +99,12 @@ fi
 write_body "$output_file"
 
 if [[ -n "$write_out" && "$write_out" == *http_code* ]]; then
-  echo "200"
+  # Staging keeps public eval refresh off (FR-045 / LIVE_MAP_EVAL_REFRESH_ENABLED=false).
+  if [[ "$method" == "POST" && "$url" == *live-map/eval/refresh* ]]; then
+    echo "404"
+  else
+    echo "200"
+  fi
   exit 0
 fi
 

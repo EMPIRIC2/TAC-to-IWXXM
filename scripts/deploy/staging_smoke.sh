@@ -56,6 +56,41 @@ else
   echo "CORS preflight → ${preflight}"
 fi
 
+# FR-045 / D-027 — live-map evaluation snapshot (cron ~15m; public GET)
+eval_code="$(curl -sS -o /tmp/staging-live-map-eval.json -w '%{http_code}' --max-time 30 \
+  "${API_URL}/api/v1/live-map/eval" || echo 000)"
+if [[ "${eval_code}" != "200" ]]; then
+  echo "::warning::HTTPS GET live-map/eval → ${eval_code}; trying Host-header via LB ${LB_IP}"
+  eval_code="$(curl -sS -o /tmp/staging-live-map-eval.json -w '%{http_code}' --max-time 30 \
+    -H "Host: ${API_HOST}" "http://${LB_IP}/api/v1/live-map/eval" || echo 000)"
+fi
+if [[ "${eval_code}" != "200" ]]; then
+  echo "::error::GET /api/v1/live-map/eval → ${eval_code}"
+  cat /tmp/staging-live-map-eval.json 2>/dev/null || true
+  exit 1
+fi
+if ! grep -q 'computed_at' /tmp/staging-live-map-eval.json 2>/dev/null; then
+  echo "::error::GET /api/v1/live-map/eval body missing computed_at"
+  cat /tmp/staging-live-map-eval.json 2>/dev/null || true
+  exit 1
+fi
+echo "GET /api/v1/live-map/eval → 200 (computed_at present)"
+
+# Staging keeps public POST refresh off (LIVE_MAP_EVAL_REFRESH_ENABLED=false).
+refresh_code="$(curl -sS -o /tmp/staging-live-map-eval-refresh.json -w '%{http_code}' --max-time 30 \
+  -X POST "${API_URL}/api/v1/live-map/eval/refresh" || echo 000)"
+if [[ "${refresh_code}" != "404" ]]; then
+  echo "::warning::HTTPS POST live-map/eval/refresh → ${refresh_code}; trying Host-header via LB"
+  refresh_code="$(curl -sS -o /tmp/staging-live-map-eval-refresh.json -w '%{http_code}' --max-time 30 \
+    -X POST -H "Host: ${API_HOST}" "http://${LB_IP}/api/v1/live-map/eval/refresh" || echo 000)"
+fi
+if [[ "${refresh_code}" != "404" ]]; then
+  echo "::error::POST /api/v1/live-map/eval/refresh expected 404 (refresh disabled), got ${refresh_code}"
+  cat /tmp/staging-live-map-eval-refresh.json 2>/dev/null || true
+  exit 1
+fi
+echo "POST /api/v1/live-map/eval/refresh → 404 (disabled; cron owns writes)"
+
 # Optional pytest live connectivity when available
 if [[ "${STAGING_SMOKE_PYTEST:-1}" == "1" ]] && [[ -f tests/smoke/test_staging_connectivity.py ]]; then
   export LIVE_API_URL="${API_URL}"
