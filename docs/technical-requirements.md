@@ -41,6 +41,7 @@ this table.
 |----|-------------|----------------|
 | TR-P01 | Host API, frontend, and worker on DigitalOcean Kubernetes Service (DOKS) | Staging and prod manifests under `config/deploy/doks/` match running services |
 | TR-P02 | Store shared/public and live-eval data in DigitalOcean Postgres via `DATABASE_URL` | Worker and live-eval writes use DO Postgres (NFR-002 / FR-065) |
+| TR-P06 | Refresh live-map evaluation snapshot on a ~15 minute schedule (staging and prod); serve via public `GET /api/v1/live-map/eval` | Cron/job interval matches env; GET returns latest `computed_at` without recomputing on pan (FR-045 / D-027) |
 | TR-P03 | Use Supabase for Auth and user/history (PostgREST allowed for user data) | Auth + user history on Supabase; shared data on DO Postgres (C1 / NFR-003) |
 | TR-P04 | Keep public convert, lint, validate, and decode reachable with API keys (no user JWT); dissemination routes removed in rebaseline | Live and unit tests call public routes with API key policy (NFR-007); no disseminate surface |
 | TR-P05 | Gate long-term work sessions on Auth JWT | `/api/v1/work-sessions*` rejects anonymous writes |

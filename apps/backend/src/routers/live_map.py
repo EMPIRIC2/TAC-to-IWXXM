@@ -5,9 +5,11 @@ from __future__ import annotations
 from collections.abc import Mapping, Sequence
 from typing import cast
 
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, HTTPException, Query, status
 
 from src.services.live_map_cache import LiveMapCache, cache_from_env
+from src.services.live_map_eval import compute_and_store, refresh_enabled
+from src.services.live_map_eval_store import get_live_map_eval_store
 
 router = APIRouter(prefix="/api/v1/live-map", tags=["Live map"])
 
@@ -103,7 +105,7 @@ def read_live_map(
     if unknown:
         raise HTTPException(
             status_code=400,
-            detail="Choose map layers from METAR, SPECI, TAF, AIRMET, G-AIRMET, SIGMET, or an advisory.",
+            detail="Choose map layers from METAR, SPECI, TAF, AIRMET, SIGMET, or an advisory.",
         )
     return {
         "places": _places_for_browser(
@@ -117,6 +119,51 @@ def read_live_map(
         ),
         "space_weather": [],
     }
+
+
+@router.get(
+    "/eval",
+    summary="Latest live-map evaluation snapshot",
+    description=(
+        "Aggregate decode/lint/convert/IWXXM counts from the last cron refresh "
+        "(about every 15 minutes). Empty cache returns zeros."
+    ),
+)
+def read_live_map_eval() -> dict[str, object]:
+    """Return the latest FR-045 evaluation snapshot.
+
+    Returns
+    -------
+    dict[str, object]
+        Contract-shaped snapshot body (zeros when empty).
+    """
+    return cast(dict[str, object], get_live_map_eval_store().read_latest())
+
+
+@router.post(
+    "/eval/refresh",
+    summary="Refresh live-map evaluation snapshot",
+    description="Same work as the cron job. Disabled unless LIVE_MAP_EVAL_REFRESH_ENABLED is set.",
+)
+def refresh_live_map_eval() -> dict[str, object]:
+    """Compute and store a fresh snapshot when enabled.
+
+    Returns
+    -------
+    dict[str, object]
+        Fresh snapshot body.
+
+    Raises
+    ------
+    HTTPException
+        404 when ``LIVE_MAP_EVAL_REFRESH_ENABLED`` is off.
+    """
+    if not refresh_enabled():
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Not found",
+        )
+    return cast(dict[str, object], compute_and_store())
 
 
 def _places_for_browser(

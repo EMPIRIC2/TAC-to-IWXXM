@@ -15,4 +15,5 @@ D-023,2026-11-24,accepted,Exhaustive applicable test modes per FR/NFR class,oper
 D-024,2026-11-24,accepted,Tech-plan TP1–TP15 milestone order and technical choices,operator,EV-requirements-baseline-csv/reports/tech-plan-answers.md,"[Corpus: fr] [Corpus: nfr]",EV-requirements-baseline-csv,M1 drops through M8 ops; see tech-plan-answers.md
 D-025,2026-11-24,accepted,TP14 use RAIDD CSVs instead of ADRs this cycle,operator,docs/decisions.csv,[Corpus: raid],EV-requirements-baseline-csv,No ADRs; risks assumptions issues dependencies decisions only
 D-026,2026-11-24,accepted,Verify-tech M1-M6 and L1-L3 all approved; gate open for M1,operator,EV-requirements-baseline-csv/reports/tech-audit.md,"[Corpus: fr] [Corpus: nfr]",EV-requirements-baseline-csv,Implementing gate open for M1 drops only
+D-027,2026-11-24,accepted,FR-045 live-map eval is cron ~15m into DO Postgres; public live-map/eval API; Results table UI,operator,EV-f37-live-map,[Corpus: fr],EV-f37-live-map,"Trigger=cron ~15m (not per viewport). API=GET/POST /api/v1/live-map/eval*. Store=new DO tables. Products=all map products. UI=Results chrome table. Keep FR-046."
 

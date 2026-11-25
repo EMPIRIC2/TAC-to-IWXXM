@@ -6,3 +6,4 @@ A-004,2026-11-10,accepted,Local docs/ops and docs/domain remain on disk as feede
 A-005,2026-11-24,accepted,Existing staging/prod frontend origins stay unchanged for CORS,ops,docs/env-variable.md,[Corpus: env],TP7
 A-006,2026-11-24,accepted,WMO will keep pins 3.0 2021-2 2023-1 2025-2 published for fetch,domain,https://schemas.wmo.int/iwxxm/,[Corpus: domain],TP2
 A-007,2026-11-24,accepted,UI may ship with a server-configured demo API key in env,api,https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1715,[Corpus: nfr],TP3
+A-008,2026-11-24,accepted,Live-map eval cron about every 15 minutes is enough freshness for operators on staging and prod,ops,docs/ops-contract.md,[Corpus: fr],FR-045 / D-027

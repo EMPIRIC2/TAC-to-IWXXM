@@ -19,3 +19,6 @@ data:
   # Start the live-map timer in the API. Unset leaves the map empty.
   LIVE_MAP_REFRESH: "1"
   LIVE_MAP_REFRESH_SECONDS: "300"
+  # FR-045 live-map evaluation snapshot cron (~15m). POST refresh stays off.
+  LIVE_MAP_EVAL_INTERVAL_SEC: "900"
+  LIVE_MAP_EVAL_REFRESH_ENABLED: "false"

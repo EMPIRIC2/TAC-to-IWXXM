@@ -76,6 +76,8 @@ docs.
 | Live map refresh (live TAC map) | `LIVE_MAP_REFRESH_SECONDS` | Translator API, default `300` |
 | Live map import cap (live TAC map) | `LIVE_MAP_IMPORT_LIMIT` | API timer only, default `40` |
 | Live map cache (live TAC map) | `LIVE_MAP_CACHE_URL` | Same product database as `DATABASE_URL` |
+| Live map eval cron interval (FR-045) | `LIVE_MAP_EVAL_INTERVAL_SEC` | API or worker schedule; default **900** (15 minutes); staging and prod |
+| Live map eval refresh route (FR-045) | `LIVE_MAP_EVAL_REFRESH_ENABLED` | API; default **false** (public POST refresh off; cron owns writes) |
 | Live check egress allowlist | `LIVE_CHECK_EGRESS_ALLOWLIST` | API / `.env`; default `aviationweather.gov,api.met.no,api.dataplatform.knmi.nl` |
 | KNMI Open Data API key (live check) | `KNMI_OPEN_DATA_API_KEY` | API / `.env` only; never frontend; optional until `provider=knmi` |
 

@@ -2460,6 +2460,38 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HTTPValidationError"
+  /api/v1/live-map/eval:
+    get:
+      tags:
+        - Live map
+      summary: Latest live-map evaluation snapshot
+      description: Aggregate decode/lint/convert/IWXXM counts from the last cron refresh (about every 15 minutes). Empty cache returns zeros.
+      operationId: read_live_map_eval_api_v1_live_map_eval_get
+      responses:
+        200:
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                additionalProperties: true
+                type: object
+                title: Response Read Live Map Eval Api V1 Live Map Eval Get
+  /api/v1/live-map/eval/refresh:
+    post:
+      tags:
+        - Live map
+      summary: Refresh live-map evaluation snapshot
+      description: Same work as the cron job. Disabled unless LIVE_MAP_EVAL_REFRESH_ENABLED is set.
+      operationId: refresh_live_map_eval_api_v1_live_map_eval_refresh_post
+      responses:
+        200:
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                additionalProperties: true
+                type: object
+                title: Response Refresh Live Map Eval Api V1 Live Map Eval Refresh Post
   /api/v1/live-check:
     get:
       tags:

@@ -274,6 +274,107 @@ export async function fetchLivePlaces(
 }
 
 /**
+ * Live-map evaluation snapshot (FR-045 cron aggregate).
+ * @example
+ * const _ = true;
+ */
+export type LiveMapEvalSnapshot = {
+  computed_at: string;
+  window_hours: number;
+  products: string[];
+  partial_decode_count: number;
+  lint_count: number;
+  top_lint_codes: { code: string; count: number }[];
+  convert_failure_count: number;
+  iwxxm_validation: { pass: number; fail: number; skip: number };
+  failure_locations: {
+    place_key: string;
+    product: string;
+    stage: string;
+    code: string;
+  }[];
+};
+
+/** Normalize top lint code rows from the eval snapshot JSON. */
+function parseEvalTopCodes(
+  rows: LiveMapEvalSnapshot['top_lint_codes'] | undefined,
+): LiveMapEvalSnapshot['top_lint_codes'] {
+  if (!Array.isArray(rows)) {
+    return [];
+  }
+  return rows.map((row) => ({
+    code: String((row as { code?: string }).code ?? ''),
+    count: Number((row as { count?: number }).count) || 0,
+  }));
+}
+
+/** Normalize failure location rows from the eval snapshot JSON. */
+function parseEvalFailures(
+  rows: LiveMapEvalSnapshot['failure_locations'] | undefined,
+): LiveMapEvalSnapshot['failure_locations'] {
+  if (!Array.isArray(rows)) {
+    return [];
+  }
+  return rows.map((row) => ({
+    place_key: String((row as { place_key?: string }).place_key ?? ''),
+    product: String((row as { product?: string }).product ?? ''),
+    stage: String((row as { stage?: string }).stage ?? ''),
+    code: String((row as { code?: string }).code ?? ''),
+  }));
+}
+
+/** Coerce IWXXM pass/fail/skip counts from the eval snapshot JSON. */
+function parseEvalIwxxm(
+  raw: LiveMapEvalSnapshot['iwxxm_validation'] | undefined,
+): LiveMapEvalSnapshot['iwxxm_validation'] {
+  const validation = raw ?? { pass: 0, fail: 0, skip: 0 };
+  return {
+    pass: Number(validation.pass) || 0,
+    fail: Number(validation.fail) || 0,
+    skip: Number(validation.skip) || 0,
+  };
+}
+
+/** Coerce a partial eval JSON body into a typed snapshot. */
+function parseLiveMapEvalBody(body: Partial<LiveMapEvalSnapshot>): LiveMapEvalSnapshot {
+  return {
+    computed_at: typeof body.computed_at === 'string' ? body.computed_at : '',
+    window_hours: Number(body.window_hours) || 24,
+    products: Array.isArray(body.products) ? body.products.map(String) : [],
+    partial_decode_count: Number(body.partial_decode_count) || 0,
+    lint_count: Number(body.lint_count) || 0,
+    top_lint_codes: parseEvalTopCodes(body.top_lint_codes),
+    convert_failure_count: Number(body.convert_failure_count) || 0,
+    iwxxm_validation: parseEvalIwxxm(body.iwxxm_validation),
+    failure_locations: parseEvalFailures(body.failure_locations),
+  };
+}
+
+/**
+ * Fetch the latest live-map evaluation snapshot.
+ *
+ * @param signal - Abort when the map unmounts or refreshes
+ * @returns Snapshot body (zeros when empty)
+ * @example
+ * const _ = true;
+ */
+/**
+ * fetchLiveMapEval.
+ * @example
+ * const _ = true;
+ */
+export async function fetchLiveMapEval(
+  signal?: AbortSignal,
+): Promise<LiveMapEvalSnapshot> {
+  const response = await fetch(apiUrl('/api/v1/live-map/eval'), { signal });
+  if (!response.ok) {
+    throw new Error('The live map evaluation could not be loaded.');
+  }
+  const body = (await response.json()) as Partial<LiveMapEvalSnapshot>;
+  return parseLiveMapEvalBody(body);
+}
+
+/**
  * IWXXM for one cached report, using this app's conversion.
  *
  * @param tac - Raw report

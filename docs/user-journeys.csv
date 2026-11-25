@@ -97,7 +97,9 @@ UJ-083,Conversion params on every convert call,apps/frontend / API,operator work
 UJ-084,Site terms before the public shell,apps/frontend,public operator app / privacy preference center,T0; client-only gate,TC-EV1315-001,Quality disclaimer and site terms block the public shell until acknowledged,active,live_e2e=T0; client-only
 UJ-085,"Quality metrics subtitle, overflow, and count honesty",apps/frontend / API,operator workbench.q,T0; existing quality-metrics routes,TC-EV1316-001,"Quality metrics subtitle, diagnostic overflow, deferred/mismatch/residual honesty",active,live_e2e=T0; existing routes
 UJ-086,Browse enriched Dissemination catalog rows,apps/frontend / API,operator workbench.v / dissemination drawer + AMHS SWIM AFS adapters,T0; existing rule-catalogs route,TC-EV1317-001,Dissemination catalog rows have readable summaries and public source metadata,active,live_e2e=T0; existing route
-UJ-087,"Open the live weather map, zoom, and read a report",apps/frontend / API,live TAC map,T0 / T2 / T3 / H4–H5,,,active,
+UJ-087,"Open the live weather map, zoom, and read a report",apps/frontend / API,live TAC map,T0 / T2 / T3 / H4–H5,TC-F37-001..016,"Open map; Active reports filter; read live evaluation table from latest cron snapshot",active,live_e2e=H4–H5 when FE ships
+UJ-087a,Read live map evaluation table (cron snapshot),apps/frontend / API,live TAC map / FR-045,T0 / T2 / T3 / H4–H5,TC-F37-014..016,Results chrome shows decode/lint/convert/IWXXM eval counts from GET /api/v1/live-map/eval,active,live_e2e=H4–H5 when FE ships
+
 UJ-088,Calmer Convert empty → convert → download + Help checklist,apps/frontend,operator workbench deepen,T0 / T2 / T3 / H4–H5,,,active,
 UJ-089,Convert declutter — results drawer + spine + Settings,apps/frontend,operator workbench deepen,T0 / T2 / T3 / H4–H5,,,active,
 UJ-090,Staging residual decode + typo lint warnings (libraries),apps/frontend / API / CI,live decode/METAR and SPECI quality bar deepen,T0 / T2 / T3 / H4–H5,TC-EVDR-001..007,Staging residual families decode + per-typo lint warnings; Decoding library / lint catalog e2e,active,live_e2e=**H4–H5** (catalog/library)
