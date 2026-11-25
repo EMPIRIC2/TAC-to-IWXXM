@@ -693,6 +693,58 @@ describe('LiveWorldMap', () => {
     map.flyTo.mockClear();
     view.rerender(<LiveWorldMap focusStation="NONE" />);
     expect(map.flyTo).not.toHaveBeenCalled();
+    // Clear focus (empty), then set KJFK again — one new fly is allowed.
+    view.rerender(<LiveWorldMap focusStation="" />);
+    view.rerender(<LiveWorldMap focusStation="KJFK" onOpenPlace={onOpenPlace} />);
+    await waitFor(() => expect(map.flyTo).toHaveBeenCalledWith([40.6, -73.7], 8));
+  });
+
+  it('does not re-fly to the same focus station when places refresh (HF-live-map-auto-zoom-trap)', async () => {
+    // Disable the suite's immediate 60s refresh so only the layer toggle refetches.
+    vi.mocked(window.setInterval).mockImplementation(
+      (() => 0) as unknown as typeof setInterval,
+    );
+    let placePayload: LivePlace[] = [place];
+    const fetchMock = vi.fn().mockImplementation(async (url: string) => {
+      if (String(url).includes('/live-map/eval')) {
+        return {
+          ok: true,
+          json: async () => ({ computed_at: '2026-11-25T00:00:00Z' }),
+        };
+      }
+      return { ok: true, json: async () => ({ places: placePayload }) };
+    });
+    vi.stubGlobal('fetch', fetchMock);
+    const user = userEvent.setup();
+    render(<LiveWorldMap focusStation="KJFK" />);
+    await waitFor(() => expect(map.flyTo).toHaveBeenCalledWith([40.6, -73.7], 8));
+    const fliesAfterFocus = map.flyTo.mock.calls.length;
+    const callsAfterFocus = fetchMock.mock.calls.length;
+    placePayload = [
+      place,
+      {
+        ...place,
+        product: 'taf',
+        reports: [
+          {
+            observed_at: 'taf',
+            tac: 'TAF KJFK 010000Z',
+            iwxxm: null,
+          },
+        ],
+      },
+    ];
+    // Flip a layer to force a places refetch without changing focusStation.
+    await user.click(screen.getByTestId('layer-speci'));
+    await waitFor(() =>
+      expect(fetchMock.mock.calls.length).toBeGreaterThan(callsAfterFocus),
+    );
+    await act(async () => {
+      await new Promise((resolve) => {
+        setTimeout(resolve, 30);
+      });
+    });
+    expect(map.flyTo.mock.calls.length).toBe(fliesAfterFocus);
   });
 
   it('opens the card on hover and loads the earlier copy from the card', async () => {

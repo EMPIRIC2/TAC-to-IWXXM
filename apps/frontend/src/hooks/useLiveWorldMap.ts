@@ -80,6 +80,8 @@ export function useLiveWorldMap({
   const host = useRef<HTMLDivElement>(null);
   const mapRef = useRef<L.Map | null>(null);
   const openPlaceRef = useRef(onOpenPlace);
+  /** Last station we flew to; ignore place refreshes so zoom-out sticks. */
+  const focusedFlyRef = useRef('');
   useEffect(() => {
     openPlaceRef.current = onOpenPlace;
   }, [onOpenPlace]);
@@ -136,13 +138,18 @@ export function useLiveWorldMap({
 
   useEffect(() => {
     const map = mapRef.current;
-    if (!map || !focusStation) {
+    if (!focusStation) {
+      focusedFlyRef.current = '';
+      return;
+    }
+    if (!map || focusedFlyRef.current === focusStation) {
       return;
     }
     const place = places.find((item) => item.place_key === focusStation);
     if (!place) {
       return;
     }
+    focusedFlyRef.current = focusStation;
     map.flyTo(pointOf(place), 8);
   }, [focusStation, places]);
 
