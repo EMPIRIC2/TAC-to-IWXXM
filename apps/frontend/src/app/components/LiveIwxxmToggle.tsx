@@ -5,6 +5,17 @@
  * const _ = true;
  */
 
+/** Operator-visible label. */
+export const LIVE_IWXXM_LABEL = 'Live IWXXM';
+
+/** Short hint kept inline with the label (compact strip). */
+export const LIVE_IWXXM_HINT = '(preview updates as you type)';
+
+/**
+ * Type `LiveIwxxmToggleProps`.
+ * @example
+ * const _ = true;
+ */
 export interface LiveIwxxmToggleProps {
   checked: boolean;
   onChange: (checked: boolean) => void;
@@ -26,8 +37,9 @@ export function LiveIwxxmToggle({
 }: LiveIwxxmToggleProps) {
   return (
     <label
-      className="inline-flex items-center gap-2 text-sm text-gray-800 dark:text-gray-200"
+      className="mb-0 flex cursor-pointer items-center gap-2 text-sm text-gray-800 dark:text-gray-200"
       data-testid="live-iwxxm-toggle-label"
+      title="When on, the IWXXM preview rebuilds as you edit the TAC text."
     >
       <input
         type="checkbox"
@@ -38,10 +50,8 @@ export function LiveIwxxmToggle({
         className="h-4 w-4 rounded border-gray-300"
       />
       <span>
-        <span className="font-medium">Live IWXXM</span>
-        <span className="ml-1 text-gray-500 dark:text-gray-400">
-          (preview updates as you type)
-        </span>
+        <span className="font-medium">{LIVE_IWXXM_LABEL}</span>
+        <span className="ml-1 text-gray-500 dark:text-gray-400">{LIVE_IWXXM_HINT}</span>
       </span>
     </label>
   );

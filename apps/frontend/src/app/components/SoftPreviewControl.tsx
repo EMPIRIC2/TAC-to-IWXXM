@@ -40,24 +40,22 @@ export function SoftPreviewControl({
     return null;
   }
   return (
-    <label className="mb-0 flex cursor-pointer items-start gap-2 text-sm text-gray-800 dark:text-gray-200">
+    <label
+      className="mb-0 flex cursor-pointer items-center gap-2 text-sm text-gray-800 dark:text-gray-200"
+      title={SOFT_PREVIEW_HELP}
+    >
       <input
         type="checkbox"
         data-testid="soft-preview-toggle"
-        className="mt-0.5 h-4 w-4 rounded border-gray-300 text-rose-600 focus:ring-rose-500 disabled:cursor-not-allowed"
+        className="h-4 w-4 rounded border-gray-300 text-rose-600 focus:ring-rose-500 disabled:cursor-not-allowed"
         checked={checked}
         disabled={disabled}
         readOnly={false}
         onChange={(e) => onChange(e.target.checked)}
       />
-      <span className="min-w-0">
+      <span>
         <span className="font-medium">{SOFT_PREVIEW_LABEL}</span>
-        <span
-          className="mt-0.5 block text-xs leading-snug text-gray-500 dark:text-gray-400"
-          title={SOFT_PREVIEW_HELP}
-        >
-          {SOFT_PREVIEW_HELP}
-        </span>
+        <span className="ml-1 text-gray-500 dark:text-gray-400">{SOFT_PREVIEW_HELP}</span>
       </span>
     </label>
   );

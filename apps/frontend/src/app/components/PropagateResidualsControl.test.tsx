@@ -12,11 +12,15 @@ import {
 } from './PropagateResidualsControl';
 
 describe('PropagateResidualsControl', () => {
-  it('renders plain-language label and help', () => {
+  it('renders compact label; long help on title (not always-visible paragraph)', () => {
     render(<PropagateResidualsControl checked={false} onChange={vi.fn()} />);
     expect(screen.getByTestId('propagate-residuals-toggle')).toBeInTheDocument();
     expect(screen.getByText(PROPAGATE_RESIDUALS_LABEL)).toBeInTheDocument();
-    expect(screen.getByText(PROPAGATE_RESIDUALS_HELP)).toBeInTheDocument();
+    expect(screen.queryByText(PROPAGATE_RESIDUALS_HELP)).not.toBeInTheDocument();
+    expect(screen.getByText(PROPAGATE_RESIDUALS_LABEL).closest('label')).toHaveAttribute(
+      'title',
+      PROPAGATE_RESIDUALS_HELP,
+    );
   });
 
   it('notifies onChange when toggled', async () => {
