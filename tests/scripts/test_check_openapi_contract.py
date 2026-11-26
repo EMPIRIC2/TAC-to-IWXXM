@@ -13,10 +13,10 @@ SPEC = REPO_ROOT / "apps" / "frontend" / "openapi" / "openapi.json"
 INTERACTIONS = REPO_ROOT / "tests" / "contracts" / "openapi-interactions.json"
 
 # 2026-11-24 scan after M1 dissemination OpenAPI drop (FR-052..056).
-SCAN_OPERATIONS = 85
-SCAN_STATUSES = 157
+SCAN_OPERATIONS = 86
+SCAN_STATUSES = 160
 SCAN_REQUEST_FIELDS = 33
-SCAN_RESPONSE_FIELDS = 279
+SCAN_RESPONSE_FIELDS = 280
 
 
 @pytest.fixture

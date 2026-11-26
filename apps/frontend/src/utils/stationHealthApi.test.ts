@@ -94,6 +94,32 @@ describe('stationHealthApi', () => {
     expect(body.icao_filter).toBe('KJFK');
     expect(String(okFetch.mock.calls[0]?.[0])).toContain('icao=KJFK');
 
+    const bareFetch = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        computed_at: '2026-11-26T12:00:00Z',
+        window_hours: 24,
+        products: [],
+        partial_decode_count: 0,
+        lint_count: 0,
+        top_lint_codes: [],
+        convert_failure_count: 0,
+        iwxxm_validation: { pass: 0, fail: 0, skip: 0 },
+        failure_locations: [],
+        product_breakdown: [],
+        icao_filter: null,
+      }),
+    });
+    vi.stubGlobal('fetch', bareFetch);
+    await fetchStationHealthEvalBenchmark();
+    expect(String(bareFetch.mock.calls[0]?.[0])).toMatch(
+      /\/station-health\/eval-benchmark$/,
+    );
+    await fetchStationHealthEvalBenchmark({ icao: '   ' });
+    expect(String(bareFetch.mock.calls[1]?.[0])).toMatch(
+      /\/station-health\/eval-benchmark$/,
+    );
+
     const badFetch = vi.fn().mockResolvedValue({ ok: false, status: 400 });
     vi.stubGlobal('fetch', badFetch);
     await expect(fetchStationHealthEvalBenchmark({ icao: 'BAD' })).rejects.toThrow(
