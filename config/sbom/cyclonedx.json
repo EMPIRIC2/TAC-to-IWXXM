@@ -2358,7 +2358,7 @@
           ],
           "name": "cyclonedx-python-lib",
           "type": "library",
-          "version": "11.12.0"
+          "version": "11.13.0"
         }
       ]
     }
