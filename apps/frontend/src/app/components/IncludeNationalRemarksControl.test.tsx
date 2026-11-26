@@ -8,13 +8,16 @@ import {
 } from './IncludeNationalRemarksControl';
 
 describe('IncludeNationalRemarksControl', () => {
-  it('renders label/help and reports checkbox changes', async () => {
+  it('renders compact label; long help on title; reports checkbox changes', async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
     render(<IncludeNationalRemarksControl checked={true} onChange={onChange} />);
 
     expect(screen.getByText(INCLUDE_NATIONAL_REMARKS_LABEL)).toBeInTheDocument();
-    expect(screen.getByText(INCLUDE_NATIONAL_REMARKS_HELP)).toBeInTheDocument();
+    expect(screen.queryByText(INCLUDE_NATIONAL_REMARKS_HELP)).not.toBeInTheDocument();
+    expect(
+      screen.getByText(INCLUDE_NATIONAL_REMARKS_LABEL).closest('label'),
+    ).toHaveAttribute('title', INCLUDE_NATIONAL_REMARKS_HELP);
 
     const toggle = screen.getByTestId('include-national-remarks-toggle');
     expect(toggle).toBeChecked();

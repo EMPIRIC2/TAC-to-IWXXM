@@ -5,7 +5,7 @@
 /** Operator-visible label (must stay free of internal doc ids). */
 export const INCLUDE_NATIONAL_REMARKS_LABEL = 'Include national remarks in IWXXM';
 
-/** Operator-visible help under the toggle. */
+/** Operator-visible help (tooltip / About these options — not always-visible). */
 export const INCLUDE_NATIONAL_REMARKS_HELP =
   'When off, remarks after RMK are left out of the IWXXM result. National remarks are not meant for international distribution.';
 
@@ -34,21 +34,19 @@ export function IncludeNationalRemarksControl({
   disabled = false,
 }: IncludeNationalRemarksControlProps) {
   return (
-    <label className="mb-0 flex cursor-pointer items-start gap-2 text-sm text-gray-800 dark:text-gray-200">
+    <label
+      className="mb-0 flex cursor-pointer items-center gap-2 text-sm text-gray-800 dark:text-gray-200"
+      title={INCLUDE_NATIONAL_REMARKS_HELP}
+    >
       <input
         type="checkbox"
         data-testid="include-national-remarks-toggle"
-        className="mt-0.5 h-4 w-4 rounded border-gray-300 text-rose-600 focus:ring-rose-500"
+        className="h-4 w-4 rounded border-gray-300 text-rose-600 focus:ring-rose-500"
         checked={checked}
         disabled={disabled}
         onChange={(e) => onChange(e.target.checked)}
       />
-      <span>
-        <span className="font-medium">{INCLUDE_NATIONAL_REMARKS_LABEL}</span>
-        <span className="block text-xs text-gray-500 dark:text-gray-400">
-          {INCLUDE_NATIONAL_REMARKS_HELP}
-        </span>
-      </span>
+      <span className="font-medium">{INCLUDE_NATIONAL_REMARKS_LABEL}</span>
     </label>
   );
 }
