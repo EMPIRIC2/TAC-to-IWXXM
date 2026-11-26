@@ -17,7 +17,8 @@ PY_LINT := apps/backend/src apps/backend/tests \
 	packages/workflows/src packages/workflows/tests \
 	tests
 
-.PHONY: install test test-unit vendor-sync export-iwxxm-versions openapi-refresh sbom sbom-check tip-diff-iwxxm \
+.PHONY: install test test-unit vendor-sync fetch-iwxxm-schemas verify-iwxxm-official-pins \
+	test-official-schema-quality export-iwxxm-versions openapi-refresh sbom sbom-check tip-diff-iwxxm \
 	pypi-calver-bump \
 	iwxxm-us-compat-smoke codelist-uri-drift \
 	test-unit-workspace test-unit-workspace-py test-unit-shared-py test-unit-shared-js test-unit-workspace-js \
@@ -415,6 +416,21 @@ build-tac2iwxxm-native:
 # F13 — optional PyO3 extension (requires rustc + maturin). E10-36 / T3.1.
 build-iwxxm-validate-native:
 	cd packages/iwxxm-validate && $(UV) run maturin develop --manifest-path rust/Cargo.toml --uv
+
+# FR-077 / NFR-016 — fetch official WMO IWXXM XSD+Schematron pins into schema cache.
+fetch-iwxxm-schemas:
+	$(UV) run python scripts/schemas/fetch_official_iwxxm_pins.py
+
+# Fail-closed hash verify of resolvable official pins (packaged / cache / vendor).
+verify-iwxxm-official-pins:
+	$(UV) run python scripts/schemas/fetch_official_iwxxm_pins.py --verify-existing
+
+# FR-032 / NFR-017 — shared official Schematron + matching XSD quality bar.
+test-official-schema-quality: verify-iwxxm-official-pins
+	$(UV) run pytest \
+		packages/iwxxm-validate/tests/test_official_schema_quality_bar.py \
+		packages/iwxxm-validate/tests/test_official_pins_unit.py \
+		-v --no-cov
 
 # E10-34 — copy runtime XSD+SCH+catalogs into the package (excludes modelling/translation).
 sync-iwxxm-validate-schemas:

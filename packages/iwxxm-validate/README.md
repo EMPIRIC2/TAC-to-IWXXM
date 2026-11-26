@@ -3,7 +3,9 @@
 Validate IWXXM XML: well-formedness, XSD, and Schematron. MIT licensed.
 
 Pinned schema snapshots ship inside the wheel (XSD, Schematron, RDF codelists, and
-related runtime assets). This package does **not** parse TAC text.
+related runtime assets). In the monorepo, official WMO pins are fetched at
+build/runtime from `config/schemas/iwxxm-official-pins.json` (vendored trees are
+materialization only). This package does **not** parse TAC text.
 
 ## Install
 
@@ -48,8 +50,9 @@ same = canonical_xml_equal(official_xml, converted_xml)
 form = to_canonical_xml(converted_xml)
 ```
 
-Common version lines include `2023-1` and `2025-2`. Profile `annex3` is the default ICAO
-Annex 3 path; IWXXM-US is available when that schema set is present in the wheel.
+Official pins include `3.0`, `2021-2`, `2023-1`, and `2025-2` (legacy `3.0.0` aliases
+`3.0`). Profile `annex3` is the default ICAO Annex 3 path; IWXXM-US is available when
+that schema set is present in the wheel.
 
 ## CLI
 

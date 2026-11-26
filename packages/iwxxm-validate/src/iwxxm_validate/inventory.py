@@ -1,7 +1,8 @@
 """Schematron assert inventory for a primary IWXXM pin (#1216 M4).
 
-Ids are ``sch:pattern/@id`` values from the pin's ``*.sch`` files. Vendor Schematron
-remains the executable source of truth; this set is the policy membership list.
+Ids are ``sch:pattern/@id`` values from the pin's ``*.sch`` files. Official
+release Schematron is the executable quality-bar source of truth; this set is
+the policy membership list.
 """
 
 from __future__ import annotations
@@ -10,7 +11,7 @@ import re
 from functools import lru_cache
 from pathlib import Path
 
-from iwxxm_validate.paths import vendor_iwxxm_root
+from iwxxm_validate.paths import vendor_iwxxm_root, version_dir
 
 _PATTERN_ID = re.compile(r"""<(?:[\w.-]+:)?pattern\b[^>]*\bid\s*=\s*["']([^"']+)["']""")
 
@@ -63,10 +64,15 @@ def load_assert_inventory(pin: str) -> frozenset[str]:
     frozenset[str]
         Schematron pattern ids for ``pin`` (for example ``2025-2``).
     """
-    pin_root = vendor_iwxxm_root() / pin
-    if not pin_root.is_dir():
-        msg = f"IWXXM pin directory not found: {pin}"
-        raise InventoryError(msg)
+    try:
+        pin_root = version_dir(pin)
+    except FileNotFoundError:
+        # Tests and overlays may point vendor_iwxxm_root at a bare pin dir
+        # without the ``IWXXM/`` layout required by version_dir.
+        pin_root = vendor_iwxxm_root() / pin
+        if not pin_root.is_dir():
+            msg = f"IWXXM pin directory not found: {pin}"
+            raise InventoryError(msg) from None
     ids = _collect_pattern_ids(pin_root)
     if not ids:
         msg = f"no Schematron pattern ids under pin {pin}"

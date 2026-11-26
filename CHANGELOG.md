@@ -4,7 +4,15 @@ All notable user-facing and deployable changes for TAC to IWXXM.
 
 ## Unreleased
 
+### Added
+- Official IWXXM pin catalog + fetch/verify pipeline for Schematron and matching
+  XSD (`config/schemas/iwxxm-official-pins.json`, `make fetch-iwxxm-schemas`).
+  Shared quality-bar regression for pins `3.0`, `2021-2`, `2023-1`, `2025-2`
+  ([#1709](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1709)).
+
 ### Changed
+- Schema acquisition SoT is the official pin catalog (fetch at build/runtime);
+  `vendor/schemas/` remains optional materialization only (FR-077 / NFR-016).
 - Shell nav and Live map page chrome use **Live map** (was Decode visuals).
   Test id `shell-nav-visuals` is unchanged.
 

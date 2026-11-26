@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "description": "Acquisition source of truth for official WMO IWXXM XSD + Schematron pins (FR-077 / NFR-016 / D-019). Vendored trees are optional materialization only.",
+  "upstream_repo": "wmo-im/iwxxm",
+  "default_cache_rel": ".cache/iwxxm-schemas",
+  "pins": {
+    "3.0": {
+      "tag": "v3.0.0",
+      "commit_sha": "73db4650ee604678236fa0664bdfd1cd5f92431c",
+      "cache_dirname": "3.0",
+      "aliases": [
+        "3.0.0"
+      ],
+      "namespace_fragment": "3.0",
+      "runtime_subset_sha256": "61e1a9f7b42b9eabd66978a596b6f3f47e23fa1d97e6db2f803055bb5bd46c41"
+    },
+    "2021-2": {
+      "tag": "v2021-2",
+      "commit_sha": "4ed70a1b544dc9c66c639a485873e9e19c69df4b",
+      "cache_dirname": "2021-2",
+      "aliases": [],
+      "namespace_fragment": "2021-2",
+      "runtime_subset_sha256": "f56fe79f780ab7e847bf6d5ef948982a8b865e765aaf0a3943f0b4d3d52016ef"
+    },
+    "2023-1": {
+      "tag": "v2023-1",
+      "commit_sha": "e84bf544702e6a3c638e7ab5f02a9c930dda57f7",
+      "cache_dirname": "2023-1",
+      "aliases": [],
+      "namespace_fragment": "2023-1",
+      "runtime_subset_sha256": "0bd8bb92ec8b9c483e5a4e14bcb31df55308c735fa0e78518a346d88ebdffaba"
+    },
+    "2025-2": {
+      "tag": "v2025-2",
+      "commit_sha": "2c4db03d20f22bca74e55024ff6dc357adfff473",
+      "cache_dirname": "2025-2",
+      "aliases": [],
+      "namespace_fragment": "2025-2",
+      "runtime_subset_sha256": "508f7b47f53c542a5e47d4fda59602ac9b31be53d8a3ecddd819c4badd0aa018"
+    }
+  },
+  "notes": [
+    "Each pin is a shallow checkout of the release tag; IWXXM/*.xsd and IWXXM/rule/** form the hashed runtime subset.",
+    "Legacy directory name 3.0.0 is an alias of pin 3.0.",
+    "Run: make fetch-iwxxm-schemas  (or uv run python scripts/schemas/fetch_official_iwxxm_pins.py --write-hashes)"
+  ]
+}

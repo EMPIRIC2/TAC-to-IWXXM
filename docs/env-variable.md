@@ -80,6 +80,9 @@ docs.
 | Live map eval refresh route (FR-045) | `LIVE_MAP_EVAL_REFRESH_ENABLED` | API; default **false** (public POST refresh off; cron owns writes) |
 | Live check egress allowlist | `LIVE_CHECK_EGRESS_ALLOWLIST` | API / `.env`; default `aviationweather.gov,api.met.no,api.dataplatform.knmi.nl` |
 | KNMI Open Data API key (live check) | `KNMI_OPEN_DATA_API_KEY` | API / `.env` only; never frontend; optional until `provider=knmi` |
+| Official IWXXM schema cache root (FR-077) | `IWXXM_SCHEMA_CACHE` | Build/CI/local; default `.cache/iwxxm-schemas/` under repo root |
+| iwxxm-validate repo root override | `IWXXM_VALIDATE_REPO_ROOT` | Package path resolution; optional |
+| iwxxm-validate schemas root override | `IWXXM_SCHEMAS_ROOT` | Points at an `iwxxm` tree when set; optional |
 
 Profile ids are not secrets. An exchange profile must not imply dissemination
 credentials.

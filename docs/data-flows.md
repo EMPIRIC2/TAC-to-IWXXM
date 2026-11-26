@@ -50,6 +50,8 @@ No JWT is required on this path.
 
 ## Schema path
 
-1. Convert and validate read pins from `vendor/manifest.json`.
-2. Schema files under `vendor/schemas/` stay read-only in normal development.
-3. Vendor sync pull requests refresh snapshots. Hand edits are forbidden.
+1. Acquisition SoT is `config/schemas/iwxxm-official-pins.json` (official WMO tags + hashes).
+2. Build/CI or runtime fetch materializes XSD + Schematron into the schema cache
+   (`IWXXM_SCHEMA_CACHE` or `.cache/iwxxm-schemas/`). Missing required pin fails closed.
+3. `vendor/schemas/` may hold an optional materialization copy. It is not SoT.
+4. Hand edits to schema trees are forbidden. Refresh via fetch (or maintainer sync).

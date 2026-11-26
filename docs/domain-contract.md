@@ -13,9 +13,10 @@ validation, and conversion profiles. Detailed mining notes may stay in the local
 US/CA (and other national) semantic wire ids, LWIS/SAWR variants, and the
 G-AIRMET live-map layer. Convert/API/catalog ship ICAO baseline only. Target
 pins remain `3.0`, `2021-2`, `2023-1`, `2025-2` with official Schematron and
-matching XSD fetched at build or runtime (later milestone). Do not add new
-work on dropped national paths. Emit packages and `catalog.yaml` rows may
-remain on disk until a later delete pass.
+matching XSD fetched at build or runtime (FR-077 / NFR-016; D-019). Shared
+quality-bar regression uses those official releases (FR-032 / NFR-017; D-018).
+Do not add new work on dropped national paths. Emit packages and
+`catalog.yaml` rows may remain on disk until a later delete pass.
 
 ## Terms
 
@@ -25,7 +26,7 @@ remain on disk until a later delete pass.
 | IWXXM | WMO XML form of the same aviation products |
 | Semantic profile | Rules for how TAC maps into IWXXM content |
 | Exchange profile | Rules for bulletin, filename, and routing packaging |
-| Pin | Vendor schema release line under `vendor/schemas/` |
+| Pin | Official IWXXM release line (`3.0`, `2021-2`, `2023-1`, `2025-2`); resolved from schema cache |
 
 ## Pipeline order
 
