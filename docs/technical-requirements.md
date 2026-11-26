@@ -90,9 +90,10 @@ requirement id.
 |----|-------------|----------------|
 | TR-C01 | Convert TAC through `packages/tac2iwxxm` only for HTTP convert | Backend convert path does not reintroduce GIFTs |
 | TR-C02 | Lint TAC through `packages/tac-validate` | Lint responses use the issue catalog |
-| TR-C03 | Validate IWXXM through `packages/iwxxm-validate` | XSD and Schematron run for supported pins |
-| TR-C04 | Consume vendor schemas read-only | No hand edits under `vendor/schemas/` |
-| TR-C05 | Pin IWXXM lines through `vendor/manifest.json` | Convert and validate select an existing pin |
+| TR-C03 | Validate IWXXM through `packages/iwxxm-validate` with official Schematron + matching XSD | Shared quality-bar regression covers pins `3.0`, `2021-2`, `2023-1`, `2025-2` (FR-032 / NFR-017) |
+| TR-C04 | Do not hand-edit schema trees; treat `vendor/schemas/` as optional materialization only | No hand edits; acquisition SoT is `config/schemas/iwxxm-official-pins.json` (FR-077 / NFR-016) |
+| TR-C05 | Fetch official IWXXM pins at build or runtime with hash verify | `make fetch-iwxxm-schemas` (or CI equivalent) populates cache; missing pin fails closed |
+| TR-C06 | Keep `vendor/manifest.json` for optional materialization / legacy sync | When vendor trees are present, integrity checks still apply; they are not acquisition SoT |
 
 ## Dissemination and security
 

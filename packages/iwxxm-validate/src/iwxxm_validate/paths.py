@@ -1,22 +1,36 @@
-"""Resolve IWXXM / IWXXM-US schema paths (packaged subset or monorepo vendor).
+"""Resolve IWXXM / IWXXM-US schema paths (packaged, cache, or vendor).
 
-Resolution order (E10-34 / E10-6):
+Resolution order (FR-077 / NFR-016 / D-019):
 
 1. ``IWXXM_VALIDATE_REPO_ROOT`` / ``IWXXM_SCHEMAS_ROOT`` environment overrides
 2. Packaged runtime subset under ``iwxxm_validate/schemas/`` (wheel / after sync)
-3. Monorepo ``vendor/schemas/*`` when developing inside this repository
+3. Explicit ``IWXXM_SCHEMA_CACHE`` when set
+4. Default ``.cache/iwxxm-schemas/`` when present (fetch materialization)
+5. Monorepo ``vendor/schemas/*`` materialization (not SoT)
+
+``vendor_iwxxm_root()`` prefers packaged, then explicit cache, then vendor so
+existing wheel/sync behavior stays stable. ``version_dir()`` searches all
+candidate roots (including the default cache) and fail-closes when missing.
 """
 
 from __future__ import annotations
 
+import json
 import os
 from functools import lru_cache
 from pathlib import Path
+from typing import Any, cast
 
 _PACKAGE_DIR = Path(__file__).resolve().parent
 _PACKAGE_SCHEMAS = _PACKAGE_DIR / "schemas"
 _PACKAGE_ROOT = _PACKAGE_DIR.parents[1]
 _DEFAULT_REPO_ROOT = _PACKAGE_ROOT.parents[1]
+
+# Product pin id ↔ on-disk directory aliases (legacy vendor used ``3.0.0``).
+_PIN_ALIASES: dict[str, tuple[str, ...]] = {
+    "3.0": ("3.0", "3.0.0"),
+    "3.0.0": ("3.0.0", "3.0"),
+}
 
 
 def packaged_schemas_root() -> Path | None:
@@ -60,23 +74,118 @@ def repo_root() -> Path:
         # …/vendor/schemas/iwxxm → repo root two parents up from iwxxm
         if path.name == "iwxxm" and path.parent.name == "schemas":
             return path.parent.parent.parent
+        # …/.cache/iwxxm-schemas → treat as schemas root parent for repo guess
+        if path.name.endswith("iwxxm-schemas") or path.name == "iwxxm-schemas":
+            return _DEFAULT_REPO_ROOT
         return path
     return _DEFAULT_REPO_ROOT
 
 
+def official_pins_catalog_path() -> Path:
+    """
+    Return path to ``config/schemas/iwxxm-official-pins.json``.
+
+    Returns
+    -------
+    Path
+        Absolute path under the resolved monorepo root.
+    """
+    return repo_root() / "config" / "schemas" / "iwxxm-official-pins.json"
+
+
+def _cache_root_from_env_or_default(*, explicit_only: bool = False) -> Path | None:
+    """
+    Return a schema cache directory path when configured / present.
+
+    Parameters
+    ----------
+    explicit_only :
+        When True, only honour ``IWXXM_SCHEMA_CACHE`` (used by
+        ``vendor_iwxxm_root`` so default ``.cache`` does not override packaged
+        / vendor preference).
+
+    Returns
+    -------
+    Path or None
+        Cache root containing at least one pin tree, or ``None``.
+    """
+    env = os.environ.get("IWXXM_SCHEMA_CACHE")
+    if env:
+        root = Path(env).expanduser().resolve()
+    elif explicit_only:
+        return None
+    else:
+        catalog = official_pins_catalog_path()
+        rel = ".cache/iwxxm-schemas"
+        if catalog.is_file():
+            try:
+                loaded = json.loads(catalog.read_text(encoding="utf-8"))
+                if isinstance(loaded, dict):
+                    data = cast(dict[str, Any], loaded)
+                    default_rel = data.get("default_cache_rel")
+                    if default_rel:
+                        rel = str(default_rel)
+            except (OSError, json.JSONDecodeError, TypeError, ValueError):
+                pass
+        root = (repo_root() / rel).resolve()
+    if not root.is_dir():
+        return None
+    for child in root.iterdir():
+        if child.is_dir() and (child / "IWXXM").is_dir():
+            return root
+    return None
+
+
+def schema_cache_root() -> Path | None:
+    """
+    Return the official schema cache root when it contains at least one pin tree.
+
+    Honours ``IWXXM_SCHEMA_CACHE``. Otherwise uses the catalog default
+    (``.cache/iwxxm-schemas``) when that directory has pin trees.
+
+
+    Returns
+    -------
+    Path or None
+        Cache root, or ``None`` when absent / empty.
+    """
+    return _cache_root_from_env_or_default(explicit_only=False)
+
+
+def pin_dirnames(iwxxm_version: str) -> tuple[str, ...]:
+    """
+    Return candidate on-disk directory names for a pin id.
+
+    Parameters
+    ----------
+    iwxxm_version :
+        Product pin such as ``2025-2`` or legacy ``3.0.0``.
+
+    Returns
+    -------
+    tuple[str, ...]
+        Directory name candidates (aliases first when mapped).
+    """
+    pin = iwxxm_version.strip()
+    return _PIN_ALIASES.get(pin, (pin,))
+
+
 def vendor_iwxxm_root() -> Path:
     """
-    Return ``iwxxm`` schema root (packaged subset or ``vendor/schemas/iwxxm``).
+    Return ``iwxxm`` schema root (packaged subset, explicit cache, or vendor).
 
 
     Returns
     -------
     Path
-        ``iwxxm`` schema root (packaged subset or ``vendor/schemas/iwxxm``).
+        ``iwxxm`` schema root used as the parent of pin directories.
     """
     packaged = packaged_schemas_root()
     if packaged is not None:
         return packaged / "iwxxm"
+    explicit_cache = _cache_root_from_env_or_default(explicit_only=True)
+    if explicit_cache is not None:
+        return explicit_cache
     return repo_root() / "vendor" / "schemas" / "iwxxm"
 
 
@@ -138,6 +247,34 @@ def ca_xsd_path(*, tag: str = "3.0") -> Path | None:
     return None
 
 
+def _candidate_iwxxm_roots() -> list[Path]:
+    """
+    Ordered roots that may contain pin directories.
+
+    Returns
+    -------
+    list[Path]
+        Candidate ``iwxxm`` roots in resolve priority order.
+    """
+    roots: list[Path] = []
+    packaged = packaged_schemas_root()
+    if packaged is not None:
+        roots.append(packaged / "iwxxm")
+    explicit_cache = _cache_root_from_env_or_default(explicit_only=True)
+    if explicit_cache is not None and explicit_cache not in roots:
+        roots.append(explicit_cache)
+    default_cache = _cache_root_from_env_or_default(explicit_only=False)
+    if default_cache is not None and default_cache not in roots:
+        roots.append(default_cache)
+    vendor = repo_root() / "vendor" / "schemas" / "iwxxm"
+    if vendor.is_dir() and vendor not in roots:
+        roots.append(vendor)
+    primary = vendor_iwxxm_root()
+    if primary not in roots:
+        roots.insert(0, primary)
+    return roots
+
+
 @lru_cache(maxsize=32)
 def version_dir(iwxxm_version: str) -> Path:
     """
@@ -146,18 +283,50 @@ def version_dir(iwxxm_version: str) -> Path:
     Parameters
     ----------
     iwxxm_version : str
-        Release line such as ``2023-1`` or ``2025-2``.
+        Release line such as ``2023-1``, ``2025-2``, or ``3.0``.
 
 
     Returns
     -------
     Path
         The IWXXM version tree (contains ``IWXXM/``).
+
+    Raises
+    ------
+    FileNotFoundError
+        When no candidate root contains the pin (fail closed).
     """
-    path = vendor_iwxxm_root() / iwxxm_version
-    if not path.is_dir():
-        raise FileNotFoundError(f"IWXXM version directory not found: {path}")
-    return path
+    names = pin_dirnames(iwxxm_version)
+    tried: list[str] = []
+    for root in _candidate_iwxxm_roots():
+        for name in names:
+            path = root / name
+            tried.append(str(path))
+            if path.is_dir() and (path / "IWXXM").is_dir():
+                return path
+    msg = (
+        f"IWXXM pin cache missing for {iwxxm_version!r} "
+        f"(tried: {', '.join(tried)}). "
+        "Run `make fetch-iwxxm-schemas` or set IWXXM_SCHEMA_CACHE."
+    )
+    raise FileNotFoundError(msg)
+
+
+def require_pin_cache(iwxxm_version: str) -> Path:
+    """
+    Fail closed: return ``version_dir`` or raise ``FileNotFoundError``.
+
+    Parameters
+    ----------
+    iwxxm_version :
+        Official pin id.
+
+    Returns
+    -------
+    Path
+        Resolved pin directory that contains ``IWXXM/``.
+    """
+    return version_dir(iwxxm_version)
 
 
 def xsd_path(iwxxm_version: str) -> Path:
@@ -257,8 +426,12 @@ __all__ = [
     "ca_xsd_path",
     "clear_path_caches",
     "codelists_dir",
+    "official_pins_catalog_path",
     "packaged_schemas_root",
+    "pin_dirnames",
     "repo_root",
+    "require_pin_cache",
+    "schema_cache_root",
     "schematron_path",
     "us_catalog_path",
     "vendor_iwxxm_ca_root",

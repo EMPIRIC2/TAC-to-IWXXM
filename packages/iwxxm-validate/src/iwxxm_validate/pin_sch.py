@@ -1,8 +1,9 @@
 """IWXXM pin ↔ Schematron bundle match (TC-EVYFC-004 / D-YFC-05 / #1231).
 
-Vendor Schematron remains SoT. Convert and validate paths must use the SCH
-file that lives under the same pin tree as the IWXXM XSD, and the SCH must
-declare the namespace URI for that pin.
+Official release Schematron + matching XSD are the quality-bar SoT (FR-032 /
+NFR-017 / D-018). Convert and validate paths must use the SCH file that lives
+under the same pin tree as the IWXXM XSD, and the SCH must declare the
+namespace URI for that pin.
 """
 
 from __future__ import annotations
@@ -12,9 +13,11 @@ from iwxxm_validate.paths import schematron_path, version_dir, xsd_path
 
 # Directory pin → Schematron ``iwxxm`` namespace URI fragment after ``…/iwxxm/``.
 _PIN_NS_FRAGMENT: dict[str, str] = {
+    "3.0": "3.0",
+    "3.0.0": "3.0",
+    "2021-2": "2021-2",
     "2023-1": "2023-1",
     "2025-2": "2025-2",
-    "3.0.0": "3.0",
 }
 
 
@@ -60,7 +63,7 @@ def assert_pin_schematron_match(iwxxm_version: str) -> PinSchBundle:
     Parameters
     ----------
     iwxxm_version : str
-        Release pin (``2023-1``, ``2025-2``, ``3.0.0``).
+        Release pin (``3.0``, ``2021-2``, ``2023-1``, ``2025-2``, or legacy ``3.0.0``).
 
     Returns
     -------

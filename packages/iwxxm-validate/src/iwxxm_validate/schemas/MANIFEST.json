@@ -3,7 +3,7 @@
   "decision": "E10-34",
   "related": ["E10-6"],
   "description": "Runtime IWXXM schema subset for the iwxxm-validate wheel (XSD + Schematron + RDF codelists + externalSchema catalogs + IWXXM-US). Excludes modelling/translation bulk and documentation trees.",
-  "iwxxm_versions": ["3.0.0", "2023-1", "2025-2"],
+  "iwxxm_versions": ["3.0.0", "2021-2", "2023-1", "2025-2"],
   "include": {
     "iwxxm": ["{version}/IWXXM/*.xsd", "{version}/IWXXM/rule/**", "externalSchema/**"],
     "iwxxm-us": ["**"],
@@ -21,6 +21,7 @@
   "notes": [
     "Codelist RDFs used by Schematron document() live under each version IWXXM/rule/ (not the separate iwxxm-codelists tree).",
     "externalSchema under iwxxm covers XSD imports (GML/AIXM/W3C); translation bulk is not bundled.",
-    "Sync from monorepo vendor pins via: make sync-iwxxm-validate-schemas"
+    "Sync from monorepo vendor pins via: make sync-iwxxm-validate-schemas",
+    "Official acquisition SoT is config/schemas/iwxxm-official-pins.json (FR-077); vendor/packaged trees are materialization only."
   ]
 }

@@ -421,6 +421,23 @@ jobs:
           # on GML/ISO imports for WMO examples (F13 / T3.9).
           uv run maturin develop --manifest-path rust/Cargo.toml --uv
 
+      # FR-077 / NFR-016 — acquisition SoT is the official pin catalog; fetch if cache/vendor incomplete.
+      - name: Ensure official IWXXM schema pins
+        if: matrix.package == 'iwxxm-validate'
+        run: |
+          if ! make verify-iwxxm-official-pins; then
+            make fetch-iwxxm-schemas
+            make verify-iwxxm-official-pins
+          fi
+
+      - name: Sync iwxxm-validate runtime schemas (incl. official pins)
+        if: matrix.package == 'iwxxm-validate'
+        run: make sync-iwxxm-validate-schemas
+
+      - name: Official Schematron + XSD quality bar
+        if: matrix.package == 'iwxxm-validate'
+        run: make test-official-schema-quality
+
       - name: Run iwxxm-validate unit tests with coverage
         if: matrix.package == 'iwxxm-validate'
         run: |

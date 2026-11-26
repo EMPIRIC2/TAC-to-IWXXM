@@ -23,7 +23,8 @@ AIRMET, METAR, SIGMET, SPECI, TAF, VAA, TCA, and related forms.
 | Convert TAC → IWXXM | `packages/tac2iwxxm` |
 | Lint TAC | `packages/tac-validate` |
 | Validate IWXXM (XSD + Schematron) | `packages/iwxxm-validate` |
-| Schema snapshots (read-only) | `vendor/schemas/` (WMO and optional NOAA IWXXM-US) |
+| Official IWXXM XSD + Schematron | Fetched at build/runtime into schema cache (`IWXXM_SCHEMA_CACHE` or `.cache/iwxxm-schemas/`); pin catalog `config/schemas/iwxxm-official-pins.json` |
+| Schema materialization (optional) | `vendor/schemas/` may hold a cache copy; not the source of truth (FR-077 / NFR-016) |
 
 **Repository shape**
 
@@ -31,7 +32,8 @@ The codebase is one Git monorepo:
 
 - `apps/`: deployable services (API, frontend, worker, e2e)
 - `packages/`: libraries
-- `vendor/`: read-only upstream schema snapshots
+- `vendor/`: optional schema cache / materialization (layout required; content may be empty)
+- `config/schemas/`: official IWXXM pin acquisition catalog
 
 **Runtime facts (platform independence / hybrid operator sessions)**
 
@@ -66,7 +68,7 @@ apps/backend (FastAPI — DOKS)
  ├── public /api/v1/* (convert/validate/lint/decode/preview/dissemination) + abuse controls
  ├── /api/v1/work-sessions* → DigitalOcean Postgres (owner = Supabase user id)
  ├── packages/tac-validate | tac2iwxxm | iwxxm-validate | dissemination
- └── vendor/schemas/* (read-only)
+ └── schema cache (official pins) → optional vendor/schemas materialization
 
 apps/worker (DOKS — ingest worker)
  └── DATABASE_URL → DigitalOcean Postgres (store/quarantine; no Supabase DB)
@@ -126,10 +128,11 @@ dependencies. Later sections (**Component Details**) expand each row.
 | reference-lookup | Station and navaid coordinates for convert (general TAC conversion) | `packages/reference-lookup/` | OurAirports public-domain files; checked-in table remains the fallback |
 | tac-decoding | TAC → natural-language decode + glossary + Decoding catalog (live decode) | `packages/tac-decoding/` | , (no FastAPI/Supabase); MIT; PyPI `tac-decoding` |
 | tac-validate | TAC lint / shared rule pack | `packages/tac-validate/` | , (no FastAPI/Supabase) |
-| iwxxm-validate | XSD + Schematron (IWXXM validation engine) | `packages/iwxxm-validate/` | vendor schemas (read-only) |
+| iwxxm-validate | XSD + Schematron (IWXXM validation engine) | `packages/iwxxm-validate/` | official pin cache; optional vendor materialization |
 | Dissemination | Sink adapters, writer-contract DDL, SSRF helpers (dissemination drawer through AMHS SWIM AFS adapters); PyPI `iwxxm-dissemination` (import `dissemination`) | `packages/dissemination/` | SQLAlchemy async + dialect drivers; aiosmtplib; depends on `tac2iwxxm` |
 | Shared | Cross-cutting utils/types | `packages/shared/` | — |
-| Vendor schemas | Authoritative IWXXM SoT | `vendor/schemas/*` | wmo-im + iwxxm-us snapshots |
+| Official schema pins | Acquisition SoT for IWXXM XSD+Schematron | `config/schemas/iwxxm-official-pins.json` + fetch script | wmo-im release tags; hash-verified cache |
+| Vendor schemas | Optional materialization cache (not SoT) | `vendor/schemas/*` | may be empty; NFR-019 keeps the folder |
 | Work history (work history/hybrid operator sessions) | Guest IndexedDB + logged-in DO Postgres sessions | FE IndexedDB + `tac_work_sessions` on DO | operator workbench / hybrid operator sessions; Auth JWT |
 | Worker (ingest worker) | Near-RT ingest poller → store/quarantine | `apps/worker/` | `DATABASE_URL` → DO Postgres (platform independence) |
 | Workflows | YAML executor `execute(message, workflow)` | `packages/workflows/` | tac2iwxxm, tac-validate, iwxxm-validate, pyyaml |
@@ -323,37 +326,42 @@ module and symbol names. See . Pilot: Canonical XML helpers
 for Quality Metrics compare use a clear primary path (not jargon-only `c14n`),
 with aliases during one CalVer window. DX tests: ``…``.
 
-- **Purpose**: IWXXM validation engine: XSD + Schematron validation of IWXXM XML against vendored schemas.
+- **Purpose**: IWXXM validation engine: XSD + Schematron against official release pins.
 - **Inputs**: IWXXM XML; `iwxxm_version`; optional `profile` (US catalogs when `iwxxm_us`).
 - **Outputs**: Validation report (pass/fail + messages).
 - **delta (IWXXM validate package)**: **Rust core** (well-formed + XSD + native Schematron/SVRL)
  via PyO3. Python SDK. pinned schemas **bundled** in the wheel. PyPI `iwxxm-validate` `0.1.0`.
  Parity suite vs historical lxml isoschematron. Optional **XSD-derived** typed models
  (codegen. validation performance). UML modelling is provenance only. TAC has no official model.
-- **delta **: SCH/XSD **negative** fixtures for NSC+layers. dual-register
- colour / dual nil RDF policy tests under offline vendor SoT (v2025-2 pin).
-- **SoC**: **No** FastAPI or Supabase imports. **read-only** consumption of `vendor/schemas/*`
- (and bundled copies in published wheels).
-- **Source**: product-requirements IWXXM validation/IWXXM validate package. context/realtime-tac-ingest.md (archived. see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`. not a design document set design gate).
- context/package-publish-validation.md (archived. see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`. not a design document set design gate).
- evolve-decisions 
-- : Assert inventory + IWXXM output policy
- runtime (enable/disable by assert id. Schematron bundle refs). XSD/well-formed always error.
- Vendor `.sch` remains SoT.
+- **delta (official Schematron + matching XSD)**: Shared quality-bar regression uses official
+ Schematron and matching XSD for pins `3.0`, `2021-2`, `2023-1`, `2025-2` (FR-032 / NFR-017).
+ Acquisition is fetch-at-build/runtime with hash verify (FR-077 / NFR-016); vendored trees are
+ not the source of truth.
+- **SoC**: **No** FastAPI or Supabase imports. Resolves schemas from cache / packaged wheel /
+ optional `vendor/schemas` materialization (read-only).
+- **Source**: product-requirements IWXXM validation/IWXXM validate package; FR-032; FR-077.
+- Assert inventory + IWXXM output policy runtime (enable/disable by assert id). XSD/well-formed
+ always error. Official release `.sch` + matching XSD are the quality-bar SoT.
 
 ### packages/gifts
 
 - **Status**: Deleted in the first PR that wires tac2iwxxm to `/api/v1/convert` .
 - **Historical**: Fork of mgoberfield/GIFTs. REQ-014 / / GIFTs package deprecated.
 
+### config/schemas (official pins)
+
+- **Purpose**: Acquisition source of truth for official IWXXM release pins (tag, commit, subset hash).
+- **Inputs**: Maintainer updates to `iwxxm-official-pins.json` when WMO publishes a new line.
+- **Outputs**: Inputs to `scripts/schemas/fetch_official_iwxxm_pins.py` → schema cache.
+- **Source**: FR-077, NFR-016, D-019.
+
 ### vendor/schemas
 
-- **Purpose**: Read-only copies of upstream schema repositories at pinned tags.
-- **Inputs**: `vendor/manifest.json` pins. sync script/Action fetches release artifacts
- (wmo-im iwxxm-* and IWXXM-US. URL/tag TBD in 04).
-- **Outputs**: XSD, Schematron, codelist files consumed by `iwxxm-validate` and tac2iwxxm.
-- **Constraints**: **No direct edits** in monorepo except manifest version bumps via sync PRs.
-- **Source**: REQ-002, REQ-012. /014.
+- **Purpose**: Optional materialization cache of upstream schema trees (layout required by NFR-019).
+- **Inputs**: Official pin fetch and/or maintainer sync; not a long-lived SoT.
+- **Outputs**: XSD, Schematron, and related files when present for offline/dev convenience.
+- **Constraints**: **No hand edits**. Prefer fetch + hash verify. Missing required pin fails closed.
+- **Source**: FR-077, NFR-016, NFR-019, D-019.
 
 ### packages/shared
 
