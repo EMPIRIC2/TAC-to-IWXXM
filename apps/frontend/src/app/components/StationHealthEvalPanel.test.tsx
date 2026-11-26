@@ -63,6 +63,7 @@ describe('StationHealthEvalPanel', () => {
   it('V+: accepts a valid empty snapshot body', async () => {
     fetchStationHealthEvalBenchmark.mockResolvedValue({
       ...SAMPLE,
+      computed_at: '',
       lint_count: 0,
       convert_failure_count: 0,
       top_lint_codes: [],
@@ -74,6 +75,41 @@ describe('StationHealthEvalPanel', () => {
     await waitFor(() => {
       expect(screen.getByTestId('station-health-eval-top-codes')).toHaveTextContent(
         'None',
+      );
+    });
+    expect(screen.getByTestId('station-health-eval-computed-at')).toHaveTextContent(
+      'No snapshot yet',
+    );
+  });
+
+  it('ignores AbortError from the eval-benchmark fetch', async () => {
+    fetchStationHealthEvalBenchmark.mockImplementation(
+      ({ signal }: { signal?: AbortSignal } = {}) =>
+        new Promise((_resolve, reject) => {
+          signal?.addEventListener('abort', () => {
+            reject(new DOMException('Aborted', 'AbortError'));
+          });
+        }),
+    );
+    const { unmount } = render(<StationHealthEvalPanel />);
+    await waitFor(() => {
+      expect(fetchStationHealthEvalBenchmark).toHaveBeenCalled();
+    });
+    unmount();
+    await waitFor(() => {
+      expect(screen.queryByTestId('station-health-eval-error')).toBeNull();
+    });
+  });
+
+  it('renders zero IWXXM counts when validation is missing', async () => {
+    fetchStationHealthEvalBenchmark.mockResolvedValue({
+      ...SAMPLE,
+      iwxxm_validation: undefined,
+    });
+    render(<StationHealthEvalPanel />);
+    await waitFor(() => {
+      expect(screen.getByTestId('station-health-eval-iwxxm')).toHaveTextContent(
+        '0 / 0 / 0',
       );
     });
   });

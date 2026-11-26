@@ -57,6 +57,7 @@ def eval_client() -> TestClient:
 
 def test_normalize_icao_filter_success_and_failure() -> None:
     assert normalize_icao_filter(None) is None
+    assert normalize_icao_filter("   ") is None
     assert normalize_icao_filter("  kjfk ") == "KJFK"
     with pytest.raises(ValueError, match="four-letter"):
         normalize_icao_filter("KJ")
@@ -65,9 +66,11 @@ def test_normalize_icao_filter_success_and_failure() -> None:
 
 
 def test_filter_and_product_breakdown() -> None:
-    rows = [
+    rows: list[object] = [
         {"place_key": "kjfk", "product": "METAR", "stage": "lint", "code": "A"},
+        "skip-me",
         {"place_key": "KLAX", "product": "taf", "stage": "convert", "code": "B"},
+        {"place_key": "XXXX", "product": "", "stage": "lint", "code": "C"},
     ]
     filtered = filter_failure_locations(rows, icao="KJFK")
     assert len(filtered) == 1
@@ -75,6 +78,64 @@ def test_filter_and_product_breakdown() -> None:
     assert product_failure_breakdown(filtered) == [
         {"product": "metar", "failure_count": 1},
     ]
+    unknown = product_failure_breakdown([{"place_key": "Z", "product": "", "stage": "lint", "code": "C"}])
+    assert unknown == [{"product": "unknown", "failure_count": 1}]
+
+
+def test_build_eval_benchmark_edge_payloads() -> None:
+    """Cover empty store, bad shapes, and coercion helpers."""
+    from src.services import station_health_eval as eval_mod
+
+    assert eval_mod._as_str(None, "x") == "x"
+    assert eval_mod._as_int("nope", 7) == 7
+    assert eval_mod._as_int(None, 3) == 3
+
+    class _EmptyStore:
+        def read_latest(self) -> dict[str, object]:
+            return {}
+
+    set_live_map_eval_store(_EmptyStore())  # type: ignore[arg-type]
+    empty_body = build_eval_benchmark()
+    assert empty_body["lint_count"] == 0
+    assert empty_body["iwxxm_validation"]["pass"] == 0
+
+    store = LiveMapEvalStore()
+    store.write_snapshot(
+        {
+            "computed_at": "2026-11-26T14:00:00Z",
+            "window_hours": "bad",
+            "products": "not-a-list",
+            "partial_decode_count": "x",
+            "lint_count": 1,
+            "top_lint_codes": ["bad", {"code": "Z", "count": "2"}],
+            "convert_failure_count": 0,
+            "iwxxm_validation": "nope",
+            "failure_locations": "nope",
+        }
+    )
+    set_live_map_eval_store(store)
+    shaped = build_eval_benchmark()
+    assert shaped["products"] == []
+    assert shaped["failure_locations"] == []
+    assert shaped["iwxxm_validation"] == {"pass": 0, "fail": 0, "skip": 0}
+    assert shaped["top_lint_codes"] == [{"code": "Z", "count": 2}]
+
+    store.write_snapshot(
+        {
+            "computed_at": "2026-11-26T14:05:00Z",
+            "window_hours": 24,
+            "products": ["metar"],
+            "partial_decode_count": 0,
+            "lint_count": 0,
+            "top_lint_codes": None,
+            "convert_failure_count": 0,
+            "iwxxm_validation": {"pass": 0, "fail": 0, "skip": 0},
+            "failure_locations": [],
+        }
+    )
+    no_top = build_eval_benchmark()
+    assert no_top["top_lint_codes"] == []
+    set_live_map_eval_store(None)
 
 
 def test_build_eval_benchmark_reads_store(eval_client: TestClient) -> None:

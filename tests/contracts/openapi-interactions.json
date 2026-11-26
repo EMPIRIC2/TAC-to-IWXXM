@@ -694,6 +694,14 @@
     },
     {
       "method": "GET",
+      "path": "/api/v1/station-health/eval-benchmark",
+      "status": 422,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_station_health_eval_benchmark.py"
+    },
+    {
+      "method": "GET",
       "path": "/api/v1/station-health/{icao}",
       "status": 200,
       "request_fields": [],
