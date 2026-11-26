@@ -1,8 +1,12 @@
 /** FileConverterFilename — Convert optional parameters strip. */
 import type { FileConverterViewProps } from './FileConverterViewProps';
-import * as S from './fileConverterViewScope';
-import { INCLUDE_NATIONAL_REMARKS_HELP } from './IncludeNationalRemarksControl';
-import { PROPAGATE_RESIDUALS_HELP } from './PropagateResidualsControl';
+import { IncludeNationalRemarksControl, INCLUDE_NATIONAL_REMARKS_HELP } from './IncludeNationalRemarksControl';
+import { LiveIwxxmToggle } from './LiveIwxxmToggle';
+import { PropagateResidualsControl, PROPAGATE_RESIDUALS_HELP } from './PropagateResidualsControl';
+import { SoftPreviewControl } from './SoftPreviewControl';
+import { Input } from './ui/input';
+import { Label } from './ui/label';
+import { sanitizeOutputFilename } from '@/utils/outputFilename';
 
 /**
  * FileConverterFilename.
@@ -36,13 +40,13 @@ export function FileConverterFilename(props: FileConverterViewProps) {
       className="space-y-3 border-b border-gray-200 px-2 py-2 dark:border-gray-700"
     >
       <div data-testid="output-filename-near-convert" className="w-full min-w-0">
-        <S.Label
+        <Label
           htmlFor="output-filename"
           className="mb-1 block text-sm font-medium text-gray-900 dark:text-white"
         >
           Output filename (optional)
-        </S.Label>
-        <S.Input
+        </Label>
+        <Input
           id="output-filename"
           data-testid="output-filename-input"
           value={outputFilename}
@@ -59,7 +63,7 @@ export function FileConverterFilename(props: FileConverterViewProps) {
         <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
           Saves as{' '}
           <code data-testid="output-filename-preview">
-            {S.sanitizeOutputFilename(outputFilename)}.xml
+            {sanitizeOutputFilename(outputFilename)}.xml
           </code>
           .
         </p>
@@ -70,22 +74,22 @@ export function FileConverterFilename(props: FileConverterViewProps) {
         className="flex flex-col gap-2"
         aria-label="Conversion options"
       >
-        <S.SoftPreviewControl
+        <SoftPreviewControl
           checked={softPreview}
           onChange={setSoftPreview}
           disabled={controlsDisabled}
         />
-        <S.PropagateResidualsControl
+        <PropagateResidualsControl
           checked={propagateResiduals}
           onChange={setPropagateResiduals}
           disabled={controlsDisabled}
         />
-        <S.IncludeNationalRemarksControl
+        <IncludeNationalRemarksControl
           checked={includeNationalRemarks}
           onChange={setIncludeNationalRemarks}
           disabled={controlsDisabled}
         />
-        <S.LiveIwxxmToggle
+        <LiveIwxxmToggle
           checked={liveIwxxm}
           onChange={setLiveIwxxm}
           disabled={controlsDisabled}
