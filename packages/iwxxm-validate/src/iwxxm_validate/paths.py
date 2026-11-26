@@ -82,7 +82,14 @@ def repo_root() -> Path:
 
 
 def official_pins_catalog_path() -> Path:
-    """Return path to ``config/schemas/iwxxm-official-pins.json``."""
+    """
+    Return path to ``config/schemas/iwxxm-official-pins.json``.
+
+    Returns
+    -------
+    Path
+        Absolute path under the resolved monorepo root.
+    """
     return repo_root() / "config" / "schemas" / "iwxxm-official-pins.json"
 
 
@@ -96,6 +103,11 @@ def _cache_root_from_env_or_default(*, explicit_only: bool = False) -> Path | No
         When True, only honour ``IWXXM_SCHEMA_CACHE`` (used by
         ``vendor_iwxxm_root`` so default ``.cache`` does not override packaged
         / vendor preference).
+
+    Returns
+    -------
+    Path or None
+        Cache root containing at least one pin tree, or ``None``.
     """
     env = os.environ.get("IWXXM_SCHEMA_CACHE")
     if env:
@@ -148,6 +160,11 @@ def pin_dirnames(iwxxm_version: str) -> tuple[str, ...]:
     ----------
     iwxxm_version :
         Product pin such as ``2025-2`` or legacy ``3.0.0``.
+
+    Returns
+    -------
+    tuple[str, ...]
+        Directory name candidates (aliases first when mapped).
     """
     pin = iwxxm_version.strip()
     return _PIN_ALIASES.get(pin, (pin,))
@@ -231,7 +248,14 @@ def ca_xsd_path(*, tag: str = "3.0") -> Path | None:
 
 
 def _candidate_iwxxm_roots() -> list[Path]:
-    """Ordered roots that may contain pin directories."""
+    """
+    Ordered roots that may contain pin directories.
+
+    Returns
+    -------
+    list[Path]
+        Candidate ``iwxxm`` roots in resolve priority order.
+    """
     roots: list[Path] = []
     packaged = packaged_schemas_root()
     if packaged is not None:
@@ -296,6 +320,11 @@ def require_pin_cache(iwxxm_version: str) -> Path:
     ----------
     iwxxm_version :
         Official pin id.
+
+    Returns
+    -------
+    Path
+        Resolved pin directory that contains ``IWXXM/``.
     """
     return version_dir(iwxxm_version)
 

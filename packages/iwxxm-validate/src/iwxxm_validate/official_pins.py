@@ -16,7 +16,14 @@ OFFICIAL_PIN_IDS: tuple[str, ...] = ("3.0", "2021-2", "2023-1", "2025-2")
 
 
 class OfficialPinError(ValueError):
-    """Official pin catalog or cache check failed."""
+    """
+    Official pin catalog or cache check failed.
+
+    Attributes
+    ----------
+    args : tuple
+        Arguments passed to the exception constructor.
+    """
 
 
 def load_official_pins_catalog(path: Path | None = None) -> dict[str, Any]:
@@ -27,6 +34,11 @@ def load_official_pins_catalog(path: Path | None = None) -> dict[str, Any]:
     ----------
     path :
         Catalog path. Defaults to the monorepo catalog.
+
+    Returns
+    -------
+    dict[str, Any]
+        Parsed catalog object with a non-empty ``pins`` map.
     """
     catalog_path = path or official_pins_catalog_path()
     try:
@@ -58,7 +70,20 @@ def load_official_pins_catalog(path: Path | None = None) -> dict[str, Any]:
 
 
 def official_pin_ids(catalog: dict[str, Any] | None = None) -> tuple[str, ...]:
-    """Return pin ids from ``catalog`` or the default official set."""
+    """
+    Return pin ids from ``catalog`` or the default official set.
+
+    Parameters
+    ----------
+    catalog :
+        Optional loaded catalog. When omitted or malformed, returns
+        ``OFFICIAL_PIN_IDS``.
+
+    Returns
+    -------
+    tuple[str, ...]
+        Pin identifiers in catalog order, or the default official set.
+    """
     if catalog is None:
         return OFFICIAL_PIN_IDS
     pins_raw = catalog.get("pins")
@@ -76,6 +101,11 @@ def assert_official_pin_cache_present(iwxxm_version: str) -> Path:
     ----------
     iwxxm_version :
         Official pin id (``3.0``, ``2021-2``, ``2023-1``, ``2025-2``).
+
+    Returns
+    -------
+    Path
+        Resolved pin directory that contains ``IWXXM/``.
     """
     try:
         return require_pin_cache(iwxxm_version)
@@ -98,6 +128,12 @@ def assert_official_runtime_subset(
     catalog :
         Optional pre-loaded catalog (unused for path resolve; reserved for
         future hash checks against ``runtime_subset_sha256``).
+
+    Returns
+    -------
+    Path
+        Pin directory whose ``IWXXM/iwxxm.xsd`` and ``IWXXM/rule/iwxxm.sch``
+        both exist.
     """
     del catalog  # reserved for hash verify call sites
     root = assert_official_pin_cache_present(iwxxm_version)

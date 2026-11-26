@@ -114,6 +114,57 @@ def test_schema_cache_root_bad_catalog_falls_back(
     assert paths_mod.schema_cache_root() == (repo / ".cache" / "iwxxm-schemas").resolve()
 
 
+def test_schema_cache_root_non_dict_catalog_falls_back(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Non-object JSON catalog skips default_cache_rel and uses the default path."""
+    repo = tmp_path / "repo"
+    catalog_dir = repo / "config" / "schemas"
+    catalog_dir.mkdir(parents=True)
+    (catalog_dir / "iwxxm-official-pins.json").write_text("[]", encoding="utf-8")
+    default_cache = repo / ".cache" / "iwxxm-schemas" / "2025-2" / "IWXXM"
+    default_cache.mkdir(parents=True)
+    monkeypatch.delenv("IWXXM_SCHEMA_CACHE", raising=False)
+    monkeypatch.setenv("IWXXM_VALIDATE_REPO_ROOT", str(repo))
+    clear_path_caches()
+    assert paths_mod.schema_cache_root() == (repo / ".cache" / "iwxxm-schemas").resolve()
+
+
+def test_schema_cache_root_skips_non_pin_children(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Cache dirs without an ``IWXXM`` child are skipped before a valid pin."""
+    cache = tmp_path / "cache"
+    (cache / "noise").mkdir(parents=True)
+    (cache / "noise" / "readme.txt").write_text("x", encoding="utf-8")
+    pin = cache / "2025-2" / "IWXXM"
+    pin.mkdir(parents=True)
+    monkeypatch.setenv("IWXXM_SCHEMA_CACHE", str(cache))
+    clear_path_caches()
+    assert paths_mod.schema_cache_root() == cache.resolve()
+
+
+def test_candidate_roots_appends_default_cache_when_packaged(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Default cache is listed after packaged when ``IWXXM_SCHEMA_CACHE`` is unset."""
+    repo = tmp_path / "repo"
+    packaged = tmp_path / "packaged"
+    (packaged / "iwxxm" / "2023-1" / "IWXXM").mkdir(parents=True)
+    default = repo / ".cache" / "iwxxm-schemas" / "2025-2" / "IWXXM"
+    default.mkdir(parents=True)
+    monkeypatch.delenv("IWXXM_SCHEMA_CACHE", raising=False)
+    monkeypatch.setenv("IWXXM_VALIDATE_REPO_ROOT", str(repo))
+    monkeypatch.setattr(paths_mod, "packaged_schemas_root", lambda: packaged)
+    clear_path_caches()
+    roots = paths_mod._candidate_iwxxm_roots()
+    assert packaged / "iwxxm" in roots
+    assert (repo / ".cache" / "iwxxm-schemas").resolve() in roots
+
+
 def test_schema_cache_root_catalog_without_default_rel(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
@@ -125,6 +176,23 @@ def test_schema_cache_root_catalog_without_default_rel(
         json.dumps({"pins": {}}),
         encoding="utf-8",
     )
+    default_cache = repo / ".cache" / "iwxxm-schemas" / "2025-2" / "IWXXM"
+    default_cache.mkdir(parents=True)
+    monkeypatch.delenv("IWXXM_SCHEMA_CACHE", raising=False)
+    monkeypatch.setenv("IWXXM_VALIDATE_REPO_ROOT", str(repo))
+    clear_path_caches()
+    assert paths_mod.schema_cache_root() == (repo / ".cache" / "iwxxm-schemas").resolve()
+
+
+def test_schema_cache_root_catalog_non_dict_falls_back(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Cover paths.py L111 false branch: catalog JSON parses but is not a dict."""
+    repo = tmp_path / "repo"
+    catalog_dir = repo / "config" / "schemas"
+    catalog_dir.mkdir(parents=True)
+    (catalog_dir / "iwxxm-official-pins.json").write_text("[]", encoding="utf-8")
     default_cache = repo / ".cache" / "iwxxm-schemas" / "2025-2" / "IWXXM"
     default_cache.mkdir(parents=True)
     monkeypatch.delenv("IWXXM_SCHEMA_CACHE", raising=False)
