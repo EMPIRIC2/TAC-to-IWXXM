@@ -2672,6 +2672,42 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HTTPValidationError"
+  /api/v1/station-health/eval-benchmark:
+    get:
+      tags:
+        - Station health
+      summary: Live eval benchmark for Station health
+      description: Serve the latest FR-045 live-map eval snapshot for Station health.
+      operationId: get_station_health_eval_benchmark_api_v1_station_health_eval_benchmark_get
+      parameters:
+        -
+                    name: icao
+                    in: query
+                    required: false
+                    schema:
+                      anyOf:
+                        -
+                                          type: string
+                        -
+                                          type: null
+                      description: Optional four-letter ICAO; filters failure_locations by place_key
+                      title: Icao
+                    description: Optional four-letter ICAO; filters failure_locations by place_key
+      responses:
+        200:
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StationHealthEvalBenchmarkResponse"
+        400:
+          description: Invalid icao filter
+        422:
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
 components:
   schemas:
     AggregatedValidationResult:
@@ -6761,6 +6797,73 @@ components:
         - status
       title: StationCentennialMetricModel
       description: One Centennial recognition-criteria proxy or insufficient-data row.
+    StationEvalFailureModel:
+      properties:
+        place_key:
+          type: string
+          title: Place Key
+        product:
+          type: string
+          title: Product
+        stage:
+          type: string
+          title: Stage
+        code:
+          type: string
+          title: Code
+      type: object
+      required:
+        - place_key
+        - product
+        - stage
+        - code
+      title: StationEvalFailureModel
+      description: One failure location from the FR-045 live-eval snapshot.
+    StationEvalIwxxmModel:
+      properties:
+        pass:
+          type: integer
+          title: Pass
+          default: 0
+        fail:
+          type: integer
+          title: Fail
+          default: 0
+        skip:
+          type: integer
+          title: Skip
+          default: 0
+      type: object
+      title: StationEvalIwxxmModel
+      description: IWXXM validation rollup from the FR-045 snapshot.
+    StationEvalLintCodeModel:
+      properties:
+        code:
+          type: string
+          title: Code
+        count:
+          type: integer
+          title: Count
+          default: 0
+      type: object
+      required:
+        - code
+      title: StationEvalLintCodeModel
+      description: One top lint code from the FR-045 live-eval snapshot.
+    StationEvalProductBreakdownModel:
+      properties:
+        product:
+          type: string
+          title: Product
+        failure_count:
+          type: integer
+          title: Failure Count
+          default: 0
+      type: object
+      required:
+        - product
+      title: StationEvalProductBreakdownModel
+      description: Failure counts for one product in the eval-benchmark panel.
     StationHealthDetailResponse:
       properties:
         icao:
@@ -6812,6 +6915,61 @@ components:
         - icao
       title: StationHealthDetailResponse
       description: "Response for GET /api/v1/station-health/{icao}."
+    StationHealthEvalBenchmarkResponse:
+      properties:
+        computed_at:
+          type: string
+          title: Computed At
+        window_hours:
+          type: integer
+          title: Window Hours
+          default: 24
+        products:
+          items:
+            type: string
+          type: array
+          title: Products
+        partial_decode_count:
+          type: integer
+          title: Partial Decode Count
+          default: 0
+        lint_count:
+          type: integer
+          title: Lint Count
+          default: 0
+        top_lint_codes:
+          items:
+            $ref: "#/components/schemas/StationEvalLintCodeModel"
+          type: array
+          title: Top Lint Codes
+        convert_failure_count:
+          type: integer
+          title: Convert Failure Count
+          default: 0
+        iwxxm_validation:
+          $ref: "#/components/schemas/StationEvalIwxxmModel"
+        failure_locations:
+          items:
+            $ref: "#/components/schemas/StationEvalFailureModel"
+          type: array
+          title: Failure Locations
+        product_breakdown:
+          items:
+            $ref: "#/components/schemas/StationEvalProductBreakdownModel"
+          type: array
+          title: Product Breakdown
+        icao_filter:
+          anyOf:
+            -
+                            type: string
+            -
+                            type: null
+          title: Icao Filter
+      type: object
+      required:
+        - computed_at
+      title: StationHealthEvalBenchmarkResponse
+      description: "Response for GET /api/v1/station-health/eval-benchmark (FR-047 / FR-072).\n\nSurfaces the latest live-map evaluation snapshot for Station health, with\noptional ICAO-filtered failure locations and a product failure breakdown."
     StationHealthListResponse:
       properties:
         window:

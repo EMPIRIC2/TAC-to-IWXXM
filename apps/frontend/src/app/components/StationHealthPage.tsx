@@ -44,6 +44,7 @@ import {
   STATION_HEALTH_WINDOW_LABEL,
 } from '@/utils/stationHealthCopy';
 import { shellFrameClass, useLiveConvertLayout } from '@/utils/liveConvertLayout';
+import { StationHealthEvalPanel } from './StationHealthEvalPanel';
 
 /** Default page size when no WMO region filter is selected. */
 const DEFAULT_LIST_LIMIT = 100;
@@ -148,6 +149,8 @@ export function StationHealthPage() {
       <p className="mt-2 max-w-3xl text-sm text-gray-600 dark:text-gray-300">
         {STATION_HEALTH_INTRO}
       </p>
+
+      <StationHealthEvalPanel />
 
       <section
         className="mt-6 flex flex-wrap gap-3"

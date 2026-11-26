@@ -113,7 +113,7 @@ This section mirrors feature ids for quick agent load.
 | F35 | Semantic vs exchange profiles | Implemented |
 | F36 | National semantic + regional exchange profiles (incl. CA_ECCC; EV-077 VAA validate-first) | Superseded (FR drop M1; ICAO baseline only) |
 | F37 | Live TAC map on Live map page | In progress (FR-045 eval table done + staging verified; FR-046 Active reports keep) |
-| F39 | Station health dashboard (availability + quality grades) | In progress |
+| F39 | Station health dashboard (availability + quality grades) | Implemented |
 | M1 | Monorepo layout (`apps/` + `packages/` + `vendor/`) | Implemented |
 | M2 | Vendor snapshot sync (wmo-im iwxxm-*) | Planned |
 | M3 | GIFTs as in-repo package | Deprecated |

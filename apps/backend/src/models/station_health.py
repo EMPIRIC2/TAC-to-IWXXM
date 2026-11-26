@@ -234,3 +234,124 @@ class StationHealthMetricsResponse(BaseModel):
     """
 
     metrics: list[StationMetricDefinitionModel] = Field(default_factory=list)
+
+
+class StationEvalLintCodeModel(BaseModel):
+    """
+    One top lint code from the FR-045 live-eval snapshot.
+
+    Attributes
+    ----------
+    code : str
+        Lint or issue code.
+    count : int
+        Occurrences in the snapshot window.
+    """
+
+    code: str
+    count: int = 0
+
+
+class StationEvalFailureModel(BaseModel):
+    """
+    One failure location from the FR-045 live-eval snapshot.
+
+    Attributes
+    ----------
+    place_key : str
+        Station ICAO or place id.
+    product : str
+        Map product id.
+    stage : str
+        Failure stage (lint, convert, …).
+    code : str
+        Issue or failure code.
+    """
+
+    place_key: str
+    product: str
+    stage: str
+    code: str
+
+
+class StationEvalProductBreakdownModel(BaseModel):
+    """
+    Failure counts for one product in the eval-benchmark panel.
+
+    Attributes
+    ----------
+    product : str
+        Product id.
+    failure_count : int
+        Number of failure_locations rows for that product.
+    """
+
+    product: str
+    failure_count: int = 0
+
+
+class StationEvalIwxxmModel(BaseModel):
+    """
+    IWXXM validation rollup from the FR-045 snapshot.
+
+    Attributes
+    ----------
+    pass_ : int
+        Reports with IWXXM present (serialized as ``pass``).
+    fail : int
+        Convert or validation failures.
+    skip : int
+        Partial-decode / skipped counts.
+    """
+
+    pass_: int = Field(default=0, alias="pass")
+    fail: int = 0
+    skip: int = 0
+
+    model_config = {"populate_by_name": True}
+
+
+class StationHealthEvalBenchmarkResponse(BaseModel):
+    """
+    Response for GET /api/v1/station-health/eval-benchmark (FR-047 / FR-072).
+
+    Surfaces the latest live-map evaluation snapshot for Station health, with
+    optional ICAO-filtered failure locations and a product failure breakdown.
+
+    Attributes
+    ----------
+    computed_at : str
+        Snapshot timestamp (ISO-8601 Z).
+    window_hours : int
+        Eval window length in hours.
+    products : list[str]
+        Products present in the snapshot.
+    partial_decode_count : int
+        Partial-decode count.
+    lint_count : int
+        Lint issue count.
+    top_lint_codes : list[StationEvalLintCodeModel]
+        Top lint codes.
+    convert_failure_count : int
+        Convert failure count.
+    iwxxm_validation : StationEvalIwxxmModel
+        IWXXM pass/fail/skip rollup.
+    failure_locations : list[StationEvalFailureModel]
+        Failure rows (optionally ICAO-filtered).
+    product_breakdown : list[StationEvalProductBreakdownModel]
+        Failure counts by product.
+    icao_filter : str | None
+        Applied ICAO filter, if any.
+    """
+
+    computed_at: str
+    window_hours: int = 24
+    products: list[str] = Field(default_factory=list)
+    partial_decode_count: int = 0
+    lint_count: int = 0
+    top_lint_codes: list[StationEvalLintCodeModel] = Field(default_factory=list)
+    convert_failure_count: int = 0
+    iwxxm_validation: StationEvalIwxxmModel = Field(default_factory=StationEvalIwxxmModel)
+    failure_locations: list[StationEvalFailureModel] = Field(default_factory=list)
+    product_breakdown: list[StationEvalProductBreakdownModel] = Field(default_factory=list)
+    icao_filter: str | None = None
