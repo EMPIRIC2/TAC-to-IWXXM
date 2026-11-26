@@ -36,6 +36,13 @@ export const STATION_HEALTH_SCORE_HELP =
 export const STATION_HEALTH_INSUFFICIENT = 'Insufficient data';
 export const STATION_HEALTH_NONE = 'None';
 export const STATION_HEALTH_NA = '-';
+export const STATION_HEALTH_EVAL_HEADING = 'Live evaluation benchmark';
+export const STATION_HEALTH_EVAL_INTRO =
+  'Latest live-map evaluation snapshot (about every 15 minutes). Counts cover the live cache, not the grade table time window. Open the Live map tab for failure locations on the map.';
+export const STATION_HEALTH_EVAL_LOADING = 'Loading live evaluation…';
+export const STATION_HEALTH_EVAL_ERROR =
+  'Live evaluation could not be loaded. Try again later.';
+export const STATION_HEALTH_EVAL_EMPTY = 'No snapshot yet';
 
 /** Operator labels for WMO Regional Association ids. */
 export const STATION_HEALTH_REGION_OPTIONS: ReadonlyArray<{

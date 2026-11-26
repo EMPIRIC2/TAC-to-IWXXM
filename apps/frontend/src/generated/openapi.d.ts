@@ -969,6 +969,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/station-health/eval-benchmark": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Live eval benchmark for Station health
+         * @description Serve the latest FR-045 live-map eval snapshot for Station health.
+         */
+        get: operations["get_station_health_eval_benchmark_api_v1_station_health_eval_benchmark_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/station-health/metrics": {
         parameters: {
             query?: never;
@@ -4224,6 +4244,67 @@ export interface components {
             status: string;
         };
         /**
+         * StationEvalFailureModel
+         * @description One failure location from the FR-045 live-eval snapshot.
+         */
+        StationEvalFailureModel: {
+            /** Code */
+            code: string;
+            /** Place Key */
+            place_key: string;
+            /** Product */
+            product: string;
+            /** Stage */
+            stage: string;
+        };
+        /**
+         * StationEvalIwxxmModel
+         * @description IWXXM validation rollup from the FR-045 snapshot.
+         */
+        StationEvalIwxxmModel: {
+            /**
+             * Fail
+             * @default 0
+             */
+            fail: number;
+            /**
+             * Pass
+             * @default 0
+             */
+            pass: number;
+            /**
+             * Skip
+             * @default 0
+             */
+            skip: number;
+        };
+        /**
+         * StationEvalLintCodeModel
+         * @description One top lint code from the FR-045 live-eval snapshot.
+         */
+        StationEvalLintCodeModel: {
+            /** Code */
+            code: string;
+            /**
+             * Count
+             * @default 0
+             */
+            count: number;
+        };
+        /**
+         * StationEvalProductBreakdownModel
+         * @description Failure counts for one product in the eval-benchmark panel.
+         */
+        StationEvalProductBreakdownModel: {
+            /**
+             * Failure Count
+             * @default 0
+             */
+            failure_count: number;
+            /** Product */
+            product: string;
+        };
+        /**
          * StationHealthDetailResponse
          * @description Response for GET /api/v1/station-health/{icao}.
          */
@@ -4261,6 +4342,48 @@ export interface components {
              * @default unknown
              */
             wmo_region: string;
+        };
+        /**
+         * StationHealthEvalBenchmarkResponse
+         * @description Response for GET /api/v1/station-health/eval-benchmark (FR-047 / FR-072).
+         *
+         *     Surfaces the latest live-map evaluation snapshot for Station health, with
+         *     optional ICAO-filtered failure locations and a product failure breakdown.
+         */
+        StationHealthEvalBenchmarkResponse: {
+            /** Computed At */
+            computed_at: string;
+            /**
+             * Convert Failure Count
+             * @default 0
+             */
+            convert_failure_count: number;
+            /** Failure Locations */
+            failure_locations?: components["schemas"]["StationEvalFailureModel"][];
+            /** Icao Filter */
+            icao_filter?: string | null;
+            iwxxm_validation?: components["schemas"]["StationEvalIwxxmModel"];
+            /**
+             * Lint Count
+             * @default 0
+             */
+            lint_count: number;
+            /**
+             * Partial Decode Count
+             * @default 0
+             */
+            partial_decode_count: number;
+            /** Product Breakdown */
+            product_breakdown?: components["schemas"]["StationEvalProductBreakdownModel"][];
+            /** Products */
+            products?: string[];
+            /** Top Lint Codes */
+            top_lint_codes?: components["schemas"]["StationEvalLintCodeModel"][];
+            /**
+             * Window Hours
+             * @default 24
+             */
+            window_hours: number;
         };
         /**
          * StationHealthListResponse
@@ -7188,6 +7311,45 @@ export interface operations {
                 };
             };
             /** @description Invalid window */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_station_health_eval_benchmark_api_v1_station_health_eval_benchmark_get: {
+        parameters: {
+            query?: {
+                /** @description Optional four-letter ICAO; filters failure_locations by place_key */
+                icao?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StationHealthEvalBenchmarkResponse"];
+                };
+            };
+            /** @description Invalid icao filter */
             400: {
                 headers: {
                     [name: string]: unknown;

@@ -165,3 +165,54 @@ export async function fetchStationHealthMetrics(signal?: AbortSignal): Promise<{
   }
   return response.json() as Promise<{ metrics: StationHealthMetric[] }>;
 }
+
+/**
+ * Live-eval benchmark row from Station health (FR-047).
+ * @example
+ * const _ = true;
+ */
+export interface StationHealthEvalBenchmark {
+  computed_at: string;
+  window_hours: number;
+  products: string[];
+  partial_decode_count: number;
+  lint_count: number;
+  top_lint_codes: Array<{ code: string; count: number }>;
+  convert_failure_count: number;
+  iwxxm_validation: { pass: number; fail: number; skip: number };
+  failure_locations: Array<{
+    place_key: string;
+    product: string;
+    stage: string;
+    code: string;
+  }>;
+  product_breakdown: Array<{ product: string; failure_count: number }>;
+  icao_filter?: string | null;
+}
+
+/**
+ * Fetch the FR-045 live-eval snapshot via Station health.
+ *
+ * @param params - Optional ICAO filter and abort signal
+ * @returns Eval benchmark payload
+ * @example
+ * const _ = true;
+ */
+export async function fetchStationHealthEvalBenchmark(
+  params: { icao?: string; signal?: AbortSignal } = {},
+): Promise<StationHealthEvalBenchmark> {
+  const query = new URLSearchParams();
+  const icao = params.icao?.trim();
+  if (icao) {
+    query.set('icao', icao);
+  }
+  const suffix = query.toString() ? `?${query.toString()}` : '';
+  const response = await fetch(apiUrl(`/station-health/eval-benchmark${suffix}`), {
+    method: 'GET',
+    signal: params.signal,
+  });
+  if (!response.ok) {
+    throw new Error(`station-health eval-benchmark failed: ${response.status}`);
+  }
+  return response.json() as Promise<StationHealthEvalBenchmark>;
+}

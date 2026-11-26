@@ -143,6 +143,7 @@ try:
         quality_metrics,
         rule_catalogs,
         station_health,
+        station_health_eval,
         tac_quality,
         validation,
         work_sessions,
@@ -163,6 +164,7 @@ except ImportError:
         quality_metrics,
         rule_catalogs,
         station_health,
+        station_health_eval,
         tac_quality,
         validation,
         work_sessions,
@@ -354,6 +356,9 @@ try:
     app.include_router(comprehensive_validation.router)
     app.include_router(live_map.router)
     app.include_router(live_check.router)
+    # Eval-benchmark must mount before station_health/{icao} or "eval-benchmark"
+    # is captured as an ICAO path param.
+    app.include_router(station_health_eval.router)
     app.include_router(station_health.router)
     logger.info("DEBUG: included TD-3b routers successfully")
 except Exception as e:  # pragma: no cover - defensive

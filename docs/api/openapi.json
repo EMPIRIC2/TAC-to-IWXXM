@@ -5544,6 +5544,95 @@
         "title": "StationCentennialMetricModel",
         "type": "object"
       },
+      "StationEvalFailureModel": {
+        "description": "One failure location from the FR-045 live-eval snapshot.",
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "place_key": {
+            "title": "Place Key",
+            "type": "string"
+          },
+          "product": {
+            "title": "Product",
+            "type": "string"
+          },
+          "stage": {
+            "title": "Stage",
+            "type": "string"
+          }
+        },
+        "required": [
+          "place_key",
+          "product",
+          "stage",
+          "code"
+        ],
+        "title": "StationEvalFailureModel",
+        "type": "object"
+      },
+      "StationEvalIwxxmModel": {
+        "description": "IWXXM validation rollup from the FR-045 snapshot.",
+        "properties": {
+          "fail": {
+            "default": 0,
+            "title": "Fail",
+            "type": "integer"
+          },
+          "pass": {
+            "default": 0,
+            "title": "Pass",
+            "type": "integer"
+          },
+          "skip": {
+            "default": 0,
+            "title": "Skip",
+            "type": "integer"
+          }
+        },
+        "title": "StationEvalIwxxmModel",
+        "type": "object"
+      },
+      "StationEvalLintCodeModel": {
+        "description": "One top lint code from the FR-045 live-eval snapshot.",
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "count": {
+            "default": 0,
+            "title": "Count",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "code"
+        ],
+        "title": "StationEvalLintCodeModel",
+        "type": "object"
+      },
+      "StationEvalProductBreakdownModel": {
+        "description": "Failure counts for one product in the eval-benchmark panel.",
+        "properties": {
+          "failure_count": {
+            "default": 0,
+            "title": "Failure Count",
+            "type": "integer"
+          },
+          "product": {
+            "title": "Product",
+            "type": "string"
+          }
+        },
+        "required": [
+          "product"
+        ],
+        "title": "StationEvalProductBreakdownModel",
+        "type": "object"
+      },
       "StationHealthDetailResponse": {
         "description": "Response for GET /api/v1/station-health/{icao}.",
         "properties": {
@@ -5613,6 +5702,82 @@
           "icao"
         ],
         "title": "StationHealthDetailResponse",
+        "type": "object"
+      },
+      "StationHealthEvalBenchmarkResponse": {
+        "description": "Response for GET /api/v1/station-health/eval-benchmark (FR-047 / FR-072).\n\nSurfaces the latest live-map evaluation snapshot for Station health, with\noptional ICAO-filtered failure locations and a product failure breakdown.",
+        "properties": {
+          "computed_at": {
+            "title": "Computed At",
+            "type": "string"
+          },
+          "convert_failure_count": {
+            "default": 0,
+            "title": "Convert Failure Count",
+            "type": "integer"
+          },
+          "failure_locations": {
+            "items": {
+              "$ref": "#/components/schemas/StationEvalFailureModel"
+            },
+            "title": "Failure Locations",
+            "type": "array"
+          },
+          "icao_filter": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Icao Filter"
+          },
+          "iwxxm_validation": {
+            "$ref": "#/components/schemas/StationEvalIwxxmModel"
+          },
+          "lint_count": {
+            "default": 0,
+            "title": "Lint Count",
+            "type": "integer"
+          },
+          "partial_decode_count": {
+            "default": 0,
+            "title": "Partial Decode Count",
+            "type": "integer"
+          },
+          "product_breakdown": {
+            "items": {
+              "$ref": "#/components/schemas/StationEvalProductBreakdownModel"
+            },
+            "title": "Product Breakdown",
+            "type": "array"
+          },
+          "products": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Products",
+            "type": "array"
+          },
+          "top_lint_codes": {
+            "items": {
+              "$ref": "#/components/schemas/StationEvalLintCodeModel"
+            },
+            "title": "Top Lint Codes",
+            "type": "array"
+          },
+          "window_hours": {
+            "default": 24,
+            "title": "Window Hours",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "computed_at"
+        ],
+        "title": "StationHealthEvalBenchmarkResponse",
         "type": "object"
       },
       "StationHealthListResponse": {
@@ -10448,6 +10613,61 @@
           }
         },
         "summary": "List station health grades",
+        "tags": [
+          "Station health"
+        ]
+      }
+    },
+    "/api/v1/station-health/eval-benchmark": {
+      "get": {
+        "description": "Serve the latest FR-045 live-map eval snapshot for Station health.",
+        "operationId": "get_station_health_eval_benchmark_api_v1_station_health_eval_benchmark_get",
+        "parameters": [
+          {
+            "description": "Optional four-letter ICAO; filters failure_locations by place_key",
+            "in": "query",
+            "name": "icao",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Optional four-letter ICAO; filters failure_locations by place_key",
+              "title": "Icao"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StationHealthEvalBenchmarkResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "400": {
+            "description": "Invalid icao filter"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Live eval benchmark for Station health",
         "tags": [
           "Station health"
         ]

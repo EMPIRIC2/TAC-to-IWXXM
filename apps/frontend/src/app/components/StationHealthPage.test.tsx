@@ -9,16 +9,33 @@ import { STATION_HEALTH_PAGE_TITLE } from '@/utils/stationHealthCopy';
 
 const fetchStationHealthList = vi.fn();
 const fetchStationHealthMetrics = vi.fn();
+const fetchStationHealthEvalBenchmark = vi.fn();
 
 vi.mock('@/utils/stationHealthApi', () => ({
   fetchStationHealthList: (...args: unknown[]) => fetchStationHealthList(...args),
   fetchStationHealthMetrics: (...args: unknown[]) => fetchStationHealthMetrics(...args),
+  fetchStationHealthEvalBenchmark: (...args: unknown[]) =>
+    fetchStationHealthEvalBenchmark(...args),
 }));
 
 describe('StationHealthPage', () => {
   beforeEach(() => {
     fetchStationHealthList.mockReset();
     fetchStationHealthMetrics.mockReset();
+    fetchStationHealthEvalBenchmark.mockReset();
+    fetchStationHealthEvalBenchmark.mockResolvedValue({
+      computed_at: '2026-11-26T12:00:00Z',
+      window_hours: 24,
+      products: ['metar'],
+      partial_decode_count: 0,
+      lint_count: 0,
+      top_lint_codes: [],
+      convert_failure_count: 0,
+      iwxxm_validation: { pass: 0, fail: 0, skip: 0 },
+      failure_locations: [],
+      product_breakdown: [],
+      icao_filter: null,
+    });
     fetchStationHealthMetrics.mockResolvedValue({
       metrics: [
         {

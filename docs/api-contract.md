@@ -1668,6 +1668,25 @@ GET /api/v1/station-health/metrics
 
 **Purpose**: Extensible metrics registry for dashboard cards.
 
+```
+GET /api/v1/station-health/eval-benchmark
+```
+
+**Purpose** (FR-047 / FR-072): Station health **eval benchmark** surface over the
+latest FR-045 live-map evaluation snapshot. Reuses the same store as
+`GET /api/v1/live-map/eval` (no second compute). Public read; no write route.
+
+**Query** (optional):
+
+| Param  | Required | Description |
+| ------ | -------- | ----------- |
+| `icao` | no       | Four-letter ICAO; keeps `failure_locations` whose `place_key` matches (case-insensitive). Invalid values → **400**. |
+
+**Response** (minimum fields): `computed_at`, `window_hours`, `products`,
+`partial_decode_count`, `lint_count`, `top_lint_codes`, `convert_failure_count`,
+`iwxxm_validation` (`pass` / `fail` / `skip`), `failure_locations`,
+`product_breakdown` (`product` + `failure_count`), optional `icao_filter`.
+
 Grade rules (server-side, plain language for operators):
 
 - Availability score = `min(100, 100 * actual / expected)` when expected > 0.

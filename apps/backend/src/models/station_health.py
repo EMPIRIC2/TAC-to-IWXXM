@@ -234,3 +234,57 @@ class StationHealthMetricsResponse(BaseModel):
     """
 
     metrics: list[StationMetricDefinitionModel] = Field(default_factory=list)
+
+
+class StationEvalLintCodeModel(BaseModel):
+    """One top lint code from the FR-045 live-eval snapshot."""
+
+    code: str
+    count: int = 0
+
+
+class StationEvalFailureModel(BaseModel):
+    """One failure location from the FR-045 live-eval snapshot."""
+
+    place_key: str
+    product: str
+    stage: str
+    code: str
+
+
+class StationEvalProductBreakdownModel(BaseModel):
+    """Failure counts for one product in the eval-benchmark panel."""
+
+    product: str
+    failure_count: int = 0
+
+
+class StationEvalIwxxmModel(BaseModel):
+    """IWXXM validation rollup from the FR-045 snapshot."""
+
+    pass_: int = Field(default=0, alias="pass")
+    fail: int = 0
+    skip: int = 0
+
+    model_config = {"populate_by_name": True}
+
+
+class StationHealthEvalBenchmarkResponse(BaseModel):
+    """
+    Response for GET /api/v1/station-health/eval-benchmark (FR-047 / FR-072).
+
+    Surfaces the latest live-map evaluation snapshot for Station health, with
+    optional ICAO-filtered failure locations and a product failure breakdown.
+    """
+
+    computed_at: str
+    window_hours: int = 24
+    products: list[str] = Field(default_factory=list)
+    partial_decode_count: int = 0
+    lint_count: int = 0
+    top_lint_codes: list[StationEvalLintCodeModel] = Field(default_factory=list)
+    convert_failure_count: int = 0
+    iwxxm_validation: StationEvalIwxxmModel = Field(default_factory=StationEvalIwxxmModel)
+    failure_locations: list[StationEvalFailureModel] = Field(default_factory=list)
+    product_breakdown: list[StationEvalProductBreakdownModel] = Field(default_factory=list)
+    icao_filter: str | None = None
