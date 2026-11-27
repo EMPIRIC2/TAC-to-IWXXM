@@ -367,6 +367,12 @@ def test_router_issue_validation_and_auth_matrix(
     gone = client.delete(f"/api/v1/api-keys/{uuid4()}")
     assert gone.status_code == 401
 
+    blank = client.delete(
+        f"/api/v1/api-keys/{uuid4()}",
+        headers={"X-API-Key": "   "},
+    )
+    assert blank.status_code == 401
+
     missing = client.delete(
         f"/api/v1/api-keys/{uuid4()}",
         headers={"X-API-Key": plaintext},
