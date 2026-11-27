@@ -160,6 +160,31 @@ describe('FileConverter M1 coverage fills', () => {
     expect(screen.getByTestId('report-variant-select')).toHaveValue('');
   });
 
+  it('keeps an allowed stored report variant selected', async () => {
+    render(
+      <FileConverter
+        accessToken="tok"
+        loadedWorkSession={session({ product: 'METAR', reportVariant: 'LWIS' })}
+      />,
+    );
+    await waitFor(() =>
+      expect(screen.getByTestId('report-variant-select')).toHaveValue('LWIS'),
+    );
+  });
+
+  it('hydrates camelCase disseminationTemplateId without mounting destinations UI', () => {
+    render(
+      <FileConverter
+        accessToken="tok"
+        loadedWorkSession={session({ disseminationTemplateId: 'tpl-camel' })}
+      />,
+    );
+    expect(screen.queryByTestId('open-dissemination-drawer')).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId('dissemination-template-select'),
+    ).not.toBeInTheDocument();
+  });
+
   it('treats a schema-status failure as unknown CA bundle availability', async () => {
     mockFetchSchemaStatus.mockRejectedValue(new Error('schema status down'));
     render(<FileConverter />);
