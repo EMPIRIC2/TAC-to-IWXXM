@@ -17,7 +17,7 @@ export const operatorDisseminationUiConfig = {
  *
  * @returns always false (feature surface removed)
  * @example
- * const enabled = isOperatorDisseminationDestinationsEnabled();
+ * const _ = true;
  */
 export function isOperatorDisseminationDestinationsEnabled(): boolean {
   return false;
