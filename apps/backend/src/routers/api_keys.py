@@ -2,11 +2,13 @@
 
 from __future__ import annotations
 
-from typing import Any
+from collections.abc import Callable
+from typing import Any, cast
 from uuid import UUID
 
 from fastapi import APIRouter, Header, HTTPException, Request, status
 from pydantic import BaseModel, Field
+from slowapi import Limiter
 
 try:
     from ..services.api_key_store import (
@@ -30,7 +32,7 @@ except ImportError:  # pragma: no cover - script load
     )
 
 router = APIRouter(prefix="/api/v1", tags=["API Keys"])
-limiter = get_limiter()
+_limiter = get_limiter()
 
 
 class IssueApiKeyRequest(BaseModel):
@@ -44,8 +46,14 @@ def _issue_limit_string() -> str:
     return f"{get_rate_limit_api_key_issue_per_min()}/minute"
 
 
+def _typed_limit(limiter: Limiter, limit_value: str | Callable[[], str]) -> Callable[..., Any]:
+    """Wrap slowapi ``limit`` with a typed decorator (basedpyright)."""
+    limiter_any = cast(Any, limiter)
+    return cast(Callable[..., Any], limiter_any.limit(limit_value))
+
+
 @router.post("/api-keys", status_code=status.HTTP_201_CREATED)
-@limiter.limit(_issue_limit_string)
+@_typed_limit(_limiter, _issue_limit_string)
 async def create_api_key(
     request: Request,
     body: IssueApiKeyRequest | None = None,
@@ -82,7 +90,7 @@ async def create_api_key(
 
 
 @router.delete("/api-keys/{key_id}", status_code=status.HTTP_204_NO_CONTENT)
-@limiter.limit("30/minute")
+@_typed_limit(_limiter, "30/minute")
 async def delete_api_key(
     request: Request,
     key_id: UUID,
@@ -111,3 +119,7 @@ async def delete_api_key(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="API key not found",
         )
+
+
+# Tests may rebind the process limiter.
+limiter = _limiter

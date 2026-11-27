@@ -209,6 +209,7 @@ def test_issue_and_revoke_with_sqlite_memory(
     assert api_key_store.revoke_api_key(key_id=key_id, plaintext=plaintext) is True
     assert api_key_store.revoke_api_key(key_id=uuid4(), plaintext=plaintext) is False
 
+
 def test_router_issue_validation_and_auth_matrix(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
@@ -226,7 +227,6 @@ def test_router_issue_validation_and_auth_matrix(
     app = FastAPI()
     limiter = create_limiter()
     install_abuse_controls(app, limiter=limiter)
-    api_keys_router.limiter = limiter
     app.include_router(api_keys_router.router)
     app.add_middleware(ApiKeyAuthMiddleware)
 

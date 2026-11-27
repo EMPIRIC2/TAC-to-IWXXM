@@ -206,19 +206,13 @@ def verify_plaintext_key(plaintext: str) -> VerifiedApiKey | None:
         table = _table()
         with engine.begin() as conn:
             row = conn.execute(
-                select(table.c.id, table.c.key_prefix, table.c.revoked_at).where(
-                    table.c.key_hash == digest
-                )
+                select(table.c.id, table.c.key_prefix, table.c.revoked_at).where(table.c.key_hash == digest)
             ).one_or_none()
             if row is None:
                 return None
             if row.revoked_at is not None:
                 return None
-            conn.execute(
-                update(table)
-                .where(table.c.id == row.id)
-                .values(last_used_at=datetime.now(UTC))
-            )
+            conn.execute(update(table).where(table.c.id == row.id).values(last_used_at=datetime.now(UTC)))
             return VerifiedApiKey(
                 id=str(row.id),
                 prefix=str(row.key_prefix),
@@ -320,11 +314,7 @@ def revoke_api_key(*, key_id: UUID, plaintext: str) -> bool:
         if row is None:
             return False
         if row.revoked_at is None:
-            conn.execute(
-                update(table)
-                .where(table.c.id == id_value)
-                .values(revoked_at=datetime.now(UTC))
-            )
+            conn.execute(update(table).where(table.c.id == id_value).values(revoked_at=datetime.now(UTC)))
         return True
 
 

@@ -36,6 +36,8 @@ _EXEMPT_PREFIXES = (
     "/docs/",
     "/redoc/",
 )
+
+
 def path_is_api_key_exempt(method: str, path: str) -> bool:
     """
     Return True when the route does not require ``X-API-Key``.
