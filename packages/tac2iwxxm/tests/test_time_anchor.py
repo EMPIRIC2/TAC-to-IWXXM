@@ -81,9 +81,11 @@ def test_convert_bulletin_date_rejects_an_impossible_day() -> None:
         product="METAR",
         bulletin_date="2023-06-15",
     )
-    assert result.ok is False
-    assert result.xml is None
-    assert result.issues[0].code == "IMPOSSIBLE_TAC_DAY"
+    # #1563: product-shaped impossible day quarantines with original TAC.
+    assert result.ok is True
+    assert result.xml is not None
+    assert "translationFailedTAC" in result.xml
+    assert result.issues[0].code == "TRANSLATION_FAILED"
     assert result.issues[0].message == "Day 31 is not a day in June 2023"
 
 
