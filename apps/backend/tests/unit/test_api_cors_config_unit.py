@@ -151,7 +151,11 @@ def test_get_cors_origins_prefers_frontend_url_env(monkeypatch: pytest.MonkeyPat
 def test_get_cors_allowed_headers_strict_mode(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("ENABLE_DEV_CORS_RELAXATION", "false")
 
-    assert api_module.get_cors_allowed_headers() == ["Authorization", "Content-Type"]
+    assert api_module.get_cors_allowed_headers() == [
+        "Authorization",
+        "Content-Type",
+        "X-API-Key",
+    ]
 
 
 def test_get_cors_allowed_headers_relaxed_mode(monkeypatch: pytest.MonkeyPatch) -> None:

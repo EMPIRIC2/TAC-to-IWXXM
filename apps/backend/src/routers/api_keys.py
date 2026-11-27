@@ -36,18 +36,46 @@ _limiter = get_limiter()
 
 
 class IssueApiKeyRequest(BaseModel):
-    """Optional label for a newly issued key."""
+    """
+    Optional label for a newly issued key.
+
+    Attributes
+    ----------
+    label : str
+        Short operator label (max 128 characters).
+    """
 
     label: str = Field(default="", max_length=128)
 
 
 def _issue_limit_string() -> str:
-    """Slowapi limit string for public key issue."""
+    """
+    Slowapi limit string for public key issue.
+
+    Returns
+    -------
+    str
+        ``N/minute`` from env.
+    """
     return f"{get_rate_limit_api_key_issue_per_min()}/minute"
 
 
 def _typed_limit(limiter: Limiter, limit_value: str | Callable[[], str]) -> Callable[..., Any]:
-    """Wrap slowapi ``limit`` with a typed decorator (basedpyright)."""
+    """
+    Wrap slowapi ``limit`` with a typed decorator (basedpyright).
+
+    Parameters
+    ----------
+    limiter : Limiter
+        Process limiter.
+    limit_value : str or callable
+        Slowapi limit expression.
+
+    Returns
+    -------
+    callable
+        Decorator compatible with FastAPI handlers.
+    """
     limiter_any = cast(Any, limiter)
     return cast(Callable[..., Any], limiter_any.limit(limit_value))
 

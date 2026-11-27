@@ -33,7 +33,7 @@ describe('apiBase', () => {
 
   it('productApiHeaders attaches demo X-API-Key without clobbering Authorization', () => {
     const headers = productApiHeaders({ Authorization: 'Bearer tok' });
-    expect(headers.get('X-API-Key')).toBe('demo-key-from-config');
-    expect(headers.get('Authorization')).toBe('Bearer tok');
+    expect(headers['X-API-Key']).toBe('demo-key-from-config');
+    expect(headers.Authorization).toBe('Bearer tok');
   });
 });

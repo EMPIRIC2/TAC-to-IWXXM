@@ -134,7 +134,22 @@ def generate_api_key_plaintext() -> tuple[str, str]:
 
 @dataclass(frozen=True, slots=True)
 class IssuedApiKey:
-    """One-time issue payload (plaintext returned once)."""
+    """
+    One-time issue payload (plaintext returned once).
+
+    Attributes
+    ----------
+    id : UUID
+        Row id.
+    prefix : str
+        Display prefix.
+    api_key : str
+        Plaintext key (return once).
+    label : str
+        Operator label.
+    created_at : datetime
+        Creation time (UTC).
+    """
 
     id: UUID
     prefix: str
@@ -145,7 +160,18 @@ class IssuedApiKey:
 
 @dataclass(frozen=True, slots=True)
 class VerifiedApiKey:
-    """Resolved key identity after successful auth."""
+    """
+    Resolved key identity after successful auth.
+
+    Attributes
+    ----------
+    id : str
+        Demo sentinel or DB UUID string.
+    prefix : str
+        Display prefix.
+    source : str
+        ``demo`` or ``db``.
+    """
 
     id: str
     prefix: str
@@ -156,12 +182,17 @@ def api_key_required_enabled() -> bool:
     """
     Whether middleware must reject missing/invalid keys.
 
+    Unset defaults to off so local/CI suites keep working; staging/prod set
+    ``API_KEY_REQUIRED=true`` (NFR-007 / D-029).
+
     Returns
     -------
     bool
-        True when enforcement is on (default).
+        True when enforcement is explicitly enabled.
     """
-    raw = (os.environ.get("API_KEY_REQUIRED") or "true").strip().lower()
+    raw = (os.environ.get("API_KEY_REQUIRED") or "").strip().lower()
+    if not raw:
+        return False
     return raw not in {"0", "false", "no", "off"}
 
 

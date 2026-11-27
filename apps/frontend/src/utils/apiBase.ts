@@ -102,13 +102,25 @@ export function adminUrl(path: string): string {
  * attaches ``X-API-Key`` from runtime ``api.demoApiKey`` when present.
  *
  * @param init - Existing headers.
- * @returns Headers including demo API key when configured.
+ * @returns Plain header map including demo API key when configured.
  */
-export function productApiHeaders(init?: HeadersInit): Headers {
-  const headers = new Headers(init);
-  const key = getRuntimeConfig().api.demoApiKey?.trim() ?? '';
-  if (key && !headers.has('X-API-Key')) {
-    headers.set('X-API-Key', key);
+export function productApiHeaders(init?: HeadersInit): Record<string, string> {
+  const out: Record<string, string> = {};
+  if (init instanceof Headers) {
+    init.forEach((value, name) => {
+      out[name] = value;
+    });
+  } else if (Array.isArray(init)) {
+    for (const [name, value] of init) {
+      out[name] = value;
+    }
+  } else if (init) {
+    Object.assign(out, init);
   }
-  return headers;
+  const key = getRuntimeConfig().api.demoApiKey?.trim() ?? '';
+  const hasKey = Object.keys(out).some((name) => name.toLowerCase() === 'x-api-key');
+  if (key && !hasKey) {
+    out['X-API-Key'] = key;
+  }
+  return out;
 }

@@ -4,6 +4,46 @@
  */
 
 export interface paths {
+    "/api/v1/api-keys": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Create Api Key
+         * @description Issue an API key to anyone (hash stored; plaintext returned once).
+         */
+        post: operations["create_api_key_api_v1_api_keys_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/api-keys/{key_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Delete Api Key
+         * @description Soft-revoke a key when the caller presents that key.
+         */
+        delete: operations["delete_api_key_api_v1_api_keys__key_id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/code-name-dictionary": {
         parameters: {
             query?: never;
@@ -3041,6 +3081,17 @@ export interface components {
          */
         ICAORegion: "AFI" | "APAC" | "ESAF" | "EUR" | "MID" | "NAM" | "NAT" | "SAM" | "WAFR";
         /**
+         * IssueApiKeyRequest
+         * @description Optional label for a newly issued key.
+         */
+        IssueApiKeyRequest: {
+            /**
+             * Label
+             * @default
+             */
+            label: string;
+        };
+        /**
          * JobListItem
          * @description Summary item for job list.
          * @example {
@@ -5327,6 +5378,72 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    create_api_key_api_v1_api_keys_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["IssueApiKeyRequest"] | null;
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_api_key_api_v1_api_keys__key_id__delete: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-API-Key"?: string | null;
+            };
+            path: {
+                key_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     get_code_name_dictionary_api_v1_code_name_dictionary_get: {
         parameters: {
             query?: {

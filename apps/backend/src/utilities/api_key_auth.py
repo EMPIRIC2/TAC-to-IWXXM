@@ -67,6 +67,11 @@ def path_is_api_key_exempt(method: str, path: str) -> bool:
 class ApiKeyAuthMiddleware(BaseHTTPMiddleware):
     """
     Require ``X-API-Key`` on protected routes when enforcement is enabled.
+
+    Attributes
+    ----------
+    (inherited)
+        Starlette ``BaseHTTPMiddleware`` app handle.
     """
 
     def __init__(self, app: ASGIApp) -> None:
