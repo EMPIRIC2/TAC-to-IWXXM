@@ -1696,8 +1696,8 @@
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
       "consumer": "tac-validate",
       "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
-      "ticket": "#1487",
-      "note": "App 5 / Table A5-1; standalone PROB+period emission retired \u2014 engines emit PROB_PRESENT; code kept for catalog continuity"
+      "ticket": "#1555",
+      "note": "App 5 / Table A5-1; catalog default info; engines emit PROB_PRESENT (no Europe blanket); INVALID_PROB stays error; code kept for catalog continuity"
     },
     {
       "code": "PROB_PRESENT",

@@ -10,10 +10,12 @@ marker in RMK, forecast T/Q remarks, and AUTO METAR/SPECI tokens (`NCD`, `UP`, s
 `recorded` (solidi / national heading). **ICAO prefer** (EV-regional-profile-remainder):
 `station_prefixes: [Y]` — default-`annex3` Australian `Y*` TAFs prefer `au_bom`, and
 `au_bom` binds the shared `taf-prob-period-info-quality` policy so standalone
-`PROB`/`PROB`+`INTER` period without TEMPO is **info** (not a soft warning). Annex 3
-still keeps full missing `tt/td` as error; BoM AUTO dewpoint-nil `tt///` is
-**dewpoint-not-observable info** (narrow grammar), not a blanket `MISSING_TEMP_DEWPOINT`
-severity remap.
+`PROB`/`PROB`+`INTER` period without TEMPO is **info** (not a soft warning).
+`PROB30|40 INTER ddhh/ddhh` is accepted as `PROB_PRESENT` (#1489); `PROB` on
+`BECMG`/`FM` stays `INVALID_PROB`. Annex 3 still keeps full missing `tt/td` as
+error; BoM AUTO dewpoint-nil `tt///` is **dewpoint-not-observable info** (narrow
+grammar), not a blanket `MISSING_TEMP_DEWPOINT` severity remap. No Europe-wide
+PROB soften (#1555).
 
 ## Owns (target)
 

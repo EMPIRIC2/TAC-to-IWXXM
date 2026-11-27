@@ -129,6 +129,14 @@
       "ok": true
     },
     {
+      "id": "accept_taf_t2_prob30_inter",
+      "product": "TAF",
+      "theme": "T2",
+      "cite": "PROB30 INTER period; national INTER qualifier (#1489)",
+      "tac": "accept/taf_t2_prob30_inter.tac",
+      "ok": true
+    },
+    {
       "id": "accept_taf_t2_tempo",
       "product": "TAF",
       "theme": "T2",
@@ -2025,6 +2033,17 @@
       "expected_codes": ["PROB_PRESENT"],
       "expected_severity": "info",
       "require_spans": true
+    },
+    {
+      "id": "taf_t2_prob_inter_info",
+      "product": "TAF",
+      "theme": "T2",
+      "cite": "PROB+INTER period \u2192 PROB_PRESENT info (national INTER; #1489)",
+      "tac": "accept/taf_t2_prob30_inter.tac",
+      "ok": true,
+      "expected_codes": ["PROB_PRESENT"],
+      "expected_severity": "info",
+      "require_spans": true
     }
   ],
   "t2_modifier_warnings": [],
@@ -2069,6 +2088,17 @@
       "depth": "full_checklist",
       "cite": "PROB not on FM",
       "tac": "negative/taf/prob_on_fm.tac",
+      "ok": false,
+      "expected_codes": ["INVALID_PROB"],
+      "require_spans": true
+    },
+    {
+      "id": "taf_prob_inter_no_period",
+      "product": "TAF",
+      "theme": "T2",
+      "depth": "full_checklist",
+      "cite": "PROB INTER without period stays INVALID_PROB (#1489)",
+      "tac": "negative/taf/prob_inter_no_period.tac",
       "ok": false,
       "expected_codes": ["INVALID_PROB"],
       "require_spans": true

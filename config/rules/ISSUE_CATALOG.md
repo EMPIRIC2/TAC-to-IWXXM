@@ -1,7 +1,7 @@
 # TAC lint issue catalog
 
 > **Source**: generated from tac_validate.issue_registry + PROVENANCE_MAP  
-> **Generated**: 2026-11-20 via `make catalog-regen`  
+> **Generated**: 2026-11-26 via `make catalog-regen`  
 > **ADR**: F15 EV-011 F20 EV-015 F23 EV-019 EV-040
 
 Public `code` values are stable. Default severities may tighten in minor releases.
@@ -114,7 +114,7 @@ Source attribution joins `PROVENANCE_MAP` (WMO / ICAO / IWXXM citations — no A
 | `POINT_LOCATION` | `info` | This SIGMET uses a single-point location. Conversion can continue. | sigmet | geometry, point, sigmet | icao-eur-doc-014 - https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf - EUR Doc 014 public; Annex 3 paywall companion |
 | `POLYGON_LOCATION` | `info` | This SIGMET uses WI polygon or line geometry. Conversion can continue. | sigmet | geometry, polygon, sigmet | icao-eur-doc-014 - https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf - EUR Doc 014 public; Annex 3 paywall companion |
 | `PRECIP_INTENSITY_VIS_PLAUSIBILITY` | `warning` | {product} Precipitation intensity inconsistent with visibility band in handbook table | — | metar, speci, wmo782, visibility | wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (42) |
-| `PROB_PERIOD_WITHOUT_TEMPO` | `warning` | This {product} has a standalone PROB30/40 period. Annex 3 allows that form; engines emit PROB_PRESENT for awareness. True defects stay INVALID_PROB. | taf | change, taf, prob | icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - App 5 / Table A5-1; standalone PROB+period emission retired — engines emit PROB_PRESENT; code kept for catalog continuity |
+| `PROB_PERIOD_WITHOUT_TEMPO` | `info` | This {product} has a standalone PROB30/40 period. Annex 3 allows that form; engines emit PROB_PRESENT for awareness. True defects stay INVALID_PROB. | taf | change, taf, prob | icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - App 5 / Table A5-1; catalog default info; engines emit PROB_PRESENT (no Europe blanket); INVALID_PROB stays error; code kept for catalog continuity |
 | `PROB_PRESENT` | `info` | This {product} includes a PROB30 or PROB40 probability group. Conversion can continue. | taf | change, taf, prob | icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - App 5 / Table A5-1 |
 | `QNH_MISSING_AS_SOLIDUS` | `warning` | {product} encodes missing QNH as Q//// when pressure is temporarily missing or incorrect. | — | metar, speci, wmo782, pressure | wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (16) |
 | `QNH_PREFIX_UNIT_MISMATCH` | `error` | {product} Q with inHg-like digits or A with hPa-like digits | — | metar, speci, wmo782, pressure | wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (43) |

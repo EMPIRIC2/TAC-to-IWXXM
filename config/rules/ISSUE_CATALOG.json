@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "source": "generated from tac_validate.issue_registry + PROVENANCE_MAP",
-  "generated": "2026-11-20",
+  "generated": "2026-11-26",
   "issues": [
     {
       "code": "AMD_PRESENT",
@@ -1520,7 +1520,7 @@
     },
     {
       "code": "PROB_PERIOD_WITHOUT_TEMPO",
-      "severity": "warning",
+      "severity": "info",
       "message_template": "This {product} has a standalone PROB30/40 period. Annex 3 allows that form; engines emit PROB_PRESENT for awareness. True defects stay INVALID_PROB.",
       "product": "taf",
       "tags": [
@@ -1530,7 +1530,7 @@
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
-      "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - App 5 / Table A5-1; standalone PROB+period emission retired \u2014 engines emit PROB_PRESENT; code kept for catalog continuity"
+      "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - App 5 / Table A5-1; catalog default info; engines emit PROB_PRESENT (no Europe blanket); INVALID_PROB stays error; code kept for catalog continuity"
     },
     {
       "code": "PROB_PRESENT",

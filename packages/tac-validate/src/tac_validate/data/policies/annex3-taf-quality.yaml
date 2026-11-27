@@ -1,5 +1,8 @@
 # Builtin annex3 TAF TAC quality policy (M4 #1230).
 # Empty select = all non-preview registry codes for product taf.
+# #1555: standalone PROB+period is Annex 3–valid (App 5 / Table A5-1) — info if
+# ever emitted; engines prefer PROB_PRESENT. No Europe-wide soften. INVALID_PROB
+# stays error for bad percent / PROB on BECMG|FM.
 schema_version: 1
 id: annex3-taf-quality
 lifecycle: activated
@@ -7,7 +10,8 @@ product: taf
 extends: []
 select: []
 ignore: []
-severity: {}
+severity:
+  PROB_PERIOD_WITHOUT_TEMPO: info
 preview: []
 detectors:
   - taf-core

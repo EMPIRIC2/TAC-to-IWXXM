@@ -1,5 +1,8 @@
 # National TAF PROB-period acceptance (US / CA / UK / AU bind; BR deferred).
 # PROB+period without TEMPO is dialect info, not a soft warning.
+# #1555: cited national prefers only — no Europe blanket. Base annex3-taf-quality
+# also maps this code to info; engines emit PROB_PRESENT.
+# #1489: PROB+INTER with period is accepted as PROB_PRESENT (not INVALID_PROB).
 # extends annex3-taf-quality so all other codes stay enabled.
 # [Corpus: product §F20]
 schema_version: 1
