@@ -4,7 +4,7 @@ Hard-fail SIGMET/AIRMET structural defects and product-shaped unknown-VOR
 paths must quarantine with ``@translationFailedTAC`` (no invented TS, no
 illegal geometry). Non-product TAC still hard-fails without XML.
 
-[Corpus: product §F6] [Corpus: domain] [Corpus: tests] D-029
+[Corpus: product §F6] [Corpus: domain] [Corpus: tests] D-031
 """
 
 from __future__ import annotations

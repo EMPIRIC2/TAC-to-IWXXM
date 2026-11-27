@@ -255,7 +255,7 @@ Work history: guest → IndexedDB; logged-in → separate session APIs (JWT).
   inverted/zero VALID, out-of-range coordinates, unknown VOR) still emit a quarantine
   document (`@translationFailedTAC` carrying the original TAC) with HTTP **200**
   (not the soft-preview `ok:false` envelope). See [Corpus: domain] translation-failed
-  validate policy and D-029 / #1563.
+  validate policy and D-031 / #1563.
 
 ** spans on convert issues/errors** (when present): optional integer `start` / `end` alongside
 existing string fields.

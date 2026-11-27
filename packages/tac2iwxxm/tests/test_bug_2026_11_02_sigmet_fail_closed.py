@@ -6,7 +6,7 @@ coverage gate sees the new branches (bug-repro tree is outside this package).
 After #1563, product-shaped structural fails emit ``@translationFailedTAC``
 quarantine instead of empty convert. Parsers still raise; convert quarantines.
 
-[Corpus: product §F6] [Corpus: tests] D-029
+[Corpus: product §F6] [Corpus: tests] D-031
 """
 
 from __future__ import annotations

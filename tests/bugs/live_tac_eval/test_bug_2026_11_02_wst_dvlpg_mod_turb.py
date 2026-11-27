@@ -204,15 +204,17 @@ def test_unknown_vor_still_fail_closed() -> None:
 
 
 def test_mod_turb_sigmet_convert_fail_closed_with_clear_message() -> None:
-    """Failure: FQBE MOD TURB stays convert fail-closed with clearer copy."""
+    """Failure: FQBE MOD TURB quarantines with clearer TRANSLATION_FAILED copy (#1563)."""
     result = convert(
         _FQBE_MOD_TURB,
         product="SIGMET",
         profile="annex3",
         iwxxm_version="2025-2",
     )
-    assert result.ok is False
-    assert any(i.code == "PARSE_ERROR" for i in result.issues)
+    assert result.ok is True
+    assert result.xml is not None
+    assert "translationFailedTAC" in result.xml
+    assert any(i.code == "TRANSLATION_FAILED" for i in result.issues)
     messages = " ".join(i.message for i in result.issues).lower()
     assert "missing phenomenon" in messages
     assert "mod turb" in messages or "moderate turbulence" in messages

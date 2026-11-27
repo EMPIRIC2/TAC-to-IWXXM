@@ -43,7 +43,7 @@ Schematron is blocking for release quality bars.
 
 When convert cannot build an operational report for **product-shaped** TAC, it
 still emits an official-shaped IWXXM shell with `@translationFailedTAC` set to
-the original TAC text ([Corpus: product §F6], #1563, D-029). The shell must not
+the original TAC text ([Corpus: product §F6], #1563, D-031). The shell must not
 invent phenomenon tokens, encode illegal geometry, or pretend parse succeeded.
 
 | Layer | Policy |
