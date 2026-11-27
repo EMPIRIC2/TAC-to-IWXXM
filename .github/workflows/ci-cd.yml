@@ -1390,6 +1390,8 @@ jobs:
       # Optional auth for authenticated live_api cases (public probes always run).
       ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
       ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+      # NFR-007 — convert/lint/validate live_api cases need X-API-Key when required.
+      DEMO_API_KEY: ${{ secrets.DEMO_API_KEY }}
     steps:
       - uses: actions/checkout@v5
         with:

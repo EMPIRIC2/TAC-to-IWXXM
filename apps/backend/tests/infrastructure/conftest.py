@@ -13,6 +13,7 @@ _REPO_ROOT = Path(__file__).resolve().parents[4]
 if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 
+from tests.live_env import live_api_key_headers
 from tests.live_fixtures import (
     live_api_base,
     obtain_live_api_token,
@@ -32,7 +33,10 @@ def live_api_token() -> str:
 async def live_client(live_api_token: str):
     """Create httpx AsyncClient for live API testing with runtime JWT."""
     base_url = wake_live_api()
-    headers = {"Authorization": f"Bearer {live_api_token}"}
+    headers = {
+        "Authorization": f"Bearer {live_api_token}",
+        **live_api_key_headers(),
+    }
     async with httpx.AsyncClient(
         base_url=base_url,
         headers=headers,
@@ -44,10 +48,11 @@ async def live_client(live_api_token: str):
 
 @pytest.fixture
 async def live_client_public():
-    """Create httpx AsyncClient without auth for public endpoint tests."""
+    """Create httpx AsyncClient without JWT; still send demo API key when set."""
     base_url = wake_live_api()
     async with httpx.AsyncClient(
         base_url=base_url,
+        headers=live_api_key_headers(),
         timeout=LIVE_API_TIMEOUT,
         follow_redirects=True,
     ) as client:

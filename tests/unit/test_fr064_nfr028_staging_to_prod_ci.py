@@ -43,6 +43,7 @@ def test_ci_staging_smoke_runs_live_api_and_eval_benchmark() -> None:
     assert "scripts/deploy/staging_smoke.sh" in text
     assert "make test-live-api" in text
     assert "FR-064" in text or "NFR-028" in text
+    assert "DEMO_API_KEY" in text
 
 
 def test_deploy_still_needs_test_job_for_wmo_golden_parity() -> None:

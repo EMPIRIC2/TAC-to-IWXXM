@@ -11,6 +11,10 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 # Keep live-map eval cron off in unit/TestClient runs (avoids sync engine leaks).
 os.environ.setdefault("LIVE_MAP_EVAL_INTERVAL_SEC", "0")
+# NFR-007 enforcement is covered by dedicated api-key tests; default off for
+# the large convert/lint unit suite (set true in those tests).
+os.environ.setdefault("API_KEY_REQUIRED", "false")
+os.environ.setdefault("DEMO_API_KEY", "test-demo-api-key")
 
 # Import all fixtures from test_fixtures to make them available globally
 pytest_plugins = ["test_fixtures"]

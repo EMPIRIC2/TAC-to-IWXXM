@@ -17,6 +17,9 @@ os.environ.setdefault("ENABLE_WEBHOOKS", "false")
 # The async engine will convert this appropriately for asyncpg
 os.environ.setdefault("DATABASE_URL", "postgresql+asyncpg://postgres:password@localhost/test")
 os.environ.setdefault("IWXXM_VERSION", "2025-2")
+# NFR-007 enforcement covered by dedicated tests; keep bug/unit suites off by default.
+os.environ.setdefault("API_KEY_REQUIRED", "false")
+os.environ.setdefault("DEMO_API_KEY", "test-demo-api-key")
 
 
 @pytest.fixture(scope="session", autouse=True)

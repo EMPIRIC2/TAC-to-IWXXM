@@ -2861,6 +2861,19 @@
         "title": "ICAORegion",
         "type": "string"
       },
+      "IssueApiKeyRequest": {
+        "description": "Optional label for a newly issued key.",
+        "properties": {
+          "label": {
+            "default": "",
+            "maxLength": 128,
+            "title": "Label",
+            "type": "string"
+          }
+        },
+        "title": "IssueApiKeyRequest",
+        "type": "object"
+      },
       "JobListItem": {
         "description": "Summary item for job list.",
         "example": {
@@ -7536,6 +7549,110 @@
   },
   "openapi": "3.1.0",
   "paths": {
+    "/api/v1/api-keys": {
+      "post": {
+        "description": "Issue an API key to anyone (hash stored; plaintext returned once).",
+        "operationId": "create_api_key_api_v1_api_keys_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/IssueApiKeyRequest"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Body"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Create Api Key Api V1 Api Keys Post",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Create Api Key",
+        "tags": [
+          "API Keys"
+        ]
+      }
+    },
+    "/api/v1/api-keys/{key_id}": {
+      "delete": {
+        "description": "Soft-revoke a key when the caller presents that key.",
+        "operationId": "delete_api_key_api_v1_api_keys__key_id__delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "key_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Key Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-API-Key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Api-Key"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Delete Api Key",
+        "tags": [
+          "API Keys"
+        ]
+      }
+    },
     "/api/v1/code-name-dictionary": {
       "get": {
         "description": "Export the Decoding glossary as a tagged code-name dictionary.",

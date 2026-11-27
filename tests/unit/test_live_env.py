@@ -7,6 +7,7 @@ from tests.live_env import (
     doks_provisional,
     expected_api_base_url,
     live_api_host_headers,
+    live_api_key_headers,
     live_api_url,
     live_frontend_fetch_base,
     live_frontend_host_headers,
@@ -33,6 +34,9 @@ def _clear_live_env(monkeypatch: pytest.MonkeyPatch) -> None:
         "DOKS_LB_IP",
         "DOKS_API_HOST",
         "DOKS_FE_HOST",
+        "DEMO_API_KEY",
+        "LIVE_API_KEY",
+        "API_KEY",
     ):
         monkeypatch.delenv(key, raising=False)
 
@@ -80,3 +84,12 @@ def test_non_provisional_skips_host_headers(monkeypatch: pytest.MonkeyPatch) -> 
     assert live_api_host_headers() == {}
     assert live_frontend_host_headers() == {}
     assert live_frontend_fetch_base() == "https://app.example.com"
+
+
+def test_live_api_key_headers_from_demo(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("DEMO_API_KEY", "demo-secret")
+    assert live_api_key_headers() == {"X-API-Key": "demo-secret"}
+
+
+def test_live_api_key_headers_absent_when_unset() -> None:
+    assert live_api_key_headers() == {}

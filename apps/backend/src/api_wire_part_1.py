@@ -172,7 +172,7 @@ def get_cors_allowed_headers() -> list[Any]:
     """
     if is_dev_cors_relaxation_enabled():
         return ["*"]
-    return ["Authorization", "Content-Type"]
+    return ["Authorization", "Content-Type", "X-API-Key"]
 
 
 def _is_named_upload(value: object) -> TypeGuard[UploadFile]:

@@ -58,12 +58,14 @@ try:
     from .services.database import database_lifespan
     from .services.validation import ValidationError as ValidationServiceError
     from .utilities.abuse_controls import install_abuse_controls
+    from .utilities.api_key_auth import install_api_key_auth
     from .utilities.observability import install_fastapi_observability, setup_logging
     from .utilities.sentry_init import init_sentry
 except ImportError:
     from services.database import database_lifespan
     from services.validation import ValidationError as ValidationServiceError
     from utilities.abuse_controls import install_abuse_controls
+    from utilities.api_key_auth import install_api_key_auth
     from utilities.observability import install_fastapi_observability, setup_logging
     from utilities.sentry_init import init_sentry
 
@@ -129,6 +131,7 @@ webhook_service = api_deps.webhook_service
 # Routers import ``src.api`` as api_surface; load after wire/deps re-exports (TD-3b).
 try:
     from .routers import (
+        api_keys,
         comprehensive_validation,
         conversion,
         conversion_meta,
@@ -150,6 +153,7 @@ try:
     )
 except ImportError:
     from routers import (
+        api_keys,
         comprehensive_validation,
         conversion,
         conversion_meta,
@@ -201,6 +205,7 @@ app = FastAPI(
 
 install_fastapi_observability(app=app, service_name="backend")
 install_abuse_controls(app)
+install_api_key_auth(app)
 
 
 allowed_origins = get_cors_origins()
@@ -348,6 +353,7 @@ except Exception as e:  # pragma: no cover - defensive
     logger.error(f"DEBUG: Failed to include quality_metrics router: {e}", exc_info=True)
 
 try:
+    app.include_router(api_keys.router)
     app.include_router(health.router)
     app.include_router(conversion_meta.router)
     app.include_router(tac_quality.router)

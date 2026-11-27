@@ -9,6 +9,7 @@ Ticket: #1478. [Corpus: product §F23] [Corpus: tests]
 
 from __future__ import annotations
 
+import pytest
 from tac_validate import lint
 
 _KZAK = """WCPA07 PHFO 300118
@@ -24,24 +25,33 @@ RJJJ FUKUOKA FIR TC IN-FA PSN N2030 E14325 CB OBS AT 1800Z WI 110NM
 OF TC CENTRE TOP FL540 NC
 FCST AT 0000Z TC CENTRE PSN N2120 E14255="""
 
+_OF_CENTRE_ONLY = (
+    "YUCC SIGMET 3 VALID 251600/252200 YUDO-\n"
+    "YUCC AMSWELL FIR CB OBS AT 1600Z WI 250NM OF TC CENTRE TOP FL500 NC="
+)
 
-def test_bug_2026_10_30_tc_in_fa_obs_at_not_missing_identity() -> None:
-    report = lint(_KZAK, product="SIGMET")
-    codes = {i.code for i in report.issues}
+_BARE_TC_OBS = (
+    "YUCC SIGMET 3 VALID 251600/252200 YUDO-\n"
+    "YUCC AMSWELL FIR TC OBS AT 1600Z WI 250NM OF TC CENTRE TOP FL500 NC="
+)
+
+
+@pytest.mark.parametrize(
+    "tac",
+    [_KZAK, _WITH_PSN],
+    ids=["obs_at_hyphenated", "psn_hyphenated"],
+)
+def test_bug_2026_10_30_tc_in_fa_identity_accepted(tac: str) -> None:
+    codes = {i.code for i in lint(tac, product="SIGMET").issues}
     assert "MISSING_TC_IDENTITY" not in codes
     assert "TC_CYCLONE_IDENTITY" in codes
 
 
-def test_bug_2026_10_30_tc_in_fa_psn_still_identity_info() -> None:
-    codes = {i.code for i in lint(_WITH_PSN, product="SIGMET").issues}
-    assert "MISSING_TC_IDENTITY" not in codes
-    assert "TC_CYCLONE_IDENTITY" in codes
-
-
-def test_bug_2026_10_30_of_tc_centre_without_name_still_missing() -> None:
-    tac = (
-        "YUCC SIGMET 3 VALID 251600/252200 YUDO-\n"
-        "YUCC AMSWELL FIR CB OBS AT 1600Z WI 250NM OF TC CENTRE TOP FL500 NC="
-    )
+@pytest.mark.parametrize(
+    "tac",
+    [_OF_CENTRE_ONLY, _BARE_TC_OBS],
+    ids=["of_tc_centre_no_name", "bare_tc_obs_at_no_name"],
+)
+def test_bug_2026_10_30_tc_without_named_identity_still_missing(tac: str) -> None:
     codes = {i.code for i in lint(tac, product="SIGMET").issues}
     assert "MISSING_TC_IDENTITY" in codes

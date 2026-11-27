@@ -2,7 +2,7 @@
 /**
  * Convert / bulletin HTTP clients.
  */
-import { apiUrl } from './apiBase';
+import { apiUrl, productApiHeaders } from './apiBase';
 import { isAbortError } from './liveAssist';
 import { conversionLibraryIdFromProfile } from './libraryIds';
 import type {
@@ -181,9 +181,9 @@ export async function convertMetarToIwxxm(params: {
     console.log('[API] Request to:', apiUrl('/convert'));
 
     const bearer = params.accessToken?.trim();
-    const headers: HeadersInit | undefined = bearer
-      ? { Authorization: `Bearer ${bearer}` }
-      : undefined;
+    const headers = productApiHeaders(
+      bearer ? { Authorization: `Bearer ${bearer}` } : undefined,
+    );
 
     const response = await withTimeout(
       fetch(apiUrl('/convert'), {
@@ -325,9 +325,9 @@ export async function convertBulletin(params: {
     }
   }
   const bearer = params.accessToken?.trim();
-  const headers: HeadersInit | undefined = bearer
-    ? { Authorization: `Bearer ${bearer}` }
-    : undefined;
+  const headers = productApiHeaders(
+    bearer ? { Authorization: `Bearer ${bearer}` } : undefined,
+  );
   const response = await withTimeout(
     fetch(apiUrl('/convert-bulletin'), {
       method: 'POST',
@@ -400,6 +400,7 @@ export async function convertMetarToIwxxmZip(params: {
     const response = await fetch(apiUrl('/convert-zip'), {
       method: 'POST',
       body: formData,
+      headers: productApiHeaders(),
     });
 
     if (!response.ok) {

@@ -59,6 +59,14 @@ def live_api_host_headers() -> dict[str, str]:
     return {}
 
 
+def live_api_key_headers() -> dict[str, str]:
+    """Optional ``X-API-Key`` for NFR-007-protected convert/lint/validate routes."""
+    key = _first_non_empty("DEMO_API_KEY", "LIVE_API_KEY", "API_KEY")
+    if not key:
+        return {}
+    return {"X-API-Key": key}
+
+
 def live_frontend_host_headers() -> dict[str, str]:
     """Host header for FE asset fetches when Ingress routes by hostname."""
     if doks_provisional():

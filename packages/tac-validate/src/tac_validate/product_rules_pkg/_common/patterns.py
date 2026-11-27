@@ -83,12 +83,14 @@ _RVR_RUNWAY_STATE = re.compile(r"^R\d{2}[LCR]?/\d{6}$")
 # Trailing solidi are non-word chars, so do not use a trailing \\b.
 _TEMP_DEWPOINT_NIL = re.compile(r"\bM?\d{2}///(?=\s|$|=)")
 _WIND_TOKEN = re.compile(r"(?:KT|MPS)$|^CALM$")
-_CLOUD_START = re.compile(r"^(?:FEW|SCT|BKN|OVC|VV|NSC|NCD|SKC|CLR)")
+# FEW|SCT|BKN|OVC must not be followed by a letter (avoids ICAO SCTE as SCT+E).
+# Parity with R4 YAML select in metar-speci-r4-cloud.yaml (#1478).
+_CLOUD_START = re.compile(r"^(?:(?:FEW|SCT|BKN|OVC)(?![A-Z])|VV|NSC|NCD|SKC|CLR)")
 # R4: FEW|SCT|BKN|OVC + 3-digit height + optional CB|TCU; VV###|VV///; NSC|NCD|SKC|CLR.
 _CLOUD_OK = re.compile(
     r"^(?:(?:FEW|SCT|BKN|OVC)(?:\d{3}(?:CB|TCU|///)?|///(?:CB|TCU)?)|VV(?:\d{3}|///)|NSC|NCD|SKC|CLR)$"
 )
-_CLOUD_LIKE = re.compile(r"^(?:FEW|SCT|BKN|OVC|VV|NSC|NCD|SKC|CLR|[A-Z]{3}\d{3})")
+_CLOUD_LIKE = re.compile(r"^(?:(?:FEW|SCT|BKN|OVC)(?![A-Z])|VV|NSC|NCD|SKC|CLR|[A-Z]{3}\d{3})")
 # Layered amounts only (NSC exclusivity / TC-EV023-001) - not VV/NSC/NCD/SKC/CLR.
 _LAYER_CLOUD_TOKEN = re.compile(r"^(?:FEW|SCT|BKN|OVC)\d{3}(?:CB|TCU)?$")
 # R5: US METAR remarks (iwxxm_us) - AO1/AO2, SLP###, P####, T########, PK WND dddss/tt.

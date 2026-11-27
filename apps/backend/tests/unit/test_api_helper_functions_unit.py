@@ -54,7 +54,11 @@ def test_get_cors_allowed_headers_relaxed_and_default(monkeypatch):
     assert api_module.get_cors_allowed_headers() == ["*"]
 
     monkeypatch.setenv("ENABLE_DEV_CORS_RELAXATION", "false")
-    assert api_module.get_cors_allowed_headers() == ["Authorization", "Content-Type"]
+    assert api_module.get_cors_allowed_headers() == [
+        "Authorization",
+        "Content-Type",
+        "X-API-Key",
+    ]
 
 
 def test_split_manual_entries_and_normalizers():
