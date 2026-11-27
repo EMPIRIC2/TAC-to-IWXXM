@@ -7,7 +7,6 @@ from typing import Any
 from fastapi import File, Form, HTTPException, Request, UploadFile
 from fastapi.responses import Response
 from tac_validate.api import lint_with_profile
-from tac_validate.profiles import PROFILE_ANNEX3
 
 from src.schemas.airport import get_airport_validator
 from src.schemas.validation import (
@@ -20,6 +19,8 @@ from tac2iwxxm import decode_tac as tac2iwxxm_decode_tac
 
 from .conversion_api_surface import api_surface
 from .tac_quality_part_1 import router
+
+_DEFAULT_LINT_SEMANTIC_PROFILE = "ICAO_2025"
 
 
 @router.post(
@@ -38,7 +39,7 @@ async def lint_tac(
         description="Product type, or iwxxm for XML lint (default METAR)",
     ),
     semantic_profile: str = Form(
-        default=PROFILE_ANNEX3,
+        default=_DEFAULT_LINT_SEMANTIC_PROFILE,
         description="Semantic / lint profile id (default ICAO_2025)",
     ),
     icao: str = Form(
@@ -105,9 +106,9 @@ async def lint_tac(
             )
         )
     # Direct unit calls may leave FastAPI Form defaults unbound.
-    profile_raw = semantic_profile if type(semantic_profile) is str else PROFILE_ANNEX3
+    profile_raw = semantic_profile if type(semantic_profile) is str else _DEFAULT_LINT_SEMANTIC_PROFILE
     icao_raw = icao if type(icao) is str else ""
-    profile = (profile_raw or PROFILE_ANNEX3).strip() or PROFILE_ANNEX3
+    profile = (profile_raw or _DEFAULT_LINT_SEMANTIC_PROFILE).strip() or _DEFAULT_LINT_SEMANTIC_PROFILE
     station = (icao_raw or "").strip() or None
     try:
         from tac2iwxxm.profile_registry import resolve_semantic_profile

@@ -62,25 +62,24 @@ describe('FileConverterSetup', () => {
     vi.restoreAllMocks();
   });
 
-  it('keeps previous params when the operator cancels a library line reset', () => {
-    const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(false);
+  it('maps removed annex3 wire alias onto the ICAO line without reset confirm', () => {
+    const confirmSpy = vi.spyOn(window, 'confirm');
     const { props, setConversionParams } = setup();
-    libraryBarProps!.onChange({}, 'annex3');
-    const prev = props.conversionParams;
-    expect(applyUpdater(setConversionParams, prev)).toBe(prev);
-    expect(confirmSpy).toHaveBeenCalledTimes(1);
+    libraryBarProps!.onChange({ decodingLibraryId: 'LIB.DECODING.Z' }, 'annex3');
+    const next = applyUpdater(setConversionParams, props.conversionParams) as any;
+    expect(next.profile).toBe('ICAO_2025');
+    expect(next.decodingLibraryId).toBe('LIB.DECODING.Z');
+    expect(confirmSpy).not.toHaveBeenCalled();
   });
 
-  it('resets libraries and profile when the operator confirms a line change', () => {
-    vi.spyOn(window, 'confirm').mockReturnValue(true);
+  it('coerces legacy iwxxm_us engine id to ICAO_2025 on the same line', () => {
+    const confirmSpy = vi.spyOn(window, 'confirm');
     const { props, setConversionParams } = setup();
-    libraryBarProps!.onChange({}, 'annex3');
+    libraryBarProps!.onChange({}, 'iwxxm_us');
     const next = applyUpdater(setConversionParams, props.conversionParams) as any;
-    expect(next.profile).toBe('annex3');
+    expect(next.profile).toBe('ICAO_2025');
     expect(next.reportVariant).toBe('');
-    expect(next.conversionLibraryId).toBe(
-      libraryResetForProfile('annex3').libraryIds.conversionLibraryId,
-    );
+    expect(confirmSpy).not.toHaveBeenCalled();
   });
 
   it('merges library ids without confirm when no engine profile is reported', () => {

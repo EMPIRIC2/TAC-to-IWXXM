@@ -690,7 +690,7 @@
             "type": "string"
           },
           "semantic_profile": {
-            "default": "annex3",
+            "default": "ICAO_2025",
             "description": "Semantic / lint profile id (default ICAO_2025)",
             "title": "Semantic Profile",
             "type": "string"
@@ -6612,8 +6612,8 @@
             "default": "",
             "description": "Deprecated - use semantic_profile (use canonical ids; annex3/iwxxm_us aliases removed)",
             "examples": [
-              "annex3",
-              "iwxxm_us"
+              "ICAO_2025",
+              "US_FAA_NWS"
             ],
             "title": "Profile",
             "type": "string"
