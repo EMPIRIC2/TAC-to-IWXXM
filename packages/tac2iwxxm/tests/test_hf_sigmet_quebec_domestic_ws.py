@@ -13,11 +13,36 @@ from __future__ import annotations
 
 import pytest
 from tac2iwxxm.bulletin import _is_kept_sigmet_report, split_bulletin
+from tac2iwxxm.geometry.reference_point import UnknownVOR
 from tac2iwxxm.heading_paste import HeadingPasteError, reports_for_convert
 from tac2iwxxm.slot_builders.sigmet_airmet import parse_sigmet
 from tac_validate import lint
 
 from tac2iwxxm import BulletinSplitError, convert
+
+# Hermetic VOR coords for the exact operator TAC (CI may lack OpenAIP / table rows).
+_QUEBEC_VOR_STUB: dict[str, dict[str, float]] = {
+    "MPV": {"lat": 44.085499, "lon": -72.449402},
+    "BOS": {"lat": 42.357399, "lon": -70.989502},
+    "PVD": {"lat": 41.7243, "lon": -71.429604},
+    "HNK": {"lat": 42.063099, "lon": -75.316299},
+    "MSS": {"lat": 44.936157, "lon": -74.844304},
+    "ONP": {"lat": 44.575401, "lon": -124.061},
+}
+
+
+@pytest.fixture(autouse=True)
+def _stub_quebec_vor_table(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Stub resolve_vor so success paths stay hermetic without live navaid sources."""
+
+    def _resolve(vor_id: str, table: dict[str, dict[str, float]] | None = None) -> tuple[float, float]:
+        lookup = table if table is not None else _QUEBEC_VOR_STUB
+        row = lookup.get(vor_id.upper())
+        if row is None:
+            raise UnknownVOR(vor_id.upper())
+        return float(row["lat"]), float(row["lon"])
+
+    monkeypatch.setattr("tac2iwxxm.geometry.reference_point.resolve_vor", _resolve)
 
 # Exact failing operator paste (HF repro).
 _QUEBEC = """\

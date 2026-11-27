@@ -240,6 +240,9 @@ def _parse_us_domestic_ws_sigmet(
     phenomenon = _detect_phenomenon(body, _SIG_PHENOMENA)
     if phenomenon is not None:
         ir["phenomenon"] = phenomenon
+    if not ir.get("cancel") and not ir.get("phenomenon"):
+        # Fail closed before VOR geometry so missing-hazard TACs do not raise UnknownVOR.
+        raise ValueError("SIGMET body missing phenomenon")
     blw = _US_DOMESTIC_WS_BLW.search(body)
     if blw is not None:
         ir["top_fl"] = int(blw.group("fl"))
@@ -248,8 +251,6 @@ def _parse_us_domestic_ws_sigmet(
     vor_geometry = parse_vor_reference_geometry(f"FROM {geom_src}")
     if vor_geometry is not None:
         ir["geometry"] = vor_geometry
-    if not ir.get("cancel") and not ir.get("phenomenon"):
-        raise ValueError("SIGMET body missing phenomenon")
     return ir
 
 
