@@ -2,124 +2,36 @@
   "kind": "openapi-status-and-required-field-interactions",
   "interactions": [
     {
+      "method": "POST",
+      "path": "/api/v1/api-keys",
+      "status": 201,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_api_key_auth_nfr007.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/api-keys",
+      "status": 422,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_api_key_auth_nfr007.py"
+    },
+    {
       "method": "DELETE",
-      "path": "/api/v1/profiles/conversion-templates/{template_id}",
+      "path": "/api/v1/api-keys/{key_id}",
       "status": 204,
       "request_fields": [],
       "response_fields": [],
-      "covered_by": "tests/bugs/qa_gap/test_qa_gap_2026_10_19_openapi_path_templates.py"
+      "covered_by": "apps/backend/tests/unit/test_api_key_auth_nfr007.py"
     },
     {
       "method": "DELETE",
-      "path": "/api/v1/profiles/conversion-templates/{template_id}",
+      "path": "/api/v1/api-keys/{key_id}",
       "status": 422,
       "request_fields": [],
       "response_fields": [],
-      "covered_by": "tests/bugs/qa_gap/test_qa_gap_2026_10_19_openapi_path_templates.py"
-    },
-    {
-      "method": "DELETE",
-      "path": "/api/v1/profiles/library-assets/{asset_id}",
-      "status": 204,
-      "request_fields": [],
-      "response_fields": [],
-      "covered_by": "tests/bugs/qa_gap/test_qa_gap_2026_10_19_openapi_path_templates.py"
-    },
-    {
-      "method": "DELETE",
-      "path": "/api/v1/profiles/library-assets/{asset_id}",
-      "status": 422,
-      "request_fields": [],
-      "response_fields": [],
-      "covered_by": "tests/bugs/qa_gap/test_qa_gap_2026_10_19_openapi_path_templates.py"
-    },
-    {
-      "method": "DELETE",
-      "path": "/api/v1/profiles/overlays/{overlay_id}",
-      "status": 204,
-      "request_fields": [],
-      "response_fields": [],
-      "covered_by": "tests/bugs/qa_gap/test_qa_gap_2026_10_19_openapi_path_templates.py"
-    },
-    {
-      "method": "DELETE",
-      "path": "/api/v1/profiles/overlays/{overlay_id}",
-      "status": 422,
-      "request_fields": [],
-      "response_fields": [],
-      "covered_by": "tests/bugs/qa_gap/test_qa_gap_2026_10_19_openapi_path_templates.py"
-    },
-    {
-      "method": "DELETE",
-      "path": "/api/v1/profiles/presets/{preset_id}",
-      "status": 204,
-      "request_fields": [],
-      "response_fields": [],
-      "covered_by": "tests/bugs/qa_gap/test_qa_gap_2026_10_19_openapi_path_templates.py"
-    },
-    {
-      "method": "DELETE",
-      "path": "/api/v1/profiles/presets/{preset_id}",
-      "status": 422,
-      "request_fields": [],
-      "response_fields": [],
-      "covered_by": "tests/bugs/qa_gap/test_qa_gap_2026_10_19_openapi_path_templates.py"
-    },
-    {
-      "method": "DELETE",
-      "path": "/api/v1/profiles/rule-packs/{pack_id}",
-      "status": 204,
-      "request_fields": [],
-      "response_fields": [],
-      "covered_by": "tests/bugs/qa_gap/test_qa_gap_2026_10_19_openapi_path_templates.py"
-    },
-    {
-      "method": "DELETE",
-      "path": "/api/v1/profiles/rule-packs/{pack_id}",
-      "status": 422,
-      "request_fields": [],
-      "response_fields": [],
-      "covered_by": "tests/bugs/qa_gap/test_qa_gap_2026_10_19_openapi_path_templates.py"
-    },
-    {
-      "method": "DELETE",
-      "path": "/api/v1/profiles/templates/{template_id}",
-      "status": 204,
-      "request_fields": [],
-      "response_fields": [],
-      "covered_by": "tests/bugs/qa_gap/test_qa_gap_2026_10_19_openapi_path_templates.py"
-    },
-    {
-      "method": "DELETE",
-      "path": "/api/v1/profiles/templates/{template_id}",
-      "status": 422,
-      "request_fields": [],
-      "response_fields": [],
-      "covered_by": "tests/bugs/qa_gap/test_qa_gap_2026_10_19_openapi_path_templates.py"
-    },
-    {
-      "method": "DELETE",
-      "path": "/api/v1/work-sessions/{session_id}",
-      "status": 200,
-      "request_fields": [],
-      "response_fields": [
-        "created_at",
-        "id",
-        "product",
-        "status",
-        "title",
-        "updated_at",
-        "user_id"
-      ],
-      "covered_by": "tests/bugs/qa_gap/test_qa_gap_2026_10_19_openapi_path_templates.py"
-    },
-    {
-      "method": "DELETE",
-      "path": "/api/v1/work-sessions/{session_id}",
-      "status": 422,
-      "request_fields": [],
-      "response_fields": [],
-      "covered_by": "tests/bugs/qa_gap/test_qa_gap_2026_10_19_openapi_path_templates.py"
+      "covered_by": "apps/backend/tests/unit/test_api_key_auth_nfr007.py"
     },
     {
       "method": "GET",
@@ -141,6 +53,102 @@
       "covered_by": "apps/backend/tests/unit/test_code_name_dictionary_integration.py"
     },
     {
+      "method": "POST",
+      "path": "/api/v1/convert",
+      "status": 200,
+      "request_fields": [],
+      "response_fields": [
+        "failed",
+        "successful",
+        "total_processed"
+      ],
+      "covered_by": "apps/backend/tests/unit/test_api_endpoint_unit.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/convert",
+      "status": 422,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_api_endpoint_unit.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/convert-bulletin",
+      "status": 200,
+      "request_fields": [],
+      "response_fields": [
+        "bulletin_meta"
+      ],
+      "covered_by": "apps/backend/tests/unit/test_tc_ev063_exchange_api.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/convert-bulletin",
+      "status": 400,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_tc_ev063_exchange_api.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/convert-bulletin",
+      "status": 415,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_tc_ev063_exchange_api.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/convert-bulletin",
+      "status": 422,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_tc_ev063_exchange_api.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/convert-zip",
+      "status": 200,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_api_async_coverage_unit.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/convert-zip",
+      "status": 422,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_api_async_coverage_unit.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/decode-tac",
+      "status": 200,
+      "request_fields": [],
+      "response_fields": [
+        "product"
+      ],
+      "covered_by": "apps/backend/tests/unit/test_ev080_m2b_coverage_gaps.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/decode-tac",
+      "status": 415,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_ev080_m2b_coverage_gaps.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/decode-tac",
+      "status": 422,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_ev080_m2b_coverage_gaps.py"
+    },
+    {
       "method": "GET",
       "path": "/api/v1/eval/jobs",
       "status": 200,
@@ -158,6 +166,31 @@
       "path": "/api/v1/eval/jobs",
       "status": 422,
       "request_fields": [],
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/integration/test_e2e_full_stack.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/eval/jobs",
+      "status": 200,
+      "request_fields": [
+        "mode"
+      ],
+      "response_fields": [
+        "created_at",
+        "job_id",
+        "station_count",
+        "status"
+      ],
+      "covered_by": "apps/backend/tests/integration/test_e2e_full_stack.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/eval/jobs",
+      "status": 422,
+      "request_fields": [
+        "mode"
+      ],
       "response_fields": [],
       "covered_by": "apps/backend/tests/integration/test_e2e_full_stack.py"
     },
@@ -215,6 +248,22 @@
       "covered_by": "apps/backend/tests/unit/test_exchange_admin.py"
     },
     {
+      "method": "PUT",
+      "path": "/api/v1/exchange-admin/invitation-group",
+      "status": 200,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_exchange_admin.py"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/exchange-admin/invitation-group",
+      "status": 422,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_exchange_admin.py"
+    },
+    {
       "method": "GET",
       "path": "/api/v1/exchange-admin/invitation-groups",
       "status": 200,
@@ -231,12 +280,76 @@
       "covered_by": "apps/backend/tests/unit/test_exchange_admin.py"
     },
     {
+      "method": "PUT",
+      "path": "/api/v1/exchange-admin/prefs/national-remarks",
+      "status": 200,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_exchange_admin.py"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/exchange-admin/prefs/national-remarks",
+      "status": 422,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_exchange_admin.py"
+    },
+    {
       "method": "GET",
       "path": "/api/v1/exchange-admin/templates",
       "status": 200,
       "request_fields": [],
       "response_fields": [],
       "covered_by": "apps/backend/tests/unit/test_exchange_admin.py"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/exchange-admin/templates",
+      "status": 200,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_exchange_admin.py"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/exchange-admin/templates",
+      "status": 422,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_exchange_admin.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/ingest-collect",
+      "status": 200,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_ingest_collect_unit.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/ingest-collect",
+      "status": 422,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_ingest_collect_unit.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/ingest/mass",
+      "status": 200,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_ev080_m2b_coverage_gaps.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/ingest/mass",
+      "status": 422,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_ev080_m2b_coverage_gaps.py"
     },
     {
       "method": "GET",
@@ -253,6 +366,32 @@
       "request_fields": [],
       "response_fields": [],
       "covered_by": "apps/backend/tests/unit/test_td3b_router_extraction_unit.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/lint-tac",
+      "status": 200,
+      "request_fields": [],
+      "response_fields": [
+        "ok"
+      ],
+      "covered_by": "apps/backend/tests/unit/test_tc_f21_auth_gone_unit.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/lint-tac",
+      "status": 415,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_tc_f21_auth_gone_unit.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/lint-tac",
+      "status": 422,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_tc_f21_auth_gone_unit.py"
     },
     {
       "method": "GET",
@@ -331,6 +470,76 @@
       "covered_by": "apps/backend/tests/unit/test_tc_ev080_conversion_templates_api.py"
     },
     {
+      "method": "POST",
+      "path": "/api/v1/profiles/conversion-templates",
+      "status": 201,
+      "request_fields": [
+        "iwxxmBlock",
+        "name",
+        "slug"
+      ],
+      "response_fields": [
+        "access",
+        "id",
+        "iwxxmBlock",
+        "name",
+        "slug"
+      ],
+      "covered_by": "apps/backend/tests/unit/test_tc_ev080_conversion_templates_api.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/profiles/conversion-templates",
+      "status": 422,
+      "request_fields": [
+        "iwxxmBlock",
+        "name",
+        "slug"
+      ],
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_tc_ev080_conversion_templates_api.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/profiles/conversion-templates/preview",
+      "status": 200,
+      "request_fields": [
+        "templateId"
+      ],
+      "response_fields": [
+        "focusGroup",
+        "matched",
+        "templateId"
+      ],
+      "covered_by": "apps/backend/tests/unit/test_tc_ev080_conversion_templates_api.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/profiles/conversion-templates/preview",
+      "status": 422,
+      "request_fields": [
+        "templateId"
+      ],
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_tc_ev080_conversion_templates_api.py"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/profiles/conversion-templates/{template_id}",
+      "status": 204,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "tests/bugs/qa_gap/test_qa_gap_2026_10_19_openapi_path_templates.py"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/profiles/conversion-templates/{template_id}",
+      "status": 422,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "tests/bugs/qa_gap/test_qa_gap_2026_10_19_openapi_path_templates.py"
+    },
+    {
       "method": "GET",
       "path": "/api/v1/profiles/conversion-templates/{template_id}",
       "status": 200,
@@ -346,6 +555,28 @@
     },
     {
       "method": "GET",
+      "path": "/api/v1/profiles/conversion-templates/{template_id}",
+      "status": 422,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "tests/bugs/qa_gap/test_qa_gap_2026_10_19_openapi_path_templates.py"
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/v1/profiles/conversion-templates/{template_id}",
+      "status": 200,
+      "request_fields": [],
+      "response_fields": [
+        "access",
+        "id",
+        "iwxxmBlock",
+        "name",
+        "slug"
+      ],
+      "covered_by": "tests/bugs/qa_gap/test_qa_gap_2026_10_19_openapi_path_templates.py"
+    },
+    {
+      "method": "PATCH",
       "path": "/api/v1/profiles/conversion-templates/{template_id}",
       "status": 422,
       "request_fields": [],
@@ -369,6 +600,108 @@
       "request_fields": [],
       "response_fields": [],
       "covered_by": "apps/backend/tests/unit/test_tc_evrpc_rule_catalogs.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/profiles/library-assets",
+      "status": 201,
+      "request_fields": [
+        "attachedNationalLine",
+        "engineProfileId",
+        "kind",
+        "name",
+        "slug"
+      ],
+      "response_fields": [
+        "access",
+        "attachedNationalLine",
+        "engineProfileId",
+        "id",
+        "kind",
+        "name"
+      ],
+      "covered_by": "apps/backend/tests/unit/test_tc_evrpc_rule_catalogs.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/profiles/library-assets",
+      "status": 422,
+      "request_fields": [
+        "attachedNationalLine",
+        "engineProfileId",
+        "kind",
+        "name",
+        "slug"
+      ],
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_tc_evrpc_rule_catalogs.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/profiles/library-assets/preview-rule",
+      "status": 200,
+      "request_fields": [
+        "focusGroup",
+        "libraryId"
+      ],
+      "response_fields": [
+        "focusGroup",
+        "libraryId",
+        "ruleId",
+        "ruleName"
+      ],
+      "covered_by": "apps/backend/tests/unit/test_tc_evbridge_library_assets_api.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/profiles/library-assets/preview-rule",
+      "status": 422,
+      "request_fields": [
+        "focusGroup",
+        "libraryId"
+      ],
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_tc_evbridge_library_assets_api.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/profiles/library-assets/validate-yaml",
+      "status": 200,
+      "request_fields": [
+        "kind",
+        "yamlBody"
+      ],
+      "response_fields": [
+        "valid_yaml"
+      ],
+      "covered_by": "apps/backend/tests/unit/test_tc_evbridge_library_assets_api.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/profiles/library-assets/validate-yaml",
+      "status": 422,
+      "request_fields": [
+        "kind",
+        "yamlBody"
+      ],
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_tc_evbridge_library_assets_api.py"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/profiles/library-assets/{asset_id}",
+      "status": 204,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "tests/bugs/qa_gap/test_qa_gap_2026_10_19_openapi_path_templates.py"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/profiles/library-assets/{asset_id}",
+      "status": 422,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "tests/bugs/qa_gap/test_qa_gap_2026_10_19_openapi_path_templates.py"
     },
     {
       "method": "GET",
@@ -394,6 +727,29 @@
       "covered_by": "tests/bugs/qa_gap/test_qa_gap_2026_10_19_openapi_path_templates.py"
     },
     {
+      "method": "PATCH",
+      "path": "/api/v1/profiles/library-assets/{asset_id}",
+      "status": 200,
+      "request_fields": [],
+      "response_fields": [
+        "access",
+        "attachedNationalLine",
+        "engineProfileId",
+        "id",
+        "kind",
+        "name"
+      ],
+      "covered_by": "tests/bugs/qa_gap/test_qa_gap_2026_10_19_openapi_path_templates.py"
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/v1/profiles/library-assets/{asset_id}",
+      "status": 422,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "tests/bugs/qa_gap/test_qa_gap_2026_10_19_openapi_path_templates.py"
+    },
+    {
       "method": "GET",
       "path": "/api/v1/profiles/overlays",
       "status": 200,
@@ -402,6 +758,54 @@
         "items"
       ],
       "covered_by": "apps/backend/tests/unit/test_conversion_profiles_router.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/profiles/overlays",
+      "status": 201,
+      "request_fields": [
+        "baseProfileId",
+        "slug"
+      ],
+      "response_fields": [
+        "baseProfileId",
+        "body",
+        "created_at",
+        "id",
+        "shared",
+        "signature",
+        "slug",
+        "updated_at",
+        "user_id"
+      ],
+      "covered_by": "apps/backend/tests/unit/test_conversion_profiles_router.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/profiles/overlays",
+      "status": 422,
+      "request_fields": [
+        "baseProfileId",
+        "slug"
+      ],
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_conversion_profiles_router.py"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/profiles/overlays/{overlay_id}",
+      "status": 204,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "tests/bugs/qa_gap/test_qa_gap_2026_10_19_openapi_path_templates.py"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/profiles/overlays/{overlay_id}",
+      "status": 422,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "tests/bugs/qa_gap/test_qa_gap_2026_10_19_openapi_path_templates.py"
     },
     {
       "method": "GET",
@@ -430,6 +834,32 @@
       "covered_by": "tests/bugs/qa_gap/test_qa_gap_2026_10_19_openapi_path_templates.py"
     },
     {
+      "method": "PATCH",
+      "path": "/api/v1/profiles/overlays/{overlay_id}",
+      "status": 200,
+      "request_fields": [],
+      "response_fields": [
+        "baseProfileId",
+        "body",
+        "created_at",
+        "id",
+        "shared",
+        "signature",
+        "slug",
+        "updated_at",
+        "user_id"
+      ],
+      "covered_by": "tests/bugs/qa_gap/test_qa_gap_2026_10_19_openapi_path_templates.py"
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/v1/profiles/overlays/{overlay_id}",
+      "status": 422,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "tests/bugs/qa_gap/test_qa_gap_2026_10_19_openapi_path_templates.py"
+    },
+    {
       "method": "GET",
       "path": "/api/v1/profiles/presets",
       "status": 200,
@@ -438,6 +868,58 @@
         "items"
       ],
       "covered_by": "apps/backend/tests/unit/test_conversion_profiles_router.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/profiles/presets",
+      "status": 201,
+      "request_fields": [
+        "iwxxmVersion",
+        "name",
+        "semanticProfile",
+        "slug"
+      ],
+      "response_fields": [
+        "created_at",
+        "id",
+        "iwxxmVersion",
+        "name",
+        "semanticProfile",
+        "shared",
+        "slug",
+        "updated_at",
+        "user_id"
+      ],
+      "covered_by": "apps/backend/tests/unit/test_conversion_profiles_router.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/profiles/presets",
+      "status": 422,
+      "request_fields": [
+        "iwxxmVersion",
+        "name",
+        "semanticProfile",
+        "slug"
+      ],
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_conversion_profiles_router.py"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/profiles/presets/{preset_id}",
+      "status": 204,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "tests/bugs/qa_gap/test_qa_gap_2026_10_19_openapi_path_templates.py"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/profiles/presets/{preset_id}",
+      "status": 422,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "tests/bugs/qa_gap/test_qa_gap_2026_10_19_openapi_path_templates.py"
     },
     {
       "method": "GET",
@@ -466,6 +948,32 @@
       "covered_by": "tests/bugs/qa_gap/test_qa_gap_2026_10_19_openapi_path_templates.py"
     },
     {
+      "method": "PATCH",
+      "path": "/api/v1/profiles/presets/{preset_id}",
+      "status": 200,
+      "request_fields": [],
+      "response_fields": [
+        "created_at",
+        "id",
+        "iwxxmVersion",
+        "name",
+        "semanticProfile",
+        "shared",
+        "slug",
+        "updated_at",
+        "user_id"
+      ],
+      "covered_by": "tests/bugs/qa_gap/test_qa_gap_2026_10_19_openapi_path_templates.py"
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/v1/profiles/presets/{preset_id}",
+      "status": 422,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "tests/bugs/qa_gap/test_qa_gap_2026_10_19_openapi_path_templates.py"
+    },
+    {
       "method": "GET",
       "path": "/api/v1/profiles/rule-packs",
       "status": 200,
@@ -474,6 +982,63 @@
         "items"
       ],
       "covered_by": "apps/backend/tests/unit/test_conversion_profiles_router.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/profiles/rule-packs",
+      "status": 201,
+      "request_fields": [
+        "product",
+        "profile",
+        "severity",
+        "slug",
+        "stage"
+      ],
+      "response_fields": [
+        "created_at",
+        "id",
+        "message",
+        "product",
+        "profile",
+        "severity",
+        "slug",
+        "stage",
+        "standardReference",
+        "updated_at",
+        "user_id",
+        "when"
+      ],
+      "covered_by": "apps/backend/tests/unit/test_conversion_profiles_router.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/profiles/rule-packs",
+      "status": 422,
+      "request_fields": [
+        "product",
+        "profile",
+        "severity",
+        "slug",
+        "stage"
+      ],
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_conversion_profiles_router.py"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/profiles/rule-packs/{pack_id}",
+      "status": 204,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "tests/bugs/qa_gap/test_qa_gap_2026_10_19_openapi_path_templates.py"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/profiles/rule-packs/{pack_id}",
+      "status": 422,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "tests/bugs/qa_gap/test_qa_gap_2026_10_19_openapi_path_templates.py"
     },
     {
       "method": "GET",
@@ -505,6 +1070,35 @@
       "covered_by": "tests/bugs/qa_gap/test_qa_gap_2026_10_19_openapi_path_templates.py"
     },
     {
+      "method": "PATCH",
+      "path": "/api/v1/profiles/rule-packs/{pack_id}",
+      "status": 200,
+      "request_fields": [],
+      "response_fields": [
+        "created_at",
+        "id",
+        "message",
+        "product",
+        "profile",
+        "severity",
+        "slug",
+        "stage",
+        "standardReference",
+        "updated_at",
+        "user_id",
+        "when"
+      ],
+      "covered_by": "tests/bugs/qa_gap/test_qa_gap_2026_10_19_openapi_path_templates.py"
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/v1/profiles/rule-packs/{pack_id}",
+      "status": 422,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "tests/bugs/qa_gap/test_qa_gap_2026_10_19_openapi_path_templates.py"
+    },
+    {
       "method": "GET",
       "path": "/api/v1/profiles/templates",
       "status": 200,
@@ -513,6 +1107,56 @@
         "items"
       ],
       "covered_by": "apps/backend/tests/unit/test_conversion_profiles_router.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/profiles/templates",
+      "status": 201,
+      "request_fields": [
+        "name",
+        "sinkType",
+        "slug"
+      ],
+      "response_fields": [
+        "created_at",
+        "ddl",
+        "id",
+        "name",
+        "shared",
+        "sinkType",
+        "slug",
+        "updated_at",
+        "user_id"
+      ],
+      "covered_by": "apps/backend/tests/unit/test_conversion_profiles_router.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/profiles/templates",
+      "status": 422,
+      "request_fields": [
+        "name",
+        "sinkType",
+        "slug"
+      ],
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_conversion_profiles_router.py"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/profiles/templates/{template_id}",
+      "status": 204,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "tests/bugs/qa_gap/test_qa_gap_2026_10_19_openapi_path_templates.py"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/profiles/templates/{template_id}",
+      "status": 422,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "tests/bugs/qa_gap/test_qa_gap_2026_10_19_openapi_path_templates.py"
     },
     {
       "method": "GET",
@@ -534,6 +1178,32 @@
     },
     {
       "method": "GET",
+      "path": "/api/v1/profiles/templates/{template_id}",
+      "status": 422,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "tests/bugs/qa_gap/test_qa_gap_2026_10_19_openapi_path_templates.py"
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/v1/profiles/templates/{template_id}",
+      "status": 200,
+      "request_fields": [],
+      "response_fields": [
+        "created_at",
+        "ddl",
+        "id",
+        "name",
+        "shared",
+        "sinkType",
+        "slug",
+        "updated_at",
+        "user_id"
+      ],
+      "covered_by": "tests/bugs/qa_gap/test_qa_gap_2026_10_19_openapi_path_templates.py"
+    },
+    {
+      "method": "PATCH",
       "path": "/api/v1/profiles/templates/{template_id}",
       "status": 422,
       "request_fields": [],
@@ -657,16 +1327,6 @@
     },
     {
       "method": "GET",
-      "path": "/api/v1/station-health/metrics",
-      "status": 200,
-      "request_fields": [],
-      "response_fields": [
-        "metrics"
-      ],
-      "covered_by": "apps/backend/tests/unit/test_station_health_api.py"
-    },
-    {
-      "method": "GET",
       "path": "/api/v1/station-health/eval-benchmark",
       "status": 200,
       "request_fields": [],
@@ -699,6 +1359,16 @@
       "request_fields": [],
       "response_fields": [],
       "covered_by": "apps/backend/tests/unit/test_station_health_eval_benchmark.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/station-health/metrics",
+      "status": 200,
+      "request_fields": [],
+      "response_fields": [
+        "metrics"
+      ],
+      "covered_by": "apps/backend/tests/unit/test_station_health_api.py"
     },
     {
       "method": "GET",
@@ -779,6 +1449,36 @@
       "covered_by": "apps/backend/tests/integration/test_e2e_full_stack.py"
     },
     {
+      "method": "POST",
+      "path": "/api/v1/translation/statistics",
+      "status": 200,
+      "request_fields": [
+        "end_date",
+        "start_date"
+      ],
+      "response_fields": [
+        "average_duration_ms",
+        "failed_translations",
+        "period_end",
+        "period_start",
+        "success_rate",
+        "successful_translations",
+        "total_translations"
+      ],
+      "covered_by": "apps/backend/tests/integration/test_e2e_full_stack.py"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/translation/statistics",
+      "status": 422,
+      "request_fields": [
+        "end_date",
+        "start_date"
+      ],
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/integration/test_e2e_full_stack.py"
+    },
+    {
       "method": "GET",
       "path": "/api/v1/translation/statistics/by-region",
       "status": 200,
@@ -815,749 +1515,6 @@
       "path": "/api/v1/translation/statistics/recent",
       "status": 422,
       "request_fields": [],
-      "response_fields": [],
-      "covered_by": "apps/backend/tests/integration/test_e2e_full_stack.py"
-    },
-    {
-      "method": "GET",
-      "path": "/api/v1/validation/layers",
-      "status": 200,
-      "request_fields": [],
-      "response_fields": [
-        "layers"
-      ],
-      "covered_by": "apps/backend/tests/integration/test_e2e_full_stack.py"
-    },
-    {
-      "method": "GET",
-      "path": "/api/v1/versions",
-      "status": 200,
-      "request_fields": [],
-      "response_fields": [],
-      "covered_by": "apps/backend/tests/unit/test_api_routes_validation_unit.py"
-    },
-    {
-      "method": "GET",
-      "path": "/api/v1/work-sessions",
-      "status": 200,
-      "request_fields": [],
-      "response_fields": [
-        "items",
-        "limit",
-        "page",
-        "total"
-      ],
-      "covered_by": "apps/backend/tests/unit/test_tc_f21_auth_gone_unit.py"
-    },
-    {
-      "method": "GET",
-      "path": "/api/v1/work-sessions",
-      "status": 422,
-      "request_fields": [],
-      "response_fields": [],
-      "covered_by": "apps/backend/tests/unit/test_tc_f21_auth_gone_unit.py"
-    },
-    {
-      "method": "GET",
-      "path": "/api/v1/work-sessions/{session_id}",
-      "status": 200,
-      "request_fields": [],
-      "response_fields": [
-        "created_at",
-        "id",
-        "product",
-        "status",
-        "title",
-        "updated_at",
-        "user_id"
-      ],
-      "covered_by": "tests/bugs/qa_gap/test_qa_gap_2026_10_19_openapi_path_templates.py"
-    },
-    {
-      "method": "GET",
-      "path": "/api/v1/work-sessions/{session_id}",
-      "status": 422,
-      "request_fields": [],
-      "response_fields": [],
-      "covered_by": "tests/bugs/qa_gap/test_qa_gap_2026_10_19_openapi_path_templates.py"
-    },
-    {
-      "method": "GET",
-      "path": "/health",
-      "status": 200,
-      "request_fields": [],
-      "response_fields": [
-        "status",
-        "tac2iwxxm_available",
-        "version"
-      ],
-      "covered_by": "apps/backend/tests/unit/test_api_helpers_middleware_unit.py"
-    },
-    {
-      "method": "PATCH",
-      "path": "/api/v1/profiles/conversion-templates/{template_id}",
-      "status": 200,
-      "request_fields": [],
-      "response_fields": [
-        "access",
-        "id",
-        "iwxxmBlock",
-        "name",
-        "slug"
-      ],
-      "covered_by": "tests/bugs/qa_gap/test_qa_gap_2026_10_19_openapi_path_templates.py"
-    },
-    {
-      "method": "PATCH",
-      "path": "/api/v1/profiles/conversion-templates/{template_id}",
-      "status": 422,
-      "request_fields": [],
-      "response_fields": [],
-      "covered_by": "tests/bugs/qa_gap/test_qa_gap_2026_10_19_openapi_path_templates.py"
-    },
-    {
-      "method": "PATCH",
-      "path": "/api/v1/profiles/library-assets/{asset_id}",
-      "status": 200,
-      "request_fields": [],
-      "response_fields": [
-        "access",
-        "attachedNationalLine",
-        "engineProfileId",
-        "id",
-        "kind",
-        "name"
-      ],
-      "covered_by": "tests/bugs/qa_gap/test_qa_gap_2026_10_19_openapi_path_templates.py"
-    },
-    {
-      "method": "PATCH",
-      "path": "/api/v1/profiles/library-assets/{asset_id}",
-      "status": 422,
-      "request_fields": [],
-      "response_fields": [],
-      "covered_by": "tests/bugs/qa_gap/test_qa_gap_2026_10_19_openapi_path_templates.py"
-    },
-    {
-      "method": "PATCH",
-      "path": "/api/v1/profiles/overlays/{overlay_id}",
-      "status": 200,
-      "request_fields": [],
-      "response_fields": [
-        "baseProfileId",
-        "body",
-        "created_at",
-        "id",
-        "shared",
-        "signature",
-        "slug",
-        "updated_at",
-        "user_id"
-      ],
-      "covered_by": "tests/bugs/qa_gap/test_qa_gap_2026_10_19_openapi_path_templates.py"
-    },
-    {
-      "method": "PATCH",
-      "path": "/api/v1/profiles/overlays/{overlay_id}",
-      "status": 422,
-      "request_fields": [],
-      "response_fields": [],
-      "covered_by": "tests/bugs/qa_gap/test_qa_gap_2026_10_19_openapi_path_templates.py"
-    },
-    {
-      "method": "PATCH",
-      "path": "/api/v1/profiles/presets/{preset_id}",
-      "status": 200,
-      "request_fields": [],
-      "response_fields": [
-        "created_at",
-        "id",
-        "iwxxmVersion",
-        "name",
-        "semanticProfile",
-        "shared",
-        "slug",
-        "updated_at",
-        "user_id"
-      ],
-      "covered_by": "tests/bugs/qa_gap/test_qa_gap_2026_10_19_openapi_path_templates.py"
-    },
-    {
-      "method": "PATCH",
-      "path": "/api/v1/profiles/presets/{preset_id}",
-      "status": 422,
-      "request_fields": [],
-      "response_fields": [],
-      "covered_by": "tests/bugs/qa_gap/test_qa_gap_2026_10_19_openapi_path_templates.py"
-    },
-    {
-      "method": "PATCH",
-      "path": "/api/v1/profiles/rule-packs/{pack_id}",
-      "status": 200,
-      "request_fields": [],
-      "response_fields": [
-        "created_at",
-        "id",
-        "message",
-        "product",
-        "profile",
-        "severity",
-        "slug",
-        "stage",
-        "standardReference",
-        "updated_at",
-        "user_id",
-        "when"
-      ],
-      "covered_by": "tests/bugs/qa_gap/test_qa_gap_2026_10_19_openapi_path_templates.py"
-    },
-    {
-      "method": "PATCH",
-      "path": "/api/v1/profiles/rule-packs/{pack_id}",
-      "status": 422,
-      "request_fields": [],
-      "response_fields": [],
-      "covered_by": "tests/bugs/qa_gap/test_qa_gap_2026_10_19_openapi_path_templates.py"
-    },
-    {
-      "method": "PATCH",
-      "path": "/api/v1/profiles/templates/{template_id}",
-      "status": 200,
-      "request_fields": [],
-      "response_fields": [
-        "created_at",
-        "ddl",
-        "id",
-        "name",
-        "shared",
-        "sinkType",
-        "slug",
-        "updated_at",
-        "user_id"
-      ],
-      "covered_by": "tests/bugs/qa_gap/test_qa_gap_2026_10_19_openapi_path_templates.py"
-    },
-    {
-      "method": "PATCH",
-      "path": "/api/v1/profiles/templates/{template_id}",
-      "status": 422,
-      "request_fields": [],
-      "response_fields": [],
-      "covered_by": "tests/bugs/qa_gap/test_qa_gap_2026_10_19_openapi_path_templates.py"
-    },
-    {
-      "method": "PATCH",
-      "path": "/api/v1/work-sessions/{session_id}",
-      "status": 200,
-      "request_fields": [],
-      "response_fields": [
-        "created_at",
-        "id",
-        "product",
-        "status",
-        "title",
-        "updated_at",
-        "user_id"
-      ],
-      "covered_by": "tests/bugs/qa_gap/test_qa_gap_2026_10_19_openapi_path_templates.py"
-    },
-    {
-      "method": "PATCH",
-      "path": "/api/v1/work-sessions/{session_id}",
-      "status": 422,
-      "request_fields": [],
-      "response_fields": [],
-      "covered_by": "tests/bugs/qa_gap/test_qa_gap_2026_10_19_openapi_path_templates.py"
-    },
-    {
-      "method": "POST",
-      "path": "/api/v1/convert",
-      "status": 200,
-      "request_fields": [],
-      "response_fields": [
-        "failed",
-        "successful",
-        "total_processed"
-      ],
-      "covered_by": "apps/backend/tests/unit/test_api_endpoint_unit.py"
-    },
-    {
-      "method": "POST",
-      "path": "/api/v1/convert",
-      "status": 422,
-      "request_fields": [],
-      "response_fields": [],
-      "covered_by": "apps/backend/tests/unit/test_api_endpoint_unit.py"
-    },
-    {
-      "method": "POST",
-      "path": "/api/v1/convert-bulletin",
-      "status": 200,
-      "request_fields": [],
-      "response_fields": [
-        "bulletin_meta"
-      ],
-      "covered_by": "apps/backend/tests/unit/test_tc_ev063_exchange_api.py"
-    },
-    {
-      "method": "POST",
-      "path": "/api/v1/convert-bulletin",
-      "status": 400,
-      "request_fields": [],
-      "response_fields": [],
-      "covered_by": "apps/backend/tests/unit/test_tc_ev063_exchange_api.py"
-    },
-    {
-      "method": "POST",
-      "path": "/api/v1/convert-bulletin",
-      "status": 415,
-      "request_fields": [],
-      "response_fields": [],
-      "covered_by": "apps/backend/tests/unit/test_tc_ev063_exchange_api.py"
-    },
-    {
-      "method": "POST",
-      "path": "/api/v1/convert-bulletin",
-      "status": 422,
-      "request_fields": [],
-      "response_fields": [],
-      "covered_by": "apps/backend/tests/unit/test_tc_ev063_exchange_api.py"
-    },
-    {
-      "method": "POST",
-      "path": "/api/v1/convert-zip",
-      "status": 200,
-      "request_fields": [],
-      "response_fields": [],
-      "covered_by": "apps/backend/tests/unit/test_api_async_coverage_unit.py"
-    },
-    {
-      "method": "POST",
-      "path": "/api/v1/convert-zip",
-      "status": 422,
-      "request_fields": [],
-      "response_fields": [],
-      "covered_by": "apps/backend/tests/unit/test_api_async_coverage_unit.py"
-    },
-    {
-      "method": "POST",
-      "path": "/api/v1/decode-tac",
-      "status": 200,
-      "request_fields": [],
-      "response_fields": [
-        "product"
-      ],
-      "covered_by": "apps/backend/tests/unit/test_ev080_m2b_coverage_gaps.py"
-    },
-    {
-      "method": "POST",
-      "path": "/api/v1/decode-tac",
-      "status": 415,
-      "request_fields": [],
-      "response_fields": [],
-      "covered_by": "apps/backend/tests/unit/test_ev080_m2b_coverage_gaps.py"
-    },
-    {
-      "method": "POST",
-      "path": "/api/v1/decode-tac",
-      "status": 422,
-      "request_fields": [],
-      "response_fields": [],
-      "covered_by": "apps/backend/tests/unit/test_ev080_m2b_coverage_gaps.py"
-    },
-    {
-      "method": "POST",
-      "path": "/api/v1/eval/jobs",
-      "status": 200,
-      "request_fields": [
-        "mode"
-      ],
-      "response_fields": [
-        "created_at",
-        "job_id",
-        "station_count",
-        "status"
-      ],
-      "covered_by": "apps/backend/tests/integration/test_e2e_full_stack.py"
-    },
-    {
-      "method": "POST",
-      "path": "/api/v1/eval/jobs",
-      "status": 422,
-      "request_fields": [
-        "mode"
-      ],
-      "response_fields": [],
-      "covered_by": "apps/backend/tests/integration/test_e2e_full_stack.py"
-    },
-    {
-      "method": "POST",
-      "path": "/api/v1/ingest-collect",
-      "status": 200,
-      "request_fields": [],
-      "response_fields": [],
-      "covered_by": "apps/backend/tests/unit/test_ingest_collect_unit.py"
-    },
-    {
-      "method": "POST",
-      "path": "/api/v1/ingest-collect",
-      "status": 422,
-      "request_fields": [],
-      "response_fields": [],
-      "covered_by": "apps/backend/tests/unit/test_ingest_collect_unit.py"
-    },
-    {
-      "method": "POST",
-      "path": "/api/v1/ingest/mass",
-      "status": 200,
-      "request_fields": [],
-      "response_fields": [],
-      "covered_by": "apps/backend/tests/unit/test_ev080_m2b_coverage_gaps.py"
-    },
-    {
-      "method": "POST",
-      "path": "/api/v1/ingest/mass",
-      "status": 422,
-      "request_fields": [],
-      "response_fields": [],
-      "covered_by": "apps/backend/tests/unit/test_ev080_m2b_coverage_gaps.py"
-    },
-    {
-      "method": "POST",
-      "path": "/api/v1/lint-tac",
-      "status": 200,
-      "request_fields": [],
-      "response_fields": [
-        "ok"
-      ],
-      "covered_by": "apps/backend/tests/unit/test_tc_f21_auth_gone_unit.py"
-    },
-    {
-      "method": "POST",
-      "path": "/api/v1/lint-tac",
-      "status": 415,
-      "request_fields": [],
-      "response_fields": [],
-      "covered_by": "apps/backend/tests/unit/test_tc_f21_auth_gone_unit.py"
-    },
-    {
-      "method": "POST",
-      "path": "/api/v1/lint-tac",
-      "status": 422,
-      "request_fields": [],
-      "response_fields": [],
-      "covered_by": "apps/backend/tests/unit/test_tc_f21_auth_gone_unit.py"
-    },
-    {
-      "method": "POST",
-      "path": "/api/v1/profiles/conversion-templates",
-      "status": 201,
-      "request_fields": [
-        "iwxxmBlock",
-        "name",
-        "slug"
-      ],
-      "response_fields": [
-        "access",
-        "id",
-        "iwxxmBlock",
-        "name",
-        "slug"
-      ],
-      "covered_by": "apps/backend/tests/unit/test_tc_ev080_conversion_templates_api.py"
-    },
-    {
-      "method": "POST",
-      "path": "/api/v1/profiles/conversion-templates",
-      "status": 422,
-      "request_fields": [
-        "iwxxmBlock",
-        "name",
-        "slug"
-      ],
-      "response_fields": [],
-      "covered_by": "apps/backend/tests/unit/test_tc_ev080_conversion_templates_api.py"
-    },
-    {
-      "method": "POST",
-      "path": "/api/v1/profiles/conversion-templates/preview",
-      "status": 200,
-      "request_fields": [
-        "templateId"
-      ],
-      "response_fields": [
-        "focusGroup",
-        "matched",
-        "templateId"
-      ],
-      "covered_by": "apps/backend/tests/unit/test_tc_ev080_conversion_templates_api.py"
-    },
-    {
-      "method": "POST",
-      "path": "/api/v1/profiles/conversion-templates/preview",
-      "status": 422,
-      "request_fields": [
-        "templateId"
-      ],
-      "response_fields": [],
-      "covered_by": "apps/backend/tests/unit/test_tc_ev080_conversion_templates_api.py"
-    },
-    {
-      "method": "POST",
-      "path": "/api/v1/profiles/library-assets",
-      "status": 201,
-      "request_fields": [
-        "attachedNationalLine",
-        "engineProfileId",
-        "kind",
-        "name",
-        "slug"
-      ],
-      "response_fields": [
-        "access",
-        "attachedNationalLine",
-        "engineProfileId",
-        "id",
-        "kind",
-        "name"
-      ],
-      "covered_by": "apps/backend/tests/unit/test_tc_evrpc_rule_catalogs.py"
-    },
-    {
-      "method": "POST",
-      "path": "/api/v1/profiles/library-assets",
-      "status": 422,
-      "request_fields": [
-        "attachedNationalLine",
-        "engineProfileId",
-        "kind",
-        "name",
-        "slug"
-      ],
-      "response_fields": [],
-      "covered_by": "apps/backend/tests/unit/test_tc_evrpc_rule_catalogs.py"
-    },
-    {
-      "method": "POST",
-      "path": "/api/v1/profiles/library-assets/preview-rule",
-      "status": 200,
-      "request_fields": [
-        "focusGroup",
-        "libraryId"
-      ],
-      "response_fields": [
-        "focusGroup",
-        "libraryId",
-        "ruleId",
-        "ruleName"
-      ],
-      "covered_by": "apps/backend/tests/unit/test_tc_evbridge_library_assets_api.py"
-    },
-    {
-      "method": "POST",
-      "path": "/api/v1/profiles/library-assets/preview-rule",
-      "status": 422,
-      "request_fields": [
-        "focusGroup",
-        "libraryId"
-      ],
-      "response_fields": [],
-      "covered_by": "apps/backend/tests/unit/test_tc_evbridge_library_assets_api.py"
-    },
-    {
-      "method": "POST",
-      "path": "/api/v1/profiles/library-assets/validate-yaml",
-      "status": 200,
-      "request_fields": [
-        "kind",
-        "yamlBody"
-      ],
-      "response_fields": [
-        "valid_yaml"
-      ],
-      "covered_by": "apps/backend/tests/unit/test_tc_evbridge_library_assets_api.py"
-    },
-    {
-      "method": "POST",
-      "path": "/api/v1/profiles/library-assets/validate-yaml",
-      "status": 422,
-      "request_fields": [
-        "kind",
-        "yamlBody"
-      ],
-      "response_fields": [],
-      "covered_by": "apps/backend/tests/unit/test_tc_evbridge_library_assets_api.py"
-    },
-    {
-      "method": "POST",
-      "path": "/api/v1/profiles/overlays",
-      "status": 201,
-      "request_fields": [
-        "baseProfileId",
-        "slug"
-      ],
-      "response_fields": [
-        "baseProfileId",
-        "body",
-        "created_at",
-        "id",
-        "shared",
-        "signature",
-        "slug",
-        "updated_at",
-        "user_id"
-      ],
-      "covered_by": "apps/backend/tests/unit/test_conversion_profiles_router.py"
-    },
-    {
-      "method": "POST",
-      "path": "/api/v1/profiles/overlays",
-      "status": 422,
-      "request_fields": [
-        "baseProfileId",
-        "slug"
-      ],
-      "response_fields": [],
-      "covered_by": "apps/backend/tests/unit/test_conversion_profiles_router.py"
-    },
-    {
-      "method": "POST",
-      "path": "/api/v1/profiles/presets",
-      "status": 201,
-      "request_fields": [
-        "iwxxmVersion",
-        "name",
-        "semanticProfile",
-        "slug"
-      ],
-      "response_fields": [
-        "created_at",
-        "id",
-        "iwxxmVersion",
-        "name",
-        "semanticProfile",
-        "shared",
-        "slug",
-        "updated_at",
-        "user_id"
-      ],
-      "covered_by": "apps/backend/tests/unit/test_conversion_profiles_router.py"
-    },
-    {
-      "method": "POST",
-      "path": "/api/v1/profiles/presets",
-      "status": 422,
-      "request_fields": [
-        "iwxxmVersion",
-        "name",
-        "semanticProfile",
-        "slug"
-      ],
-      "response_fields": [],
-      "covered_by": "apps/backend/tests/unit/test_conversion_profiles_router.py"
-    },
-    {
-      "method": "POST",
-      "path": "/api/v1/profiles/rule-packs",
-      "status": 201,
-      "request_fields": [
-        "product",
-        "profile",
-        "severity",
-        "slug",
-        "stage"
-      ],
-      "response_fields": [
-        "created_at",
-        "id",
-        "message",
-        "product",
-        "profile",
-        "severity",
-        "slug",
-        "stage",
-        "standardReference",
-        "updated_at",
-        "user_id",
-        "when"
-      ],
-      "covered_by": "apps/backend/tests/unit/test_conversion_profiles_router.py"
-    },
-    {
-      "method": "POST",
-      "path": "/api/v1/profiles/rule-packs",
-      "status": 422,
-      "request_fields": [
-        "product",
-        "profile",
-        "severity",
-        "slug",
-        "stage"
-      ],
-      "response_fields": [],
-      "covered_by": "apps/backend/tests/unit/test_conversion_profiles_router.py"
-    },
-    {
-      "method": "POST",
-      "path": "/api/v1/profiles/templates",
-      "status": 201,
-      "request_fields": [
-        "name",
-        "sinkType",
-        "slug"
-      ],
-      "response_fields": [
-        "created_at",
-        "ddl",
-        "id",
-        "name",
-        "shared",
-        "sinkType",
-        "slug",
-        "updated_at",
-        "user_id"
-      ],
-      "covered_by": "apps/backend/tests/unit/test_conversion_profiles_router.py"
-    },
-    {
-      "method": "POST",
-      "path": "/api/v1/profiles/templates",
-      "status": 422,
-      "request_fields": [
-        "name",
-        "sinkType",
-        "slug"
-      ],
-      "response_fields": [],
-      "covered_by": "apps/backend/tests/unit/test_conversion_profiles_router.py"
-    },
-    {
-      "method": "POST",
-      "path": "/api/v1/translation/statistics",
-      "status": 200,
-      "request_fields": [
-        "end_date",
-        "start_date"
-      ],
-      "response_fields": [
-        "average_duration_ms",
-        "failed_translations",
-        "period_end",
-        "period_start",
-        "success_rate",
-        "successful_translations",
-        "total_translations"
-      ],
-      "covered_by": "apps/backend/tests/integration/test_e2e_full_stack.py"
-    },
-    {
-      "method": "POST",
-      "path": "/api/v1/translation/statistics",
-      "status": 422,
-      "request_fields": [
-        "end_date",
-        "start_date"
-      ],
       "response_fields": [],
       "covered_by": "apps/backend/tests/integration/test_e2e_full_stack.py"
     },
@@ -1579,6 +1536,16 @@
       "request_fields": [],
       "response_fields": [],
       "covered_by": "apps/backend/tests/unit/test_tc_ev063_profile_wire.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/validation/layers",
+      "status": 200,
+      "request_fields": [],
+      "response_fields": [
+        "layers"
+      ],
+      "covered_by": "apps/backend/tests/integration/test_e2e_full_stack.py"
     },
     {
       "method": "POST",
@@ -1630,6 +1597,35 @@
       "covered_by": "apps/backend/tests/integration/test_e2e_full_stack.py"
     },
     {
+      "method": "GET",
+      "path": "/api/v1/versions",
+      "status": 200,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_api_routes_validation_unit.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/work-sessions",
+      "status": 200,
+      "request_fields": [],
+      "response_fields": [
+        "items",
+        "limit",
+        "page",
+        "total"
+      ],
+      "covered_by": "apps/backend/tests/unit/test_tc_f21_auth_gone_unit.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/work-sessions",
+      "status": 422,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_tc_f21_auth_gone_unit.py"
+    },
+    {
       "method": "POST",
       "path": "/api/v1/work-sessions",
       "status": 201,
@@ -1658,6 +1654,78 @@
       "covered_by": "apps/backend/tests/unit/test_tc_f21_auth_gone_unit.py"
     },
     {
+      "method": "DELETE",
+      "path": "/api/v1/work-sessions/{session_id}",
+      "status": 200,
+      "request_fields": [],
+      "response_fields": [
+        "created_at",
+        "id",
+        "product",
+        "status",
+        "title",
+        "updated_at",
+        "user_id"
+      ],
+      "covered_by": "tests/bugs/qa_gap/test_qa_gap_2026_10_19_openapi_path_templates.py"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/work-sessions/{session_id}",
+      "status": 422,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "tests/bugs/qa_gap/test_qa_gap_2026_10_19_openapi_path_templates.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/work-sessions/{session_id}",
+      "status": 200,
+      "request_fields": [],
+      "response_fields": [
+        "created_at",
+        "id",
+        "product",
+        "status",
+        "title",
+        "updated_at",
+        "user_id"
+      ],
+      "covered_by": "tests/bugs/qa_gap/test_qa_gap_2026_10_19_openapi_path_templates.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/work-sessions/{session_id}",
+      "status": 422,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "tests/bugs/qa_gap/test_qa_gap_2026_10_19_openapi_path_templates.py"
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/v1/work-sessions/{session_id}",
+      "status": 200,
+      "request_fields": [],
+      "response_fields": [
+        "created_at",
+        "id",
+        "product",
+        "status",
+        "title",
+        "updated_at",
+        "user_id"
+      ],
+      "covered_by": "tests/bugs/qa_gap/test_qa_gap_2026_10_19_openapi_path_templates.py"
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/v1/work-sessions/{session_id}",
+      "status": 422,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "tests/bugs/qa_gap/test_qa_gap_2026_10_19_openapi_path_templates.py"
+    },
+    {
       "method": "POST",
       "path": "/api/v1/work-sessions/{session_id}/restore",
       "status": 200,
@@ -1682,52 +1750,16 @@
       "covered_by": "tests/bugs/qa_gap/test_qa_gap_2026_10_19_openapi_path_templates.py"
     },
     {
-      "method": "PUT",
-      "path": "/api/v1/exchange-admin/invitation-group",
+      "method": "GET",
+      "path": "/health",
       "status": 200,
       "request_fields": [],
-      "response_fields": [],
-      "covered_by": "apps/backend/tests/unit/test_exchange_admin.py"
-    },
-    {
-      "method": "PUT",
-      "path": "/api/v1/exchange-admin/invitation-group",
-      "status": 422,
-      "request_fields": [],
-      "response_fields": [],
-      "covered_by": "apps/backend/tests/unit/test_exchange_admin.py"
-    },
-    {
-      "method": "PUT",
-      "path": "/api/v1/exchange-admin/prefs/national-remarks",
-      "status": 200,
-      "request_fields": [],
-      "response_fields": [],
-      "covered_by": "apps/backend/tests/unit/test_exchange_admin.py"
-    },
-    {
-      "method": "PUT",
-      "path": "/api/v1/exchange-admin/prefs/national-remarks",
-      "status": 422,
-      "request_fields": [],
-      "response_fields": [],
-      "covered_by": "apps/backend/tests/unit/test_exchange_admin.py"
-    },
-    {
-      "method": "PUT",
-      "path": "/api/v1/exchange-admin/templates",
-      "status": 200,
-      "request_fields": [],
-      "response_fields": [],
-      "covered_by": "apps/backend/tests/unit/test_exchange_admin.py"
-    },
-    {
-      "method": "PUT",
-      "path": "/api/v1/exchange-admin/templates",
-      "status": 422,
-      "request_fields": [],
-      "response_fields": [],
-      "covered_by": "apps/backend/tests/unit/test_exchange_admin.py"
+      "response_fields": [
+        "status",
+        "tac2iwxxm_available",
+        "version"
+      ],
+      "covered_by": "apps/backend/tests/unit/test_api_helpers_middleware_unit.py"
     }
   ],
   "source": "consumer-tests"

@@ -11,6 +11,7 @@ Env knobs (env-contract):
 
 from __future__ import annotations
 
+import hashlib
 import logging
 import os
 from collections.abc import Callable
@@ -21,6 +22,7 @@ from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 from slowapi.middleware import SlowAPIMiddleware
 from slowapi.util import get_remote_address
+from starlette.requests import Request
 from starlette.responses import JSONResponse
 from starlette.types import ASGIApp, ExceptionHandler, Receive, Scope, Send
 
@@ -29,6 +31,7 @@ logger = logging.getLogger(__name__)
 DEFAULT_PUBLIC_PER_MIN = 60
 DEFAULT_DISSEMINATION_PER_MIN = 10
 DEFAULT_MASS_INGEST_PER_MIN = 10
+DEFAULT_API_KEY_ISSUE_PER_MIN = 5
 DEFAULT_MAX_BODY_BYTES = 2_097_152
 DEFAULT_MASS_INGEST_MAX_FILES = 200
 DEFAULT_MASS_INGEST_MAX_FILE_BYTES = 5_242_880
@@ -99,6 +102,44 @@ def get_rate_limit_mass_ingest_per_min() -> int:
         Return value.
     """
     return _positive_int("RATE_LIMIT_MASS_INGEST_PER_MIN", DEFAULT_MASS_INGEST_PER_MIN)
+
+
+def get_rate_limit_api_key_issue_per_min() -> int:
+    """
+    Return public API-key issue rate limit (requests/minute/IP).
+
+    Returns
+    -------
+    int
+        Limit.
+    """
+    return _positive_int(
+        "RATE_LIMIT_API_KEY_ISSUE_PER_MIN",
+        DEFAULT_API_KEY_ISSUE_PER_MIN,
+    )
+
+
+def rate_limit_key(request: Request) -> str:
+    """
+    Slowapi key: API key identity + client IP (NFR-007 / TP3).
+
+    Parameters
+    ----------
+    request : Request
+        Incoming request.
+
+    Returns
+    -------
+    str
+        Composite rate-limit bucket.
+    """
+    ip = get_remote_address(request)
+    raw = (request.headers.get("x-api-key") or "").strip()
+    if not raw:
+        return f"anon:{ip}"
+    # Do not store raw secrets in Redis keys; use a short digest.
+    digest = hashlib.sha256(raw.encode("utf-8")).hexdigest()[:16]
+    return f"key:{digest}:{ip}"
 
 
 def get_max_request_body_bytes() -> int:
@@ -226,8 +267,9 @@ def create_limiter() -> Limiter:
     """
     redis_url = os.environ.get("REDIS_URL", "").strip()
     kwargs: dict[str, Any] = {
-        "key_func": get_remote_address,
+        "key_func": rate_limit_key,
         "default_limits": [public_limit_string()],
+        # Keep false: enabled mode requires every limited handler to inject Response.
         "headers_enabled": False,
     }
     if redis_url:

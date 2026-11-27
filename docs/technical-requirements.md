@@ -45,6 +45,7 @@ this table.
 | TR-P03 | Use Supabase for Auth and user/history (PostgREST allowed for user data) | Auth + user history on Supabase; shared data on DO Postgres (C1 / NFR-003) |
 | TR-P04 | Keep public convert, lint, validate, and decode reachable with API keys (no user JWT); dissemination routes removed in rebaseline | Live and unit tests call public routes with API key policy (NFR-007); no disseminate surface |
 | TR-P05 | Gate long-term work sessions on Auth JWT | `/api/v1/work-sessions*` rejects anonymous writes |
+| TR-P07 | Enforce `X-API-Key` on public convert/lint/validate/decode; rate-limit per key+IP; store hashes in DO Postgres; demo key from env | Missing/invalid key → 401; over limit → 429; issue returns plaintext once (NFR-007 / D-029) |
 
 ## Quality gates
 

@@ -1929,6 +1929,74 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HTTPValidationError"
+  /api/v1/api-keys:
+    post:
+      tags:
+        - API Keys
+      summary: Create Api Key
+      description: Issue an API key to anyone (hash stored; plaintext returned once).
+      operationId: create_api_key_api_v1_api_keys_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              anyOf:
+                -
+                                    $ref: "#/components/schemas/IssueApiKeyRequest"
+                -
+                                    type: null
+              title: Body
+      responses:
+        201:
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                additionalProperties: true
+                type: object
+                title: Response Create Api Key Api V1 Api Keys Post
+        422:
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+  /api/v1/api-keys/{key_id}:
+    delete:
+      tags:
+        - API Keys
+      summary: Delete Api Key
+      description: Soft-revoke a key when the caller presents that key.
+      operationId: delete_api_key_api_v1_api_keys__key_id__delete
+      parameters:
+        -
+                    name: key_id
+                    in: path
+                    required: true
+                    schema:
+                      type: string
+                      format: uuid
+                      title: Key Id
+        -
+                    name: X-API-Key
+                    in: header
+                    required: false
+                    schema:
+                      anyOf:
+                        -
+                                          type: string
+                        -
+                                          type: null
+                      title: X-Api-Key
+      responses:
+        204:
+          description: Successful Response
+        422:
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
   /health:
     get:
       tags:
@@ -2544,6 +2612,42 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HTTPValidationError"
+  /api/v1/station-health/eval-benchmark:
+    get:
+      tags:
+        - Station health
+      summary: Live eval benchmark for Station health
+      description: Serve the latest FR-045 live-map eval snapshot for Station health.
+      operationId: get_station_health_eval_benchmark_api_v1_station_health_eval_benchmark_get
+      parameters:
+        -
+                    name: icao
+                    in: query
+                    required: false
+                    schema:
+                      anyOf:
+                        -
+                                          type: string
+                        -
+                                          type: null
+                      description: Optional four-letter ICAO; filters failure_locations by place_key
+                      title: Icao
+                    description: Optional four-letter ICAO; filters failure_locations by place_key
+      responses:
+        200:
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StationHealthEvalBenchmarkResponse"
+        400:
+          description: Invalid icao filter
+        422:
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
   /api/v1/station-health/metrics:
     get:
       tags:
@@ -2666,42 +2770,6 @@ paths:
                 $ref: "#/components/schemas/StationHealthDetailResponse"
         404:
           description: Unknown station
-        422:
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/HTTPValidationError"
-  /api/v1/station-health/eval-benchmark:
-    get:
-      tags:
-        - Station health
-      summary: Live eval benchmark for Station health
-      description: Serve the latest FR-045 live-map eval snapshot for Station health.
-      operationId: get_station_health_eval_benchmark_api_v1_station_health_eval_benchmark_get
-      parameters:
-        -
-                    name: icao
-                    in: query
-                    required: false
-                    schema:
-                      anyOf:
-                        -
-                                          type: string
-                        -
-                                          type: null
-                      description: Optional four-letter ICAO; filters failure_locations by place_key
-                      title: Icao
-                    description: Optional four-letter ICAO; filters failure_locations by place_key
-      responses:
-        200:
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/StationHealthEvalBenchmarkResponse"
-        400:
-          description: Invalid icao filter
         422:
           description: Validation Error
           content:
@@ -4851,6 +4919,16 @@ components:
         - WAFR
       title: ICAORegion
       description: ICAO Regional Offices as per user decision 3.
+    IssueApiKeyRequest:
+      properties:
+        label:
+          type: string
+          maxLength: 128
+          title: Label
+          default: ""
+      type: object
+      title: IssueApiKeyRequest
+      description: Optional label for a newly issued key.
     JobListItem:
       properties:
         job_id:

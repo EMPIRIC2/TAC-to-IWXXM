@@ -16,8 +16,9 @@ docs.
 
 ## Model
 
-- Convert, lint, validate, and disseminate routes stay **public**. Those routes
- need no JWT.
+- Convert, lint, validate, and decode routes stay **public without user JWT**
+ but **require** an API key (`X-API-Key`, NFR-007). Keys are hashed in DO
+ Postgres; a demo key may come from env (A-007).
 - Optional Supabase Auth covers long-term work sessions only. A JWT is required
  for `/api/v1/work-sessions*`.
 - Guests use browser IndexedDB and see a persistent loss-of-progress notice.
@@ -52,7 +53,10 @@ docs.
 | FE Auth publishable key | `SUPABASE_PUBLISHABLE_KEY` → `/config.json` | Static deploy inject |
 | Auth JWKS URL (server) | `SUPABASE_JWKS_URL` or default `{SUPABASE_URL}/auth/v1/.well-known/jwks.json` | API only, never FE |
 | Auth JWT verify (server) | JWKS-only (PyJWT + fetched JWKS); cache keys with TTL | API only; `SUPABASE_JWT_SECRET` retired for product verify |
-| Public rate limit | `RATE_LIMIT_PUBLIC_PER_MIN` | API / `.env` (default **60**) |
+| Public API key (demo) | `DEMO_API_KEY` | API / `.env`; plaintext demo key accepted without DB row (A-007); FE may mirror as `api.demoApiKey` |
+| API key enforcement | `API_KEY_REQUIRED` | API / `.env` (default **false** until set); staging/prod set **true** (NFR-007) |
+| API key issue rate limit | `RATE_LIMIT_API_KEY_ISSUE_PER_MIN` | API / `.env` (default **5** per IP) |
+| Public rate limit (per key+IP) | `RATE_LIMIT_PUBLIC_PER_MIN` | API / `.env` (default **60**) |
 | mass file ingest rate limit | `RATE_LIMIT_MASS_INGEST_PER_MIN` | API / `.env` (default **10**) |
 | Dissemination rate limit | `RATE_LIMIT_DISSEMINATION_PER_MIN` | API / `.env` (default **10**) |
 | Shared rate-limit store (Upstash) | `REDIS_URL` | API DOKS secret, Upstash `rediss://…`; unset → in-memory slowapi + warning |
@@ -104,7 +108,7 @@ Validate: `python3 scripts/deploy/validate_ingest_poller_url.py --probe "$INGEST
 
 | Retired | Notes |
 |---------|-------|
-| `DISABLE_AUTH` dual path | Public convert is default; Auth is additive for sessions only |
+| `DISABLE_AUTH` dual path | Public convert requires API key (NFR-007); Auth JWT additive for sessions only |
 | `ADMIN_EMAIL` / `ADMIN_PASSWORD` | Already retired |
 | In-app paste of Supabase auth keys | Dest BYOC paste remains multi-database dissemination–AMHS/SWIM/AFS dissemination only |
 
