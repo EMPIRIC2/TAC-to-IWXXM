@@ -1,4 +1,4 @@
-"""EV-949 / #949 — DOKS staging Auth must use dedicated Supabase staging project.
+"""Issue #949 — DOKS staging Auth must use dedicated Supabase staging project.
 
 Covers evolve-auto test-matrix dimensions for config validation (no live-cloud
 mutation of secrets in CI). Live Auth smoke remains a human blocker until
