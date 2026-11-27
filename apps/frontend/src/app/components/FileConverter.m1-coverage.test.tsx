@@ -7,7 +7,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { FileConverter } from './FileConverter';
-import { operatorDisseminationUiConfig } from '@/utils/operatorDisseminationUi';
 
 const mockFetchSchemaStatus = vi.hoisted(() => vi.fn());
 const caProfileFlag = vi.hoisted(() => ({ value: false }));
@@ -105,20 +104,6 @@ vi.mock('./UserPreferencesDialog', () => ({ UserPreferencesDialog: () => null })
 vi.mock('./ThemeToggle', () => ({ ThemeToggle: () => null }));
 vi.mock('./IcaoAutocomplete', () => ({ IcaoAutocomplete: () => null }));
 vi.mock('./WorkHistorySidebar', () => ({ WorkHistorySidebar: () => null }));
-vi.mock('./DisseminationDrawer', () => ({
-  DisseminationDrawer: ({ open, onOpenChange, disseminationTemplateId }: any) => (
-    <div
-      data-testid="dissemination-drawer-mock"
-      data-open={open ? '1' : '0'}
-      data-template={disseminationTemplateId}
-    >
-      <button type="button" onClick={() => onOpenChange(false)}>
-        close-drawer
-      </button>
-    </div>
-  ),
-}));
-
 /**
  *
  */
@@ -143,7 +128,11 @@ function session(conversionParams: Record<string, unknown>) {
 }
 
 describe('FileConverter M1 coverage fills', () => {
-  const originalEnabled = operatorDisseminationUiConfig.destinationsEnabled;
+  it('does not expose Disseminate controls (DI-008)', () => {
+    render(<FileConverter />);
+    expect(screen.queryByTestId('open-dissemination-drawer')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('dissemination-drawer')).not.toBeInTheDocument();
+  });
 
   beforeEach(() => {
     caProfileFlag.value = false;
@@ -154,70 +143,8 @@ describe('FileConverter M1 coverage fills', () => {
   });
 
   afterEach(() => {
-    operatorDisseminationUiConfig.destinationsEnabled = originalEnabled;
     caProfileFlag.value = false;
     cleanup();
-  });
-
-  it('clears the packaging exchange profile when the drawer closes', async () => {
-    operatorDisseminationUiConfig.destinationsEnabled = true;
-    render(<FileConverter />);
-    const drawer = screen.getByTestId('dissemination-drawer-mock');
-    expect(drawer).toHaveAttribute('data-open', '0');
-    fireEvent.click(screen.getByTestId('open-dissemination-drawer'));
-    expect(screen.getByTestId('dissemination-drawer-mock')).toHaveAttribute(
-      'data-open',
-      '1',
-    );
-    fireEvent.click(screen.getByText('close-drawer'));
-    await waitFor(() =>
-      expect(screen.getByTestId('dissemination-drawer-mock')).toHaveAttribute(
-        'data-open',
-        '0',
-      ),
-    );
-  });
-
-  it('hydrates snake_case report_variant and dissemination_template_id', async () => {
-    operatorDisseminationUiConfig.destinationsEnabled = true;
-    render(
-      <FileConverter
-        accessToken="tok"
-        loadedWorkSession={session({
-          product: 'METAR',
-          report_variant: 'LWIS',
-          dissemination_template_id: 'tpl-snake',
-        })}
-      />,
-    );
-    await waitFor(() =>
-      expect(screen.getByTestId('report-variant-select')).toHaveValue('LWIS'),
-    );
-    expect(screen.getByTestId('dissemination-drawer-mock')).toHaveAttribute(
-      'data-template',
-      'tpl-snake',
-    );
-  });
-
-  it('hydrates camelCase reportVariant and disseminationTemplateId', async () => {
-    operatorDisseminationUiConfig.destinationsEnabled = true;
-    render(
-      <FileConverter
-        accessToken="tok"
-        loadedWorkSession={session({
-          product: 'METAR',
-          reportVariant: 'LWIS',
-          disseminationTemplateId: 'tpl-camel',
-        })}
-      />,
-    );
-    await waitFor(() =>
-      expect(screen.getByTestId('report-variant-select')).toHaveValue('LWIS'),
-    );
-    expect(screen.getByTestId('dissemination-drawer-mock')).toHaveAttribute(
-      'data-template',
-      'tpl-camel',
-    );
   });
 
   it('falls back to Auto-detect when the stored report variant is not offered', async () => {

@@ -89,7 +89,7 @@ test.describe('T4.1 — UJ-051..053 EV-042 mass ingest + queue + restored destin
     await convertManualMetar(page, SAMPLE_METAR);
     await openConvertSettings(page);
     await expect(page.getByTestId('convert-and-send-button')).toBeVisible();
-    await expect(page.getByTestId('open-dissemination-drawer')).toBeVisible();
+    await expect(page.getByTestId('open-dissemination-drawer')).toHaveCount(0);
     await openConvertDownloadsTab(page, 30_000);
     // Opposite state: Disseminate / Convert & Send replace Upload to Database.
     await expect(page.getByTestId('upload-to-database-button')).toHaveCount(0);

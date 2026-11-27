@@ -28,29 +28,6 @@ def test_conversion_profiles_service_facade_sync() -> None:
         part1._engine = original  # type: ignore[attr-defined]
 
 
-def test_dissemination_ops_service_facade_sync() -> None:
-    from src.services import dissemination_ops_service as mod
-    from src.services import dissemination_ops_service_part_1 as part1
-    from src.services import dissemination_ops_service_part_2 as part2
-
-    original_engine = mod._engine
-    original_insert = mod.insert
-    try:
-        mod._facade_probe_unsynced = 1
-        delattr(mod, "_facade_probe_unsynced")
-        _pulse_delattr(mod, "_engine", original_engine)
-        mod.insert = original_insert
-        mod.Table = mod.Table
-        part2.insert = original_insert  # type: ignore[misc]
-        mod._ORIG["insert"] = original_insert  # type: ignore[attr-defined]
-        _pulse_delattr(mod, "insert", original_insert)
-    finally:
-        mod._engine = original_engine
-        mod.insert = original_insert
-        part1._engine = original_engine  # type: ignore[attr-defined]
-        part2.insert = original_insert  # type: ignore[misc]
-
-
 def test_live_map_cache_facade_sync() -> None:
     from src.services import live_map_cache as mod
     from src.services import live_map_cache_part_1 as part1

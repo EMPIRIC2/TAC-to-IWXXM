@@ -68,12 +68,10 @@ export { default as JSZip } from 'jszip';
 export { toast } from 'sonner';
 export { ThemeToggle } from './ThemeToggle';
 export { GoldenExamplesSelect } from './GoldenExamplesSelect';
-export { DisseminationDrawer } from './DisseminationDrawer';
 export { BetaBadge } from './BetaBadge';
 export { Checkbox } from './ui/checkbox';
 export { Collapsible, CollapsibleContent, CollapsibleTrigger } from './ui/collapsible';
 export { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
-export { isOperatorDisseminationDestinationsEnabled } from '@/utils/operatorDisseminationUi';
 export {
   fetchProfileCatalog,
   type MetarFamilyVariant,

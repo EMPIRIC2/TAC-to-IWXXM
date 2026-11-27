@@ -14,7 +14,6 @@ apps/backend/src/schemas/conversion_profiles.py  # 744
 apps/backend/src/schemas/validation.py  # 796
 apps/backend/src/services/airport_reconciliation.py  # 567
 apps/backend/src/services/conversion_profiles_service.py  # 1864
-apps/backend/src/services/dissemination_ops_service.py  # 628
 apps/backend/src/services/live_map_cache.py  # 641
 apps/backend/src/services/live_map_refresh.py  # 627
 apps/backend/src/services/schema_discovery_poller.py  # 582
@@ -46,11 +45,8 @@ apps/backend/tests/unit/test_tc_evbridge_library_assets_api.py  # 801
 apps/backend/tests/unit/test_validation_orchestrator_unit.py  # 978
 apps/backend/tests/unit/test_wmo_codelists_client_unit.py  # 914
 apps/backend/tests/unit/test_work_session_service_unit.py  # 575
-apps/e2e/uj027-030-dissemination-drawer.e2e.spec.ts  # 536
 apps/e2e/uj072-conversion-profiles.e2e.spec.ts  # 557
 apps/frontend/src/app/App.test.tsx  # 872
-apps/frontend/src/app/components/DisseminationDrawer.test.tsx  # 1411
-apps/frontend/src/app/components/DisseminationDrawer.tsx  # 856
 apps/frontend/src/app/components/FileConverter.test.tsx  # 9031
 apps/frontend/src/app/components/FileConverter.tsx  # 4909
 apps/frontend/src/app/components/LintValidationCatalogPage.tsx  # 946

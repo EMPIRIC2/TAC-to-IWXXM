@@ -401,17 +401,14 @@ export async function openConvertConsoleTab(page: Page): Promise<void> {
 }
 
 /**
- * Open Settings and click Disseminate / open-dissemination-drawer.
+ * Assert Disseminate drawer controls are absent (FR-052..056 / DI-008).
  *
  * @param page - Playwright page hosting the converter.
  */
-export async function openDisseminationDrawerFromSettings(page: Page): Promise<void> {
+export async function assertDisseminationDrawerAbsent(page: Page): Promise<void> {
   await openConvertSettings(page);
-  const openBtn = page.getByTestId('open-dissemination-drawer');
-  await expect(openBtn).toBeEnabled({ timeout: 15_000 });
-  await openBtn.click();
-  await expect(page.getByTestId('dissemination-drawer')).toBeVisible();
-  // Drawer backdrop intercepts cog clicks — collapse Settings via the details API.
+  await expect(page.getByTestId('open-dissemination-drawer')).toHaveCount(0);
+  await expect(page.getByTestId('dissemination-drawer')).toHaveCount(0);
   await closeConvertSettings(page);
 }
 
