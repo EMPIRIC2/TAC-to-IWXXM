@@ -43,7 +43,9 @@ describe('FileConverterFilename — conversion options strip (UX-2026-11-26)', (
 
     const block = screen.getByTestId('conversion-options');
     expect(block).toBeInTheDocument();
-    expect(within(block).getByTestId('output-filename-near-convert')).toBeInTheDocument();
+    expect(
+      within(block).getByTestId('output-filename-near-convert'),
+    ).toBeInTheDocument();
     expect(within(block).getByTestId('conversion-option-toggles')).toBeInTheDocument();
     expect(within(block).getByText(PROPAGATE_RESIDUALS_LABEL)).toBeInTheDocument();
     expect(within(block).getByText(INCLUDE_NATIONAL_REMARKS_LABEL)).toBeInTheDocument();
@@ -57,11 +59,17 @@ describe('FileConverterFilename — conversion options strip (UX-2026-11-26)', (
     expect(fieldWrap.className).toMatch(/\bw-full\b/);
     const input = screen.getByTestId('output-filename-input');
     expect(input.className).toMatch(/\bw-full\b/);
-    expect(screen.getByTestId('output-filename-preview')).toHaveTextContent('METARKSB.xml');
+    expect(screen.getByTestId('output-filename-preview')).toHaveTextContent(
+      'METARKSB.xml',
+    );
     // Long residual / national help must not sit under the toggle stack (details may hold it)
     const toggles = screen.getByTestId('conversion-option-toggles');
-    expect(within(toggles).queryByText(PROPAGATE_RESIDUALS_HELP)).not.toBeInTheDocument();
-    expect(within(toggles).queryByText(INCLUDE_NATIONAL_REMARKS_HELP)).not.toBeInTheDocument();
+    expect(
+      within(toggles).queryByText(PROPAGATE_RESIDUALS_HELP),
+    ).not.toBeInTheDocument();
+    expect(
+      within(toggles).queryByText(INCLUDE_NATIONAL_REMARKS_HELP),
+    ).not.toBeInTheDocument();
   });
 
   it('exposes long option help via About these options (not always-visible paragraphs)', async () => {

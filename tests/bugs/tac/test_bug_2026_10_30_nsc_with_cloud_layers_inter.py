@@ -9,6 +9,7 @@ Ticket: #1478. [Corpus: product §F15] [Corpus: tests]
 
 from __future__ import annotations
 
+import pytest
 from tac_validate import lint
 
 _YMHB = (
@@ -24,20 +25,33 @@ _YSDU = (
     "PROB30 TEMPO 3107/3111 VRB30G50KT 1000 TSRAGR SCT010 SCT065CB"
 )
 
+_SAME_GROUP = "TAF KJFK 121230Z 1212/1312 18010KT P6SM NSC FEW015="
+_SAME_GROUP_YMHB = "TAF YMHB 302006Z 3021/3118 32006KT 9999 NSC SCT020="
 
-def test_bug_2026_10_30_ymhb_nsc_then_inter_sct_no_warning() -> None:
-    codes = {i.code for i in lint(_YMHB, product="TAF").issues}
+
+@pytest.mark.parametrize(
+    ("tac", "extra_ok"),
+    [
+        (_YMHB, ("NSC_PRESENT",)),
+        (_YSDU, ()),
+    ],
+    ids=["ymhb_inter_sct", "ysdu_inter_bkn"],
+)
+def test_bug_2026_10_30_nsc_then_change_group_clouds_no_warning(
+    tac: str, extra_ok: tuple[str, ...]
+) -> None:
+    codes = {i.code for i in lint(tac, product="TAF").issues}
     assert "NSC_WITH_CLOUD_LAYERS" not in codes
-    assert "NSC_PRESENT" in codes
+    for code in extra_ok:
+        assert code in codes
 
 
-def test_bug_2026_10_30_ysdu_nsc_then_inter_bkn_no_warning() -> None:
-    codes = {i.code for i in lint(_YSDU, product="TAF").issues}
-    assert "NSC_WITH_CLOUD_LAYERS" not in codes
-
-
-def test_bug_2026_10_30_same_group_nsc_few_still_warns() -> None:
-    tac = "TAF KJFK 121230Z 1212/1312 18010KT P6SM NSC FEW015="
+@pytest.mark.parametrize(
+    "tac",
+    [_SAME_GROUP, _SAME_GROUP_YMHB],
+    ids=["kjfk_nsc_few", "ymhb_nsc_sct_same_group"],
+)
+def test_bug_2026_10_30_same_group_nsc_layer_still_warns(tac: str) -> None:
     hits = [
         i for i in lint(tac, product="TAF").issues if i.code == "NSC_WITH_CLOUD_LAYERS"
     ]
