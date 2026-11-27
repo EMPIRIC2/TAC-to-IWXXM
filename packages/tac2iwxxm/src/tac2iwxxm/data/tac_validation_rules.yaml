@@ -1136,7 +1136,7 @@ rules:
 - id: TAC.PROB_PERIOD_WITHOUT_TEMPO
   code: PROB_PERIOD_WITHOUT_TEMPO
   label: Prob Period Without Tempo
-  severity: warning
+  severity: info
   message_template: This {product} has a standalone PROB30/40 period. Annex 3 allows that form; engines
     emit PROB_PRESENT for awareness. True defects stay INVALID_PROB.
   product: taf

@@ -55,7 +55,9 @@ export function SoftPreviewControl({
       />
       <span>
         <span className="font-medium">{SOFT_PREVIEW_LABEL}</span>
-        <span className="ml-1 text-gray-500 dark:text-gray-400">{SOFT_PREVIEW_HELP}</span>
+        <span className="ml-1 text-gray-500 dark:text-gray-400">
+          {SOFT_PREVIEW_HELP}
+        </span>
       </span>
     </label>
   );

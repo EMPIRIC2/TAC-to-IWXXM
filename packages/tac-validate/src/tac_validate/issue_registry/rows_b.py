@@ -15,7 +15,7 @@ ISSUES_B: tuple[IssueSpec, ...] = (
     ),
     _row(
         "PROB_PERIOD_WITHOUT_TEMPO",
-        "warning",
+        "info",
         "This {product} has a standalone PROB30/40 period. Annex 3 allows that form; engines emit PROB_PRESENT for awareness. True defects stay INVALID_PROB.",
         product="taf",
         tags=("change", "taf", "prob"),

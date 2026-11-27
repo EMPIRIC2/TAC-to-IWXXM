@@ -86,6 +86,10 @@ profiles:
         note: >-
           Australian Y* TAF stations prefer au_bom under ICAO prefer so
           PROB_PERIOD_WITHOUT_TEMPO is info via the shared PROB-period policy.
+      - id: AU_PROB_INTER_ACCEPT
+        note: >-
+          PROB30|40 INTER ddhh/ddhh is PROB_PRESENT info (BoM INTER qualifier;
+          same accept path as TEMPO for PROB). PROB on BECMG/FM stays INVALID_PROB.
       - id: AU_DEWPOINT_NIL
         note: >-
           BoM AUTO tt/// (dewpoint not observable) is DEWPOINT_NOT_OBSERVABLE info
