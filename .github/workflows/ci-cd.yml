@@ -1387,9 +1387,27 @@ jobs:
       # Host-header fallback until Porkbun A records → staging LB (EV-044).
       STAGING_LB_IP: "143.244.202.13"
       DOKS_LB_IP: "143.244.202.13"
+      # Optional auth for authenticated live_api cases (public probes always run).
+      ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
+      ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
     steps:
       - uses: actions/checkout@v5
+        with:
+          submodules: false
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install uv and workspace
+        run: |
+          python -m pip install --upgrade pip uv
+          uv sync
       - name: Wait briefly for ingress/TLS
         run: sleep 20
-      - name: Run staging smoke
+      - name: Run staging smoke (connectivity + eval benchmark)
+        # FR-064 / NFR-028 — curl probes include station-health/eval-benchmark.
         run: bash scripts/deploy/staging_smoke.sh
+      - name: Live API tests (FR-064 / NFR-028)
+        # Public live_api cases required; authenticated cases skip without ADMIN_*.
+        run: make test-live-api

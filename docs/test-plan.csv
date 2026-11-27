@@ -915,3 +915,7 @@ TC-SH-012,Station health maintenance formats issues retention centennial matrix,
 TC-SH-013,Station health eval-benchmark API from FR-045,,,UJ-096,,test_station_health_eval_benchmark.py,,,documented,FR-047
 TC-SH-014,Station health eval-benchmark panel UI,,,UJ-096,,StationHealthEvalPanel.test.tsx,,,documented,FR-047
 
+TC-FR064-001,Staging smoke probes station-health eval-benchmark,,,UJ-036,,scripts/deploy/staging_smoke.sh,bash scripts/deploy/staging_smoke.sh,,documented,FR-064 NFR-028
+TC-FR064-002,Staging smoke rejects invalid eval-benchmark ICAO,,,UJ-036,,scripts/deploy/staging_smoke.sh,bash scripts/deploy/staging_smoke.sh,,documented,FR-064 validation
+TC-NFR028-001,Staging smoke job runs make test-live-api after Deploy,,,UJ-036,,.github/workflows/ci-cd.yml,make test-live-api,,documented,NFR-028 staging-to-prod
+TC-NFR028-002,Offline contract for FR-064/NFR-028 CI wiring,,,UJ-036,,tests/unit/test_fr064_nfr028_staging_to_prod_ci.py,uv run pytest tests/unit/test_fr064_nfr028_staging_to_prod_ci.py,,documented,benchmark_ci

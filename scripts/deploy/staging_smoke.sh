@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Post-deploy staging connectivity smoke (H0c-style health + H4–H5 subset).
+# Post-deploy staging connectivity smoke (H0c-style health + H4–H5 subset + FR-064/NFR-028 eval-benchmark).
 # Traces: F30 AC9/AC12 / TC-F30-009 /
 set -euo pipefail
 
@@ -90,6 +90,46 @@ if [[ "${refresh_code}" != "404" ]]; then
   exit 1
 fi
 echo "POST /api/v1/live-map/eval/refresh → 404 (disabled; cron owns writes)"
+
+# FR-064 / NFR-028 — Station health eval benchmark (reuses FR-045 snapshot; #1717)
+bench_code="$(curl -sS -o /tmp/staging-eval-benchmark.json -w '%{http_code}' --max-time 30 \
+  "${API_URL}/api/v1/station-health/eval-benchmark" || echo 000)"
+if [[ "${bench_code}" != "200" ]]; then
+  echo "::warning::HTTPS GET station-health/eval-benchmark → ${bench_code}; trying Host-header via LB ${LB_IP}"
+  bench_code="$(curl -sS -o /tmp/staging-eval-benchmark.json -w '%{http_code}' --max-time 30 \
+    -H "Host: ${API_HOST}" "http://${LB_IP}/api/v1/station-health/eval-benchmark" || echo 000)"
+fi
+if [[ "${bench_code}" != "200" ]]; then
+  echo "::error::GET /api/v1/station-health/eval-benchmark → ${bench_code}"
+  cat /tmp/staging-eval-benchmark.json 2>/dev/null || true
+  exit 1
+fi
+if ! grep -q 'computed_at' /tmp/staging-eval-benchmark.json 2>/dev/null; then
+  echo "::error::GET /api/v1/station-health/eval-benchmark body missing computed_at"
+  cat /tmp/staging-eval-benchmark.json 2>/dev/null || true
+  exit 1
+fi
+if ! grep -q 'product_breakdown' /tmp/staging-eval-benchmark.json 2>/dev/null; then
+  echo "::error::GET /api/v1/station-health/eval-benchmark body missing product_breakdown"
+  cat /tmp/staging-eval-benchmark.json 2>/dev/null || true
+  exit 1
+fi
+echo "GET /api/v1/station-health/eval-benchmark → 200 (computed_at + product_breakdown)"
+
+# Validation reject: invalid ICAO filter must 400 (NFR-028 / FR-064 validation mode)
+bad_icao_code="$(curl -sS -o /tmp/staging-eval-benchmark-bad-icao.json -w '%{http_code}' --max-time 30 \
+  "${API_URL}/api/v1/station-health/eval-benchmark?icao=BAD" || echo 000)"
+if [[ "${bad_icao_code}" != "400" ]]; then
+  echo "::warning::HTTPS GET eval-benchmark?icao=BAD → ${bad_icao_code}; trying Host-header via LB"
+  bad_icao_code="$(curl -sS -o /tmp/staging-eval-benchmark-bad-icao.json -w '%{http_code}' --max-time 30 \
+    -H "Host: ${API_HOST}" "http://${LB_IP}/api/v1/station-health/eval-benchmark?icao=BAD" || echo 000)"
+fi
+if [[ "${bad_icao_code}" != "400" ]]; then
+  echo "::error::GET /api/v1/station-health/eval-benchmark?icao=BAD expected 400, got ${bad_icao_code}"
+  cat /tmp/staging-eval-benchmark-bad-icao.json 2>/dev/null || true
+  exit 1
+fi
+echo "GET /api/v1/station-health/eval-benchmark?icao=BAD → 400 (validation reject)"
 
 # Optional pytest live connectivity when available
 if [[ "${STAGING_SMOKE_PYTEST:-1}" == "1" ]] && [[ -f tests/smoke/test_staging_connectivity.py ]]; then
