@@ -108,6 +108,28 @@ Do not set retired Auth key aliases after the shim window ends. See
    parity stays in the required `test` job that gates Deploy. Do not treat
    Staging smoke as a substitute for package golden packs.
 
+### Supabase Auth isolation
+
+Staging and production must not share a Supabase Auth project.
+
+| Env | Project ref | Auth URL | DOKS surface |
+|-----|-------------|----------|--------------|
+| staging | `zvfhtcxjopwuesrozpvu` | `https://zvfhtcxjopwuesrozpvu.supabase.co` | Namespace `metar-iwxxm-staging`; profile `staging.json`; overlay `overlays/staging` |
+| prod | `ktvxijislbtgqapllmuk` | `https://ktvxijislbtgqapllmuk.supabase.co` | Namespace `metar-iwxxm`; profile `prod.json`; overlay `overlays/prod` |
+
+Product session data stays on DigitalOcean Postgres (`DATABASE_URL`). Supabase is
+Auth URL + keys only. Supabase Sync on branch `stage` already targets the staging
+ref; Deploy bake-time Vite Auth secrets must come from the GitHub Environment that
+matches the deploy target (`staging` vs `production`).
+
+**Key rotation (staging):** rotate keys in project `zvfhtcxjopwuesrozpvu`, then
+update Kubernetes secret `metar-api-secrets` keys `SUPABASE_URL`,
+`SUPABASE_PUBLISHABLE_KEY`, optional `SUPABASE_SECRET_KEY` /
+`SUPABASE_JWKS_URL`, plus Environment **staging**
+`FRONTEND_VITE_SUPABASE_*` bake secrets. Restart API and frontend. Leave
+production secrets and project `ktvxijislbtgqapllmuk` unchanged. Full command
+examples: [config/deploy/doks/README.md](../config/deploy/doks/README.md).
+
 ## Worker ops
 
 1. Run the ingest worker as a DOKS Deployment.

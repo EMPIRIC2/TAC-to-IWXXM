@@ -25,7 +25,7 @@ def _load_json(path: Path) -> dict[str, object]:
 class TestRuntimeConfigProfiles:
     """Committed config/deploy/profiles/*.json profiles satisfy env-contract.md."""
 
-    @pytest.mark.parametrize("profile", ["local", "e2e", "prod"])
+    @pytest.mark.parametrize("profile", ["local", "e2e", "staging", "prod"])
     def test_profile_has_required_keys(self, profile: str) -> None:
         cfg = _load_json(CONFIG_DIR / f"{profile}.json")
         for key in ("environment", "api", "supabase"):
@@ -40,6 +40,16 @@ class TestRuntimeConfigProfiles:
         supabase = cfg["supabase"]
         assert isinstance(supabase, dict)
         assert supabase.get("url")
+
+    def test_staging_and_prod_supabase_urls_differ(self) -> None:
+        """#949 — staging Auth must not share the production Supabase project."""
+        staging = _load_json(CONFIG_DIR / "staging.json")
+        prod = _load_json(CONFIG_DIR / "prod.json")
+        staging_url = str(staging["supabase"]["url"])  # type: ignore[index]
+        prod_url = str(prod["supabase"]["url"])  # type: ignore[index]
+        assert staging_url != prod_url
+        assert "zvfhtcxjopwuesrozpvu" in staging_url
+        assert "ktvxijislbtgqapllmuk" in prod_url
 
     def test_local_profile_uses_merged_api_ports(self) -> None:
         cfg = _load_json(CONFIG_DIR / "local.json")

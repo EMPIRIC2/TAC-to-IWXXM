@@ -1165,6 +1165,13 @@ jobs:
       RENDER_WORKER_DEPLOY_HOOK: ${{ secrets.RENDER_WORKER_DEPLOY_HOOK }}
       RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
       KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
+      # Re-bind under the selected GitHub Environment so staging can hold
+      # staging-only Supabase bake secrets (issue #949). Workflow-level env
+      # resolves before Environment scope; job-level secrets.* prefer Environment.
+      FRONTEND_VITE_SUPABASE_URL: ${{ secrets.FRONTEND_VITE_SUPABASE_URL }}
+      FRONTEND_VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY: ${{ secrets.FRONTEND_VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY }}
+      SUPABASE_PUBLISHABLE_KEY: ${{ secrets.SUPABASE_PUBLISHABLE_KEY }}
+      SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
 
     steps:
       - uses: actions/checkout@v5

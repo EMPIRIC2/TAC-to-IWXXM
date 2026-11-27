@@ -6,8 +6,11 @@ Committed JSON per environment. Secrets stay in repo-root `.env` only.
 |------|-----------|
 | `local.json` | `METAR_CONFIG_ENV=local` (default for `make dev`) |
 | `e2e.json` | Playwright / local e2e |
-| `staging.json` | Staging DOKS profile |
-| `prod.json` | `METAR_CONFIG_ENV=prod` |
+| `staging.json` | Staging DOKS profile (Auth URL = staging Supabase `zvfhtcxjopwuesrozpvu`) |
+| `prod.json` | `METAR_CONFIG_ENV=prod` (Auth URL = production Supabase `ktvxijislbtgqapllmuk`) |
+
+Staging and production `supabase.url` values must differ. Do not point staging at
+the production Auth project.
 
 Field reference: [docs/env-variable.md](../../docs/env-variable.md) and
 [docs/tech-spec.md](../../docs/tech-spec.md).

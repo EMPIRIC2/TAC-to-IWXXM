@@ -118,16 +118,30 @@ Validate: `python3 scripts/deploy/validate_ingest_poller_url.py --probe "$INGEST
 
 | Setting | API | Static | Worker |
 |---------|-----|--------|--------|
-| `DATABASE_URL` | required |, | required |
-| `SUPABASE_URL` + JWKS verify | required for Auth |, |, |
-| Publishable key inject |, | `/config.json` |, |
-| Rate limits / body / allowlist | env |, |, |
-| `METAR_CONFIG_ENV=prod` | yes | copy → `public/config.json` |, |
-| ingest worker poller |, |, | env |
-| `OPENAIP_API_KEY` | required for station names |, |, |
+| `DATABASE_URL` | required | — | required |
+| `SUPABASE_URL` + JWKS verify | required for Auth (project `ktvxijislbtgqapllmuk`) | — | — |
+| Publishable key inject | — | `/config.json` | — |
+| Rate limits / body / allowlist | env | — | — |
+| `METAR_CONFIG_ENV=prod` | yes | copy → `public/config.json` | — |
+| ingest worker poller | — | — | env |
+| `OPENAIP_API_KEY` | required for station names | — | — |
 
-Staging (`metar-iwxxm-staging`) uses the same `OPENAIP_API_KEY` entry on
-`metar-api-secrets`.
+### Staging (DOKS)
+
+| Setting | API | Static | Worker |
+|---------|-----|--------|--------|
+| `DATABASE_URL` | required (DO Postgres `metar-iwxxm-staging`) | — | required |
+| `SUPABASE_URL` + JWKS verify | required for Auth (project `zvfhtcxjopwuesrozpvu` only) | — | — |
+| `config.*.supabase.url` | — | `https://zvfhtcxjopwuesrozpvu.supabase.co` | — |
+| Publishable key inject | — | `/config.json` from staging publishable key | — |
+| `METAR_CONFIG_ENV=staging` | yes | staging profile / ConfigMap | — |
+| `OPENAIP_API_KEY` | same secret key name on `metar-api-secrets` | — | — |
+
+Do not point staging `SUPABASE_URL` or frontend `supabase.url` at production
+project `ktvxijislbtgqapllmuk`. GitHub Environment **staging** must hold
+staging-only `FRONTEND_VITE_SUPABASE_URL` /
+`FRONTEND_VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY` for Deploy bake-time fallback.
+See [ops-contract.md](ops-contract.md) §Supabase Auth isolation.
 
 ### Local (`METAR_CONFIG_ENV=local`)
 
