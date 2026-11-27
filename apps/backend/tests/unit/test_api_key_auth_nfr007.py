@@ -364,14 +364,19 @@ def test_router_issue_validation_and_auth_matrix(
     ok = client.get("/api/v1/ping", headers={"X-API-Key": plaintext})
     assert ok.status_code == 200
 
-    gone = client.delete(f"/api/v1/api-keys/{uuid4()}")
-    assert gone.status_code == 401
-
-    blank = client.delete(
-        f"/api/v1/api-keys/{uuid4()}",
-        headers={"X-API-Key": "   "},
+    # Handler-level 401 (middleware would otherwise short-circuit).
+    bare = FastAPI()
+    install_abuse_controls(bare, limiter=create_limiter())
+    bare.include_router(api_keys_router.router)
+    bare_client = TestClient(bare)
+    assert bare_client.delete(f"/api/v1/api-keys/{uuid4()}").status_code == 401
+    assert (
+        bare_client.delete(
+            f"/api/v1/api-keys/{uuid4()}",
+            headers={"X-API-Key": "   "},
+        ).status_code
+        == 401
     )
-    assert blank.status_code == 401
 
     missing = client.delete(
         f"/api/v1/api-keys/{uuid4()}",
