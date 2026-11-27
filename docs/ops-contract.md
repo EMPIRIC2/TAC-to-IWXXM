@@ -2,7 +2,7 @@
 
 > Index: [README.md](README.md) 
 > Env names: [env-variable.md](env-variable.md) 
-> Last updated: 2026-11-10
+> Last updated: 2026-11-26
 
 This document states operational requirements for local run, staging, and
 production. Long runbooks may stay in the local `docs/ops/` feeder.
@@ -102,6 +102,11 @@ Do not set retired Auth key aliases after the shim window ends. See
 4. Promote `stage` to `main` only after required CI and staging checks pass.
 5. Keep `DISSEMINATION_EGRESS_ALLOWLIST` non-empty in every deployed env. An empty
  allowlist denies egress.
+6. Staging→prod setup (FR-064 / NFR-028): after stage Deploy, **Staging smoke**
+   must probe live connectivity, `GET /api/v1/station-health/eval-benchmark`
+   (and invalid-ICAO 400), then run `make test-live-api`. WMO/golden example
+   parity stays in the required `test` job that gates Deploy. Do not treat
+   Staging smoke as a substitute for package golden packs.
 
 ## Worker ops
 

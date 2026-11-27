@@ -56,6 +56,9 @@ def test_exempt_paths() -> None:
     assert path_is_api_key_exempt("OPTIONS", "/api/v1/convert")
     assert path_is_api_key_exempt("GET", "/docs/oauth2-redirect")
     assert path_is_api_key_exempt("GET", "/docs/index.html")
+    assert path_is_api_key_exempt("GET", "/api/v1/live-map/eval")
+    assert path_is_api_key_exempt("GET", "/api/v1/station-health/eval-benchmark")
+    assert path_is_api_key_exempt("GET", "/api/v1/station-health")
     assert not path_is_api_key_exempt("POST", "/api/v1/convert")
 
 

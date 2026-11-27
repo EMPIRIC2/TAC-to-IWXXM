@@ -174,3 +174,53 @@ async def test_staging_live_map_eval_refresh_disabled() -> None:
         )
 
     assert response.status_code == 404, response.text
+
+
+@pytest.mark.asyncio
+async def test_staging_eval_benchmark_get_returns_snapshot() -> None:
+    """FR-064 / NFR-028 — GET station-health/eval-benchmark returns snapshot shape."""
+    warn_deprecated_env()
+    api_url = live_api_url()
+    if not api_url:
+        pytest.skip("LIVE_API_URL not set - skip live eval-benchmark connectivity")
+
+    import httpx
+
+    async with httpx.AsyncClient(timeout=30.0) as client:
+        response = await client.get(
+            f"{api_url}/api/v1/station-health/eval-benchmark",
+            headers=live_api_host_headers(),
+        )
+
+    assert response.status_code == 200, response.text
+    body = response.json()
+    computed_at = body.get("computed_at")
+    assert isinstance(computed_at, str)
+    assert computed_at
+    assert isinstance(body.get("product_breakdown"), list)
+    assert isinstance(body.get("partial_decode_count"), int)
+    assert isinstance(body.get("lint_count"), int)
+    iwxxm = body.get("iwxxm_validation")
+    assert isinstance(iwxxm, dict)
+    for key in ("pass", "fail", "skip"):
+        assert key in iwxxm
+
+
+@pytest.mark.asyncio
+async def test_staging_eval_benchmark_rejects_invalid_icao() -> None:
+    """FR-064 / NFR-028 — invalid ICAO filter is rejected (validation failure)."""
+    warn_deprecated_env()
+    api_url = live_api_url()
+    if not api_url:
+        pytest.skip("LIVE_API_URL not set - skip live eval-benchmark connectivity")
+
+    import httpx
+
+    async with httpx.AsyncClient(timeout=30.0) as client:
+        response = await client.get(
+            f"{api_url}/api/v1/station-health/eval-benchmark",
+            params={"icao": "BAD"},
+            headers=live_api_host_headers(),
+        )
+
+    assert response.status_code == 400, response.text

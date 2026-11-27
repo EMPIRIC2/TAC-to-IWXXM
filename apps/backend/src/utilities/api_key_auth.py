@@ -35,6 +35,9 @@ _EXEMPT_EXACT = {
 _EXEMPT_PREFIXES = (
     "/docs/",
     "/redoc/",
+    # Public operator dashboards (FR-045 / FR-047 / FR-064) — not convert/lint/validate.
+    "/api/v1/live-map/",
+    "/api/v1/station-health",
 )
 
 

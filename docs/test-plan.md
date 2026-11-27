@@ -2,7 +2,7 @@
 
 > Matrix: [test-plan.csv](test-plan.csv) 
 > Journeys: [user-journeys.csv](user-journeys.csv) 
-> Last updated: 2026-11-12
+> Last updated: 2026-11-26
 
 The CSV matrix is the source of truth for test-case and coverage rows.
 This file defines columns, test tiers, and linkage rules.
@@ -29,6 +29,7 @@ This file defines columns, test tiers, and linkage rules.
 |------|-------|-----------------|
 | Local unit and package CI | Libraries and backend without live hosts | `make test-unit` |
 | Live API | Health, convert, and validate against a live API | `make test-live-api` |
+| Staging→prod live gate | Staging smoke curl + eval-benchmark + live API (FR-064 / NFR-028) | stage Deploy → Staging smoke (`scripts/deploy/staging_smoke.sh` + `make test-live-api`) |
 | Live connectivity | CORS preflight and frontend bundle URLs | `make test-live-connectivity` |
 | Live browser | Playwright operator journeys | `make test-live-e2e` |
 | Live bulletin | Multi-report bulletin split, convert, and Schematron | `make test-live-bulletin` |
