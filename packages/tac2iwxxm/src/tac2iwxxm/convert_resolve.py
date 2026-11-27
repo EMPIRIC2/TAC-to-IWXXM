@@ -36,7 +36,7 @@ def prefer_emit_profile(profile: str, product: str, icao: str | None) -> str:
     str
         Emit key after prefer (applicability fall-back via lint catalog).
     """
-    resolved = resolve_semantic_profile(profile)
+    resolved = resolve_semantic_profile(profile, allow_emit_key=True)
     emit = resolved.emit_key if resolved is not None else (profile or "").strip().lower()
     product_u = (product or "").strip().upper()
     if not should_prefer_station(profile=emit, product=product_u):

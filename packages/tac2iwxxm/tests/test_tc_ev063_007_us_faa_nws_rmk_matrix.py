@@ -84,8 +84,8 @@ def test_tc_ev063_007_us_faa_nws_rmk_golden(case_id: str, rmk_manifest: dict) ->
 
 
 @pytest.mark.parametrize("case_id", ["rmk_ao2_slp", "rmk_combined", "rmk_ltg_dsnt"])
-def test_tc_ev063_007_removed_alias_iwxxm_us_rejected(case_id: str, rmk_manifest: dict) -> None:
-    """#1025: iwxxm_us wire alias is rejected; use US_FAA_NWS."""
+def test_tc_ev063_007_emit_key_iwxxm_us_parity_without_deprecation(case_id: str, rmk_manifest: dict) -> None:
+    """Emit key still converts; wire deprecation flag stays false (#1025)."""
     case = next(c for c in rmk_manifest["cases"] if c["id"] == case_id)
     tac = (FIXTURES / case["tac"]).read_text(encoding="utf-8")
 
@@ -95,12 +95,13 @@ def test_tc_ev063_007_removed_alias_iwxxm_us_rejected(case_id: str, rmk_manifest
         profile=PROFILE,
         iwxxm_version=IWXXM_VERSION,
     )
-    alias = convert(
+    emit_key = convert(
         tac,
         product=case["product"],
         profile=ALIAS,
         iwxxm_version=IWXXM_VERSION,
     )
     assert canonical.ok
-    assert not alias.ok
-    assert alias.issues[0].code == "UNSUPPORTED_PROFILE"
+    assert emit_key.ok
+    assert canonical.xml == emit_key.xml
+    assert emit_key.deprecated_alias_used is False

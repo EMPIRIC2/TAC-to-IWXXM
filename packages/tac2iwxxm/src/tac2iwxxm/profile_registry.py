@@ -125,30 +125,44 @@ def normalize_profile_id(profile: str) -> str:
     return profile.strip().lower().replace("-", "_")
 
 
-def resolve_semantic_profile(profile: str) -> ResolvedSemanticProfile | None:
+def resolve_semantic_profile(
+    profile: str,
+    *,
+    allow_emit_key: bool = False,
+) -> ResolvedSemanticProfile | None:
     """
     Resolve a semantic profile id to canonical + emitter key.
 
     Parameters
     ----------
     profile : str
-        Canonical semantic id (for example ``ICAO_2025``). Former wire
-        aliases ``annex3`` / ``iwxxm_us`` are rejected (#1025).
+        Canonical semantic id (for example ``ICAO_2025``).
+    allow_emit_key : bool, optional
+        When ``True``, also accept internal emit keys (``annex3``,
+        ``iwxxm_us``, …) for engine dispatch. Wire / HTTP callers must
+        leave this ``False`` so former wire aliases stay rejected (#1025).
 
     Returns
     -------
     ResolvedSemanticProfile | None
-        ``None`` when the id is unknown or a removed wire alias.
+        ``None`` when the id is unknown. Former wire aliases resolve only
+        when ``allow_emit_key`` is true (as emit keys, not aliases).
     """
     norm = normalize_profile_id(profile)
-    if norm in _REMOVED_WIRE_ALIASES:
-        return None
     if norm in _CANONICAL_TO_EMIT:
         return ResolvedSemanticProfile(
             canonical=norm,
             emit_key=_CANONICAL_TO_EMIT[norm],
             alias_used=False,
         )
+    if allow_emit_key:
+        for canonical, emit_key in _CANONICAL_TO_EMIT.items():
+            if emit_key == norm:
+                return ResolvedSemanticProfile(
+                    canonical=canonical,
+                    emit_key=emit_key,
+                    alias_used=False,
+                )
     return None
 
 
@@ -168,21 +182,20 @@ def is_shipped_product_semantic_profile(profile: str) -> bool:
     """
     Return whether a profile is on the product convert/UI ship list (M1).
 
-    Emit-package unit suites may still resolve other registry ids via
-    ``resolve_semantic_profile``; product HTTP and first-party library seeds
-    use this gate.
+    Wire-only: emit keys / former aliases are not accepted (#1025).
+    Emit-package unit suites may call ``resolve_semantic_profile(..., allow_emit_key=True)``.
 
     Parameters
     ----------
     profile : str
-        Semantic profile id (for example ``ICAO_2025``).
+        Canonical semantic profile id (for example ``ICAO_2025``).
 
     Returns
     -------
     bool
         ``True`` when the resolved canonical id is on the product ship list.
     """
-    resolved = resolve_semantic_profile(profile)
+    resolved = resolve_semantic_profile(profile, allow_emit_key=False)
     if resolved is None:
         return False
     return resolved.canonical in _SHIPPED_PRODUCT_CANONICAL

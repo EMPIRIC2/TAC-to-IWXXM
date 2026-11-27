@@ -29,14 +29,15 @@ _DROPPED_WIRE_IDS = [
 @pytest.mark.parametrize("profile_id", _DROPPED_WIRE_IDS)
 def test_dropped_nationals_not_on_product_ship_list(profile_id: str) -> None:
     """National ids still resolve for emit suites but are not product-shipped."""
-    assert resolve_semantic_profile(profile_id) is not None
+    # Emit keys / nationals may need allow_emit_key after #1025 wire cutover.
+    assert resolve_semantic_profile(profile_id, allow_emit_key=True) is not None
     assert is_shipped_product_semantic_profile(profile_id) is False
 
 
 def test_baseline_icao_is_shipped() -> None:
     """ICAO baseline remains the only shipped product profile."""
     assert is_shipped_product_semantic_profile("ICAO_2025") is True
-    assert is_shipped_product_semantic_profile("annex3") is True
+    assert is_shipped_product_semantic_profile("annex3") is False  # wire alias removed #1025
     assert is_shipped_product_semantic_profile("not_a_profile") is False
     assert shipped_product_semantic_wire_ids() == ("ICAO_2025",)
     # Full emit registry still lists nationals for unit suites.

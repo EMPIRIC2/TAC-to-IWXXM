@@ -268,7 +268,7 @@ def resolve_validation_policies(
     ResolvedValidationPolicies
         ``profile`` to TAC quality and IWXXM output policy ids.
     """
-    resolved = resolve_semantic_profile(profile)
+    resolved = resolve_semantic_profile(profile, allow_emit_key=True)
     if resolved is None:
         msg = f"unknown conversion profile {profile!r}"
         raise ProfileResolveError(msg)

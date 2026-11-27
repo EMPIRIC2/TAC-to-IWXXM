@@ -88,7 +88,7 @@ def convert(
     if product_u in {"METAR", "SPECI"}:
         tac = fold_observation_case(tac)
     requested_iwxxm_version = iwxxm_version or "2025-2"
-    resolved = resolve_semantic_profile(profile)
+    resolved = resolve_semantic_profile(profile, allow_emit_key=True)
     if resolved is None:
         profile_l = profile.lower()
         issue = ConvertIssue(

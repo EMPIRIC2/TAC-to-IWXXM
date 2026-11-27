@@ -1,4 +1,4 @@
-"""TC-EV063 / #1025 — canonical semantic ids; wire aliases removed.
+"""TC-EV063 / #1025 — canonical wire ids; emit keys for engine only.
 
 [Corpus: domain] [Corpus: product F35]
 """
@@ -21,25 +21,20 @@ US_RMK_TAC = "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005 RMK AO2 SLP149 
 
 
 def test_tc_ev063_001_canonical_icao_2025_convert_success() -> None:
-    """Success + validation pass: ICAO_2025 convert produces IWXXM."""
     result = convert(METAR_BASIC_TAC, product="METAR", profile="ICAO_2025")
     assert result.ok
     assert result.xml
     assert result.semantic_profile == "icao_2025"
-    assert result.profile == "annex3"  # internal emit key
+    assert result.profile == "annex3"
     assert result.deprecated_alias_used is False
 
 
 @pytest.mark.parametrize("alias", ["annex3", "iwxxm_us"])
-def test_tc_ev063_001_removed_alias_rejected_on_convert(alias: str) -> None:
-    """Failure + validation fail: removed wire aliases are unsupported."""
-    result = convert(METAR_BASIC_TAC, product="METAR", profile=alias)
-    assert not result.ok
-    assert result.issues[0].code == "UNSUPPORTED_PROFILE"
+def test_tc_ev063_001_wire_resolve_rejects_former_aliases(alias: str) -> None:
+    assert resolve_semantic_profile(alias) is None
 
 
 def test_tc_ev063_002_us_faa_nws_canonical_convert() -> None:
-    """Success path: US_FAA_NWS canonical (emit package still available)."""
     result = convert(US_RMK_TAC, product="METAR", profile="US_FAA_NWS")
     assert result.ok
     assert result.semantic_profile == "us_faa_nws"
@@ -47,10 +42,11 @@ def test_tc_ev063_002_us_faa_nws_canonical_convert() -> None:
     assert "iwxxm-us:Addendum" in result.xml or "humanReadableText" in result.xml
 
 
-def test_tc_ev063_002_iwxxm_us_alias_rejected() -> None:
+def test_tc_ev063_002_emit_key_iwxxm_us_still_engine_ok() -> None:
+    """Emit key remains valid for library convert; not a wire alias."""
     result = convert(US_RMK_TAC, product="METAR", profile="iwxxm_us")
-    assert not result.ok
-    assert result.issues[0].code == "UNSUPPORTED_PROFILE"
+    assert result.ok
+    assert result.deprecated_alias_used is False
 
 
 def test_tc_ev063_003_unknown_semantic_profile() -> None:
@@ -59,7 +55,7 @@ def test_tc_ev063_003_unknown_semantic_profile() -> None:
     assert result.issues[0].code == "UNSUPPORTED_PROFILE"
 
 
-def test_resolve_rejects_removed_aliases() -> None:
+def test_resolve_rejects_removed_aliases_on_wire() -> None:
     assert resolve_semantic_profile("annex3") is None
     assert resolve_semantic_profile("iwxxm_us") is None
     assert "annex3" not in known_semantic_profile_ids()
