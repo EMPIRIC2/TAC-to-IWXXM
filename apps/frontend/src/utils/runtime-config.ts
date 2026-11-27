@@ -10,6 +10,8 @@ export type MetarRuntimeConfig = {
     baseUrl: string;
     frontendUrl: string;
     corsOrigins?: string[];
+    /** Demo API key for public routes (NFR-007 / A-007). */
+    demoApiKey?: string;
   };
   supabase: {
     url: string;
@@ -30,6 +32,7 @@ function configFromViteEnv(): MetarRuntimeConfig {
     api: {
       baseUrl: (import.meta.env.VITE_API_BASE_URL || 'http://localhost:18001').trim(),
       frontendUrl: (import.meta.env.VITE_APP_URL || 'http://localhost:18000').trim(),
+      demoApiKey: (import.meta.env.VITE_DEMO_API_KEY || '').trim() || undefined,
     },
     supabase: {
       url: (import.meta.env.VITE_SUPABASE_URL || '').trim(),

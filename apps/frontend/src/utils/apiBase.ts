@@ -96,3 +96,19 @@ export function adminUrl(path: string): string {
     : `/admin${path.startsWith('/') ? path : `/${path}`}`;
   return `${base}${normalized}`;
 }
+
+/**
+ * Headers for public product API calls (NFR-007). Merges optional init and
+ * attaches ``X-API-Key`` from runtime ``api.demoApiKey`` when present.
+ *
+ * @param init - Existing headers.
+ * @returns Headers including demo API key when configured.
+ */
+export function productApiHeaders(init?: HeadersInit): Headers {
+  const headers = new Headers(init);
+  const key = getRuntimeConfig().api.demoApiKey?.trim() ?? '';
+  if (key && !headers.has('X-API-Key')) {
+    headers.set('X-API-Key', key);
+  }
+  return headers;
+}

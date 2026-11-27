@@ -2,10 +2,15 @@ import { describe, expect, it, vi } from 'vitest';
 
 vi.mock('./runtime-config', () => ({
   getApiBaseUrl: () => 'https://api.example.test',
-  getRuntimeConfig: () => ({ api: { baseUrl: 'https://api.example.test' } }),
+  getRuntimeConfig: () => ({
+    api: {
+      baseUrl: 'https://api.example.test',
+      demoApiKey: 'demo-key-from-config',
+    },
+  }),
 }));
 
-import { adminUrl, apiUrl, authUrl } from './apiBase';
+import { adminUrl, apiUrl, authUrl, productApiHeaders } from './apiBase';
 
 describe('apiBase', () => {
   it('apiUrl preserves /api/v1 paths and normalizes others', () => {
@@ -24,5 +29,11 @@ describe('apiBase', () => {
     expect(adminUrl('/admin/users')).toBe('https://api.example.test/admin/users');
     expect(adminUrl('users')).toBe('https://api.example.test/admin/users');
     expect(adminUrl('/users')).toBe('https://api.example.test/admin/users');
+  });
+
+  it('productApiHeaders attaches demo X-API-Key without clobbering Authorization', () => {
+    const headers = productApiHeaders({ Authorization: 'Bearer tok' });
+    expect(headers.get('X-API-Key')).toBe('demo-key-from-config');
+    expect(headers.get('Authorization')).toBe('Bearer tok');
   });
 });

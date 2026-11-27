@@ -18,12 +18,17 @@ response shapes, auth rules, and known quirks for the backend in `apps/backend`.
 | This document                                                                         | Contracts, field tables, and migration notes                       |
 | When they disagree                                                                    | Prefer OpenAPI, then a decision interview before you patch callers |
 
-**Auth model (public operator app Amended / hybrid operator sessions):** Convert, lint, validate, and disseminate stay
-**public** (no JWT). A JWT is required only for `/api/v1/work-sessions*`. Guests
-use IndexedDB. Logged-in users use DigitalOcean Postgres sessions. `/admin/*`
-remains **gone** (404). The frontend uses one API base for `/api/v1/*`.
-Operator login/register uses Supabase Auth in the browser (`@supabase/supabase-js`);
-the API verifies JWTs via JWKS in `packages/auth` for work-sessions only.
+**Auth model (NFR-007 / FR-048 / hybrid operator sessions):** Convert, lint, validate,
+and decode stay **public without user JWT** but **require** an API key header
+`X-API-Key` (issuable to anyone; hashed in DO Postgres). Rate limits apply **per
+key + IP**; body-size and related abuse controls remain. A JWT is required only
+for `/api/v1/work-sessions*` (long-term storage). Guests use IndexedDB. Logged-in
+users use DigitalOcean Postgres sessions. `/admin/*` remains **gone** (404).
+The frontend uses one API base for `/api/v1/*` and may send a server-configured
+demo API key from `/config.json` (A-007). Operator login/register uses Supabase
+Auth in the browser (`@supabase/supabase-js`); the API verifies JWTs via JWKS in
+`packages/auth` for work-sessions only. Exemptions: `GET /health`, metrics/OpenAPI
+docs, and `POST /api/v1/api-keys` (public issue; IP rate-limited).
 
 Sections below start with **Base URLs**, then **Services**, then per-endpoint
 tables. Code samples and JSON schemas in those sections are normative. do not
@@ -41,7 +46,7 @@ rewrite them casually.
 
 | Service        | Pre-migration      | Post-migration                                         |                                             |
 | -------------- | ------------------ | ------------------------------------------------------ | ------------------------------------------- |
-| Conversion API | backend:8001       | apps/backend                                           | Public + abuse controls                     |
+| Conversion API | backend:8001       | apps/backend                                           | API key + abuse controls (NFR-007)          |
 | Auth           | auth:8003          | FE `@supabase/supabase-js` + BE JWKS (`packages/auth`) | **Auth-only Supabase** (no `/auth/*` proxy) |
 | Frontend       | frontend:5173/8000 | apps/frontend                                          | Optional login + guest notice               |
 | Worker         | —                  | apps/worker                                            | `DATABASE_URL` → DO Postgres                |
@@ -79,6 +84,42 @@ GET /health
 
 **Breaking (general TAC conversion cutover)**: `gifts_available` removed; clients must use `tac2iwxxm_available`.
 
+### API keys (NFR-007)
+
+```
+POST /api/v1/api-keys
+```
+
+**Auth**: None (public issue; IP rate-limited). Creates a key issuable to anyone.
+Stores **hash only** in DO Postgres. Response returns plaintext **once**.
+
+**Request** (JSON, optional):
+
+| Field | Required | Description |
+|-------|----------|-------------|
+| `label` | no | Short label (max 128 chars) |
+
+**Response** `201`:
+
+```json
+{
+  "id": "uuid",
+  "prefix": "t2i_ab12",
+  "api_key": "t2i_…plaintext…",
+  "label": "",
+  "created_at": "2026-11-27T00:00:00Z"
+}
+```
+
+Missing/invalid `X-API-Key` on protected `/api/v1/*` routes → **401**
+`{"detail":"API key required"}` / `{"detail":"Invalid API key"}`.
+Rate limit exceeded → **429** (existing slowapi shape).
+
+Header: `X-API-Key: <plaintext>`. CORS allow-list includes `X-API-Key`.
+
+Demo key: server env `DEMO_API_KEY` (and FE `/config.json` `api.demoApiKey`) for
+operator UI without minting (A-007).
+
 ### Authentication (hybrid operator sessions — FE-direct)
 
 Operator login, register, email confirm, logout, and password reset run in the
@@ -86,8 +127,9 @@ browser against Supabase Auth (`@supabase/supabase-js`). The API does **not**
 mount `/auth/*` proxy routes.
 
 The backend verifies access tokens with JWKS (`packages/auth`) for
-`/api/v1/work-sessions*` only. Convert/lint/validate/disseminate stay public
-(no JWT). Use **`GET /health`** for liveness.
+`/api/v1/work-sessions*` only. Convert/lint/validate/decode stay public without
+JWT but require **`X-API-Key`** (NFR-007). Use **`GET /health`** for liveness
+(no API key).
 
 **ingest worker**: Worker uses machine/`DATABASE_URL` credentials **off** the
 operator Auth path.
@@ -115,9 +157,10 @@ Auth Admin / bootstrap scripts only. Operator credentials are **BYO** via deploy
 POST /api/v1/convert
 ```
 
-**Auth**: **None** (public operator app Amended. public). Abuse controls: per-IP + global rate limits, body/batch
-size, timeouts/concurrency (finalize numeric defaults in ). Guests and operators share
-the same public convert path. Work history: guest → IndexedDB. logged-in → separate session APIs.
+**Auth**: **`X-API-Key` required** (NFR-007); no user JWT. Abuse controls: rate limit
+**per key + IP** (`RATE_LIMIT_PUBLIC_PER_MIN`), body/batch size, timeouts/concurrency.
+Guests and operators share the same public convert path with the demo or issued key.
+Work history: guest → IndexedDB; logged-in → separate session APIs (JWT).
 
 **Request** (multipart/form-data **only** for product/profile. not read from JSON body):
 
@@ -887,7 +930,7 @@ depth. UI still renders titles as text nodes). Operators should not rely on stor
 | ------------------------------ | --------------------------------------- |
 | `Access-Control-Allow-Origin`  | Origins from `config.*.api.corsOrigins` |
 | `Access-Control-Allow-Methods` | GET, POST, PATCH, DELETE, OPTIONS       |
-| `Access-Control-Allow-Headers` | Content-Type, Authorization             |
+| `Access-Control-Allow-Headers` | Content-Type, Authorization, X-API-Key  |
 
 Preflight: `OPTIONS` on `/api/v1/*` and `/auth/*`.
 
