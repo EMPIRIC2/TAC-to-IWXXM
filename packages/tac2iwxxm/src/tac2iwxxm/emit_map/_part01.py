@@ -264,7 +264,8 @@ def resolve_emit_map(
     Parameters
     ----------
     profile : str
-        Semantic profile id.
+        Canonical semantic id (``ICAO_2025``) or emit-catalog key
+        (``annex3``). Canonical ids remap to emit keys for YAML match (#1025).
 
     product : str
         Product name.
@@ -282,7 +283,9 @@ def resolve_emit_map(
     """
     maps = catalog if catalog is not None else load_emit_map_catalog()
     product_u = product.upper()
-    profile_l = profile.strip().lower()
+    # Catalog YAML keys use emit ids (annex3); wire callers pass ICAO_2025 (#1025).
+    resolved = resolve_semantic_profile(profile, allow_emit_key=True)
+    profile_l = resolved.emit_key if resolved is not None else profile.strip().lower()
     matches: list[EmitMap] = []
     for mapped in maps.values():
         if profile_l not in {p.lower() for p in mapped.profiles}:

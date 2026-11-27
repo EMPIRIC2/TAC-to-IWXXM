@@ -48,7 +48,6 @@ EMIT_CA_MSC_SIGMET = "ca_msc_sigmet"
 
 # Wire aliases annex3 / iwxxm_us removed after 2026-10-31 (#1025).
 # Internal emit keys remain for plugin dispatch via _CANONICAL_TO_EMIT values.
-_REMOVED_WIRE_ALIASES: frozenset[str] = frozenset({EMIT_ANNEX3, EMIT_IWXXM_US})
 
 _CANONICAL_TO_EMIT: dict[str, str] = {
     CANONICAL_ICAO_2025: EMIT_ANNEX3,

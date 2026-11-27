@@ -17,6 +17,7 @@ from typing import Any, cast
 import yaml
 
 from tac2iwxxm.models import EmitMap, EmitMapError
+from tac2iwxxm.profile_registry import resolve_semantic_profile
 
 ENV_EMIT_MAP_DIR = "TAC2IWXXM_EMIT_MAP_DIR"
 

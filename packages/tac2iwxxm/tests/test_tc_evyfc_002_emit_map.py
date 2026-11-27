@@ -71,6 +71,25 @@ def test_emit_map_missing_raises() -> None:
         resolve_emit_map(profile="ICAO_2025", product="SWXA", iwxxm_version="2025-2")
 
 
+def test_emit_map_unknown_profile_passthrough(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """Overlay profile keys outside the registry still match by literal id."""
+    (tmp_path / "custom.yaml").write_text(
+        "\n".join(
+            [
+                "id: experimental-only-emit",
+                "profiles: [experimental_only]",
+                "products: [METAR]",
+                "iwxxm_versions: ['2099-1']",
+                "plugin: python:tac2iwxxm.profiles.annex3:emit_metar_speci_annex3",
+            ]
+        ),
+        encoding="utf-8",
+    )
+    monkeypatch.setenv(ENV_EMIT_MAP_DIR, str(tmp_path))
+    mapped = resolve_emit_map(profile="experimental_only", product="METAR", iwxxm_version="2099-1")
+    assert mapped.id == "experimental-only-emit"
+
+
 def test_emit_map_overlay_extends_plugin(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     (tmp_path / "swap.yaml").write_text(
         "\n".join(
