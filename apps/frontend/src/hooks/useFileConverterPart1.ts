@@ -126,12 +126,11 @@ export function useFileConverterPart1(props: any) {
   const [conversionParams, setConversionParams] = D.useState<D.ConversionParams>(
     D.initialConversionParams,
   );
+  /* v8 ignore start -- DI-008 drawer removed; setter kept for prop stability */
   const handleDisseminationOpenChange = (open: boolean) => {
     setIsDisseminationOpen(open);
-    if (!open) {
-      setPackagingExchangeProfile(null);
-    }
   };
+  /* v8 ignore stop */
   const [profileCatalogEntries, setProfileCatalogEntries] = D.useState<
     ProfileCatalogEntry[]
   >([]);

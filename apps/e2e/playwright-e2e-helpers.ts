@@ -206,11 +206,6 @@ export async function loginAsE2EUser(page: Page): Promise<void> {
   await expect(guestNotice).toHaveCount(0);
 }
 
-/** @deprecated F21 — use {@link openPublicConverter}. */
-export async function loginAndOpenConverter(page: Page): Promise<void> {
-  await openPublicConverter(page);
-}
-
 /** Open the public converter (F21 — no login / mock JWT). */
 export async function openConverterWithMockSession(page: Page): Promise<void> {
   await openPublicConverter(page);
@@ -398,18 +393,6 @@ export async function openConvertConsoleTab(page: Page): Promise<void> {
   await ensureConvertResultsDrawerOpen(page);
   await page.getByTestId('convert-results-tab-console').click();
   await expect(page.getByTestId('convert-console-panel')).toBeVisible();
-}
-
-/**
- * Assert Disseminate drawer controls are absent (FR-052..056 / DI-008).
- *
- * @param page - Playwright page hosting the converter.
- */
-export async function assertDisseminationDrawerAbsent(page: Page): Promise<void> {
-  await openConvertSettings(page);
-  await expect(page.getByTestId('open-dissemination-drawer')).toHaveCount(0);
-  await expect(page.getByTestId('dissemination-drawer')).toHaveCount(0);
-  await closeConvertSettings(page);
 }
 
 /**

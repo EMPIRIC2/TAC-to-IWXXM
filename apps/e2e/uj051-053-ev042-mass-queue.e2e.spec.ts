@@ -88,10 +88,10 @@ test.describe('T4.1 — UJ-051..053 EV-042 mass ingest + queue + restored destin
 
     await convertManualMetar(page, SAMPLE_METAR);
     await openConvertSettings(page);
-    await expect(page.getByTestId('convert-and-send-button')).toBeVisible();
-    await expect(page.getByTestId('open-dissemination-drawer')).toHaveCount(0);
+    // DI-008: Convert&Send / Disseminate removed; Download ZIP remains.
+    await expect(page.getByTestId('download-zip-button')).toBeVisible();
     await openConvertDownloadsTab(page, 30_000);
-    // Opposite state: Disseminate / Convert & Send replace Upload to Database.
+    // Opposite state: Download ZIP is visible; Upload to Database stays gone.
     await expect(page.getByTestId('upload-to-database-button')).toHaveCount(0);
   });
 

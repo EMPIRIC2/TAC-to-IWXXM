@@ -35,7 +35,7 @@ export function useFileConverterPart4(ctx: any) {
     setOutputFilename,
     outputFilenameOwnedRef,
     setIsConverting,
-    setIsConvertAndSending,
+    setIsConvertAndSending: _setIsConvertAndSending,
     setTacLockedAfterConvert,
     setConversionStatus,
     conversionLog,
@@ -157,75 +157,11 @@ export function useFileConverterPart4(ctx: any) {
     }
   };
 
+  /* v8 ignore start -- DI-008 Convert&Send removed */
   const handleConvertAndSend = async () => {
-    if (isReadOnly) {
-      return;
-    }
-    setIsConvertAndSending(true);
-    try {
-      const result = await performConversion();
-      if (!result) {
-        await persistSession(buildSnapshot(), { status: 'failed' });
-        return;
-      }
-
-      if (result.hasErrors) {
-        if (result.softFail) {
-          D.toast.warning(
-            'Soft preview found failed groups. Fix them before Convert & Send.',
-          );
-        }
-        await persistSession(
-          buildSnapshot({
-            convertedFiles: result.files.map((file) => ({
-              originalName: file.originalName,
-              originalContent: file.originalContent,
-              convertedContent: file.convertedContent,
-            })),
-            manualInput,
-            pendingFiles: [],
-          }),
-          { status: 'failed' },
-        );
-        return;
-      }
-
-      D.toast.success(`Successfully converted ${result.files.length} file(s)`);
-      setConversionStatus({ type: 'loading', message: 'Sending to database...' });
-
-      const wipSnapshot = buildSnapshot({
-        convertedFiles: result.files.map((file) => ({
-          originalName: file.originalName,
-          originalContent: file.originalContent,
-          convertedContent: file.convertedContent,
-        })),
-        manualInput,
-        pendingFiles: [],
-      });
-
-      try {
-        const data = await D.uploadConvertedFiles({
-          files: result.files,
-          options: D.CONVERT_AND_SEND_UPLOAD_OPTIONS,
-        });
-        setConversionStatus({ type: 'idle' });
-        D.toast.success(data.message || 'Files converted and sent successfully');
-        await persistSession(wipSnapshot, { status: 'finished' });
-      } catch (error) {
-        console.error('[FileConverter] Convert&Send upload error:', error);
-        const uploadMessage =
-          error instanceof Error ? error.message : 'Failed to upload to database';
-        setConversionStatus({
-          type: 'send_error',
-          message: `Send failed: ${uploadMessage}`,
-        });
-        D.toast.error(`Conversion succeeded but send failed: ${uploadMessage}`);
-        await persistSession(wipSnapshot, { status: 'wip' });
-      }
-    } finally {
-      setIsConvertAndSending(false);
-    }
+    return;
   };
+  /* v8 ignore stop */
 
   const handleNewMetar = () => {
     setPendingFiles([]);

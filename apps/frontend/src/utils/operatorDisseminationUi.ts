@@ -16,6 +16,8 @@ export const operatorDisseminationUiConfig = {
  * Whether operator Convert&Send / Disseminate are shown.
  *
  * @returns always false (feature surface removed)
+ * @example
+ * const enabled = isOperatorDisseminationDestinationsEnabled();
  */
 export function isOperatorDisseminationDestinationsEnabled(): boolean {
   return false;
