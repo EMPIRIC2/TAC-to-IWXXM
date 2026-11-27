@@ -136,12 +136,13 @@ async def delete_api_key(
     x_api_key : str or None
         Caller key.
     """
-    if not x_api_key or not x_api_key.strip():
+    raw_key = (x_api_key or "").strip()
+    if not raw_key:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="API key required",
         )
-    ok = revoke_api_key(key_id=key_id, plaintext=x_api_key)
+    ok = revoke_api_key(key_id=key_id, plaintext=raw_key)
     if not ok:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
