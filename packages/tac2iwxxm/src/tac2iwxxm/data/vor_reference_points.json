@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "description": "CONUS VOR/VORTAC and airport reference points for US SIGMET FROM-chain geometry. The original points are from FAA NASR / AirNav navaid publications. Points added on 2026-09-23 cover live NWS convective SIGMET FROM-chains: OurAirports navaids (public domain), plus MMB, CLE, and TRV from published navaid coordinates and MIA from the OurAirports airport list. Points added on 2026-10-30 cover additional live convective misses: chart-id aliases absent from OurAirports (PHX\u2192Phoenix/PXR coords, AMA), unique US VORTAC rows when OurAirports is multi-country ambiguous, and common CONUS VORs needed offline under the pytest closed source. Points added on 2026-10-31 cover Stage live-map WST residuals: ambiguous OurAirports multi-country idents (TOU, MTU, PIR, LEV) and offline peers (HQM, HVE, RSK, TUL) under the pytest closed source. Points added on 2026-11-02 cover Stage live-map WST residuals: ambiguous OurAirports multi-country idents (END, ALS, ORL, FAR, GRB, BRD) and TLH chart id mapped to Seminole VORTAC (SZW) coordinates, plus offline peers (CEW, DEN, EAU, MCK, RSW, SRQ) required by those FROM-chains under the pytest closed source. Points added on 2026-11-02 (DVLPG residual follow-up) cover OKC: OurAirports navaids only lists JP Okayama under OKC, so the US Oklahoma City / Will Rogers airport coordinates (OurAirports airports.csv KOKC) are seeded for NWS WST FROM-chains under the pytest closed source. Points added on 2026-11-03 cover Stage live-map WST convert hard-fails (#1536): multi-country ambiguous OurAirports idents (ELD El Dorado US VORTAC, ARG Walnut Ridge US VORTAC) and offline peers required by those FROM-chains under the pytest closed source (GGG, SGF, LIT, RZC, EIC, BAE, ODI, DLL, TXK). Points added on 2026-11-04 cover Stage live-map WST convert hard-fails (#1552): chart ids absent from OurAirports navaids (IND\u2192Brickyard/VHP, ORD Chicago O'Hare VOR/DME, LSU Fighting Tiger / OA BTR), multi-country ambiguous BNA (US Nashville VORTAC), and offline peers required by those FROM-chains under the pytest closed source (AEX, BRO, DYR, IGB, LFK, MCB, MEI, MEM, SQS, UIN, VUZ).",
+  "description": "CONUS VOR/VORTAC and airport reference points for US SIGMET FROM-chain geometry. The original points are from FAA NASR / AirNav navaid publications. Points added on 2026-09-23 cover live NWS convective SIGMET FROM-chains: OurAirports navaids (public domain), plus MMB, CLE, and TRV from published navaid coordinates and MIA from the OurAirports airport list. Points added on 2026-10-30 cover additional live convective misses: chart-id aliases absent from OurAirports (PHX\u2192Phoenix/PXR coords, AMA), unique US VORTAC rows when OurAirports is multi-country ambiguous, and common CONUS VORs needed offline under the pytest closed source. Points added on 2026-10-31 cover Stage live-map WST residuals: ambiguous OurAirports multi-country idents (TOU, MTU, PIR, LEV) and offline peers (HQM, HVE, RSK, TUL) under the pytest closed source. Points added on 2026-11-02 cover Stage live-map WST residuals: ambiguous OurAirports multi-country idents (END, ALS, ORL, FAR, GRB, BRD) and TLH chart id mapped to Seminole VORTAC (SZW) coordinates, plus offline peers (CEW, DEN, EAU, MCK, RSW, SRQ) required by those FROM-chains under the pytest closed source. Points added on 2026-11-02 (DVLPG residual follow-up) cover OKC: OurAirports navaids only lists JP Okayama under OKC, so the US Oklahoma City / Will Rogers airport coordinates (OurAirports airports.csv KOKC) are seeded for NWS WST FROM-chains under the pytest closed source. Points added on 2026-11-03 cover Stage live-map WST convert hard-fails (#1536): multi-country ambiguous OurAirports idents (ELD El Dorado US VORTAC, ARG Walnut Ridge US VORTAC) and offline peers required by those FROM-chains under the pytest closed source (GGG, SGF, LIT, RZC, EIC, BAE, ODI, DLL, TXK). Points added on 2026-11-04 cover Stage live-map WST convert hard-fails (#1552): chart ids absent from OurAirports navaids (IND\u2192Brickyard/VHP, ORD Chicago O'Hare VOR/DME, LSU Fighting Tiger / OA BTR), multi-country ambiguous BNA (US Nashville VORTAC), and offline peers required by those FROM-chains under the pytest closed source (AEX, BRO, DYR, IGB, LFK, MCB, MEI, MEM, SQS, UIN, VUZ). Points added for HF-sigmet-quebec-header cover US domestic WS SIGMET QUEBEC FROM-chain navaids MPV/BOS/PVD/HNK/MSS under the pytest closed source (airport fallback when OurAirports navaids omit the chart id).",
   "points": {
     "ABI": {
       "lat": 32.4813,
@@ -111,6 +111,11 @@
       "lat": 36.137001037597656,
       "lon": -86.68479919433594,
       "name": "Nashville VORTAC"
+    },
+    "BOS": {
+      "lat": 42.357399,
+      "lon": -70.989502,
+      "name": "Boston"
     },
     "BOY": {
       "lat": 43.4632,
@@ -392,6 +397,11 @@
       "lon": -82.129601,
       "name": "Holston Mountain"
     },
+    "HNK": {
+      "lat": 42.063099,
+      "lon": -75.316299,
+      "name": "Hancock"
+    },
     "HQM": {
       "lat": 46.946999,
       "lon": -124.149002,
@@ -582,6 +592,11 @@
       "lon": -101.287003,
       "name": "Minot"
     },
+    "MPV": {
+      "lat": 44.085499,
+      "lon": -72.449402,
+      "name": "Montpelier"
+    },
     "MRF": {
       "lat": 30.298401,
       "lon": -103.955002,
@@ -591,6 +606,11 @@
       "lat": 34.706902,
       "lon": -87.491501,
       "name": "Muscle Shoals"
+    },
+    "MSS": {
+      "lat": 44.936157,
+      "lon": -74.844304,
+      "name": "Massena"
     },
     "MTU": {
       "lat": 40.1492,
@@ -686,6 +706,11 @@
       "lat": 28.7644,
       "lon": -96.306198,
       "name": "Palacios"
+    },
+    "PVD": {
+      "lat": 41.7243,
+      "lon": -71.429604,
+      "name": "Providence"
     },
     "PWE": {
       "lat": 40.200401,

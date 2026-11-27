@@ -109,6 +109,24 @@ _CONVECTIVE_SIGMET = re.compile(
     re.DOTALL | re.IGNORECASE,
 )
 
+# US domestic non-convective WS (FMH / WSUS): phonetic series + VALID UNTIL (Z optional).
+# Example: ``BOSQ WS 270354 SIGMET QUEBEC 5 VALID UNTIL 270754 NH … FROM …``.
+_US_DOMESTIC_WS_SIGMET = re.compile(
+    r"^(?:(?P<unit>(?!SIG|CON)[A-Z]{4})\s+WS\s+(?P<issue>\d{6})\s+)?"
+    r"SIGMET\s+(?P<seq>(?:[A-Z]+\s+\d+|[A-Z]?\d+))\s+"
+    r"VALID\s+UNTIL\s+(?P<until>\d{4,6})Z?\s+"
+    r"(?P<states>.+?)\s+FROM\s+(?P<body>.*)$",
+    re.DOTALL | re.IGNORECASE,
+)
+
+# Hazard lead-in after the closed FROM ring on domestic WS bodies.
+_US_DOMESTIC_WS_HAZARD_SPLIT = re.compile(
+    r"\b(?:OCNL|ISOL|OBSC|EMBD|FRQ|SQL|SEV|HVY|RDOACT|TC|VA|MOD)\b",
+    re.IGNORECASE,
+)
+
+_US_DOMESTIC_WS_BLW = re.compile(r"\bBLW\s+(?:FL)?(?P<fl>\d{2,3})\b", re.IGNORECASE)
+
 _NWS_HAZARD_IFR = "http://nws.weather.gov/codes/NWSI10-811/HazardTypes/IFR"
 
 _NWS_SIGMET_AREA_TS = "https://codes.nws.noaa.gov/NWSI-10-811/SIGMETWeatherPhenomena/AreaTS"
