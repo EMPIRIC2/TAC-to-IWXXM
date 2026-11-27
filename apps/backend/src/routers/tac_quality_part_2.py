@@ -39,7 +39,7 @@ async def lint_tac(
     ),
     semantic_profile: str = Form(
         default=PROFILE_ANNEX3,
-        description="Semantic / lint profile id (default annex3)",
+        description="Semantic / lint profile id (default ICAO_2025)",
     ),
     icao: str = Form(
         default="",

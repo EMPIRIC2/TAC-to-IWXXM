@@ -7,7 +7,7 @@ def convert(
     tac: str,
     *,
     product: str,
-    profile: str = "annex3",
+    profile: str = "ICAO_2025",
     iwxxm_version: str | None = None,
     preview: bool = False,
     emit_translation_centre: bool = False,
@@ -32,7 +32,7 @@ def convert(
         One of the F6 products or ``SWXA`` (F28).
 
     profile : str, optional
-        ``annex3`` (default) or ``iwxxm_us`` (METAR/SPECI US extensions; others T5.4-T5.5).
+        Canonical semantic id (default ``ICAO_2025``). Former aliases ``annex3`` / ``iwxxm_us`` are rejected (#1025).
 
     iwxxm_version : str | None, optional
         Target IWXXM release line.

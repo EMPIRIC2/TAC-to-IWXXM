@@ -55,7 +55,7 @@ def test_tc_f20_006_s1_speci_rejected_as_metar(name: str) -> None:
     assert report.ok is False
     assert "MISSING_PRODUCT_KEYWORD" in {i.code for i in report.issues}
     assert by_code("MISSING_PRODUCT_KEYWORD").severity == "error"
-    bad = convert(tac, product="METAR", profile="annex3", iwxxm_version="2025-2")
+    bad = convert(tac, product="METAR", profile="ICAO_2025", iwxxm_version="2025-2")
     assert bad.ok is False
     assert any("product mismatch" in (i.message or "").lower() for i in bad.issues)
 
@@ -65,7 +65,7 @@ def test_tc_f20_006_metar_rejected_as_speci() -> None:
     report = lint(tac, product="SPECI")
     assert report.ok is False
     assert "MISSING_PRODUCT_KEYWORD" in {i.code for i in report.issues}
-    bad = convert(tac, product="SPECI", profile="annex3", iwxxm_version="2025-2")
+    bad = convert(tac, product="SPECI", profile="ICAO_2025", iwxxm_version="2025-2")
     assert bad.ok is False
 
 
@@ -77,7 +77,7 @@ def test_tc_f20_006_matched_product_keeps_iwxxm_root() -> None:
     ):
         tac = (ANNEX3 / fname).read_text(encoding="utf-8")
         assert lint(tac, product=product).ok is True
-        result = convert(tac, product=product, profile="annex3", iwxxm_version="2025-2")
+        result = convert(tac, product=product, profile="ICAO_2025", iwxxm_version="2025-2")
         assert result.ok is True
         assert result.product == product
         assert root in result.xml
@@ -89,11 +89,11 @@ def test_tc_f20_006_bulletin_neighbors_no_silent_swap() -> None:
     speci = "SPECI KJFK 232045Z 18012KT 5SM BKN015 15/07 A3005="
     assert lint(metar, product="SPECI").ok is False
     assert lint(speci, product="METAR").ok is False
-    m = convert(metar, product="METAR", profile="annex3", iwxxm_version="2025-2")
-    s = convert(speci, product="SPECI", profile="annex3", iwxxm_version="2025-2")
+    m = convert(metar, product="METAR", profile="ICAO_2025", iwxxm_version="2025-2")
+    s = convert(speci, product="SPECI", profile="ICAO_2025", iwxxm_version="2025-2")
     assert m.ok
     assert "iwxxm:METAR" in m.xml
     assert s.ok
     assert "iwxxm:SPECI" in s.xml
-    assert convert(speci, product="METAR", profile="annex3", iwxxm_version="2025-2").ok is False
-    assert convert(metar, product="SPECI", profile="annex3", iwxxm_version="2025-2").ok is False
+    assert convert(speci, product="METAR", profile="ICAO_2025", iwxxm_version="2025-2").ok is False
+    assert convert(metar, product="SPECI", profile="ICAO_2025", iwxxm_version="2025-2").ok is False

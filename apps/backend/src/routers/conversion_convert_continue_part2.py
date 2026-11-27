@@ -234,6 +234,7 @@ async def convert_continue_part2(_prelude: dict[str, Any]) -> Any:
     runtime = _ConvertRuntime(
         product=product,
         emit_profile=emit_profile,
+        semantic_canonical=str(wire.semantic_canonical),
         iwxxm_version=iwxxm_version,
         preview=preview,
         stop_on_error=stop_on_error,

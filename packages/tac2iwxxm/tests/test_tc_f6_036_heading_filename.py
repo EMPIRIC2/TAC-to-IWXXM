@@ -31,7 +31,7 @@ def test_tc_f6_036_on_behalf_metar_uses_the_real_heading() -> None:
     result = convert(
         _BULLETIN,
         product="METAR",
-        profile="annex3",
+        profile="ICAO_2025",
         iwxxm_version="2025-2",
         emit_translation_centre=True,
         translation_centre_designator=_CENTRE,
@@ -62,7 +62,7 @@ def test_tc_f6_036_failed_translation_drops_the_placeholder_heading() -> None:
     result = convert(
         _FAILED,
         product="METAR",
-        profile="annex3",
+        profile="ICAO_2025",
         iwxxm_version="2025-2",
         translation_centre_designator=_CENTRE,
         translation_centre_name=_CENTRE_NAME,
@@ -82,7 +82,7 @@ def test_tc_f6_036_bulletin_convert_returns_gzip_filename() -> None:
     result = convert(
         _BULLETIN,
         product="METAR",
-        profile="annex3",
+        profile="ICAO_2025",
         iwxxm_version="2025-2",
     )
     name = result.suggested_filename or ""
@@ -97,7 +97,7 @@ def test_tc_f6_036_no_heading_is_not_invented_and_canada_stays_xml() -> None:
     result = convert(
         _BARE,
         product="METAR",
-        profile="annex3",
+        profile="ICAO_2025",
         iwxxm_version="2025-2",
         emit_translation_centre=True,
         translation_centre_designator=_CENTRE,
@@ -123,7 +123,7 @@ def test_tc_f6_036_bbb_heading_is_kept_on_the_filename() -> None:
     result = convert(
         bulletin,
         product="METAR",
-        profile="annex3",
+        profile="ICAO_2025",
         iwxxm_version="2025-2",
         emit_translation_centre=True,
         translation_centre_designator=_CENTRE,
@@ -151,7 +151,7 @@ def test_tc_f6_036_failed_heading_without_a_centre_omits_yuzz() -> None:
     result = convert(
         _FAILED,
         product="METAR",
-        profile="annex3",
+        profile="ICAO_2025",
         iwxxm_version="2025-2",
     )
     assert result.ok is True, result.issues

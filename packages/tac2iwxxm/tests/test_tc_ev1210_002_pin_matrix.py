@@ -76,8 +76,8 @@ def test_shadow_xml_byte_identical_on_every_existing_pin(
     if iwxxm_version not in pins:
         pytest.skip(f"{stem} has no {iwxxm_version} vendor copy")
     tac = _tac_for(stem)
-    legacy = convert(tac, product=product, profile="annex3", iwxxm_version=iwxxm_version)
-    shadow = convert_shadow(tac, product=product, profile="annex3", iwxxm_version=iwxxm_version)
+    legacy = convert(tac, product=product, profile="ICAO_2025", iwxxm_version=iwxxm_version)
+    shadow = convert_shadow(tac, product=product, profile="ICAO_2025", iwxxm_version=iwxxm_version)
     assert shadow.ok is legacy.ok
     # Exact convert bytes — not a semantic / soft compare.
     assert shadow.xml == legacy.xml

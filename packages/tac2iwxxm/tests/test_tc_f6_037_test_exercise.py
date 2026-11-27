@@ -41,7 +41,7 @@ def test_tc_f6_037_status_test_space_weather_is_non_operational() -> None:
         "NXT ADVISORY:",
         f"STATUS: TEST\nRMK: {_REMARK}\nNXT ADVISORY:",
     )
-    result = convert(tac, product="SWXA", profile="annex3", iwxxm_version="2025-2")
+    result = convert(tac, product="SWXA", profile="ICAO_2025", iwxxm_version="2025-2")
     assert result.ok is True, result.issues
     xml = result.xml or ""
     assert _attr(xml, "permissibleUsage") == "NON-OPERATIONAL"
@@ -55,7 +55,7 @@ def test_tc_f6_037_remark_test_without_status_is_non_operational() -> None:
         "NXT ADVISORY:",
         "RMK: THIS IS A TEST\nMESSAGE.\n\nNXT ADVISORY:",
     )
-    result = convert(tac, product="SWXA", profile="annex3", iwxxm_version="2025-2")
+    result = convert(tac, product="SWXA", profile="ICAO_2025", iwxxm_version="2025-2")
     assert result.ok is True, result.issues
     xml = result.xml or ""
     assert _attr(xml, "permissibleUsage") == "NON-OPERATIONAL"
@@ -68,7 +68,7 @@ def test_tc_f6_037_status_test_without_a_remark_uses_the_short_note() -> None:
     result = convert(
         _SWX.replace("NXT ADVISORY:", "STATUS: TEST\nNXT ADVISORY:"),
         product="SWXA",
-        profile="annex3",
+        profile="ICAO_2025",
         iwxxm_version="2025-2",
     )
     assert result.ok is True, result.issues
@@ -79,7 +79,7 @@ def test_tc_f6_037_status_test_without_a_remark_uses_the_short_note() -> None:
 
 def test_tc_f6_037_ordinary_metar_stays_operational() -> None:
     """An ordinary report omits the reason and the supplementary note."""
-    result = convert(_METAR, product="METAR", profile="annex3", iwxxm_version="2025-2")
+    result = convert(_METAR, product="METAR", profile="ICAO_2025", iwxxm_version="2025-2")
     assert result.ok is True, result.issues
     xml = result.xml or ""
     assert _attr(xml, "permissibleUsage") == "OPERATIONAL"
@@ -89,7 +89,7 @@ def test_tc_f6_037_ordinary_metar_stays_operational() -> None:
 
 def test_tc_f6_037_exercise_sigmet_uses_exercise_reason() -> None:
     """The word EXERCISE sets reason EXERCISE and the short fallback note."""
-    result = convert(_SIGMET, product="SIGMET", profile="annex3", iwxxm_version="2025-2")
+    result = convert(_SIGMET, product="SIGMET", profile="ICAO_2025", iwxxm_version="2025-2")
     assert result.ok is True, result.issues
     xml = result.xml or ""
     assert _attr(xml, "permissibleUsage") == "NON-OPERATIONAL"
@@ -103,7 +103,7 @@ def test_tc_f6_037_exercise_wins_when_a_test_marker_is_also_present() -> None:
         "NXT ADVISORY:",
         "STATUS: TEST\nRMK: THIS IS AN EXERCISE.\nNXT ADVISORY:",
     )
-    result = convert(tac, product="SWXA", profile="annex3", iwxxm_version="2025-2")
+    result = convert(tac, product="SWXA", profile="ICAO_2025", iwxxm_version="2025-2")
     assert result.ok is True, result.issues
     xml = result.xml or ""
     assert _attr(xml, "permissibleUsageReason") == "EXERCISE"
@@ -113,7 +113,7 @@ def test_tc_f6_037_exercise_wins_when_a_test_marker_is_also_present() -> None:
 def test_tc_f6_037_va_test_source_text_stays_operational() -> None:
     """Source text VA TEST is not an explicit test marker."""
     tac = _SWX.replace("NXT ADVISORY:", "RMK: VA TEST\nNXT ADVISORY:")
-    result = convert(tac, product="SWXA", profile="annex3", iwxxm_version="2025-2")
+    result = convert(tac, product="SWXA", profile="ICAO_2025", iwxxm_version="2025-2")
     assert result.ok is True, result.issues
     xml = result.xml or ""
     assert _attr(xml, "permissibleUsage") == "OPERATIONAL"
@@ -122,7 +122,7 @@ def test_tc_f6_037_va_test_source_text_stays_operational() -> None:
 
 def test_tc_f6_037_failed_translation_stays_operational() -> None:
     """A failed translation stays operational even when the TAC says TEST."""
-    result = convert(_FAILED, product="METAR", profile="annex3", iwxxm_version="2025-2")
+    result = convert(_FAILED, product="METAR", profile="ICAO_2025", iwxxm_version="2025-2")
     assert result.ok is True, result.issues
     xml = result.xml or ""
     assert "translationFailedTAC" in xml

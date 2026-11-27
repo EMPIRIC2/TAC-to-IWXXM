@@ -22,7 +22,7 @@ profiles:
     kind: semantic
     priority: P0
     status: implemented
-    legacy_alias: annex3
+    legacy_alias: null  # removed after 2026-10-31 (#1025); was annex3
     emit_key: annex3
     implementation:
       package: packages/tac2iwxxm
@@ -59,7 +59,7 @@ profiles:
     kind: semantic
     priority: P0
     status: implemented
-    legacy_alias: iwxxm_us
+    legacy_alias: null  # removed after 2026-10-31 (#1025); was iwxxm_us
     emit_key: iwxxm_us
     implementation:
       package: packages/tac2iwxxm

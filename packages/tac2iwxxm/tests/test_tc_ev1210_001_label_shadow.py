@@ -68,8 +68,8 @@ def test_label_shadow_xml_matches_legacy(
     iwxxm_version: str,
 ) -> None:
     tac = _tac(case_id)
-    legacy = convert(tac, product=product, profile="annex3", iwxxm_version=iwxxm_version)
-    shadow = convert_shadow(tac, product=product, profile="annex3", iwxxm_version=iwxxm_version)
+    legacy = convert(tac, product=product, profile="ICAO_2025", iwxxm_version=iwxxm_version)
+    shadow = convert_shadow(tac, product=product, profile="ICAO_2025", iwxxm_version=iwxxm_version)
     assert shadow.ok is legacy.ok
     assert shadow.xml == legacy.xml
     assert shadow.iwxxm_version == iwxxm_version
@@ -92,7 +92,7 @@ def test_label_shadow_keeps_2025_2_golden(
 ) -> None:
     case = _case(case_id)
     golden = (_ANNEX3 / case["golden"]).read_text(encoding="utf-8")
-    shadow = convert_shadow(_tac(case_id), product=product, profile="annex3", iwxxm_version="2025-2")
+    shadow = convert_shadow(_tac(case_id), product=product, profile="ICAO_2025", iwxxm_version="2025-2")
     assert shadow.xml is not None
     assert canonicalize_xml(shadow.xml) == canonicalize_xml(golden)
 
@@ -105,8 +105,8 @@ def test_same_tac_explains_the_same_on_both_annex3_pins(
     _pins: tuple[str, ...],
 ) -> None:
     tac = _tac(case_id)
-    older = convert_shadow(tac, product=product, profile="annex3", iwxxm_version="2023-1")
-    newer = convert_shadow(tac, product=product, profile="annex3", iwxxm_version="2025-2")
+    older = convert_shadow(tac, product=product, profile="ICAO_2025", iwxxm_version="2023-1")
+    newer = convert_shadow(tac, product=product, profile="ICAO_2025", iwxxm_version="2025-2")
     assert older.xml is not None
     assert newer.xml is not None
     assert older.xml != newer.xml
@@ -123,8 +123,8 @@ def test_annex3_rejects_3_0_0_in_shadow_the_same_way(
     _pins: tuple[str, ...],
 ) -> None:
     tac = _tac(case_id)
-    legacy = convert(tac, product=product, profile="annex3", iwxxm_version="3.0.0")
-    shadow = convert_shadow(tac, product=product, profile="annex3", iwxxm_version="3.0.0")
+    legacy = convert(tac, product=product, profile="ICAO_2025", iwxxm_version="3.0.0")
+    shadow = convert_shadow(tac, product=product, profile="ICAO_2025", iwxxm_version="3.0.0")
     assert legacy.ok is False
     assert shadow.ok is False
     assert shadow.xml == legacy.xml

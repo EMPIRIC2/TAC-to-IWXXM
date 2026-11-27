@@ -66,8 +66,8 @@ def test_shadow_xml_matches_legacy_and_selects_pack(
     iwxxm_version: str,
 ) -> None:
     tac = _tac(tac_name)
-    legacy = convert(tac, product=product, profile="annex3", iwxxm_version=iwxxm_version)
-    shadow = convert_shadow(tac, product=product, profile="annex3", iwxxm_version=iwxxm_version)
+    legacy = convert(tac, product=product, profile="ICAO_2025", iwxxm_version=iwxxm_version)
+    shadow = convert_shadow(tac, product=product, profile="ICAO_2025", iwxxm_version=iwxxm_version)
     assert shadow.ok is legacy.ok
     assert shadow.xml == legacy.xml
     assert shadow.iwxxm_version == iwxxm_version
@@ -92,7 +92,7 @@ def test_shadow_keeps_2025_2_golden(
         expected = (_ANNEX3 / golden).read_text(encoding="utf-8")
     else:
         expected = (_VENDOR / "2025-2" / "IWXXM" / "examples" / f"{stem}.xml").read_text(encoding="utf-8")
-    shadow = convert_shadow(_tac(tac_name), product=product, profile="annex3", iwxxm_version="2025-2")
+    shadow = convert_shadow(_tac(tac_name), product=product, profile="ICAO_2025", iwxxm_version="2025-2")
     assert shadow.xml is not None
     assert canonicalize_xml(shadow.xml) == canonicalize_xml(expected)
 
@@ -106,8 +106,8 @@ def test_same_tac_selects_the_same_pack_on_both_pins(
     _golden: str,
 ) -> None:
     tac = _tac(tac_name)
-    older = convert_shadow(tac, product=product, profile="annex3", iwxxm_version="2023-1")
-    newer = convert_shadow(tac, product=product, profile="annex3", iwxxm_version="2025-2")
+    older = convert_shadow(tac, product=product, profile="ICAO_2025", iwxxm_version="2023-1")
+    newer = convert_shadow(tac, product=product, profile="ICAO_2025", iwxxm_version="2025-2")
     assert older.xml is not None
     assert newer.xml is not None
     assert older.xml != newer.xml
@@ -127,8 +127,8 @@ def test_annex3_rejects_3_0_0_the_same_way(
     _golden: str,
 ) -> None:
     tac = _tac(tac_name)
-    legacy = convert(tac, product=product, profile="annex3", iwxxm_version="3.0.0")
-    shadow = convert_shadow(tac, product=product, profile="annex3", iwxxm_version="3.0.0")
+    legacy = convert(tac, product=product, profile="ICAO_2025", iwxxm_version="3.0.0")
+    shadow = convert_shadow(tac, product=product, profile="ICAO_2025", iwxxm_version="3.0.0")
     assert legacy.ok is False
     assert shadow.ok is False
     assert shadow.xml == legacy.xml
@@ -141,8 +141,8 @@ def test_sigmet_aliases_are_not_products() -> None:
     """Ordinary, VA, and TC stay ``product=SIGMET``. No new product id."""
     tac = _tac("sigmet_va_eggx.tac")
     for product in ("VA_SIGMET", "TC_SIGMET"):
-        legacy = convert(tac, product=product, profile="annex3", iwxxm_version="2025-2")
-        shadow = convert_shadow(tac, product=product, profile="annex3", iwxxm_version="2025-2")
+        legacy = convert(tac, product=product, profile="ICAO_2025", iwxxm_version="2025-2")
+        shadow = convert_shadow(tac, product=product, profile="ICAO_2025", iwxxm_version="2025-2")
         assert legacy.ok is False
         assert shadow.ok is False
         assert shadow.xml == legacy.xml
@@ -151,8 +151,8 @@ def test_sigmet_aliases_are_not_products() -> None:
 
 
 def test_unparsed_sigmet_still_uses_the_ordinary_pack() -> None:
-    legacy = convert("SIGMET", product="SIGMET", profile="annex3", iwxxm_version="2025-2")
-    shadow = convert_shadow("SIGMET", product="SIGMET", profile="annex3", iwxxm_version="2025-2")
+    legacy = convert("SIGMET", product="SIGMET", profile="ICAO_2025", iwxxm_version="2025-2")
+    shadow = convert_shadow("SIGMET", product="SIGMET", profile="ICAO_2025", iwxxm_version="2025-2")
     assert legacy.ok is True
     assert shadow.xml == legacy.xml
     assert shadow.pack_id == "sigmet"

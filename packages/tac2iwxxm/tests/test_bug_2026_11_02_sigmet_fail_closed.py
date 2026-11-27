@@ -29,7 +29,7 @@ def test_empty_sigmet_and_airmet_fail_closed() -> None:
     empty_sig = convert(
         "YUDD SIGMET 2 VALID 101200/101600 YUSO-=",
         product="SIGMET",
-        profile="annex3",
+        profile="ICAO_2025",
         iwxxm_version="2025-2",
     )
     assert empty_sig.ok is False
@@ -38,7 +38,7 @@ def test_empty_sigmet_and_airmet_fail_closed() -> None:
     empty_air = convert(
         "YUDD AIRMET 1 VALID 151520/151800 YUSO-=",
         product="AIRMET",
-        profile="annex3",
+        profile="ICAO_2025",
         iwxxm_version="2025-2",
     )
     assert empty_air.ok is False
@@ -65,7 +65,7 @@ def test_inverted_valid_period_fails_and_quarantine_nils() -> None:
         "YUDD SIGMET 2 VALID 101200/101200 YUSO-\n"
         "YUDD SHANLON FIR/UIR OBSC TS FCST S OF N54 AND E OF W012 TOP FL390 MOV E 20KT WKN=",
         product="SIGMET",
-        profile="annex3",
+        profile="ICAO_2025",
         iwxxm_version="2025-2",
     )
     assert hard.ok is False
@@ -73,7 +73,7 @@ def test_inverted_valid_period_fails_and_quarantine_nils() -> None:
     shell = convert(
         "YUDD SIGMET 1 VALID 101600/101200 YUSO INVALID",
         product="SIGMET",
-        profile="annex3",
+        profile="ICAO_2025",
         iwxxm_version="2025-2",
     )
     assert shell.ok is True

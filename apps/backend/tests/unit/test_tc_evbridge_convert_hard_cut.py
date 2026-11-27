@@ -19,7 +19,7 @@ from metar_iwxxm_api.convert_library_hard_cut import (
 def test_legacy_fields_detected() -> None:
     """Non-empty legacy fields are listed."""
     assert legacy_convert_fields_present(semantic_profile="ICAO_2025") == ["semantic_profile"]
-    assert legacy_convert_fields_present(profile="annex3", preset_id="x") == [
+    assert legacy_convert_fields_present(profile="ICAO_2025", preset_id="x") == [
         "profile",
         "preset_id",
     ]
@@ -61,10 +61,10 @@ def test_resolve_non_conversion_library_raises() -> None:
 
 
 def test_resolve_custom_engine_profile_callback() -> None:
-    """Custom lookup resolves engine profile via semantic alias or raw wire id."""
+    """Custom lookup resolves engine profile via canonical id or raw wire id."""
     lib_id, engine = resolve_engine_profile_from_conversion_library(
         "custom-asset-1",
-        get_custom_engine_profile_id=lambda _aid: "annex3",
+        get_custom_engine_profile_id=lambda _aid: "ICAO_2025",
     )
     assert lib_id == "custom-asset-1"
     assert engine == "ICAO_2025"
@@ -76,6 +76,13 @@ def test_resolve_custom_engine_profile_callback() -> None:
     assert lib_id2 == "custom-asset-2"
     assert engine2 == "NOT_A_SEMANTIC"
 
+    # #1025: removed alias is not remapped.
+    _lib, raw = resolve_engine_profile_from_conversion_library(
+        "custom-asset-alias",
+        get_custom_engine_profile_id=lambda _aid: "annex3",
+    )
+    assert raw == "ANNEX3"
+
 
 def test_resolve_custom_callback_none_still_unknown() -> None:
     """Callback that returns None / empty still fails closed."""
@@ -86,11 +93,12 @@ def test_resolve_custom_callback_none_still_unknown() -> None:
         )
 
 
-def test_library_id_for_alias_annex3() -> None:
-    """annex3 alias maps to ICAO; dropped nationals fall back to ICAO (FR-019..022)."""
+def test_library_id_for_removed_alias_falls_back_to_icao() -> None:
+    """#1025: removed aliases and dropped nationals fall back to ICAO default."""
     assert library_id_for_semantic_or_alias("annex3") == "LIB.CONVERSION.ICAO_2025"
     assert library_id_for_semantic_or_alias("iwxxm_us") == "LIB.CONVERSION.ICAO_2025"
     assert library_id_for_semantic_or_alias("CA_ECCC") == "LIB.CONVERSION.ICAO_2025"
+    assert library_id_for_semantic_or_alias("ICAO_2025") == "LIB.CONVERSION.ICAO_2025"
 
 
 def test_library_id_for_empty_lib_prefix_and_unknown() -> None:
@@ -121,10 +129,17 @@ def test_resolve_custom_library_via_callback() -> None:
 
     lib_id2, engine2 = resolve_engine_profile_from_conversion_library(
         "custom-alias",
-        get_custom_engine_profile_id=lambda _aid: "annex3",
+        get_custom_engine_profile_id=lambda _aid: "ICAO_2025",
     )
     assert lib_id2 == "custom-alias"
     assert engine2 == "ICAO_2025"
+
+    # #1025: removed wire alias is not remapped; raw token is uppercased.
+    _lib, raw_alias = resolve_engine_profile_from_conversion_library(
+        "custom-removed-alias",
+        get_custom_engine_profile_id=lambda _aid: "annex3",
+    )
+    assert raw_alias == "ANNEX3"
 
 
 def test_resolve_dissemination_first_party_and_custom() -> None:

@@ -337,6 +337,7 @@ class _ConvertRuntime:
 
     product: str
     emit_profile: str
+    semantic_canonical: str
     iwxxm_version: str
     preview: bool
     stop_on_error: bool

@@ -19,7 +19,7 @@ from tac2iwxxm.profile_registry import (
     resolve_semantic_profile,
 )
 
-_LEGACY_DEFAULT_PROFILE = "annex3"
+_LEGACY_DEFAULT_PROFILE = "ICAO_2025"
 _WIRE_V2_DEFAULT_SEMANTIC = "ICAO_2025"
 
 
@@ -163,9 +163,9 @@ def resolve_route_profiles(
     Parameters
     ----------
     profile :
-        Legacy flat profile field (deprecated alias path).
+        Legacy flat profile field (deprecated; must be a canonical id when provided).
     semantic_profile :
-        Canonical or alias semantic profile id.
+        Canonical semantic profile id (aliases removed #1025).
     exchange_profile :
         Exchange packaging profile id (validated when provided).
     for_packaging :

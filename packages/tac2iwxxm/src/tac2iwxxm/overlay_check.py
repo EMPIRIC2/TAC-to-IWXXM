@@ -8,7 +8,7 @@ from pathlib import Path
 from tac2iwxxm.profile_resolve import ENV_PROFILE_DIR, resolve_validation_policies
 
 
-def check_profile_overlay_dir(directory: Path | str, *, profile: str = "annex3") -> None:
+def check_profile_overlay_dir(directory: Path | str, *, profile: str = "ICAO_2025") -> None:
     """
     Resolve validation policies with ``TAC2IWXXM_PROFILE_DIR`` set to ``directory``.
 
@@ -18,7 +18,7 @@ def check_profile_overlay_dir(directory: Path | str, *, profile: str = "annex3")
         Directory of profile → policy binding YAML overlays.
 
     profile : str, optional
-        Conversion profile id to resolve (default ``annex3``).
+        Canonical conversion profile id to resolve (default ``ICAO_2025``).
 
     Raises
     ------

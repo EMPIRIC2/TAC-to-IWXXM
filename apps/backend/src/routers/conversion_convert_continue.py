@@ -134,7 +134,7 @@ async def convert_continue(_prelude: dict[str, Any]) -> Any:
         json_exchange_profile=None,
     )
     emit_profile: str = str(wire.emit_key)
-    profile = emit_profile
+    profile = str(wire.semantic_canonical)
     iwxxm_version = _resolve_effective_iwxxm_version(
         iwxxm_version,
         semantic_canonical=wire.semantic_canonical,
@@ -272,7 +272,7 @@ async def convert_continue(_prelude: dict[str, Any]) -> Any:
                 report = api_surface._call_iwxxm_validate(
                     pass_payload,
                     iwxxm_version=iwxxm_version,
-                    profile=(profile or "annex3"),
+                    profile=(profile or "ICAO_2025"),
                     levels=("xsd", "schematron"),
                     emit_key=(profile or "annex3"),
                     extensions=resolved_extensions,

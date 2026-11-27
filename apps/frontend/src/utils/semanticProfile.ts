@@ -2,16 +2,16 @@
  * Semantic IWXXM profile ids for the operator Profile picker.
  *
  * FR-019..022 / M1: national profiles dropped; ICAO baseline only.
- * Legacy `annex3` alias remains for ICAO_2025.
+ * Wire aliases annex3 / iwxxm_us removed after 2026-10-31 (#1025).
  *
- * [Corpus: fr] epic #1688
+ * [Corpus: fr] epic #1688 [Corpus: domain]
  */
 
 /** Registered canonical semantic profile ids (uppercase OpenAPI). */
 export const CANONICAL_SEMANTIC_PROFILES = ['ICAO_2025'] as const;
 
-/** Legacy emit aliases kept as distinct select values for ICAO baseline. */
-export const LEGACY_SEMANTIC_ALIASES = ['annex3'] as const;
+/** Legacy emit aliases — empty after #1025 cutover. */
+export const LEGACY_SEMANTIC_ALIASES = [] as const;
 
 /**
  * Type `CanonicalSemanticProfile`.
@@ -28,30 +28,22 @@ export type CanonicalSemanticProfile = (typeof CANONICAL_SEMANTIC_PROFILES)[numb
 export type LegacySemanticAlias = (typeof LEGACY_SEMANTIC_ALIASES)[number];
 
 /**
- * UI / session profile value (canonical uppercase or legacy alias).
+ * UI / session profile value (canonical uppercase).
  * @example
  * const _ = true;
  */
-export type IwxxmProfile = CanonicalSemanticProfile | LegacySemanticAlias;
+export type IwxxmProfile = CanonicalSemanticProfile;
 
-/** Default Profile selection (canonical alias of former annex3 default). */
+/** Default Profile selection. */
 export const DEFAULT_SEMANTIC_PROFILE: IwxxmProfile = 'ICAO_2025';
 
-const ALIAS_TO_CANONICAL: Record<LegacySemanticAlias, CanonicalSemanticProfile> = {
-  annex3: 'ICAO_2025',
-};
-
 const CANONICAL_SET = new Set<string>(CANONICAL_SEMANTIC_PROFILES);
-const ALIAS_SET = new Set<string>(LEGACY_SEMANTIC_ALIASES);
 
-/** Plain-language Profile select options (canonicals first, then legacy aliases). */
+/** Plain-language Profile select options (canonical only). */
 export const SEMANTIC_PROFILE_OPTIONS: readonly {
   value: IwxxmProfile;
   label: string;
-}[] = [
-  { value: 'ICAO_2025', label: 'ICAO / WMO Annex 3 (2025)' },
-  { value: 'annex3', label: 'Annex 3 (legacy alias)' },
-] as const;
+}[] = [{ value: 'ICAO_2025', label: 'ICAO / WMO Annex 3 (2025)' }] as const;
 
 /**
  * Normalize a profile id for equality checks (lowercase, hyphen → underscore).
@@ -77,31 +69,26 @@ export function isCaEcccProfile(profile: string): boolean {
 }
 
 /**
- * Map a stored alias to its canonical display id; leave other known ids as-is.
+ * Map a stored value to its canonical display id.
  *
- * Used when hydrating prefs / work sessions (FR-04).
+ * Former aliases annex3 / iwxxm_us hydrate to ICAO_2025 (#1025).
  *
  * @param value - Candidate profile string
- * @returns Profile suitable for the select (canonical preferred over alias)
+ * @returns Profile suitable for the select
  * @example
  * const _ = true;
  */
 export function hydrateSemanticProfile(value: unknown): IwxxmProfile {
-  const coerced = coerceIwxxmProfile(value);
-  if (ALIAS_SET.has(coerced)) {
-    return ALIAS_TO_CANONICAL[coerced as LegacySemanticAlias];
-  }
-  return coerced;
+  return coerceIwxxmProfile(value);
 }
 
 /**
  * Narrow stored/UI profile strings to a supported select value.
  *
- * Keeps legacy aliases as distinct values so alias convert metrics still fire.
- * Lowercase canonicals (e.g. ``ca_eccc``) become uppercase OpenAPI ids.
+ * Unknown ids and removed aliases fall back to {@link DEFAULT_SEMANTIC_PROFILE}.
  *
  * @param value - Candidate profile string
- * @returns Supported profile id (default {@link DEFAULT_SEMANTIC_PROFILE})
+ * @returns Supported profile id
  * @example
  * const _ = true;
  */
@@ -110,16 +97,14 @@ export function coerceIwxxmProfile(value: unknown): IwxxmProfile {
     return DEFAULT_SEMANTIC_PROFILE;
   }
   const raw = value.trim();
-  if (ALIAS_SET.has(raw)) {
-    return raw as LegacySemanticAlias;
-  }
   const upper = raw.toUpperCase().replace(/-/g, '_');
   if (CANONICAL_SET.has(upper)) {
     return upper as CanonicalSemanticProfile;
   }
   const norm = normalizeSemanticProfileId(raw);
-  if (norm === 'annex3') {
-    return 'annex3';
+  // Removed wire aliases (#1025) → ICAO baseline
+  if (norm === 'annex3' || norm === 'iwxxm_us') {
+    return DEFAULT_SEMANTIC_PROFILE;
   }
   return DEFAULT_SEMANTIC_PROFILE;
 }
@@ -127,14 +112,11 @@ export function coerceIwxxmProfile(value: unknown): IwxxmProfile {
 /**
  * FormData / OpenAPI wire value for ``semantic_profile``.
  *
- * Canonical options stay uppercase; legacy aliases stay lowercase emit keys.
- *
  * @param profile - Current Profile select value
  * @returns Wire string for multipart ``semantic_profile``
  * @example
  * const _ = true;
  */
 export function wireSemanticProfile(profile: string | undefined): string {
-  const coerced = coerceIwxxmProfile(profile);
-  return coerced;
+  return coerceIwxxmProfile(profile);
 }

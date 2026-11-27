@@ -1,7 +1,9 @@
 """Semantic profile id registry (F35).
 
 Canonical semantic ids map to internal emitter keys (`annex3` / `iwxxm_us`).
-Legacy aliases remain accepted during the deprecation window ([#1025](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1025)).
+Wire aliases `annex3` / `iwxxm_us` were removed after 2026-10-31
+([#1025](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1025)); callers use
+`ICAO_2025` / `US_FAA_NWS` (and other canonical ids).
 """
 
 from __future__ import annotations
@@ -44,10 +46,9 @@ EMIT_US_NWS_G_AIRMET = "us_nws_g_airmet"
 EMIT_US_NWS_VONA = "us_nws_vona"
 EMIT_CA_MSC_SIGMET = "ca_msc_sigmet"
 
-_ALIAS_TO_CANONICAL: dict[str, str] = {
-    EMIT_ANNEX3: CANONICAL_ICAO_2025,
-    EMIT_IWXXM_US: CANONICAL_US_FAA_NWS,
-}
+# Wire aliases annex3 / iwxxm_us removed after 2026-10-31 (#1025).
+# Internal emit keys remain for plugin dispatch via _CANONICAL_TO_EMIT values.
+_REMOVED_WIRE_ALIASES: frozenset[str] = frozenset({EMIT_ANNEX3, EMIT_IWXXM_US})
 
 _CANONICAL_TO_EMIT: dict[str, str] = {
     CANONICAL_ICAO_2025: EMIT_ANNEX3,
@@ -69,7 +70,7 @@ _CANONICAL_TO_EMIT: dict[str, str] = {
     CANONICAL_CA_MSC_SIGMET: EMIT_CA_MSC_SIGMET,
 }
 
-_KNOWN_WIRE_IDS: frozenset[str] = frozenset(_ALIAS_TO_CANONICAL) | frozenset(_CANONICAL_TO_EMIT)
+_KNOWN_WIRE_IDS: frozenset[str] = frozenset(_CANONICAL_TO_EMIT)
 _GENERAL_IWXXM_VERSIONS = frozenset({"2025-2", "2023-1"})
 _PROFILE_SCOPED_IWXXM_VERSIONS: dict[str, frozenset[str]] = {
     EMIT_CA_ECCC: frozenset({"3.0.0"}),
@@ -85,7 +86,6 @@ _PROFILE_REPORT_VARIANTS: dict[str, dict[str, frozenset[str]]] = {
 # FR-019..022 / M1: product HTTP / first-party library / inspector ship ICAO only.
 # Full registry above remains for emit-package unit suites until a later delete.
 _SHIPPED_PRODUCT_CANONICAL: frozenset[str] = frozenset({CANONICAL_ICAO_2025})
-_SHIPPED_PRODUCT_ALIASES: frozenset[str] = frozenset({EMIT_ANNEX3})
 
 
 @dataclass(frozen=True, slots=True)
@@ -115,7 +115,7 @@ def normalize_profile_id(profile: str) -> str:
     Parameters
     ----------
     profile : str
-        Profile id (e.g. ``ICAO_2025``, ``annex3``).
+        Profile id (e.g. ``ICAO_2025``).
 
     Returns
     -------
@@ -132,21 +132,17 @@ def resolve_semantic_profile(profile: str) -> ResolvedSemanticProfile | None:
     Parameters
     ----------
     profile : str
-        Canonical id or legacy alias.
+        Canonical semantic id (for example ``ICAO_2025``). Former wire
+        aliases ``annex3`` / ``iwxxm_us`` are rejected (#1025).
 
     Returns
     -------
     ResolvedSemanticProfile | None
-        ``None`` when the id is unknown.
+        ``None`` when the id is unknown or a removed wire alias.
     """
     norm = normalize_profile_id(profile)
-    if norm in _ALIAS_TO_CANONICAL:
-        canonical = _ALIAS_TO_CANONICAL[norm]
-        return ResolvedSemanticProfile(
-            canonical=canonical,
-            emit_key=_CANONICAL_TO_EMIT[canonical],
-            alias_used=True,
-        )
+    if norm in _REMOVED_WIRE_ALIASES:
+        return None
     if norm in _CANONICAL_TO_EMIT:
         return ResolvedSemanticProfile(
             canonical=norm,
@@ -158,12 +154,12 @@ def resolve_semantic_profile(profile: str) -> ResolvedSemanticProfile | None:
 
 def known_semantic_profile_ids() -> frozenset[str]:
     """
-    Return all accepted semantic profile wire ids (canonical + aliases).
+    Return all accepted semantic profile wire ids (canonical only).
 
     Returns
     -------
     frozenset[str]
-        All accepted semantic profile wire ids (canonical + aliases).
+        All accepted semantic profile wire ids (canonical only; no aliases).
     """
     return _KNOWN_WIRE_IDS
 
@@ -179,7 +175,7 @@ def is_shipped_product_semantic_profile(profile: str) -> bool:
     Parameters
     ----------
     profile : str
-        Semantic profile id or alias (for example ``ICAO_2025`` or ``annex3``).
+        Semantic profile id (for example ``ICAO_2025``).
 
     Returns
     -------

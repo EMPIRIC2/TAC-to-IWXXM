@@ -73,22 +73,25 @@ def test_us_profile_converts_tca_swxa_and_vona() -> None:
         ("VONA", _FIXTURES / "annex3_golden" / "vona_a7_1.tac"),
     )
     for product, path in cases:
-        result = convert(path.read_text(encoding="utf-8"), product=product, profile="iwxxm_us", iwxxm_version="2025-2")
+        result = convert(
+            path.read_text(encoding="utf-8"), product=product, profile="US_FAA_NWS", iwxxm_version="2025-2"
+        )
         assert result.ok, (product, result.issues)
-        assert _xsd_errors(result.xml, iwxxm_version="2025-2", profile="iwxxm_us") == []
+        assert _xsd_errors(result.xml, iwxxm_version="2025-2", profile=result.profile) == []
 
 
 def test_us_profile_converts_padded_kilauea_vona() -> None:
-    result = convert(_KILAUEA_VONA, product="VONA", profile="iwxxm_us", iwxxm_version="2025-2")
+    result = convert(_KILAUEA_VONA, product="VONA", profile="US_FAA_NWS", iwxxm_version="2025-2")
     assert result.ok, result.issues
     assert "KILAUEA" in result.xml
-    assert _xsd_errors(result.xml, iwxxm_version="2025-2", profile="iwxxm_us") == []
+    assert _xsd_errors(result.xml, iwxxm_version="2025-2", profile=result.profile) == []
 
 
 def test_au_bom_converts_darwin_vaa() -> None:
     result = convert(_DARWIN_VAA, product="VAA", profile="au_bom", iwxxm_version="2025-2")
     assert result.ok, result.issues
     assert "DUKONO" in result.xml
+    # iwxxm-validate schema profile is the emit key for general IWXXM (annex3).
     assert _xsd_errors(result.xml, iwxxm_version="2025-2", profile="annex3") == []
 
 

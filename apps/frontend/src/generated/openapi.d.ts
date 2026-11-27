@@ -1860,7 +1860,7 @@ export interface components {
             product: string;
             /**
              * Profile
-             * @description Deprecated - use conversion_library_id (legacy alias: annex3 or iwxxm_us)
+             * @description Deprecated - use conversion_library_id (use canonical ids; annex3/iwxxm_us aliases removed #1025)
              * @default
              */
             profile: string;
@@ -1941,7 +1941,7 @@ export interface components {
             manual_text: string;
             /**
              * Profile
-             * @default annex3
+             * @default ICAO_2025
              */
             profile: string;
         };
@@ -1969,7 +1969,7 @@ export interface components {
             product: string;
             /**
              * Semantic Profile
-             * @description Semantic / lint profile id (default annex3)
+             * @description Semantic / lint profile id (default ICAO_2025)
              * @default annex3
              */
             semantic_profile: string;
@@ -2021,14 +2021,14 @@ export interface components {
             product: string;
             /**
              * Profile
-             * @description Deprecated - use semantic_profile (legacy alias: annex3 or iwxxm_us)
+             * @description Deprecated - use semantic_profile (use canonical ids; annex3/iwxxm_us aliases removed #1025)
              * @default
              */
             profile: string;
             request_body?: components["schemas"]["ValidateRequest"] | null;
             /**
              * Semantic Profile
-             * @description Semantic profile id (e.g. ICAO_2025, US_FAA_NWS, CA_ECCC, AU_BOM, NZ_CAA_MET, UK_METOFFICE; aliases annex3 / iwxxm_us accepted)
+             * @description Semantic profile id (e.g. ICAO_2025, US_FAA_NWS, CA_ECCC, AU_BOM, NZ_CAA_MET, UK_METOFFICE; canonical ids only; annex3/iwxxm_us aliases removed #1025)
              * @default
              */
             semantic_profile: string;
@@ -4906,7 +4906,7 @@ export interface components {
             product?: string | null;
             /**
              * Profile
-             * @description Deprecated - use semantic_profile (legacy alias: annex3 or iwxxm_us)
+             * @description Deprecated - use semantic_profile (use canonical ids; annex3/iwxxm_us aliases removed #1025)
              * @default
              * @example annex3
              * @example iwxxm_us

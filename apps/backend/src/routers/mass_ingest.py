@@ -162,7 +162,7 @@ async def ingest_collect(
     request: Request,
     files: list[UploadFile] | None = File(None),
     manual_text: str = Form(default="", description="COLLECT IWXXM XML or inflated gzip text"),
-    profile: str = Form(default="annex3"),
+    profile: str = Form(default="ICAO_2025"),
     iwxxm_version: str = Form(default="2025-2"),
 ) -> dict[str, Any]:
     """

@@ -67,7 +67,7 @@ def test_convert_iwxxm_us_profile() -> None:
     xml, _ = convert_metar_tac_with_metadata(
         "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005 RMK AO2 SLP149=",
         validate=False,
-        profile="iwxxm_us",
+        profile="US_FAA_NWS",
     )
     assert "iwxxm-us" in xml or "www.weather.gov/iwxxm-us" in xml
 

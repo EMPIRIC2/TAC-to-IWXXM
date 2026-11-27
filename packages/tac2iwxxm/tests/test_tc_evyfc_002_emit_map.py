@@ -36,10 +36,10 @@ def _clear_emit_map_cache() -> None:
 
 def test_tc_evyfc_002_builtin_emit_map_parity_annex3() -> None:
     """YAML-routed emit matches direct python plugin (TC-EVYFC-002)."""
-    result = convert(_TAC, product="METAR", profile="annex3", iwxxm_version="2025-2")
+    result = convert(_TAC, product="METAR", profile="ICAO_2025", iwxxm_version="2025-2")
     assert result.ok is True
     assert result.xml
-    mapped = resolve_emit_map(profile="annex3", product="METAR", iwxxm_version="2025-2")
+    mapped = resolve_emit_map(profile="ICAO_2025", product="METAR", iwxxm_version="2025-2")
     assert mapped.id == "annex3-metar-speci-emit"
     assert "emit_metar_speci_annex3" in mapped.plugin
 
@@ -47,12 +47,12 @@ def test_tc_evyfc_002_builtin_emit_map_parity_annex3() -> None:
 def test_tc_evyfc_002_emit_with_map_matches_plugin() -> None:
     parsed = parse_metar_speci(_TAC, product="METAR")
     direct = emit_metar_speci_annex3(parsed, product="METAR", iwxxm_version="2025-2")
-    via_map = emit_with_map(parsed, product="METAR", profile="annex3", iwxxm_version="2025-2")
+    via_map = emit_with_map(parsed, product="METAR", profile="ICAO_2025", iwxxm_version="2025-2")
     assert via_map == direct
 
 
 def test_tc_evyfc_002_speci_uses_same_map() -> None:
-    mapped = resolve_emit_map(profile="annex3", product="SPECI", iwxxm_version="2023-1")
+    mapped = resolve_emit_map(profile="ICAO_2025", product="SPECI", iwxxm_version="2023-1")
     assert mapped.id == "annex3-metar-speci-emit"
 
 
@@ -60,7 +60,7 @@ def test_load_catalog_has_us_and_ca() -> None:
     catalog = load_emit_map_catalog()
     assert "iwxxm-us-metar-speci-emit" in catalog
     assert "ca-eccc-metar-speci-emit" in catalog
-    us = resolve_emit_map(profile="iwxxm_us", product="METAR", iwxxm_version="2025-2")
+    us = resolve_emit_map(profile="US_FAA_NWS", product="METAR", iwxxm_version="2025-2")
     assert "iwxxm_us" in us.plugin
     ca = resolve_emit_map(profile="ca_eccc", product="METAR", iwxxm_version="3.0.0")
     assert "ca_eccc" in ca.plugin
@@ -68,7 +68,7 @@ def test_load_catalog_has_us_and_ca() -> None:
 
 def test_emit_map_missing_raises() -> None:
     with pytest.raises(EmitMapError, match="no emit map"):
-        resolve_emit_map(profile="annex3", product="SWXA", iwxxm_version="2025-2")
+        resolve_emit_map(profile="ICAO_2025", product="SWXA", iwxxm_version="2025-2")
 
 
 def test_emit_map_overlay_extends_plugin(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -83,7 +83,7 @@ def test_emit_map_overlay_extends_plugin(tmp_path: Path, monkeypatch: pytest.Mon
         encoding="utf-8",
     )
     monkeypatch.setenv(ENV_EMIT_MAP_DIR, str(tmp_path))
-    mapped = resolve_emit_map(profile="annex3", product="METAR", iwxxm_version="2025-2")
+    mapped = resolve_emit_map(profile="ICAO_2025", product="METAR", iwxxm_version="2025-2")
     assert mapped.source_path.endswith("swap.yaml")
     check_emit_map_overlay_dir(tmp_path)
 
@@ -235,7 +235,7 @@ def test_extends_must_be_string() -> None:
 
 def test_wrong_iwxxm_version_filtered() -> None:
     with pytest.raises(EmitMapError, match="no emit map"):
-        resolve_emit_map(profile="annex3", product="METAR", iwxxm_version="1999-1")
+        resolve_emit_map(profile="ICAO_2025", product="METAR", iwxxm_version="1999-1")
 
 
 def test_check_clears_env_when_unset(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
@@ -255,7 +255,7 @@ def test_yml_overlay_extension(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) 
         encoding="utf-8",
     )
     monkeypatch.setenv(ENV_EMIT_MAP_DIR, str(tmp_path))
-    mapped = resolve_emit_map(profile="annex3", product="METAR", iwxxm_version="2025-2")
+    mapped = resolve_emit_map(profile="ICAO_2025", product="METAR", iwxxm_version="2025-2")
     assert mapped.source_path.endswith("swap.yml")
 
 
@@ -273,12 +273,12 @@ def test_new_standalone_map(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> 
         encoding="utf-8",
     )
     monkeypatch.setenv(ENV_EMIT_MAP_DIR, str(tmp_path))
-    mapped = resolve_emit_map(profile="annex3", product="METAR", iwxxm_version="2099-1")
+    mapped = resolve_emit_map(profile="ICAO_2025", product="METAR", iwxxm_version="2099-1")
     assert mapped.id == "experimental-metar-emit"
 
 
 def test_tc_evyfc_002_taf_emit_map_no_product_kw() -> None:
-    mapped = resolve_emit_map(profile="annex3", product="TAF", iwxxm_version="2025-2")
+    mapped = resolve_emit_map(profile="ICAO_2025", product="TAF", iwxxm_version="2025-2")
     assert mapped.id == "annex3-taf-emit"
     assert mapped.pass_product is False
     from tac2iwxxm.profiles.annex3_emit.taf import emit_taf_annex3
@@ -287,15 +287,15 @@ def test_tc_evyfc_002_taf_emit_map_no_product_kw() -> None:
     tac = "TAF KJFK 231720Z 2318/2424 18012KT P6SM FEW040="
     ir = parse_taf(tac)
     direct = emit_taf_annex3(ir, iwxxm_version="2025-2")
-    via_map = emit_with_map(ir, product="TAF", profile="annex3", iwxxm_version="2025-2")
+    via_map = emit_with_map(ir, product="TAF", profile="ICAO_2025", iwxxm_version="2025-2")
     assert via_map == direct
 
 
 def test_tc_evyfc_002_sigmet_emit_map_no_product_kw() -> None:
-    mapped = resolve_emit_map(profile="annex3", product="SIGMET", iwxxm_version="2025-2")
+    mapped = resolve_emit_map(profile="ICAO_2025", product="SIGMET", iwxxm_version="2025-2")
     assert mapped.id == "annex3-sigmet-emit"
     assert mapped.pass_product is False
-    us = resolve_emit_map(profile="iwxxm_us", product="SIGMET", iwxxm_version="2025-2")
+    us = resolve_emit_map(profile="US_FAA_NWS", product="SIGMET", iwxxm_version="2025-2")
     assert mapped.id != us.id or "iwxxm_us" in us.plugin
     from tac2iwxxm.profiles.annex3_emit.sigmet import emit_sigmet_annex3
     from tac2iwxxm.slot_builders.sigmet_airmet import parse_sigmet
@@ -303,24 +303,24 @@ def test_tc_evyfc_002_sigmet_emit_map_no_product_kw() -> None:
     tac = "YUDD SIGMET 2 VALID 101200/101600 YUSO- YUDD OBSC TS FCST="
     ir = parse_sigmet(tac)
     direct = emit_sigmet_annex3(ir, iwxxm_version="2025-2")
-    via_map = emit_with_map(ir, product="SIGMET", profile="annex3", iwxxm_version="2025-2")
+    via_map = emit_with_map(ir, product="SIGMET", profile="ICAO_2025", iwxxm_version="2025-2")
     assert via_map == direct
 
 
 def test_tc_evyfc_002_airmet_vaa_tca_emit_maps() -> None:
-    airmet = resolve_emit_map(profile="annex3", product="AIRMET", iwxxm_version="2025-2")
+    airmet = resolve_emit_map(profile="ICAO_2025", product="AIRMET", iwxxm_version="2025-2")
     assert airmet.id == "annex3-airmet-emit"
     assert airmet.pass_product is False
-    assert resolve_emit_map(profile="iwxxm_us", product="AIRMET", iwxxm_version="2025-2").id == "iwxxm-us-airmet-emit"
+    assert resolve_emit_map(profile="US_FAA_NWS", product="AIRMET", iwxxm_version="2025-2").id == "iwxxm-us-airmet-emit"
     assert resolve_emit_map(profile="ca_eccc", product="AIRMET", iwxxm_version="3.0.0").id == "ca-eccc-airmet-emit"
-    assert resolve_emit_map(profile="annex3", product="VAA", iwxxm_version="2025-2").id == "annex3-vaa-emit"
-    assert resolve_emit_map(profile="annex3", product="TCA", iwxxm_version="2025-2").id == "annex3-tca-emit"
+    assert resolve_emit_map(profile="ICAO_2025", product="VAA", iwxxm_version="2025-2").id == "annex3-vaa-emit"
+    assert resolve_emit_map(profile="ICAO_2025", product="TCA", iwxxm_version="2025-2").id == "annex3-tca-emit"
     from tac2iwxxm.profiles.annex3_emit.airmet import emit_airmet_annex3
     from tac2iwxxm.slot_builders.sigmet_airmet import parse_airmet
 
     tac = "YUDD AIRMET 1 VALID 151520/151800 YUSO- YUDD SFC WSPD 20MPS="
     ir = parse_airmet(tac)
-    assert emit_with_map(ir, product="AIRMET", profile="annex3", iwxxm_version="2025-2") == emit_airmet_annex3(
+    assert emit_with_map(ir, product="AIRMET", profile="ICAO_2025", iwxxm_version="2025-2") == emit_airmet_annex3(
         ir, iwxxm_version="2025-2"
     )
 

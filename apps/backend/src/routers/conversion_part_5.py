@@ -188,7 +188,7 @@ async def _process_uploaded_files(
                 reference_time=runtime.bulletin_date or None,
                 validate=False,
                 product=runtime.product,
-                profile=runtime.emit_profile,
+                profile=runtime.semantic_canonical,
                 report_variant=runtime.resolved_report_variant,
                 preview=runtime.preview,
                 soft_preview_out=soft_preview_buf,

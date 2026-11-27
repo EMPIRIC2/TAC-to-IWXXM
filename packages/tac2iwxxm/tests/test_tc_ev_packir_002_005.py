@@ -53,7 +53,7 @@ def test_map_rejects_residuals() -> None:
         residuals=(MatchSpan(6, 10, "YUDO", "", ""),),
         steps=1,
         iwxxm_version="2025-2",
-        profile="annex3",
+        profile="ICAO_2025",
     )
     with pytest.raises(PackIrMapError, match="residual"):
         map_spans_to_convert_ir(match, tac="METAR YUDO", product="METAR")
@@ -98,7 +98,7 @@ def test_convert_rejects_bad_ir_source() -> None:
     result = convert(
         _tac_for("metar-A3-1"),
         product="METAR",
-        profile="annex3",
+        profile="ICAO_2025",
         iwxxm_version="2025-2",
         ir_source="nope",
     )
@@ -112,7 +112,7 @@ def test_explicit_pack_fails_when_incomplete() -> None:
     result = convert(
         tac,
         product="METAR",
-        profile="annex3",
+        profile="ICAO_2025",
         iwxxm_version="2025-2",
         ir_source="pack",
     )
@@ -134,7 +134,7 @@ def test_pack_ir_missing_pack_raises(monkeypatch: pytest.MonkeyPatch) -> None:
 
     monkeypatch.setattr(convert_mod, "load_packs", _no_packs)
     with pytest.raises(PackIrMapError, match="no pack"):
-        convert_mod._parse_pack_ir("METAR", "METAR", iwxxm_version="2025-2", profile="annex3")
+        convert_mod._parse_pack_ir("METAR", "METAR", iwxxm_version="2025-2", profile="ICAO_2025")
 
 
 def test_pack_convert_applies_profile_overlay(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
@@ -172,7 +172,7 @@ def test_pack_convert_applies_profile_overlay(monkeypatch: pytest.MonkeyPatch, t
 
     monkeypatch.setattr(convert_mod, "load_packs", _spy)
     tac = "METAR CYUL 231800Z 24010KT 9999 FEW240 22/12 Q1013="
-    result = convert(tac, product="METAR", profile="annex3", iwxxm_version="2025-2", ir_source="pack")
+    result = convert(tac, product="METAR", profile="ICAO_2025", iwxxm_version="2025-2", ir_source="pack")
     assert result.ok
     assert seen_profile == ["annex3"]
     assert "extra_group" in seen_rules
@@ -200,10 +200,10 @@ def test_pack_ir_emit_byte_identical_to_legacy(
     if iwxxm_version not in pins:
         pytest.skip(f"{stem} has no {iwxxm_version} vendor copy")
     tac = _tac_for(stem)
-    legacy = convert(tac, product=product, profile="annex3", iwxxm_version=iwxxm_version, ir_source="legacy")
+    legacy = convert(tac, product=product, profile="ICAO_2025", iwxxm_version=iwxxm_version, ir_source="legacy")
     if not legacy.ok:
         pytest.skip(f"annex3 does not convert {stem} at {iwxxm_version}")
-    pack = convert(tac, product=product, profile="annex3", iwxxm_version=iwxxm_version, ir_source="pack")
+    pack = convert(tac, product=product, profile="ICAO_2025", iwxxm_version=iwxxm_version, ir_source="pack")
     assert pack.ok
     assert pack.xml == legacy.xml
 
@@ -212,8 +212,8 @@ def test_pack_ir_emit_byte_identical_to_legacy(
 def test_default_convert_uses_pack_ir(stem: str, product: str) -> None:
     assert resolve_ir_source(product) == "pack"
     tac = _tac_for(stem)
-    default = convert(tac, product=product, profile="annex3", iwxxm_version="2025-2")
-    legacy = convert(tac, product=product, profile="annex3", iwxxm_version="2025-2", ir_source="legacy")
+    default = convert(tac, product=product, profile="ICAO_2025", iwxxm_version="2025-2")
+    legacy = convert(tac, product=product, profile="ICAO_2025", iwxxm_version="2025-2", ir_source="legacy")
     assert default.ok
     assert legacy.ok
     assert default.xml == legacy.xml

@@ -44,8 +44,8 @@ def _build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument(
         "--profile",
-        default="annex3",
-        help="Conversion profile id to resolve for profile overlays (default: annex3)",
+        default="ICAO_2025",
+        help="Canonical conversion profile id (default: ICAO_2025)",
     )
     return parser
 

@@ -29,13 +29,13 @@ def test_tc_f6_011_iwxxm_us_pin_fail_closed(monkeypatch: pytest.MonkeyPatch) -> 
     result = convert(
         "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005 RMK AO2=",
         product="METAR",
-        profile="iwxxm_us",
+        profile="US_FAA_NWS",
     )
     assert result.ok is True
     assert result.xml
     # Convert itself still emits US XML; fail-closed is on validate path.
     monkeypatch.setattr(validate_api, "us_catalog_path", lambda: None)
-    report = validate(result.xml, iwxxm_version="2025-2", profile="iwxxm_us")
+    report = validate(result.xml, iwxxm_version="2025-2", profile=result.profile)
     assert report.ok is False
     assert any("iwxxm-us" in i.message.lower() or "catalog" in i.message.lower() for i in report.issues)
     # Must not silently validate as annex3 when profile was iwxxm_us.
@@ -50,7 +50,7 @@ def test_tc_f6_012_malformed_us_remarks_diagnostics() -> None:
     result = convert(
         "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005 RMK AOX SLPZZZ PK WND XXX=",
         product="METAR",
-        profile="iwxxm_us",
+        profile="US_FAA_NWS",
     )
     # Convert may still succeed with partial IR, but must attach diagnostics.
     codes = {i.code for i in result.issues}

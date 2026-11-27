@@ -21,7 +21,7 @@ def test_tc_f6_040_gzip_filename_returns_bytes_that_decompress_to_the_xml() -> N
     result = convert(
         _BULLETIN,
         product="METAR",
-        profile="annex3",
+        profile="ICAO_2025",
         iwxxm_version="2025-2",
     )
     assert result.ok is True, result.issues
@@ -61,7 +61,7 @@ def test_tc_f6_040_no_heading_invents_no_filename() -> None:
     result = convert(
         _BARE,
         product="METAR",
-        profile="annex3",
+        profile="ICAO_2025",
         iwxxm_version="2025-2",
     )
     assert result.ok is True, result.issues

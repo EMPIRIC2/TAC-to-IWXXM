@@ -391,7 +391,7 @@ class ValidateRequest(BaseModel):
     stop_on_error: bool = Field(default=False, description="Stop processing on first error")
     profile: str = Field(
         default="",
-        description="Deprecated - use semantic_profile (legacy alias: annex3 or iwxxm_us)",
+        description="Deprecated - use semantic_profile (use canonical ids; annex3/iwxxm_us aliases removed #1025)",
         examples=["annex3", "iwxxm_us"],
     )
     semantic_profile: str | None = Field(

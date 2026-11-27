@@ -26,7 +26,7 @@ def test_tc_f6_039_failed_metar_without_a_heading_omits_the_centre() -> None:
     result = convert(
         _FAILED_BARE,
         product="METAR",
-        profile="annex3",
+        profile="ICAO_2025",
         iwxxm_version="2025-2",
     )
     assert result.ok is True, result.issues
@@ -47,7 +47,7 @@ def test_tc_f6_039_failed_bulletin_keeps_the_heading_and_centre() -> None:
     result = convert(
         _FAILED_BULLETIN,
         product="METAR",
-        profile="annex3",
+        profile="ICAO_2025",
         iwxxm_version="2025-2",
         translation_centre_designator=_CENTRE,
         translation_centre_name=_CENTRE_NAME,
@@ -65,7 +65,7 @@ def test_tc_f6_039_supplied_centre_without_a_heading_is_kept() -> None:
     result = convert(
         _FAILED_BARE,
         product="METAR",
-        profile="annex3",
+        profile="ICAO_2025",
         iwxxm_version="2025-2",
         translation_centre_designator=_CENTRE,
         translation_centre_name=_CENTRE_NAME,

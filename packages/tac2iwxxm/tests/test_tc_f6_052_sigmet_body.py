@@ -51,7 +51,7 @@ def test_cancellation_with_remark_converts_as_cancellation() -> None:
     assert ir.get("phenomenon") is None
     assert "tropical_cyclone_name" not in ir
     assert ir["fir_name"] == "PIARCO FIR"
-    result = convert(CANCELLATION, product="SIGMET", profile="annex3", iwxxm_version="2025-2")
+    result = convert(CANCELLATION, product="SIGMET", profile="ICAO_2025", iwxxm_version="2025-2")
     assert result.ok
     assert result.xml is not None
     assert 'isCancelReport="true"' in result.xml
@@ -71,7 +71,7 @@ def test_guyana_wrapped_coordinates_convert() -> None:
     pos_list = geometry["pos_list"]
     for vertex in ("8.4833 -59.4167", "6.6833 -58.3333", "6.0167 -59.1333", "7.9333 -60.2000"):
         assert vertex in pos_list
-    result = convert(GUYANA, product="SIGMET", profile="annex3", iwxxm_version="2025-2")
+    result = convert(GUYANA, product="SIGMET", profile="ICAO_2025", iwxxm_version="2025-2")
     assert result.ok
     assert result.xml is not None
     assert "8.4833 -59.4167" in result.xml
@@ -82,7 +82,7 @@ def test_compound_west_northwest_movement_is_represented() -> None:
     ir = parse_sigmet(GUYANA, product="SIGMET")
     assert ir["motion_dir_deg"] == 292.5
     assert ir["intensity_change"] == "INTENSIFY"
-    result = convert(GUYANA, product="SIGMET", profile="annex3", iwxxm_version="2025-2")
+    result = convert(GUYANA, product="SIGMET", profile="ICAO_2025", iwxxm_version="2025-2")
     assert result.xml is not None
     assert 'directionOfMotion uom="deg">292.5</iwxxm:directionOfMotion>' in result.xml
 
@@ -92,7 +92,7 @@ def test_fir_name_is_kept_and_not_an_unexplained_residual() -> None:
     assert ir["fir"] == "SYGC"
     assert ir["mwo"] == "SYCJ"
     assert ir["fir_name"] == "GEORGETOWN FIR"
-    result = convert(GUYANA, product="SIGMET", profile="annex3", iwxxm_version="2025-2")
+    result = convert(GUYANA, product="SIGMET", profile="ICAO_2025", iwxxm_version="2025-2")
     assert result.xml is not None
     assert "<aixm:name>GEORGETOWN FIR</aixm:name>" in result.xml
     assert "<aixm:designator>SYGC</aixm:designator>" in result.xml

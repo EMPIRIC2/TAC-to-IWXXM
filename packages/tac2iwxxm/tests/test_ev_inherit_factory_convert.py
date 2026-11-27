@@ -15,8 +15,8 @@ from metar_shared.inherit_factory import should_prefer_station
 
 
 def test_should_prefer_default_metar() -> None:
-    assert should_prefer_station(profile="annex3", product="METAR") is True
-    assert should_prefer_station(profile="iwxxm_us", product="METAR") is False
+    assert should_prefer_station(profile="ICAO_2025", product="METAR") is True
+    assert should_prefer_station(profile="US_FAA_NWS", product="METAR") is False
 
 
 def test_prefer_emit_cy_metar_to_ca_eccc() -> None:
@@ -52,7 +52,7 @@ def test_prefer_emit_does_not_change_pin_binding() -> None:
 
 def test_convert_resolve_port_bundle() -> None:
     port = ConvertInheritResolver()
-    bundle = port.resolve_convert(product="METAR", profile="annex3", station="CYUL")
+    bundle = port.resolve_convert(product="METAR", profile="ICAO_2025", station="CYUL")
     assert bundle.product == "METAR"
     assert bundle.station == "CYUL"
     assert bundle.emit_key == "ca_eccc"
@@ -64,7 +64,7 @@ def test_convert_resolve_port_bundle() -> None:
 
 def test_convert_resolve_taf_prob_period_info() -> None:
     port = ConvertInheritResolver()
-    bundle = port.resolve_convert(product="TAF", profile="annex3", station="KSGF")
+    bundle = port.resolve_convert(product="TAF", profile="ICAO_2025", station="KSGF")
     assert bundle.emit_key == "iwxxm_us"
     assert bundle.tac_quality_policy_id == "taf-prob-period-info-quality"
 
@@ -72,5 +72,5 @@ def test_convert_resolve_taf_prob_period_info() -> None:
 def test_convert_does_not_auto_prefer_annex3_station() -> None:
     # convert() must keep explicit annex3 (no silent national remap / pin rewrite).
     tac = "METAR CYUL 231800Z 24010KT 15SM FEW040 14/13 A2995="
-    result = convert(tac, product="METAR", profile="annex3")
+    result = convert(tac, product="METAR", profile="ICAO_2025")
     assert result.profile == "annex3"

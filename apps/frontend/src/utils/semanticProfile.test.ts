@@ -1,5 +1,5 @@
 /**
- * Semantic profile catalog + coerce/hydrate after national drop (FR-019..022 / M1).
+ * Semantic profile catalog after alias cutover (#1025) and national drop (M1).
  *
  * [Corpus: fr] epic #1688
  */
@@ -15,19 +15,13 @@ import {
   wireSemanticProfile,
 } from './semanticProfile';
 
-describe('semanticProfile (M1 national drop)', () => {
-  it('lists ICAO baseline plus annex3 alias only', () => {
+describe('semanticProfile (#1025 alias removal)', () => {
+  it('lists ICAO baseline only (no wire aliases)', () => {
     const values = SEMANTIC_PROFILE_OPTIONS.map((o) => o.value);
     expect(CANONICAL_SEMANTIC_PROFILES).toEqual(['ICAO_2025']);
-    expect(LEGACY_SEMANTIC_ALIASES).toEqual(['annex3']);
-    for (const id of CANONICAL_SEMANTIC_PROFILES) {
-      expect(values).toContain(id);
-    }
-    for (const alias of LEGACY_SEMANTIC_ALIASES) {
-      expect(values).toContain(alias);
-    }
+    expect(LEGACY_SEMANTIC_ALIASES).toEqual([]);
+    expect(values).toEqual(['ICAO_2025']);
     expect(DEFAULT_SEMANTIC_PROFILE).toBe('ICAO_2025');
-    expect(values[0]).toBe('ICAO_2025');
   });
 
   it('coerces known ids and defaults dropped nationals to ICAO_2025', () => {
@@ -37,10 +31,10 @@ describe('semanticProfile (M1 national drop)', () => {
     expect(coerceIwxxmProfile('US_FAA_NWS')).toBe('ICAO_2025');
   });
 
-  it('keeps annex3 alias; maps dropped iwxxm_us to ICAO default', () => {
-    expect(coerceIwxxmProfile('annex3')).toBe('annex3');
+  it('maps removed aliases annex3 / iwxxm_us to ICAO_2025', () => {
+    expect(coerceIwxxmProfile('annex3')).toBe('ICAO_2025');
     expect(coerceIwxxmProfile('iwxxm_us')).toBe('ICAO_2025');
-    expect(coerceIwxxmProfile('ANNEX3')).toBe('annex3');
+    expect(coerceIwxxmProfile('ANNEX3')).toBe('ICAO_2025');
     expect(coerceIwxxmProfile('IWXXM-US')).toBe('ICAO_2025');
   });
 
@@ -50,7 +44,7 @@ describe('semanticProfile (M1 national drop)', () => {
     expect(coerceIwxxmProfile(null)).toBe('ICAO_2025');
   });
 
-  it('hydrates annex3 to ICAO; dropped nationals fall back to ICAO', () => {
+  it('hydrates aliases and nationals to ICAO', () => {
     expect(hydrateSemanticProfile('annex3')).toBe('ICAO_2025');
     expect(hydrateSemanticProfile('iwxxm_us')).toBe('ICAO_2025');
     expect(hydrateSemanticProfile('ca_eccc')).toBe('ICAO_2025');
@@ -60,7 +54,7 @@ describe('semanticProfile (M1 national drop)', () => {
   it('wires semantic_profile values for FormData', () => {
     expect(wireSemanticProfile('ICAO_2025')).toBe('ICAO_2025');
     expect(wireSemanticProfile('CA_ECCC')).toBe('ICAO_2025');
-    expect(wireSemanticProfile('annex3')).toBe('annex3');
+    expect(wireSemanticProfile('annex3')).toBe('ICAO_2025');
     expect(wireSemanticProfile(undefined)).toBe('ICAO_2025');
   });
 

@@ -15,12 +15,12 @@ _TAC_RMK_ONLY = "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005 RMK AO2 SLP1
 
 def test_tc_ev981_001_default_off_preserves_annex3_remarks_excluded() -> None:
     """Omitted / false flag must not change annex3 REMARKS_EXCLUDED (UJ-026 fence)."""
-    baseline = convert(_TAC_RMK_ONLY, product="METAR", profile="annex3", iwxxm_version="2025-2")
-    omitted = convert(_TAC_RMK_ONLY, product="METAR", profile="annex3", iwxxm_version="2025-2")
+    baseline = convert(_TAC_RMK_ONLY, product="METAR", profile="ICAO_2025", iwxxm_version="2025-2")
+    omitted = convert(_TAC_RMK_ONLY, product="METAR", profile="ICAO_2025", iwxxm_version="2025-2")
     explicit_off = convert(
         _TAC_RMK_ONLY,
         product="METAR",
-        profile="annex3",
+        profile="ICAO_2025",
         iwxxm_version="2025-2",
         propagate_residuals_to_remarks=False,
     )
@@ -50,7 +50,7 @@ def test_tc_ev981_005_profile_default_wire_annex3_off() -> None:
     annex3_on = convert(
         _TAC_WITH_RESIDUAL,
         product="METAR",
-        profile="annex3",
+        profile="ICAO_2025",
         iwxxm_version="2025-2",
         propagate_residuals_to_remarks=True,
     )
@@ -70,14 +70,14 @@ def test_tc_ev981_002_flag_on_folds_residuals_into_iwxxm_us_hrt() -> None:
     off = convert(
         _TAC_WITH_RESIDUAL,
         product="METAR",
-        profile="iwxxm_us",
+        profile="US_FAA_NWS",
         iwxxm_version="2025-2",
         propagate_residuals_to_remarks=False,
     )
     on = convert(
         _TAC_WITH_RESIDUAL,
         product="METAR",
-        profile="iwxxm_us",
+        profile="US_FAA_NWS",
         iwxxm_version="2025-2",
         propagate_residuals_to_remarks=True,
     )
@@ -102,7 +102,7 @@ def test_tc_ev981_002_unexplained_remark_already_stored_is_not_appended() -> Non
     result = convert(
         "METAR KJFK 231751Z 18012KT 10SM CLR 15/07 A3005 RMK AO2 SOG 01=",
         product="METAR",
-        profile="iwxxm_us",
+        profile="US_FAA_NWS",
         iwxxm_version="2025-2",
         propagate_residuals_to_remarks=True,
     )
@@ -118,7 +118,7 @@ def test_tc_ev981_002_dedup_skips_residual_already_in_remarks_free_text() -> Non
     result = convert(
         tac,
         product="METAR",
-        profile="iwxxm_us",
+        profile="US_FAA_NWS",
         iwxxm_version="2025-2",
         propagate_residuals_to_remarks=True,
     )
@@ -157,7 +157,7 @@ def test_tc_ev981_resolve_semantic_alias_and_empty_residual_paths() -> None:
     clean = convert(
         _TAC_RMK_ONLY,
         product="METAR",
-        profile="iwxxm_us",
+        profile="US_FAA_NWS",
         iwxxm_version="2025-2",
         propagate_residuals_to_remarks=True,
     )

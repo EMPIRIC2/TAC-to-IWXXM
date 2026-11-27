@@ -96,10 +96,10 @@ def test_pack_ir_emit_byte_identical_to_legacy(stem: str, product: str, iwxxm_ve
     if iwxxm_version not in pins:
         pytest.skip(f"{stem} missing on {iwxxm_version}")
     tac = _tac_for(stem)
-    legacy = convert(tac, product=product, profile="annex3", iwxxm_version=iwxxm_version, ir_source="legacy")
+    legacy = convert(tac, product=product, profile="ICAO_2025", iwxxm_version=iwxxm_version, ir_source="legacy")
     if not legacy.ok:
         pytest.skip(f"legacy convert skipped for {stem}@{iwxxm_version}")
-    pack = convert(tac, product=product, profile="annex3", iwxxm_version=iwxxm_version, ir_source="pack")
+    pack = convert(tac, product=product, profile="ICAO_2025", iwxxm_version=iwxxm_version, ir_source="pack")
     assert pack.ok
     assert pack.xml == legacy.xml
 
@@ -116,8 +116,8 @@ def test_swxa_alternate_inventory_present() -> None:
     assert (base / "spacewx-A7-3.xml").is_file()
     assert (base / "spacewx-A7-3_alternate.xml").is_file()
     tac = (base / "spacewx-A7-3.tac").read_text(encoding="utf-8")
-    legacy = convert(tac, product="SWXA", profile="annex3", iwxxm_version="2025-2", ir_source="legacy")
-    pack = convert(tac, product="SWXA", profile="annex3", iwxxm_version="2025-2", ir_source="pack")
+    legacy = convert(tac, product="SWXA", profile="ICAO_2025", iwxxm_version="2025-2", ir_source="legacy")
+    pack = convert(tac, product="SWXA", profile="ICAO_2025", iwxxm_version="2025-2", ir_source="pack")
     assert legacy.ok
     assert pack.ok
     assert pack.xml == legacy.xml

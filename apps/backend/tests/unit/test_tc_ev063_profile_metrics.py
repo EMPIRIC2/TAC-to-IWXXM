@@ -156,7 +156,7 @@ def test_tc_ev063_006_legacy_alias_rejected_on_convert(
     """Hard cut: legacy profile alias is rejected on Convert (no alias metric path)."""
     response = client.post(
         "/api/v1/convert",
-        files=_convert_files(profile=(None, "annex3")),
+        files=_convert_files(profile=(None, "ICAO_2025")),
     )
     assert response.status_code == 422, response.text[:400]
     assert "profile" in response.text

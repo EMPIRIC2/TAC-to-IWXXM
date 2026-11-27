@@ -3,7 +3,7 @@
 > Index: [README.md](README.md) 
 > Machine index: [config/profiles/catalog.yaml](../config/profiles/catalog.yaml) 
 > Rule catalogs: [config/rules/](../config/rules) 
-> Last updated: 2026-11-24
+> Last updated: 2026-11-26
 
 This document states domain rules for TAC lint, TAC to IWXXM conversion, IWXXM
 validation, and conversion profiles. Detailed mining notes may stay in the local
@@ -59,11 +59,16 @@ Machine catalog: [config/profiles/catalog.yaml](../config/profiles/catalog.yaml)
 
 ### Baseline semantic ids
 
-| ID | Legacy alias | Status |
-|----|--------------|--------|
+Wire aliases `annex3` / `iwxxm_us` were removed after 2026-10-31
+([#1025](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1025)). Callers use
+canonical ids. Internal emit keys (`annex3` / `iwxxm_us`) remain for plugin
+dispatch only.
+
+| ID | Former wire alias (removed) | Status |
+|----|-----------------------------|--------|
 | `ICAO_2025` | `annex3` | Implemented |
-| `US_FAA_NWS` | `iwxxm_us` | Implemented |
-| `CA_ECCC` | — | Implemented (national reference) |
+| `US_FAA_NWS` | `iwxxm_us` | Implemented (emit package; product ship list is ICAO-only per M1) |
+| `CA_ECCC` | — | Implemented (national reference; product ship list ICAO-only per M1) |
 | Other nationals in catalog | — | Thin, planned, or deepen in progress |
 
 ### Baseline exchange ids

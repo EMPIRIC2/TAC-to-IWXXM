@@ -40,7 +40,7 @@ def test_parse_error_spans_tac_content() -> None:
 
 def test_malformed_remarks_include_token_spans() -> None:
     tac = "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005 RMK AOX SLPZZZ PK WND XXX="
-    result = convert(tac, product="METAR", profile="iwxxm_us")
+    result = convert(tac, product="METAR", profile="US_FAA_NWS")
     remark_issues = [i for i in result.issues if i.code == "MALFORMED_REMARKS"]
     assert remark_issues
     spanned = [i for i in remark_issues if i.start is not None and i.end is not None]

@@ -84,8 +84,8 @@ def test_tc_ev063_007_us_faa_nws_rmk_golden(case_id: str, rmk_manifest: dict) ->
 
 
 @pytest.mark.parametrize("case_id", ["rmk_ao2_slp", "rmk_combined", "rmk_ltg_dsnt"])
-def test_tc_ev063_007_alias_iwxxm_us_parity(case_id: str, rmk_manifest: dict) -> None:
-    """Legacy iwxxm_us alias remains byte-identical to US_FAA_NWS on RMK matrix rows."""
+def test_tc_ev063_007_removed_alias_iwxxm_us_rejected(case_id: str, rmk_manifest: dict) -> None:
+    """#1025: iwxxm_us wire alias is rejected; use US_FAA_NWS."""
     case = next(c for c in rmk_manifest["cases"] if c["id"] == case_id)
     tac = (FIXTURES / case["tac"]).read_text(encoding="utf-8")
 
@@ -102,6 +102,5 @@ def test_tc_ev063_007_alias_iwxxm_us_parity(case_id: str, rmk_manifest: dict) ->
         iwxxm_version=IWXXM_VERSION,
     )
     assert canonical.ok
-    assert alias.ok
-    assert canonical.xml == alias.xml
-    assert alias.deprecated_alias_used
+    assert not alias.ok
+    assert alias.issues[0].code == "UNSUPPORTED_PROFILE"

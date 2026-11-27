@@ -28,7 +28,7 @@ def test_parallel_convert_cwdq_cwdv_no_global_hydra_race() -> None:
         convert(
             _SAMPLES[index % len(_SAMPLES)],
             product="METAR",
-            profile="annex3",
+            profile="ICAO_2025",
             iwxxm_version="2025-2",
         )
 

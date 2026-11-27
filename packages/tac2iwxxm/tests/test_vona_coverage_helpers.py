@@ -145,6 +145,6 @@ def test_convert_vona_with_ahl_body_and_bulletin_split() -> None:
     assert len(split.reports) == 1
     assert split.reports[0].lstrip().startswith("VONA")
 
-    result = convert(text, product="VONA", profile="annex3", iwxxm_version="2025-2")
+    result = convert(text, product="VONA", profile="ICAO_2025", iwxxm_version="2025-2")
     assert result.ok is True
     assert "VolcanoObservatoryNoticeForAviation" in result.xml

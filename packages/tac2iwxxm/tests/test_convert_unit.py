@@ -35,7 +35,7 @@ def test_convert_iwxxm_us_profile_ok() -> None:
     result = convert(
         "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005 RMK AO2 SLP149=",
         product="METAR",
-        profile="iwxxm_us",
+        profile="US_FAA_NWS",
     )
     assert result.ok is True
     assert result.profile == "iwxxm_us"
@@ -49,8 +49,8 @@ def test_convert_iwxxm_us_profile_ok() -> None:
 @pytest.mark.parametrize(
     ("profile", "product", "tac"),
     [
-        ("annex3", "METAR", "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005="),
-        ("iwxxm_us", "METAR", "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005 RMK AO2="),
+        ("ICAO_2025", "METAR", "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005="),
+        ("US_FAA_NWS", "METAR", "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005 RMK AO2="),
         ("AU_BOM", "METAR", "METAR YSSY 231730Z AUTO 18012KT 9999 FEW030 18/10 Q1017="),
         ("NZ_CAA_MET", "METAR", "METAR NZAA 231700Z AUTO VRB03KT 9999 FEW020 14/09 Q1015="),
     ],
@@ -75,7 +75,7 @@ def test_convert_rejects_report_variant_for_profile_without_catalog() -> None:
     result = convert(
         "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005=",
         product="METAR",
-        profile="annex3",
+        profile="ICAO_2025",
         report_variant="LWIS",
     )
     assert result.ok is False

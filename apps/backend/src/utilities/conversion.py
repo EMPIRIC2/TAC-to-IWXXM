@@ -263,7 +263,7 @@ def convert_metar_tac_with_metadata(
     raise_on_validation_error: bool = False,
     lenient: bool = True,
     product: str | None = None,
-    profile: str = "annex3",
+    profile: str = "ICAO_2025",
     preview: bool = False,
     soft_preview_out: dict[str, Any] | None = None,
     emit_translation_centre: bool = False,
@@ -344,7 +344,7 @@ def convert_metar_tac_with_metadata(
 
     version = iwxxm_version or "2025-2"
     product_u = (product or _detect_product(tac_text)).upper()
-    profile_l = (profile or "annex3").lower()
+    profile_l = (profile or "ICAO_2025").lower()
 
     tac_text = _apply_recent_weather_normalization(tac_text, lenient=lenient)
 

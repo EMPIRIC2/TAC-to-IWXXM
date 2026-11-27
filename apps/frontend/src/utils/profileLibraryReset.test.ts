@@ -20,8 +20,8 @@ describe('profileLibraryReset', () => {
     expect(isSemanticProfileLineChange('ICAO_2025', 'US_FAA_NWS')).toBe(false);
     expect(isSemanticProfileLineChange('ICAO_2025', 'ICAO_2025')).toBe(false);
     expect(isSemanticProfileLineChange('US_FAA_NWS', 'us_faa_nws')).toBe(false);
-    // Legacy annex3 alias stays distinct from canonical ICAO_2025 in the select.
-    expect(isSemanticProfileLineChange('annex3', 'ICAO_2025')).toBe(true);
+    // #1025: annex3 hydrates to ICAO_2025, so it is not a line change.
+    expect(isSemanticProfileLineChange('annex3', 'ICAO_2025')).toBe(false);
   });
 
   it('builds library ids for the target profile', () => {
