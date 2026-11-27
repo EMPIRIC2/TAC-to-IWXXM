@@ -41,11 +41,16 @@ def _period_bounds(xml: str) -> tuple[datetime, datetime] | None:
 def test_bug_2026_11_02_inverted_or_zero_valid_period_rejected(tac: str) -> None:
     """Convert must not emit end <= begin for VALID groups."""
     result = convert(tac, product="SIGMET", profile="annex3", iwxxm_version="2025-2")
-    bounds = _period_bounds(result.xml or "")
+    xml = result.xml or ""
+    bounds = _period_bounds(xml)
     if result.ok and bounds is not None:
         begin, end = bounds
         assert end > begin, (
             f"invalid validPeriod begin={begin.isoformat()} end={end.isoformat()}"
         )
+    elif result.ok:
+        # #1563 quarantine: identity may nil the period; never encode inverted bounds.
+        assert "translationFailedTAC" in xml
+        assert "<gml:beginPosition>" not in xml
     else:
         assert result.ok is False

@@ -47,8 +47,9 @@ def test_bug_2026_11_02_empty_body_must_not_invent_ts(tac: str, product: str) ->
     assert not any(_TS_HREF in href for href in hrefs), (
         f"invented TS phenomenon in {product} convert: {hrefs!r}"
     )
-    # Prefer hard fail or translation-failed / missing phenomenon over silent TS.
-    assert result.ok is False or "nilReason" in (result.xml or "")
+    # Prefer hard fail, quarantine shell, or nilReason over silent TS (#1563).
+    xml = result.xml or ""
+    assert result.ok is False or "translationFailedTAC" in xml or "nilReason" in xml
 
 
 def test_bug_2026_11_02_incomplete_cnl_must_not_invent_ts() -> None:
@@ -62,6 +63,6 @@ def test_bug_2026_11_02_incomplete_cnl_must_not_invent_ts() -> None:
     xml = result.xml or ""
     hrefs = _phenomenon_hrefs(xml)
     assert not any(_TS_HREF in href for href in hrefs), hrefs
-    # Either fail closed or a real cancel report — never a normal TS analysis.
+    # Quarantine (#1563), fail closed, or a real cancel — never a normal TS analysis.
     is_cancel = 'isCancelReport="true"' in xml or "isCancelReport>true" in xml
-    assert result.ok is False or is_cancel
+    assert result.ok is False or is_cancel or "translationFailedTAC" in xml

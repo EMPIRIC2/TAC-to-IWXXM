@@ -221,7 +221,8 @@ Context: epic-922-synthesis (archived. see session-store `~/.cursor/workflow/EMP
 - **delta (VAA quality bar/TCA quality bar)**: Deepen **VAA (general TAC conversion)** + **TCA (general TAC conversion)** WMO golden bar:
  `canonicalize_xml` under defaults. see product-requirements VAA quality bar/TCA quality bar (**Done**).
 - **delta **: Cross-product encode correctness deepen: NSC vs layered
- cloud; Guidance nils (`common/nil` vs `iwxxm/nil`); `translationFailedTAC` quarantine;
+ cloud; Guidance nils (`common/nil` vs `iwxxm/nil`); `translationFailedTAC` quarantine
+ (product-shaped structural convert fails also emit the shell — #1563 / D-029);
  dual-register colour href policy (offline vendor RDF/CSV). iwxxm-translation Amd79-80-2023
  TAC → 2025-2 as **informative** (no 2023-1 XML byte-match). default omit `translationCentre*`
  (optional config/request gate for Translation Centre). FIR/“S OF” polygon helpers (

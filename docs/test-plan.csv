@@ -86,6 +86,7 @@ TC-F27-006,TCA / TC SIGMET adjacency guards,,,UJ-001,,,,,documented,heading_leve
 TC-EV023-001,NSC without layered cloud (P0),,,UJ-016,,,,,documented,heading_level=3
 TC-EV023-002,Missing WX / Guidance nils (P0),,,UJ-016,,,,,documented,heading_level=3
 TC-EV023-003,translationFailedTAC quarantine (P0),,,UJ-016,,,,,documented,heading_level=3
+TC-1563-001,translation-fail emit TAC quarantine (#1563),,,UJ-016,,,,,documented,packages/tac2iwxxm/tests/test_tc_1563_translation_failed_emit_tac.py
 TC-EV023-004,Dual-register colour + nil encode policy (P1),,,,,,,,documented,heading_level=3
 TC-EV023-005,iwxxm-translation informative suite (P1),,,,,,,,documented,heading_level=3
 TC-EV023-006,translationCentre\* gate (P1),,,,,,,,documented,heading_level=3

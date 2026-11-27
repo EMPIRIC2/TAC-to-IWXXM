@@ -113,6 +113,33 @@ def test_build_snapshot_counts_issues_and_iwxxm() -> None:
     assert any(row["code"] == "ISSUE" for row in body["failure_locations"])
 
 
+def test_build_snapshot_labels_translation_failed_xml_not_skip() -> None:
+    """#1563: quarantine XML is convert-failure / TRANSLATION_FAILED, not iwxxm_skip."""
+    places = [
+        {
+            "place_key": "YUDD",
+            "product": "sigmet",
+            "reports": [
+                {
+                    "observed_at": "2026-11-26T12:00:00Z",
+                    "tac": "YUDD SIGMET 2 VALID 101200/101600 YUSO-=",
+                    "iwxxm": (
+                        '<iwxxm:SIGMET gml:id="sigmet.translation.failed" '
+                        'translationFailedTAC="YUDD SIGMET 2 VALID 101200/101600 YUSO-="/>'
+                    ),
+                    "issues": ["TRANSLATION_FAILED: missing phenomenon"],
+                }
+            ],
+        }
+    ]
+    body = build_snapshot_from_places(places, computed_at=datetime(2026, 11, 26, 12, 0, tzinfo=UTC))
+    assert body["convert_failure_count"] == 1
+    assert body["iwxxm_validation"]["pass"] == 0
+    assert body["iwxxm_validation"]["skip"] == 0
+    assert body["partial_decode_count"] == 0
+    assert any(row["code"] == "TRANSLATION_FAILED" for row in body["failure_locations"])
+
+
 def test_get_eval_returns_zeros(eval_client: TestClient) -> None:
     resp = eval_client.get("/api/v1/live-map/eval")
     assert resp.status_code == 200
