@@ -61,7 +61,7 @@ def test_tc_ev061_1010_001_validate_iwxxm_item_by_item_decode() -> None:
             {
                 "xml_content": GOLDEN_XML,
                 "iwxxm_version": "2025-2",
-                "profile": "annex3",
+                "profile": "ICAO_2025",
                 "stop_on_error": "false",
             },
         )
@@ -99,7 +99,7 @@ def test_tc_ev061_1010_002_additive_decode_fields_backward_compatible() -> None:
             {
                 "xml_content": GOLDEN_XML,
                 "iwxxm_version": "2025-2",
-                "profile": "annex3",
+                "profile": "ICAO_2025",
                 "stop_on_error": "false",
             },
         )
@@ -167,7 +167,7 @@ def test_tc_ev061_1010_003_validate_only_and_iwxxm_pass_through_still_work() -> 
             {
                 "xml_content": GOLDEN_XML,
                 "iwxxm_version": "2025-2",
-                "profile": "annex3",
+                "profile": "ICAO_2025",
                 "stop_on_error": "false",
             },
         )

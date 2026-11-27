@@ -61,7 +61,7 @@ async def convert_bulletin(
     ),
     profile: str = Form(
         default="",
-        description="Deprecated - use conversion_library_id (use canonical ids; annex3/iwxxm_us aliases removed #1025)",
+        description="Deprecated - use conversion_library_id (use canonical ids; annex3/iwxxm_us aliases removed)",
     ),
     semantic_profile: str = Form(
         default="",

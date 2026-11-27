@@ -165,7 +165,7 @@ def resolve_route_profiles(
     profile :
         Legacy flat profile field (deprecated; must be a canonical id when provided).
     semantic_profile :
-        Canonical semantic profile id (aliases removed #1025).
+        Canonical semantic profile id (aliases removed).
     exchange_profile :
         Exchange packaging profile id (validated when provided).
     for_packaging :

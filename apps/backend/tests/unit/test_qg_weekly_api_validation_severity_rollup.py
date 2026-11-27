@@ -82,7 +82,7 @@ def test_validate_issues_roll_up_via_level_field(client: TestClient) -> None:
         files={
             "xml_content": (None, xml),
             "iwxxm_version": (None, "2025-2"),
-            "profile": (None, "annex3"),
+            "profile": (None, "ICAO_2025"),
             "layers": (None, "ALL"),
         },
     )

@@ -22,7 +22,7 @@ def client():
 def test_ingest_collect_requires_multipart(client: TestClient) -> None:
     response = client.post(
         "/api/v1/ingest-collect",
-        data={"manual_text": "<collect/>", "profile": "annex3"},
+        data={"manual_text": "<collect/>", "profile": "ICAO_2025"},
     )
     assert response.status_code == 415
 
@@ -30,7 +30,7 @@ def test_ingest_collect_requires_multipart(client: TestClient) -> None:
 def test_ingest_collect_empty_payload_400(client: TestClient) -> None:
     response = client.post(
         "/api/v1/ingest-collect",
-        files={"manual_text": (None, "   "), "profile": (None, "annex3")},
+        files={"manual_text": (None, "   "), "profile": (None, "ICAO_2025")},
     )
     assert response.status_code == 400
     assert response.json()["detail"]["code"] == "empty_collect"
@@ -41,7 +41,7 @@ def test_ingest_collect_placeholder_501(client: TestClient) -> None:
         "/api/v1/ingest-collect",
         files={
             "manual_text": (None, "<iwxxm:MeteorologicalBulletin></iwxxm:MeteorologicalBulletin>"),
-            "profile": (None, "annex3"),
+            "profile": (None, "ICAO_2025"),
             "iwxxm_version": (None, "2025-2"),
         },
     )
@@ -55,7 +55,7 @@ def test_ingest_collect_from_file_upload_501(client: TestClient) -> None:
         "/api/v1/ingest-collect",
         files={
             "files": ("collect.xml", b"<collect>member</collect>", "application/xml"),
-            "profile": (None, "annex3"),
+            "profile": (None, "ICAO_2025"),
         },
     )
     assert response.status_code == 501
@@ -71,7 +71,7 @@ def test_ingest_collect_rejects_bad_upload(client: TestClient, monkeypatch) -> N
         "/api/v1/ingest-collect",
         files={
             "files": ("empty.gz", b"", "application/gzip"),
-            "profile": (None, "annex3"),
+            "profile": (None, "ICAO_2025"),
         },
     )
     assert response.status_code == 400

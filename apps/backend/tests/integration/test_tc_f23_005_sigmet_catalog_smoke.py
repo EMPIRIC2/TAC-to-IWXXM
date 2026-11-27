@@ -67,7 +67,7 @@ def test_tc_f23_005_lint_and_convert_smoke(
         {
             "manual_text": tac,
             "product": "SIGMET",
-            "profile": "annex3",
+            "profile": "ICAO_2025",
             "lint": "false",
         },
     )

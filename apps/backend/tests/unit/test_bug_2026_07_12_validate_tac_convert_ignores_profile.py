@@ -40,7 +40,7 @@ def test_validate_tac_auto_convert_forwards_profile(client: TestClient, monkeypa
         xml: str,
         *,
         iwxxm_version: str,
-        profile: str = "annex3",
+        profile: str = "ICAO_2025",
         levels=None,
         product=None,
         output_policy_id: str | None = None,

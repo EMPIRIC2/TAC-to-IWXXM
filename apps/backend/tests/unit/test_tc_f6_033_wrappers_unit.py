@@ -103,7 +103,7 @@ def test_validate_accepts_profile_and_calls_iwxxm_validate(client: TestClient, m
         xml: str,
         *,
         iwxxm_version: str,
-        profile: str = "annex3",
+        profile: str = "ICAO_2025",
         levels=None,
         product=None,
         output_policy_id: str | None = None,
@@ -144,7 +144,7 @@ def test_validate_accepts_profile_and_calls_iwxxm_validate(client: TestClient, m
         files={
             "xml_content": (None, xml),
             "iwxxm_version": (None, "2023-1"),
-            "profile": (None, "annex3"),
+            "profile": (None, "ICAO_2025"),
             "layers": (None, "XML_WELLFORMED"),
         },
     )

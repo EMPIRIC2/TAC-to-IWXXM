@@ -48,7 +48,7 @@ def test_convert_forwards_product_and_profile(client: TestClient, monkeypatch: p
     assert response.status_code == 200, response.text[:400]
     assert len(seen) >= 1
     assert seen[0].get("product") == "METAR"
-    assert seen[0].get("profile") == "annex3"
+    assert seen[0].get("profile") == "icao_2025"
 
 
 def test_convert_rejects_unknown_product(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:

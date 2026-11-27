@@ -386,7 +386,7 @@ class ConversionRequest(BaseModel):
     )
     profile: str | None = Field(
         default=None,
-        description="Deprecated - use semantic_profile (use canonical ids; annex3/iwxxm_us aliases removed #1025)",
+        description="Deprecated - use semantic_profile (use canonical ids; annex3/iwxxm_us aliases removed)",
     )
     semantic_profile: str | None = Field(
         default=None,

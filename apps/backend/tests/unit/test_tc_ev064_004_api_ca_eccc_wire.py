@@ -408,7 +408,7 @@ def test_tc_ev064_004_validate_accepts_ca_eccc_profile(
             "manual_text": (None, _CA_METAR),
             "semantic_profile": (None, "CA_ECCC"),
             "iwxxm_version": (None, _CA_IWXXM_VERSION),
-            "profile": (None, "annex3"),
+            "profile": (None, "ICAO_2025"),
         },
     )
     assert response.status_code == 200, response.text[:500]
