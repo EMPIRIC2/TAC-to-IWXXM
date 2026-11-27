@@ -217,3 +217,42 @@ def test_hf_convert_malformed_validation_fail() -> None:
     result = convert(_MALFORMED, product="SIGMET")
     assert result.ok is False or any(i.code in {"PARSE_ERROR", "TRANSLATION_FAILED"} for i in result.issues)
     assert any("unable to parse SIGMET header" in (i.message or "") for i in result.issues)
+
+
+# --- Branch fills (coverage for domestic WS edge paths) ---------------------------------
+
+
+_NUMERIC_NO_AHL_EARLY_UNTIL = """\
+SIGMET 5 VALID UNTIL 270254
+NH VT
+FROM 80NE MPV TO 20NNE BOS TO PVD TO 20SW HNK TO 50SW MSS TO 80NE
+MPV
+OCNL SEV TURB.
+"""
+
+_NO_GEOM_POINTS = """\
+SIGMET QUEBEC 5 VALID UNTIL 270754
+NH VT
+FROM
+OCNL SEV TURB BLW 150.
+"""
+
+
+def test_hf_domestic_ws_inferred_period_wraps_midnight() -> None:
+    """S: no AHL / no office issue → UNTIL-4h wrap; numeric seq skips sequence_label."""
+    ir = parse_sigmet(_NUMERIC_NO_AHL_EARLY_UNTIL)
+    assert ir["us_domestic_ws"] is True
+    assert ir["sequence"] == 5
+    assert "sequence_label" not in ir
+    assert (ir["valid_to_day"], ir["valid_to_hour"], ir["valid_to_minute"]) == (27, 2, 54)
+    assert (ir["valid_from_day"], ir["valid_from_hour"], ir["valid_from_minute"]) == (26, 22, 54)
+    assert "top_fl" not in ir
+    assert "ahl_tt" not in ir
+
+
+def test_hf_domestic_ws_empty_from_omits_geometry() -> None:
+    """S: hazard immediately after FROM yields no geometry IR."""
+    ir = parse_sigmet(_NO_GEOM_POINTS)
+    assert ir["us_domestic_ws"] is True
+    assert ir["phenomenon"] == "SEV_TURB"
+    assert "geometry" not in ir
