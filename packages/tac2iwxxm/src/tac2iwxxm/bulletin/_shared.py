@@ -89,6 +89,8 @@ _SIGMET_BODY_STOP = (
     r"|(?:^|\n)(?:WS|WV|WC)[A-Z]{2}\d{2}\s+[A-Z]{4}\s+\d{6}\b"
     r"|(?:^|\n)(?:[A-Z]{4}\s+)+SIGMET\s+"
     r"|(?:^|\n)CONVECTIVE\s+SIGMET\s+"
+    r"|(?:^|\n)[A-Z]{4}\s+WS\s+\d{6}\b"
+    r"|(?:^|\n)SIGMET\s+(?:[A-Z]+\s+\d+|[A-Z]?\d+)\s+VALID\s+UNTIL\b"
     r"|\Z"
     r")"
 )
@@ -106,6 +108,15 @@ _TAC_CONVECTIVE_SIGMET = re.compile(
     r"^(?:(?:[A-Z]{4}\s+WST\s+\d{6}|SIG(?!MET)[A-Z0-9]*)\s*\n+)*"
     r"CONVECTIVE\s+SIGMET\s+\S+\s+"
     r"VALID\s+UNTIL\s+\d{4,6}Z\b"
+    r".+?" + _SIGMET_BODY_STOP,
+    re.MULTILINE | re.DOTALL | re.IGNORECASE,
+)
+
+# US domestic non-convective WS: optional ``CCCC WS YYGGgg`` office line + VALID UNTIL.
+_TAC_US_DOMESTIC_WS_SIGMET = re.compile(
+    r"^(?:[A-Z]{4}\s+WS\s+\d{6}\s*\n+)?"
+    r"SIGMET\s+" + _TAC_SEQUENCE + r"\s+"
+    r"VALID\s+UNTIL\s+\d{4,6}Z?\b"
     r".+?" + _SIGMET_BODY_STOP,
     re.MULTILINE | re.DOTALL | re.IGNORECASE,
 )

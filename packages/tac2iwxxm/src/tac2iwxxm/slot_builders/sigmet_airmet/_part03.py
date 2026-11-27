@@ -217,13 +217,31 @@ def parse_sigmet(tac: str, *, product: str = "SIGMET") -> dict[str, Any]:
     body_tac = _strip_siga0_heading(body_tac)
     body_tac = unwrap_wrapped_coordinates(body_tac)
     text = _normalize(body_tac)
-    issue_day = int(ahl_match.group("yygggg")[:2]) if ahl_match is not None else None
+    issue_day: int | None = None
+    issue_hour: int | None = None
+    issue_minute: int | None = None
+    if ahl_match is not None:
+        yygggg = ahl_match.group("yygggg")
+        issue_day = int(yygggg[:2])
+        issue_hour = int(yygggg[2:4])
+        issue_minute = int(yygggg[4:6])
     office = ahl_match.group("cccc") if ahl_match is not None else None
     conv = _parse_convective_sigmet(text, issue_day=issue_day, office=office)
     if conv is not None:
         if ahl_tt is not None:
             conv["ahl_tt"] = ahl_tt
         return conv
+    domestic = _parse_us_domestic_ws_sigmet(
+        text,
+        issue_day=issue_day,
+        issue_hour=issue_hour,
+        issue_minute=issue_minute,
+        office=office,
+    )
+    if domestic is not None:
+        if ahl_tt is not None:
+            domestic["ahl_tt"] = ahl_tt
+        return domestic
     match = _SIGMET.match(text)
     if match is None:
         raise ValueError("unable to parse SIGMET header")

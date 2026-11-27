@@ -22,7 +22,7 @@ def _unglue_sigmet_ahl(text: str) -> str:
 
 def _is_kept_sigmet_report(report: str) -> bool:
     """
-    Return True when a candidate body is a FIR or CONVECTIVE SIGMET report.
+    Return True when a candidate body is a FIR, CONVECTIVE, or domestic WS SIGMET.
 
     Parameters
     ----------
@@ -32,11 +32,16 @@ def _is_kept_sigmet_report(report: str) -> bool:
     Returns
     -------
     bool
-        True for multi-FIR / FIR ``SIGMET`` or US ``CONVECTIVE SIGMET`` bodies.
+        True for multi-FIR / FIR ``SIGMET``, US ``CONVECTIVE SIGMET``, or US
+        domestic non-convective ``SIGMET … VALID UNTIL`` bodies.
     """
     return bool(
         re.match(r"^(?:[A-Z]{4}\s+)+SIGMET\s+", report, re.IGNORECASE)
         or re.search(r"(?i)(?:^|\n)CONVECTIVE\s+SIGMET\s+", report)
+        or re.search(
+            r"(?i)(?:^|\n)SIGMET\s+(?:[A-Z]+\s+\d+|[A-Z]?\d+)\s+VALID\s+UNTIL\b",
+            report,
+        )
     )
 
 
@@ -65,7 +70,7 @@ def _span_overlaps_prior(start: int, last_end: int) -> bool:
 
 def _find_sigmet_reports(body_text: str) -> list[str]:
     """
-    Find ordinary and CONVECTIVE SIGMET report strings in a bulletin body.
+    Find FIR, CONVECTIVE, and US domestic WS SIGMET report strings in a bulletin.
 
     Parameters
     ----------
@@ -80,7 +85,7 @@ def _find_sigmet_reports(body_text: str) -> list[str]:
     normalized = _unglue_sigmet_ahl(body_text)
     spans: list[tuple[int, int, str]] = [
         (match.start(), match.end(), match.group(0).strip())
-        for pattern in (_TAC_SIGMET, _TAC_CONVECTIVE_SIGMET)
+        for pattern in (_TAC_SIGMET, _TAC_CONVECTIVE_SIGMET, _TAC_US_DOMESTIC_WS_SIGMET)
         for match in pattern.finditer(normalized)
     ]
     spans.sort(key=lambda item: (item[0], item[1]))
@@ -371,7 +376,7 @@ def split_bulletin(text: str, *, product: str = "METAR") -> BulletinSplit:
     elif product_key == "TAF":
         reports = [r for r in reports if r.startswith("TAF")]
     elif product_key == "SIGMET":
-        # Keep FIR / multi-FIR SIGMET and US CONVECTIVE SIGMET; reject misrouted advisories.
+        # Keep FIR / multi-FIR, CONVECTIVE, and domestic WS SIGMET; reject misrouted advisories.
         reports = [r for r in reports if _is_kept_sigmet_report(r)]
     elif product_key == "AIRMET":
         reports = [r for r in reports if re.match(r"^[A-Z]{4}\s+AIRMET\s+", r, re.IGNORECASE)]
