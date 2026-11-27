@@ -277,6 +277,7 @@ def test_api_module_top_level_fallback_imports(monkeypatch):
     fake_routers = _stub_module(
         "routers",
         comprehensive_validation=fake_comprehensive_validation_router,
+        api_keys=fake_router_module,
         conversion=fake_conversion_router,
         conversion_meta=fake_conversion_meta_router,
         conversion_profiles=fake_router_module,
@@ -378,6 +379,10 @@ def test_api_module_top_level_fallback_imports(monkeypatch):
         "services.webhooks": fake_services_webhooks,
         "utilities": _stub_module("utilities"),
         "utilities.abuse_controls": fake_util_abuse,
+        "utilities.api_key_auth": _stub_module(
+            "utilities.api_key_auth",
+            install_api_key_auth=lambda _app: None,
+        ),
         "utilities.conversion": fake_util_conversion,
         "utilities.iwxxm_pass_through": fake_util_iwxxm_pass_through,
         "utilities.iwxxm_readable_decode": fake_util_iwxxm_readable_decode,

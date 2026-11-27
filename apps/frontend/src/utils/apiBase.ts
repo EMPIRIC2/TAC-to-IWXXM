@@ -103,6 +103,8 @@ export function adminUrl(path: string): string {
  *
  * @param init - Existing headers.
  * @returns Plain header map including demo API key when configured.
+ * @example
+ * const _ = true;
  */
 export function productApiHeaders(init?: HeadersInit): Record<string, string> {
   const out: Record<string, string> = {};

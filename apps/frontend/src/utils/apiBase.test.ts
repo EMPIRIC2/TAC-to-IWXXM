@@ -36,4 +36,17 @@ describe('apiBase', () => {
     expect(headers['X-API-Key']).toBe('demo-key-from-config');
     expect(headers.Authorization).toBe('Bearer tok');
   });
+
+  it('productApiHeaders accepts Headers and tuple-array init', () => {
+    const fromHeaders = productApiHeaders(new Headers({ Authorization: 'Bearer a' }));
+    expect(fromHeaders.authorization ?? fromHeaders.Authorization).toBe('Bearer a');
+    expect(fromHeaders['X-API-Key']).toBe('demo-key-from-config');
+
+    const fromTuples = productApiHeaders([['Authorization', 'Bearer b']]);
+    expect(fromTuples.Authorization).toBe('Bearer b');
+    expect(fromTuples['X-API-Key']).toBe('demo-key-from-config');
+
+    const existing = productApiHeaders({ 'X-API-Key': 'already' });
+    expect(existing['X-API-Key']).toBe('already');
+  });
 });

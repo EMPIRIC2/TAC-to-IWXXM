@@ -106,7 +106,7 @@ async def create_api_key(
         issued = issue_api_key(label=label)
     except ValueError as exc:
         raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
             detail=str(exc),
         ) from exc
     except RuntimeError as exc:
