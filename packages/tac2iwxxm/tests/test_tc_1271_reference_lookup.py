@@ -70,6 +70,21 @@ def test_double_miss_is_unknown_vor(ourairports_fixture: CsvCoordinateSource) ->
     assert "ZZZ" in result.issues[0].message
 
 
+def test_double_miss_unknown_vor_preview_still_fails(ourairports_fixture: CsvCoordinateSource) -> None:
+    """Preview mode keeps ok=false for unknown VOR (#1563 coverage)."""
+    del ourairports_fixture
+    result = convert(
+        SRQ_TAC.replace("FROM SRQ", "FROM ZZZ"),
+        product="SIGMET",
+        profile=PROFILE,
+        iwxxm_version=VERSION,
+        preview=True,
+    )
+    assert result.ok is False
+    assert result.issues[0].code == "PARSE_ERROR"
+    assert "ZZZ" in result.issues[0].message
+
+
 def test_latlon_sigmet_still_converts() -> None:
     tac = (US_FIXTURES / "SIGMET/valid/sigmet_obsc_ts.tac").read_text(encoding="utf-8")
     geom = parse_vor_reference_geometry(tac)

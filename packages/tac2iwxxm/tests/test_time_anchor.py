@@ -89,6 +89,19 @@ def test_convert_bulletin_date_rejects_an_impossible_day() -> None:
     assert result.issues[0].message == "Day 31 is not a day in June 2023"
 
 
+def test_convert_bulletin_date_impossible_day_preview_still_fails() -> None:
+    """Preview mode keeps ok=false stub for ImpossibleTacDay (#1563 coverage)."""
+    result = convert(
+        "METAR TNCM 311200Z 14006KT 9999 FEW020 28/24 Q1013=",
+        product="METAR",
+        bulletin_date="2023-06-15",
+        preview=True,
+    )
+    assert result.ok is False
+    assert result.issues[0].code == "IMPOSSIBLE_TAC_DAY"
+    assert result.issues[0].message == "Day 31 is not a day in June 2023"
+
+
 def test_convert_rejects_a_bulletin_date_that_is_not_a_date() -> None:
     result = convert(
         "METAR TNCM 081200Z 14006KT 9999 FEW020 28/24 Q1013=",
