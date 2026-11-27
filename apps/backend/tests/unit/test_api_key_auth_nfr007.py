@@ -285,7 +285,7 @@ def test_verify_fail_closed_on_db_errors(monkeypatch: pytest.MonkeyPatch) -> Non
     api_key_store.reset_api_key_store_for_tests()
 
     class _Boom:
-        def begin(self):  # noqa: ANN001
+        def begin(self):
             raise RuntimeError("db down")
 
     monkeypatch.setattr(api_key_store, "_engine", _Boom())
