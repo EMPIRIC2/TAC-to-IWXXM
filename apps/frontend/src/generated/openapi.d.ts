@@ -1860,7 +1860,7 @@ export interface components {
             product: string;
             /**
              * Profile
-             * @description Deprecated - use conversion_library_id (use canonical ids; annex3/iwxxm_us aliases removed #1025)
+             * @description Deprecated - use conversion_library_id (use canonical ids; annex3/iwxxm_us aliases removed)
              * @default
              */
             profile: string;
@@ -2021,14 +2021,14 @@ export interface components {
             product: string;
             /**
              * Profile
-             * @description Deprecated - use semantic_profile (use canonical ids; annex3/iwxxm_us aliases removed #1025)
+             * @description Deprecated - use semantic_profile (use canonical ids; annex3/iwxxm_us aliases removed)
              * @default
              */
             profile: string;
             request_body?: components["schemas"]["ValidateRequest"] | null;
             /**
              * Semantic Profile
-             * @description Semantic profile id (e.g. ICAO_2025, US_FAA_NWS, CA_ECCC, AU_BOM, NZ_CAA_MET, UK_METOFFICE; canonical ids only; annex3/iwxxm_us aliases removed #1025)
+             * @description Semantic profile id (e.g. ICAO_2025, US_FAA_NWS, CA_ECCC, AU_BOM, NZ_CAA_MET, UK_METOFFICE; canonical ids only; annex3/iwxxm_us aliases removed)
              * @default
              */
             semantic_profile: string;
@@ -4906,7 +4906,7 @@ export interface components {
             product?: string | null;
             /**
              * Profile
-             * @description Deprecated - use semantic_profile (use canonical ids; annex3/iwxxm_us aliases removed #1025)
+             * @description Deprecated - use semantic_profile (use canonical ids; annex3/iwxxm_us aliases removed)
              * @default
              * @example annex3
              * @example iwxxm_us

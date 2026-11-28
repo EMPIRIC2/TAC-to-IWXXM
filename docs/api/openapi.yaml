@@ -3143,7 +3143,7 @@ components:
         profile:
           type: string
           title: Profile
-          description: "Deprecated - use conversion_library_id (use canonical ids; annex3/iwxxm_us aliases removed #1025)"
+          description: "Deprecated - use conversion_library_id (use canonical ids; annex3/iwxxm_us aliases removed)"
           default: ""
         semantic_profile:
           type: string
@@ -3373,12 +3373,12 @@ components:
         profile:
           type: string
           title: Profile
-          description: "Deprecated - use semantic_profile (use canonical ids; annex3/iwxxm_us aliases removed #1025)"
+          description: "Deprecated - use semantic_profile (use canonical ids; annex3/iwxxm_us aliases removed)"
           default: ""
         semantic_profile:
           type: string
           title: Semantic Profile
-          description: "Semantic profile id (e.g. ICAO_2025, US_FAA_NWS, CA_ECCC, AU_BOM, NZ_CAA_MET, UK_METOFFICE; canonical ids only; annex3/iwxxm_us aliases removed #1025)"
+          description: "Semantic profile id (e.g. ICAO_2025, US_FAA_NWS, CA_ECCC, AU_BOM, NZ_CAA_MET, UK_METOFFICE; canonical ids only; annex3/iwxxm_us aliases removed)"
           default: ""
         exchange_profile:
           type: string
@@ -7633,7 +7633,7 @@ components:
         profile:
           type: string
           title: Profile
-          description: "Deprecated - use semantic_profile (use canonical ids; annex3/iwxxm_us aliases removed #1025)"
+          description: "Deprecated - use semantic_profile (use canonical ids; annex3/iwxxm_us aliases removed)"
           default: ""
           examples:
             - annex3
