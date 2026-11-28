@@ -280,7 +280,10 @@ test-unit-workspace-py:
 	$(UV) run pytest tests/migration/test_workspace_import_smoke.py tests/unit -v
 
 test-unit-shared-py:
-	$(UV) run pytest packages/shared/tests --cov=metar_shared \
+	# Isolate data file so a later package cov gate cannot inherit shared rows
+	# (husky test-unit-fast runs shared then tac2iwxxm sequentially).
+	rm -f .coverage packages/shared/.coverage
+	COVERAGE_FILE=packages/shared/.coverage $(UV) run pytest packages/shared/tests --cov=metar_shared \
 		--cov-config=packages/shared/pyproject.toml --cov-branch \
 		--cov-report=json:packages/shared/coverage.json --cov-fail-under=100 -v
 	$(UV) run python scripts/ci/check_per_file_coverage.py packages/shared/coverage.json
@@ -370,7 +373,10 @@ test-unit-frontend:
 	$(PNPM) --filter @metar/frontend run test:coverage
 
 test-unit-tac2iwxxm:
-	$(UV) run pytest packages/tac2iwxxm/tests --cov=tac2iwxxm \
+	# Isolate data file: root .coverage left by test-unit-shared-py was combining
+	# metar_shared Protocol ellipsis into this gate under tac2iwxxm exclude_lines.
+	rm -f .coverage packages/tac2iwxxm/.coverage
+	COVERAGE_FILE=packages/tac2iwxxm/.coverage $(UV) run pytest packages/tac2iwxxm/tests --cov=tac2iwxxm \
 		--cov-config=packages/tac2iwxxm/pyproject.toml --cov-branch \
 		--cov-report=json:packages/tac2iwxxm/coverage.json \
 		--cov-report=term-missing --cov-fail-under=100 -v
