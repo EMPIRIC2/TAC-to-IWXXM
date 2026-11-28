@@ -5,13 +5,21 @@
  */
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-const createClient = vi.fn(() => ({
-  auth: { signOut: vi.fn() },
-  from: vi.fn(),
+type MockSupabaseClient = {
+  auth: { signOut: ReturnType<typeof vi.fn> };
+  from: ReturnType<typeof vi.fn>;
+  publicUrl?: string;
+};
+
+const { createClient } = vi.hoisted(() => ({
+  createClient: vi.fn((): MockSupabaseClient => ({
+    auth: { signOut: vi.fn() },
+    from: vi.fn(),
+  })),
 }));
 
 vi.mock('@supabase/supabase-js', () => ({
-  createClient: (...args: unknown[]) => createClient(...args),
+  createClient,
 }));
 
 const getSupabaseUrl = vi.fn();
@@ -65,17 +73,19 @@ describe('supabase client', () => {
   });
 
   it('proxies legacy supabase property access onto the singleton', async () => {
-    const mod = await import('./client');
-    const client = mod.getSupabaseClient() as {
-      from: ReturnType<typeof vi.fn>;
-      supabaseUrl: string;
-    };
-    client.from.mockReturnValue('table');
-    client.supabaseUrl = 'https://demo.supabase.co';
+    const from = vi.fn().mockReturnValue('table');
+    createClient.mockReturnValueOnce({
+      auth: { signOut: vi.fn() },
+      from,
+      publicUrl: 'https://demo.supabase.co',
+    });
 
+    const mod = await import('./client');
     expect(mod.supabase.from('metar')).toBe('table');
-    expect(client.from).toHaveBeenCalledWith('metar');
+    expect(from).toHaveBeenCalledWith('metar');
     // Non-function properties are returned as-is (Proxy get branch).
-    expect(mod.supabase.supabaseUrl).toBe('https://demo.supabase.co');
+    expect(
+      (mod.supabase as unknown as { publicUrl: string }).publicUrl,
+    ).toBe('https://demo.supabase.co');
   });
 });
