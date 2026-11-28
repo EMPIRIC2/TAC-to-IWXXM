@@ -39,6 +39,24 @@ Do not add new work on dropped national paths. Emit packages and
 
 Schematron is blocking for release quality bars.
 
+## Translation-failed quarantine (convert hard fail)
+
+When convert cannot build an operational report for **product-shaped** TAC, it
+still emits an official-shaped IWXXM shell with `@translationFailedTAC` set to
+the original TAC text ([Corpus: product §F6], #1563, D-031). The shell must not
+invent phenomenon tokens, encode illegal geometry, or pretend parse succeeded.
+
+| Layer | Policy |
+|-------|--------|
+| Convert | Soft-ok (`ok=true`) with issue code `TRANSLATION_FAILED` (warning); XML present |
+| XSD | Soft / dedicated layer — official `*-translation-failed` examples are the shape bar; quarantine is not an operational publish claim |
+| Schematron | Not treated as operational pass; may warn or soft-fail depending on pin rules |
+| Live eval | Count as convert failure / `TRANSLATION_FAILED` — **not** `iwxxm_validation.skip` and **not** operational IWXXM pass |
+
+Regional ICAO guidance for failed translation is cited in the session RAIDD
+decision (tracked SoT: `docs/decisions.csv`; no ADR tree this rebaseline per
+D-025). Do not put internal doc ids on operator UI surfaces.
+
 ## Roles
 
 | Role | Question | Engine |

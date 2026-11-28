@@ -15,6 +15,10 @@ All notable user-facing and deployable changes for TAC to IWXXM.
   `vendor/schemas/` remains optional materialization only (FR-077 / NFR-016).
 - Shell nav and Live map page chrome use **Live map** (was Decode visuals).
   Test id `shell-nav-visuals` is unchanged.
+- Convert product-shaped translation failures (SIGMET/AIRMET structural parse
+  fails, unknown VOR) emit `@translationFailedTAC` quarantine XML instead of
+  empty convert; live-map eval labels them `TRANSLATION_FAILED` (not
+  `iwxxm_skip`) ([#1563](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1563)).
 
 ### Packages
 - Wire `packages/dissemination` for PyPI as **`iwxxm-dissemination`** `0.1.0`

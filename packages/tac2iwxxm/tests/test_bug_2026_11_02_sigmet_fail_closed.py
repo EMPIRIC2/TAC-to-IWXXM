@@ -3,7 +3,10 @@
 Mirrors ``tests/bugs/tac/test_bug_2026_11_02_sigmet_*`` so the tac2iwxxm
 coverage gate sees the new branches (bug-repro tree is outside this package).
 
-[Corpus: product §F6] [Corpus: tests]
+After #1563, product-shaped structural fails emit ``@translationFailedTAC``
+quarantine instead of empty convert. Parsers still raise; convert quarantines.
+
+[Corpus: product §F6] [Corpus: tests] D-031
 """
 
 from __future__ import annotations
@@ -25,15 +28,18 @@ def test_heading_paste_keeps_wc_ahl_for_tc_cnl() -> None:
     assert ir.get("iwxxm_root") == "TropicalCycloneSIGMET"
 
 
-def test_empty_sigmet_and_airmet_fail_closed() -> None:
+def test_empty_sigmet_and_airmet_quarantine_without_invented_ts() -> None:
     empty_sig = convert(
         "YUDD SIGMET 2 VALID 101200/101600 YUSO-=",
         product="SIGMET",
         profile="annex3",
         iwxxm_version="2025-2",
     )
-    assert empty_sig.ok is False
-    assert any(i.code == "PARSE_ERROR" for i in empty_sig.issues)
+    assert empty_sig.ok is True
+    assert empty_sig.xml is not None
+    assert "translationFailedTAC" in empty_sig.xml
+    assert any(i.code == "TRANSLATION_FAILED" for i in empty_sig.issues)
+    assert "AirWxPhenomena/TS" not in empty_sig.xml
 
     empty_air = convert(
         "YUDD AIRMET 1 VALID 151520/151800 YUSO-=",
@@ -41,7 +47,9 @@ def test_empty_sigmet_and_airmet_fail_closed() -> None:
         profile="annex3",
         iwxxm_version="2025-2",
     )
-    assert empty_air.ok is False
+    assert empty_air.ok is True
+    assert empty_air.xml is not None
+    assert "translationFailedTAC" in empty_air.xml
 
 
 def test_incomplete_cnl_and_out_of_range_coords_fail() -> None:
@@ -68,7 +76,10 @@ def test_inverted_valid_period_fails_and_quarantine_nils() -> None:
         profile="annex3",
         iwxxm_version="2025-2",
     )
-    assert hard.ok is False
+    assert hard.ok is True
+    assert hard.xml is not None
+    assert "translationFailedTAC" in hard.xml
+    assert "<gml:beginPosition>" not in hard.xml
 
     shell = convert(
         "YUDD SIGMET 1 VALID 101600/101200 YUSO INVALID",

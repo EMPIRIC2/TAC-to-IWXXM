@@ -137,7 +137,20 @@ def _accumulate_report(
                 }
             )
     iwxxm = report.get("iwxxm")
-    if iwxxm:
+    iwxxm_text = str(iwxxm) if iwxxm else ""
+    # Quarantine shells carry original TAC (#1563). Label as translation-failed
+    # XML / blocked-with-TAC — not operational IWXXM pass and not iwxxm_skip.
+    if iwxxm_text and "translationFailedTAC" in iwxxm_text:
+        failures.append(
+            {
+                "place_key": place_key,
+                "product": product,
+                "stage": "convert",
+                "code": "TRANSLATION_FAILED",
+            }
+        )
+        return lint_delta, 1, 0, 0, 0
+    if iwxxm_text:
         return lint_delta, 0, 1, 0, 0
     if issues:
         failures.append(

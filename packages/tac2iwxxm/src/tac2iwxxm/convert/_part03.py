@@ -133,6 +133,50 @@ def convert(
         else requested_iwxxm_version
     )
 
+    def _quarantine_result(message: str) -> ConvertResult:
+        """
+        Emit ``@translationFailedTAC`` quarantine for a product-shaped parse fail.
+
+        Parameters
+        ----------
+        message : str
+            Human-readable translation failure reason.
+
+        Returns
+        -------
+        ConvertResult
+            Soft-ok result with quarantine XML and ``TRANSLATION_FAILED`` warning.
+        """
+        span_start, span_end = _content_bounds(tac)
+        quarantine_xml = _quarantine_xml(
+            product_u,
+            tac.strip(),
+            effective_iwxxm_version,
+            bulletin_id=bulletin_id,
+            centre_designator=translation_centre_designator or None,
+            centre_name=translation_centre_name or None,
+        )
+        return ConvertResult(
+            ok=True,
+            product=product_u,
+            profile=profile_l,
+            iwxxm_version=effective_iwxxm_version,
+            semantic_profile=semantic_profile,
+            deprecated_alias_used=deprecated_alias_used,
+            xml=quarantine_xml,
+            xml_gzip=_xml_gzip(quarantine_xml, suggested_filename),
+            suggested_filename=suggested_filename,
+            issues=[
+                ConvertIssue(
+                    severity="warning",
+                    code="TRANSLATION_FAILED",
+                    message=message,
+                    start=span_start,
+                    end=span_end,
+                )
+            ],
+        )
+
     def _fail(
         code: str,
         message: str,
@@ -296,53 +340,25 @@ def convert(
         else:
             xml = _emit(product_u, profile_l, ir, effective_iwxxm_version)
     except ImpossibleTacDay as exc:
-        return _fail("IMPOSSIBLE_TAC_DAY", str(exc))
+        message = str(exc)
+        if preview or not _should_quarantine(tac, product_u):
+            return _fail("IMPOSSIBLE_TAC_DAY", message)
+        return _quarantine_result(message)
     except UnknownVOR as exc:
-        return _fail("PARSE_ERROR", f"unknown VOR reference {exc}", span=True)
+        message = f"unknown VOR reference {exc}"
+        if preview or not _should_quarantine(tac, product_u):
+            return _fail("PARSE_ERROR", message, span=True)
+        return _quarantine_result(message)
     except ValueError as exc:
         message = str(exc)
         if preview:
             return _fail("PARSE_ERROR", message, span=True)
-        # Structural SIGMET/AIRMET defects fail closed — do not soft-succeed a
-        # quarantine shell that could still invent TS or inverted validPeriod.
-        hard_fail_markers = (
-            "missing phenomenon",
-            "incomplete CNL",
-            "valid period end must be after begin",
-            "coordinate out of range",
-        )
-        if any(marker in message for marker in hard_fail_markers):
-            return _fail("PARSE_ERROR", message, span=True)
+        # Product-shaped translation failures emit an official-shaped quarantine
+        # shell with @translationFailedTAC (#1563 / regional ICAO guidance).
+        # The shell must not invent phenomenon/TS or encode illegal geometry —
+        # identity + original TAC only (see _quarantine_xml / _valid_period_xml).
         if _should_quarantine(tac, product_u):
-            span_start, span_end = _content_bounds(tac)
-            quarantine_xml = _quarantine_xml(
-                product_u,
-                tac.strip(),
-                effective_iwxxm_version,
-                bulletin_id=bulletin_id,
-                centre_designator=translation_centre_designator or None,
-                centre_name=translation_centre_name or None,
-            )
-            return ConvertResult(
-                ok=True,
-                product=product_u,
-                profile=profile_l,
-                iwxxm_version=effective_iwxxm_version,
-                semantic_profile=semantic_profile,
-                deprecated_alias_used=deprecated_alias_used,
-                xml=quarantine_xml,
-                xml_gzip=_xml_gzip(quarantine_xml, suggested_filename),
-                suggested_filename=suggested_filename,
-                issues=[
-                    ConvertIssue(
-                        severity="warning",
-                        code="TRANSLATION_FAILED",
-                        message=message,
-                        start=span_start,
-                        end=span_end,
-                    )
-                ],
-            )
+            return _quarantine_result(message)
         return _fail("PARSE_ERROR", message, span=True)
     finally:
         pop_bulletin_anchor(anchor_token)

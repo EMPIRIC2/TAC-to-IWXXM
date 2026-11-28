@@ -250,9 +250,12 @@ Work history: guest → IndexedDB; logged-in → separate session APIs (JWT).
   on partial parse/convert with best-effort IWXXM, `ok: false`, and
   `failed_spans: [{ start, end, code?, message? }]`.
 - Does **not** imply Schematron-passed publish. Hard convert (default) keeps failure HTTP
-  semantics for non-quarantine errors. Product-shaped unreliable TAC may still emit a
-  quarantine document (`@translationFailedTAC`) with HTTP **200**
-  (not the soft-preview `ok:false` envelope).
+  semantics for non-quarantine errors. Product-shaped unreliable TAC **and** product-shaped
+  structural parse failures (for example SIGMET/AIRMET missing phenomenon, incomplete CNL,
+  inverted/zero VALID, out-of-range coordinates, unknown VOR) still emit a quarantine
+  document (`@translationFailedTAC` carrying the original TAC) with HTTP **200**
+  (not the soft-preview `ok:false` envelope). See [Corpus: domain] translation-failed
+  validate policy and D-031 / #1563.
 
 ** spans on convert issues/errors** (when present): optional integer `start` / `end` alongside
 existing string fields.

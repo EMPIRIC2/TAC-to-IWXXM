@@ -75,5 +75,8 @@ def test_e2e_health_then_srq_convert_and_unknown_vor(client: TestClient) -> None
             "lint": (None, "false"),
         },
     )
-    assert miss.status_code == 400
-    assert "unknown VOR reference 'ZZZ'" in miss.text
+    # #1563: product-shaped unknown VOR quarantines (soft-ok) with original TAC.
+    assert miss.status_code == 200, miss.text[:500]
+    body = miss.json()
+    xml = (body.get("results") or [{}])[0].get("content") or body.get("xml") or ""
+    assert "translationFailedTAC" in xml or "unknown VOR" in miss.text.lower()
