@@ -12,10 +12,12 @@ type MockSupabaseClient = {
 };
 
 const { createClient } = vi.hoisted(() => ({
-  createClient: vi.fn((): MockSupabaseClient => ({
-    auth: { signOut: vi.fn() },
-    from: vi.fn(),
-  })),
+  createClient: vi.fn(
+    (): MockSupabaseClient => ({
+      auth: { signOut: vi.fn() },
+      from: vi.fn(),
+    }),
+  ),
 }));
 
 vi.mock('@supabase/supabase-js', () => ({
@@ -49,16 +51,12 @@ describe('supabase client', () => {
 
     expect(first).toBe(second);
     expect(createClient).toHaveBeenCalledTimes(1);
-    expect(createClient).toHaveBeenCalledWith(
-      'https://demo.supabase.co',
-      'anon-key',
-      {
-        auth: {
-          persistSession: true,
-          autoRefreshToken: true,
-        },
+    expect(createClient).toHaveBeenCalledWith('https://demo.supabase.co', 'anon-key', {
+      auth: {
+        persistSession: true,
+        autoRefreshToken: true,
       },
-    );
+    });
   });
 
   it('logs when runtime config is missing and still constructs a client', async () => {
@@ -84,8 +82,8 @@ describe('supabase client', () => {
     expect(mod.supabase.from('metar')).toBe('table');
     expect(from).toHaveBeenCalledWith('metar');
     // Non-function properties are returned as-is (Proxy get branch).
-    expect(
-      (mod.supabase as unknown as { publicUrl: string }).publicUrl,
-    ).toBe('https://demo.supabase.co');
+    expect((mod.supabase as unknown as { publicUrl: string }).publicUrl).toBe(
+      'https://demo.supabase.co',
+    );
   });
 });

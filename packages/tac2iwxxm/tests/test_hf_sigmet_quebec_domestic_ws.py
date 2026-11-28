@@ -44,6 +44,7 @@ def _stub_quebec_vor_table(monkeypatch: pytest.MonkeyPatch) -> None:
 
     monkeypatch.setattr("tac2iwxxm.geometry.reference_point.resolve_vor", _resolve)
 
+
 # Exact failing operator paste (HF repro).
 _QUEBEC = """\
 WSUS01 KKCI 270354
