@@ -1970,7 +1970,7 @@ export interface components {
             /**
              * Semantic Profile
              * @description Semantic / lint profile id (default ICAO_2025)
-             * @default annex3
+             * @default ICAO_2025
              */
             semantic_profile: string;
         };
@@ -4908,8 +4908,8 @@ export interface components {
              * Profile
              * @description Deprecated - use semantic_profile (use canonical ids; annex3/iwxxm_us aliases removed)
              * @default
-             * @example annex3
-             * @example iwxxm_us
+             * @example ICAO_2025
+             * @example US_FAA_NWS
              */
             profile: string;
             /**
