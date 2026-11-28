@@ -1,6 +1,6 @@
 # US_FAA_NWS — United States semantic overlay
 
-> **Profile id**: `US_FAA_NWS` · **Legacy alias**: `iwxxm_us` (deprecation window → [#1025](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1025))  
+> **Profile id**: `US_FAA_NWS` · **Former wire alias**: `iwxxm_us` (removed after 2026-10-31 → [#1025](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1025))  
 > **Kind**: semantic · **Priority**: P0 · **Status**: implemented — #919 closed (EV-085)  
 > **Catalog row**: [`catalog.yaml`](../catalog.yaml) · **ADR**: [](../../../adr/-semantic-vs-exchange-profiles.md)
 

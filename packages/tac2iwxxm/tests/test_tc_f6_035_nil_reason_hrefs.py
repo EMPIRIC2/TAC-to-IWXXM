@@ -37,7 +37,7 @@ def _convert(tac: str, *, product: str, profile: str, iwxxm_version: str) -> str
 
 def test_tc_f6_035_metar_nil_hrefs_match_on_both_global_lines() -> None:
     """Aerodrome nils stay on common/nil, and 2023-1 matches 2025-2."""
-    documents = {pin: _convert(_METAR_NIL, product="METAR", profile="annex3", iwxxm_version=pin) for pin in _PINS}
+    documents = {pin: _convert(_METAR_NIL, product="METAR", profile="ICAO_2025", iwxxm_version=pin) for pin in _PINS}
     reasons = {pin: _reasons(xml) for pin, xml in documents.items()}
     assert reasons["2025-2"]
     assert reasons["2025-2"] == reasons["2023-1"]
@@ -48,7 +48,7 @@ def test_tc_f6_035_metar_nil_hrefs_match_on_both_global_lines() -> None:
 def test_tc_f6_035_space_weather_intensity_stays_on_common_nil() -> None:
     """intensityAndRegion uses common/nil. locationIndicator is an xlink:href."""
     tac = (_ANNEX3 / "swxa_a7_3.tac").read_text(encoding="utf-8")
-    documents = {pin: _convert(tac, product="SWXA", profile="annex3", iwxxm_version=pin) for pin in _PINS}
+    documents = {pin: _convert(tac, product="SWXA", profile="ICAO_2025", iwxxm_version=pin) for pin in _PINS}
     expected = f"{_COMMON}nothingOfOperationalSignificance"
     for xml in documents.values():
         assert f'intensityAndRegion nilReason="{expected}"' in xml
@@ -61,8 +61,8 @@ def test_tc_f6_035_space_weather_intensity_stays_on_common_nil() -> None:
 def test_tc_f6_035_vona_stays_on_iwxxm_nil() -> None:
     """2025-2 VONA keeps iwxxm/nil. 2023-1 VONA keeps its current empty nil set."""
     tac = (_ANNEX3 / "vona_a7_1.tac").read_text(encoding="utf-8")
-    current = _convert(tac, product="VONA", profile="annex3", iwxxm_version="2025-2")
-    previous = _convert(tac, product="VONA", profile="annex3", iwxxm_version="2023-1")
+    current = _convert(tac, product="VONA", profile="ICAO_2025", iwxxm_version="2025-2")
+    previous = _convert(tac, product="VONA", profile="ICAO_2025", iwxxm_version="2023-1")
     assert f"{_IWXXM}inapplicable" in current
     assert "common/nil" not in current
     assert _reasons(previous) == []

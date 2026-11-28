@@ -184,7 +184,7 @@ def test_cor_update_omit_visibility_emits_nilreason_with_lint_error() -> None:
     assert result.xml is not None
     assert f'<iwxxm:visibility xsi:nil="true" nilReason="{_NIL_MISSING}"/>' in result.xml
     assert not any(i.code == "TRANSLATION_FAILED" for i in result.issues)
-    report = lint_with_profile(tac, product="METAR", profile="annex3", icao="MZBZ")
+    report = lint_with_profile(tac, product="METAR", profile="ICAO_2025", icao="MZBZ")
     matched = [i for i in report.issues if i.code == "MISSING_VISIBILITY"]
     assert matched
     assert all(i.severity == "error" for i in matched)

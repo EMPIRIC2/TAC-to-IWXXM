@@ -750,7 +750,7 @@ def test_api_wire_remaining_branches() -> None:
     from tac2iwxxm import BulletinSplitError
 
     assert api_wire.manual_entries_with_offsets("   \n  ", product="SIGMET") == []
-    assert api_wire._resolve_request_profiles(route="", profile="annex3").emit_key
+    assert api_wire._resolve_request_profiles(route="", profile="ICAO_2025").emit_key
 
     err = api_wire.bulletin_split_http_error(BulletinSplitError("weird_code", "boom"))
     assert err.status_code == 422

@@ -66,13 +66,13 @@ def test_legacy_exchange_profile_rejected_on_convert(client: TestClient) -> None
 def test_legacy_profile_alias_rejected_on_convert(client: TestClient) -> None:
     response = client.post(
         "/api/v1/convert",
-        files=_convert_files(profile=(None, "annex3")),
+        files=_convert_files(profile=(None, "ICAO_2025")),
     )
     assert response.status_code == 422, response.text[:500]
     assert "profile" in response.text
 
 
-def test_conversion_library_forwards_emit_key(
+def test_conversion_library_forwards_canonical_profile(
     client: TestClient,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
@@ -90,10 +90,10 @@ def test_conversion_library_forwards_emit_key(
     )
     assert response.status_code == 200, response.text[:400]
     assert seen
-    assert seen[0].get("profile") == "annex3"
+    assert seen[0].get("profile") == "icao_2025"
 
 
-def test_us_conversion_library_forwards_emit_key(
+def test_us_conversion_library_forwards_canonical_profile(
     client: TestClient,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
@@ -120,7 +120,7 @@ def test_us_conversion_library_forwards_emit_key(
     )
     assert icao.status_code == 200, icao.text[:400]
     assert seen
-    assert seen[0].get("profile") == "annex3"
+    assert seen[0].get("profile") == "icao_2025"
 
 
 def test_tc_ev063_003_unknown_semantic_profile_on_validate(client: TestClient) -> None:

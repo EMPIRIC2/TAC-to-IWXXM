@@ -18,8 +18,8 @@ _METAR = (_VENDOR / "2025-2" / "IWXXM" / "examples" / "metar-A3-1.tac").read_tex
 
 
 def test_pack_ir_sits_beside_legacy_xml() -> None:
-    legacy = convert(_METAR, product="METAR", profile="annex3", iwxxm_version="2025-2")
-    shadow = convert_shadow(_METAR, product="METAR", profile="annex3", iwxxm_version="2025-2")
+    legacy = convert(_METAR, product="METAR", profile="ICAO_2025", iwxxm_version="2025-2")
+    shadow = convert_shadow(_METAR, product="METAR", profile="ICAO_2025", iwxxm_version="2025-2")
     assert shadow.xml == legacy.xml
     assert shadow.xml is not None
     assert shadow.pack_ir is not None
@@ -36,8 +36,8 @@ def test_pack_ir_sits_beside_legacy_xml() -> None:
 
 
 def test_pack_ir_same_on_both_annex3_pins() -> None:
-    older = convert_shadow(_METAR, product="METAR", profile="annex3", iwxxm_version="2023-1")
-    newer = convert_shadow(_METAR, product="METAR", profile="annex3", iwxxm_version="2025-2")
+    older = convert_shadow(_METAR, product="METAR", profile="ICAO_2025", iwxxm_version="2023-1")
+    newer = convert_shadow(_METAR, product="METAR", profile="ICAO_2025", iwxxm_version="2025-2")
     assert older.pack_ir is not None
     assert newer.pack_ir is not None
     assert older.pack_ir["spans"] == newer.pack_ir["spans"]
@@ -46,7 +46,7 @@ def test_pack_ir_same_on_both_annex3_pins() -> None:
 
 
 def test_failed_convert_has_no_pack_ir() -> None:
-    shadow = convert_shadow(_METAR, product="METAR", profile="annex3", iwxxm_version="3.0.0")
+    shadow = convert_shadow(_METAR, product="METAR", profile="ICAO_2025", iwxxm_version="3.0.0")
     assert shadow.ok is False
     assert shadow.pack_ir is None
     assert shadow.legacy_ir is None

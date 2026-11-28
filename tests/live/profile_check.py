@@ -480,7 +480,9 @@ def engine_check(bulletin: Bulletin, profile: ProfileTarget) -> list[Finding]:
         findings.extend(_findings_from_issues("lint", linted.issues))
 
     xml = ""
-    convert_key = profile.emit_key
+    # #1025: convert takes canonical semantic ids; emit_key remains for schema/lint.
+    convert_key = profile.profile_id
+    emit_for_schema = profile.emit_key
     try:
         converted = convert(
             bulletin.text,
@@ -494,9 +496,10 @@ def engine_check(bulletin: Bulletin, profile: ProfileTarget) -> list[Finding]:
     if (
         converted is not None
         and _unsupported_profile(converted)
-        and convert_key != "annex3"
+        and convert_key.upper() != "ICAO_2025"
     ):
-        convert_key = "annex3"
+        convert_key = "ICAO_2025"
+        emit_for_schema = "annex3"
         version = "2025-2"
         try:
             converted = convert(
@@ -511,9 +514,11 @@ def engine_check(bulletin: Bulletin, profile: ProfileTarget) -> list[Finding]:
     if converted is not None:
         findings.extend(_findings_from_issues("convert", converted.issues))
         xml = converted.xml or ""
+        if getattr(converted, "profile", None):
+            emit_for_schema = converted.profile
 
     if xml:
-        schema_key = _schema_engine(convert_key)
+        schema_key = _schema_engine(emit_for_schema)
         schema_version = "3.0.0" if schema_key == "ca_eccc" else version
         try:
             validated = validate(

@@ -60,7 +60,8 @@ async def convert_bulletin(
         ),
     ),
     profile: str = Form(
-        default="", description="Deprecated - use conversion_library_id (legacy alias: annex3 or iwxxm_us)"
+        default="",
+        description="Deprecated - use conversion_library_id (use canonical ids; annex3/iwxxm_us aliases removed)",
     ),
     semantic_profile: str = Form(
         default="",
@@ -219,7 +220,7 @@ async def convert_bulletin(
         for_packaging=True,
     )
     emit_profile: str = str(wire.emit_key)
-    profile = emit_profile
+    profile = str(wire.semantic_canonical)
     iwxxm_version = _resolve_effective_iwxxm_version(
         iwxxm_version,
         semantic_canonical=wire.semantic_canonical,
@@ -400,7 +401,7 @@ async def convert_bulletin(
                     reference_time=bulletin_date or None,
                     validate=False,
                     product=product,
-                    profile=emit_profile,
+                    profile=profile,
                     report_status=split.meta.report_status,
                     propagate_residuals_to_remarks=propagate_residuals_to_remarks,
                     include_national_remarks=include_national_remarks,

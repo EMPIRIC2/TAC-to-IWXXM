@@ -37,7 +37,7 @@ def test_parse_and_emit_vv_numeric() -> None:
         "TAF YUDO 151800Z 1600/1618 13005MPS 0500 FG VV002=",
         product="TAF",
         iwxxm_version="2025-2",
-        profile="annex3",
+        profile="ICAO_2025",
     )
     assert result.ok is True
     assert result.xml is not None
@@ -63,7 +63,7 @@ def test_parse_skc_emits_clear_layer() -> None:
         "TAF YUDO 151800Z 1600/1618 13005MPS 9999 SKC=",
         product="TAF",
         iwxxm_version="2025-2",
-        profile="annex3",
+        profile="ICAO_2025",
     )
     assert result.ok is True
     assert result.xml is not None

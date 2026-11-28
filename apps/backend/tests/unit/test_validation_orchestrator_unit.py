@@ -875,7 +875,7 @@ def test_validate_xml_schema_includes_wmo_xsd_issues(monkeypatch):
         return ValidationReport(
             ok=False,
             iwxxm_version="2025-2",
-            profile="annex3",
+            profile="ICAO_2025",
             issues=[
                 Issue(severity="error", code="WMO_XSD", message="wmo xsd", layer="wmo_xsd"),
             ],

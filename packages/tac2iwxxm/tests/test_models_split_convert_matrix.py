@@ -31,7 +31,7 @@ TAF_OK = "TAF KJFK 121130Z 1212/1318 18010KT P6SM FEW050="
 
 def test_convert_success_metar_annex3() -> None:
     """S / Create+validation pass / Read happy path."""
-    result = convert(METAR_OK, product="METAR", profile="annex3")
+    result = convert(METAR_OK, product="METAR", profile="ICAO_2025")
     assert result.ok is True
     assert result.xml is not None
     assert "METAR" in (result.xml or "")
@@ -40,7 +40,7 @@ def test_convert_success_metar_annex3() -> None:
 
 def test_convert_success_taf_product_permutation() -> None:
     """S / product permutation."""
-    result = convert(TAF_OK, product="TAF", profile="annex3")
+    result = convert(TAF_OK, product="TAF", profile="ICAO_2025")
     assert result.ok is True
     assert result.product == "TAF"
     assert result.xml is not None
@@ -162,6 +162,6 @@ def test_profile_output_spec_and_msc_parts_models() -> None:
 
 def test_convert_profile_permutation_iwxxm_us() -> None:
     """S / profile permutation when US emitter available."""
-    result = convert(METAR_OK, product="METAR", profile="iwxxm_us")
+    result = convert(METAR_OK, product="METAR", profile="US_FAA_NWS")
     assert result.ok is True
     assert result.xml is not None

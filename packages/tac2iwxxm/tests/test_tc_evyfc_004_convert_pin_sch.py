@@ -18,7 +18,7 @@ def test_tc_evyfc_004_convert_pin_sch_mismatch(monkeypatch: pytest.MonkeyPatch) 
         raise PinSchError("forced convert mismatch")
 
     monkeypatch.setattr("iwxxm_validate.pin_sch.assert_pin_schematron_match", _boom)
-    result = convert(_TAC, product="METAR", profile="annex3", iwxxm_version="2025-2")
+    result = convert(_TAC, product="METAR", profile="ICAO_2025", iwxxm_version="2025-2")
     assert result.ok is False
     assert any(i.code == "PIN_SCH_MISMATCH" for i in result.issues)
 
@@ -32,7 +32,7 @@ def test_tc_evyfc_004_convert_preview_waives_pin_sch(monkeypatch: pytest.MonkeyP
     result = convert(
         _TAC,
         product="METAR",
-        profile="annex3",
+        profile="ICAO_2025",
         iwxxm_version="2025-2",
         preview=True,
     )
@@ -56,5 +56,5 @@ def test_tc_evyfc_004_convert_import_error_skipped(monkeypatch: pytest.MonkeyPat
         return real_import(name, globals, locals, fromlist, level)
 
     monkeypatch.setattr(builtins, "__import__", _guarded)
-    result = convert(_TAC, product="METAR", profile="annex3", iwxxm_version="2025-2")
+    result = convert(_TAC, product="METAR", profile="ICAO_2025", iwxxm_version="2025-2")
     assert not any(i.code == "PIN_SCH_MISMATCH" for i in result.issues)

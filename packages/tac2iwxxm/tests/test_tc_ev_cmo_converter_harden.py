@@ -18,7 +18,7 @@ def test_bare_icao_obs_accepts_product_hint_speci() -> None:
     ir = parse_metar_speci(tac, product="SPECI")
     assert ir["station"] == "MKJP"
     assert ir["report_type"] == "SPECI"
-    result = convert(tac, product="SPECI", profile="annex3", iwxxm_version="2025-2")
+    result = convert(tac, product="SPECI", profile="ICAO_2025", iwxxm_version="2025-2")
     assert result.ok
     assert result.xml is not None
     assert "iwxxm:SPECI" in result.xml
@@ -28,7 +28,7 @@ def test_bare_icao_obs_accepts_product_hint_metar() -> None:
     tac = "KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005="
     ir = parse_metar_speci(tac, product="METAR")
     assert ir["report_type"] == "METAR"
-    assert convert(tac, product="METAR", profile="annex3", iwxxm_version="2025-2").ok
+    assert convert(tac, product="METAR", profile="ICAO_2025", iwxxm_version="2025-2").ok
 
 
 def test_noisg_alias_emits_nosig_trend() -> None:
@@ -37,7 +37,7 @@ def test_noisg_alias_emits_nosig_trend() -> None:
     assert (
         ir.get("nil_nosig") or any(t.get("nil_nosig") for t in (ir.get("trends") or [])) or ir.get("nosig_typo_alias")
     )
-    result = convert(tac, product="METAR", profile="annex3", iwxxm_version="2025-2")
+    result = convert(tac, product="METAR", profile="ICAO_2025", iwxxm_version="2025-2")
     assert result.ok
     assert "noSignificantChange" in (result.xml or "")
 
@@ -48,7 +48,7 @@ def test_empo_alias_parses_as_tempo() -> None:
     changes = ir.get("change_forecasts") or []
     assert any(c.get("change_indicator") == "PROBABILITY_30_TEMPORARY_FLUCTUATIONS" for c in changes)
     assert any(c.get("tac_change_indicator") == "EMPO" for c in changes)
-    assert convert(tac, product="TAF", profile="annex3", iwxxm_version="2025-2").ok
+    assert convert(tac, product="TAF", profile="ICAO_2025", iwxxm_version="2025-2").ok
 
 
 def test_sigmet_alphanumeric_sequence_parses() -> None:
@@ -61,7 +61,7 @@ def test_sigmet_alphanumeric_sequence_parses() -> None:
     ir = parse_sigmet(tac, product="SIGMET")
     assert ir["sequence"] == 1
     assert ir.get("sequence_label", "A1").upper() in {"A1", "1"}
-    result = convert(tac, product="SIGMET", profile="annex3", iwxxm_version="2025-2")
+    result = convert(tac, product="SIGMET", profile="ICAO_2025", iwxxm_version="2025-2")
     assert result.ok
     assert not any(i.code == "TRANSLATION_FAILED" for i in result.issues)
 
@@ -78,7 +78,7 @@ def test_siga0_dual_fir_phonetic_sequence_parses() -> None:
     assert ir["fir"] == "KZWY"
     assert ir.get("additional_firs") == ["KZMA"]
     assert ir["sequence"] == 20
-    result = convert(tac, product="SIGMET", profile="annex3", iwxxm_version="2025-2")
+    result = convert(tac, product="SIGMET", profile="ICAO_2025", iwxxm_version="2025-2")
     assert result.ok
     assert result.xml is not None
     assert not any(i.code == "PARSE_ERROR" for i in result.issues)
@@ -105,7 +105,7 @@ def test_sigmet_cnl_valid_keyword_before_period() -> None:
     assert ir.get("cancelled_sequence") == 3
     assert ir.get("cancelled_sequence_label") == "A3"
     assert ir.get("ahl_tt") == "WC"
-    result = convert(tac, product="SIGMET", profile="annex3", iwxxm_version="2025-2")
+    result = convert(tac, product="SIGMET", profile="ICAO_2025", iwxxm_version="2025-2")
     assert result.ok
     assert result.xml is not None
     assert 'isCancelReport="true"' in result.xml

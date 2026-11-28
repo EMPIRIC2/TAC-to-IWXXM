@@ -63,7 +63,7 @@ def convert_shadow(
     tac: str,
     *,
     product: str,
-    profile: str = "annex3",
+    profile: str = "ICAO_2025",
     iwxxm_version: str | None = None,
 ) -> ShadowResult:
     """

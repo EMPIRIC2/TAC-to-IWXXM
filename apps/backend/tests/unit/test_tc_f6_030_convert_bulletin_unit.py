@@ -30,7 +30,7 @@ def _multipart_bulletin(
     *,
     manual_text: str,
     product: str = "METAR",
-    profile: str = "annex3",
+    profile: str = "ICAO_2025",
     lint: str = "true",
 ):
     return client.post(
@@ -474,7 +474,7 @@ def test_convert_bulletin_ignores_empty_upload_files(client: TestClient, monkeyp
 
     response = client.post(
         "/api/v1/convert-bulletin",
-        data={"product": "METAR", "profile": "annex3", "lint": "false"},
+        data={"product": "METAR", "profile": "ICAO_2025", "lint": "false"},
         files=[
             ("files", ("empty.txt", b"", "text/plain")),
             ("files", ("metar_bulletin.txt", FIXTURE_TEXT.encode("utf-8"), "text/plain")),

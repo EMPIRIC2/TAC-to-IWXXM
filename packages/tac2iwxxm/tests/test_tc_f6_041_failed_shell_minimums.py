@@ -11,7 +11,7 @@ _NIL = "http://codes.wmo.int/common/nil/missing"
 
 
 def _failed(product: str, tac: str):
-    result = convert(tac, product=product, profile="annex3", iwxxm_version="2025-2")
+    result = convert(tac, product=product, profile="ICAO_2025", iwxxm_version="2025-2")
     assert result.ok is True, result.issues
     assert result.xml is not None
     xml = result.xml

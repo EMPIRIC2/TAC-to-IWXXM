@@ -47,7 +47,7 @@ def test_convective_profile_rejects_an_international_sigmet() -> None:
 
 def test_annex3_international_sigmet_is_unchanged() -> None:
     selected = convert(_INTL, product="SIGMET", profile="US_NWS_CONVECTIVE_SIGMET", iwxxm_version="2025-2")
-    annex = convert(_INTL, product="SIGMET", profile="annex3", iwxxm_version="2025-2")
+    annex = convert(_INTL, product="SIGMET", profile="ICAO_2025", iwxxm_version="2025-2")
     assert selected.ok is False
     assert annex.ok, annex.issues
     assert annex.xml is not None

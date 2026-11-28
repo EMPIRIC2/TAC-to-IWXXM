@@ -46,10 +46,10 @@ AREA EMBD TS MOV FROM 16010KT. TOPS TO FL410.
 
 def test_tc_1267_live_convective_sigmet_converts_and_validates() -> None:
     for tac in (_LIVE_75C, _LIVE_76C, _LIVE_04E):
-        result = convert(tac, product="SIGMET", profile="iwxxm_us", iwxxm_version="2025-2")
+        result = convert(tac, product="SIGMET", profile="US_FAA_NWS", iwxxm_version="2025-2")
         assert result.ok, result.issues
         assert "AreaTS" in result.xml
-        report = validate(result.xml, iwxxm_version="2025-2", profile="iwxxm_us", levels=["xsd"])
+        report = validate(result.xml, iwxxm_version="2025-2", profile=result.profile, levels=["xsd"])
         blocking = [issue for issue in report.issues if issue.severity == "error"]
         assert not blocking, [(issue.code, issue.message) for issue in blocking]
 
@@ -61,7 +61,7 @@ TX
 FROM 10N ZZZ-10S ZZZ
 AREA TS MOV FROM 21010KT. TOPS TO FL300.
 """
-    result = convert(tac, product="SIGMET", profile="iwxxm_us", iwxxm_version="2025-2")
+    result = convert(tac, product="SIGMET", profile="US_FAA_NWS", iwxxm_version="2025-2")
     assert result.ok is False
     assert any(issue.code == "PARSE_ERROR" and "ZZZ" in issue.message for issue in result.issues)
 
@@ -77,7 +77,7 @@ TX OK
 FROM 10E MMB-50WSW END-20N CDS-30ESE AMA-10E MMB
 DVLPG AREA TS MOV FROM 22025KT. TOPS TO FL340.
 """
-    result = convert(tac, product="SIGMET", profile="iwxxm_us", iwxxm_version="2025-2")
+    result = convert(tac, product="SIGMET", profile="US_FAA_NWS", iwxxm_version="2025-2")
     assert result.ok, result.issues
     assert result.xml is not None
     assert "posList" in result.xml or "pos>" in result.xml

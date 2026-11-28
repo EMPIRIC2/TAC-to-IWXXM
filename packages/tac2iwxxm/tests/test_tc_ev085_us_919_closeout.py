@@ -98,7 +98,7 @@ def test_tc_ev085_005_catalog_us_faa_nws_row() -> None:
     data = yaml.safe_load(CATALOG_PATH.read_text(encoding="utf-8"))
     row = next(p for p in data["profiles"] if p["id"] == "US_FAA_NWS")
     assert row["implementation"]["deepen_issue"] == "#919"
-    assert row["legacy_alias"] == "iwxxm_us"
+    assert row.get("legacy_alias") is None  # wire alias removed #1025
     assert row.get("acceptance", {}).get("status") == "closed"
     assert row.get("acceptance", {}).get("cycle") == "EV-085"
 

@@ -84,8 +84,8 @@ def test_tc_ev063_007_us_faa_nws_rmk_golden(case_id: str, rmk_manifest: dict) ->
 
 
 @pytest.mark.parametrize("case_id", ["rmk_ao2_slp", "rmk_combined", "rmk_ltg_dsnt"])
-def test_tc_ev063_007_alias_iwxxm_us_parity(case_id: str, rmk_manifest: dict) -> None:
-    """Legacy iwxxm_us alias remains byte-identical to US_FAA_NWS on RMK matrix rows."""
+def test_tc_ev063_007_emit_key_iwxxm_us_parity_without_deprecation(case_id: str, rmk_manifest: dict) -> None:
+    """Emit key still converts; wire deprecation flag stays false (#1025)."""
     case = next(c for c in rmk_manifest["cases"] if c["id"] == case_id)
     tac = (FIXTURES / case["tac"]).read_text(encoding="utf-8")
 
@@ -95,13 +95,13 @@ def test_tc_ev063_007_alias_iwxxm_us_parity(case_id: str, rmk_manifest: dict) ->
         profile=PROFILE,
         iwxxm_version=IWXXM_VERSION,
     )
-    alias = convert(
+    emit_key = convert(
         tac,
         product=case["product"],
         profile=ALIAS,
         iwxxm_version=IWXXM_VERSION,
     )
     assert canonical.ok
-    assert alias.ok
-    assert canonical.xml == alias.xml
-    assert alias.deprecated_alias_used
+    assert emit_key.ok
+    assert canonical.xml == emit_key.xml
+    assert emit_key.deprecated_alias_used is False

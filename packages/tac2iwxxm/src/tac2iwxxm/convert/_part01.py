@@ -45,7 +45,7 @@ def resolve_propagate_residuals_to_remarks(
     if value is not None:
         return bool(value)
     key = profile.strip().lower()
-    resolved = resolve_semantic_profile(profile)
+    resolved = resolve_semantic_profile(profile, allow_emit_key=True)
     if resolved is not None:
         key = resolved.emit_key
         canonical = resolved.canonical.lower()

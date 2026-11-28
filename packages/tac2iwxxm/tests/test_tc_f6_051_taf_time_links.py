@@ -46,7 +46,7 @@ def test_failed_preview_nil_element_is_a_forecast_for_taf() -> None:
 
 
 def _convert(tac: str) -> str:
-    result = convert(tac, product="TAF", profile="annex3", iwxxm_version="2025-2")
+    result = convert(tac, product="TAF", profile="ICAO_2025", iwxxm_version="2025-2")
     assert result.ok is True, result.issues
     assert result.xml is not None
     return result.xml
@@ -70,7 +70,7 @@ def test_tc_f6_051_failed_taf_preview_uses_a_base_forecast() -> None:
     result = convert(
         "TAF YUDO 151800Z 1600/1618 INVALID",
         product="TAF",
-        profile="annex3",
+        profile="ICAO_2025",
         iwxxm_version="2025-2",
         preview=True,
     )
@@ -88,7 +88,7 @@ def test_tc_f6_051_failed_metar_preview_keeps_the_observation() -> None:
     result = convert(
         "METAR KJFK 121151Z INVALID",
         product="METAR",
-        profile="annex3",
+        profile="ICAO_2025",
         iwxxm_version="2025-2",
         preview=True,
     )

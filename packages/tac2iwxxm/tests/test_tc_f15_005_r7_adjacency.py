@@ -31,8 +31,8 @@ def test_r7_lint_rejects_metar_tac_under_speci_product() -> None:
 def test_r7_convert_rejects_cross_product() -> None:
     speci = (ANNEX3 / "speci_basic.tac").read_text(encoding="utf-8")
     metar = (ANNEX3 / "metar_basic.tac").read_text(encoding="utf-8")
-    bad_m = convert(speci, product="METAR", profile="annex3", iwxxm_version="2025-2")
-    bad_s = convert(metar, product="SPECI", profile="annex3", iwxxm_version="2025-2")
+    bad_m = convert(speci, product="METAR", profile="ICAO_2025", iwxxm_version="2025-2")
+    bad_s = convert(metar, product="SPECI", profile="ICAO_2025", iwxxm_version="2025-2")
     assert bad_m.ok is False
     assert bad_s.ok is False
     assert any(i.code == "PARSE_ERROR" for i in bad_m.issues)
@@ -47,7 +47,7 @@ def test_r7_shared_pack_speci_and_metar_each_ok() -> None:
         tac = (ANNEX3 / f"{name}.tac").read_text(encoding="utf-8")
         lint_report = lint(tac, product=product)
         assert lint_report.ok is True, name
-        conv = convert(tac, product=product, profile="annex3", iwxxm_version="2025-2")
+        conv = convert(tac, product=product, profile="ICAO_2025", iwxxm_version="2025-2")
         assert conv.ok is True, name
         assert conv.product == product
 
@@ -63,5 +63,5 @@ def test_r7_bulletin_neighbor_keeps_per_report_identity() -> None:
     assert lint(lines[0], product="METAR").ok is True
     assert lint(lines[1], product="SPECI").ok is True
     assert lint(lines[1], product="METAR").ok is False
-    assert convert(lines[0], product="METAR", profile="annex3", iwxxm_version="2025-2").ok is True
-    assert convert(lines[1], product="SPECI", profile="annex3", iwxxm_version="2025-2").ok is True
+    assert convert(lines[0], product="METAR", profile="ICAO_2025", iwxxm_version="2025-2").ok is True
+    assert convert(lines[1], product="SPECI", profile="ICAO_2025", iwxxm_version="2025-2").ok is True

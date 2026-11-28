@@ -41,8 +41,8 @@ def test_vendor_metar_example_stays_on_every_existing_pin() -> None:
 
 @pytest.mark.parametrize("iwxxm_version", _ANNEX3_PINS)
 def test_metar_shadow_xml_matches_legacy_on_annex3_pins(iwxxm_version: str) -> None:
-    legacy = convert(_METAR_TAC, product="METAR", profile="annex3", iwxxm_version=iwxxm_version)
-    shadow = convert_shadow(_METAR_TAC, product="METAR", profile="annex3", iwxxm_version=iwxxm_version)
+    legacy = convert(_METAR_TAC, product="METAR", profile="ICAO_2025", iwxxm_version=iwxxm_version)
+    shadow = convert_shadow(_METAR_TAC, product="METAR", profile="ICAO_2025", iwxxm_version=iwxxm_version)
     assert legacy.ok is True
     assert shadow.ok is True
     assert shadow.xml == legacy.xml
@@ -60,14 +60,14 @@ def test_metar_shadow_keeps_2025_2_vendor_golden() -> None:
     manifest = json.loads((_ANNEX3 / "manifest.json").read_text(encoding="utf-8"))
     case = next(item for item in manifest["cases"] if item["id"] == "metar_a3_1")
     golden = (_ANNEX3 / case["golden"]).read_text(encoding="utf-8")
-    shadow = convert_shadow(_METAR_TAC, product="METAR", profile="annex3", iwxxm_version="2025-2")
+    shadow = convert_shadow(_METAR_TAC, product="METAR", profile="ICAO_2025", iwxxm_version="2025-2")
     assert shadow.xml is not None
     assert canonicalize_xml(shadow.xml) == canonicalize_xml(golden)
 
 
 def test_same_tac_keeps_distinct_pin_namespaces() -> None:
-    older = convert_shadow(_METAR_TAC, product="METAR", profile="annex3", iwxxm_version="2023-1")
-    newer = convert_shadow(_METAR_TAC, product="METAR", profile="annex3", iwxxm_version="2025-2")
+    older = convert_shadow(_METAR_TAC, product="METAR", profile="ICAO_2025", iwxxm_version="2023-1")
+    newer = convert_shadow(_METAR_TAC, product="METAR", profile="ICAO_2025", iwxxm_version="2025-2")
     assert older.xml is not None
     assert newer.xml is not None
     assert _NS["2023-1"] in older.xml
@@ -80,8 +80,8 @@ def test_same_tac_keeps_distinct_pin_namespaces() -> None:
 
 
 def test_annex3_rejects_3_0_0_in_shadow_the_same_way() -> None:
-    legacy = convert(_METAR_TAC, product="METAR", profile="annex3", iwxxm_version="3.0.0")
-    shadow = convert_shadow(_METAR_TAC, product="METAR", profile="annex3", iwxxm_version="3.0.0")
+    legacy = convert(_METAR_TAC, product="METAR", profile="ICAO_2025", iwxxm_version="3.0.0")
+    shadow = convert_shadow(_METAR_TAC, product="METAR", profile="ICAO_2025", iwxxm_version="3.0.0")
     assert legacy.ok is False
     assert shadow.ok is False
     assert shadow.xml == legacy.xml
@@ -103,16 +103,16 @@ def test_ca_eccc_shadow_keeps_3_0_0_xml() -> None:
 
 
 def test_speci_shadow_xml_matches_legacy() -> None:
-    legacy = convert(_SPECI_TAC, product="SPECI", profile="annex3", iwxxm_version="2025-2")
-    shadow = convert_shadow(_SPECI_TAC, product="SPECI", profile="annex3", iwxxm_version="2025-2")
+    legacy = convert(_SPECI_TAC, product="SPECI", profile="ICAO_2025", iwxxm_version="2025-2")
+    shadow = convert_shadow(_SPECI_TAC, product="SPECI", profile="ICAO_2025", iwxxm_version="2025-2")
     assert legacy.ok is True
     assert shadow.xml == legacy.xml
     assert shadow.match is not None
 
 
 def test_non_shadow_product_does_not_run_the_pack() -> None:
-    legacy = convert("not a product", product="GAMET", profile="annex3", iwxxm_version="2025-2")
-    shadow = convert_shadow("not a product", product="GAMET", profile="annex3", iwxxm_version="2025-2")
+    legacy = convert("not a product", product="GAMET", profile="ICAO_2025", iwxxm_version="2025-2")
+    shadow = convert_shadow("not a product", product="GAMET", profile="ICAO_2025", iwxxm_version="2025-2")
     assert shadow.xml == legacy.xml
     assert shadow.match is None
     assert shadow.pack_id is None

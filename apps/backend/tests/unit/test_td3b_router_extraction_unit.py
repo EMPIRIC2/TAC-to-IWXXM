@@ -100,7 +100,7 @@ async def test_tac_quality_lint_tac_branches(monkeypatch: pytest.MonkeyPatch) ->
         request,
         manual_text=METAR_TAC,
         product="METAR",
-        semantic_profile="annex3",
+        semantic_profile="ICAO_2025",
         files=None,
     )
     assert isinstance(response_fallback, Response)

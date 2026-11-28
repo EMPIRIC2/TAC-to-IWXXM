@@ -93,7 +93,7 @@ def test_convert_unknown_product_lead_and_guards() -> None:
     bad_status = convert(
         "METAR KJFK 010000Z NIL=",
         product="METAR",
-        profile="annex3",
+        profile="ICAO_2025",
         report_status="WEIRD",
     )
     assert bad_status.ok is False

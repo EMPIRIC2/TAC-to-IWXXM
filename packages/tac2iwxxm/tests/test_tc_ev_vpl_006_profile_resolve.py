@@ -13,23 +13,21 @@ from tac2iwxxm.profile_resolve import (
 from tac2iwxxm import profile_resolve
 
 
-def test_annex3_alias_and_canonical_bind_builtin_policies() -> None:
-    alias = resolve_validation_policies("annex3")
+def test_icao_2025_canonical_binds_builtin_policies() -> None:
     canonical = resolve_validation_policies("ICAO_2025")
-    assert alias.emit_key == "annex3"
+    assert canonical.emit_key == "annex3"
     assert canonical.canonical == "icao_2025"
-    assert alias.tac_quality_policy_id == "annex3-metar-quality"
-    assert alias.iwxxm_output_policy_id == "annex3-iwxxm-output"
-    assert canonical.tac_quality_policy_id == alias.tac_quality_policy_id
+    assert canonical.tac_quality_policy_id == "annex3-metar-quality"
+    assert canonical.iwxxm_output_policy_id == "annex3-iwxxm-output"
 
 
 def test_taf_product_swaps_to_taf_quality_policy() -> None:
-    metar = resolve_validation_policies("annex3", product="METAR")
-    taf = resolve_validation_policies("annex3", product="TAF")
+    metar = resolve_validation_policies("ICAO_2025", product="METAR")
+    taf = resolve_validation_policies("ICAO_2025", product="TAF")
     assert metar.tac_quality_policy_id == "annex3-metar-quality"
     assert taf.tac_quality_policy_id == "annex3-taf-quality"
     assert taf.iwxxm_output_policy_id == "annex3-iwxxm-output"
-    us_taf = resolve_validation_policies("iwxxm_us", product="TAF")
+    us_taf = resolve_validation_policies("US_FAA_NWS", product="TAF")
     assert us_taf.tac_quality_policy_id == "taf-prob-period-info-quality"
     mil_taf = resolve_validation_policies("us_military", product="TAF")
     assert mil_taf.tac_quality_policy_id == "taf-prob-period-info-quality"
@@ -49,17 +47,17 @@ def test_emit_chain_falls_back_when_catalog_import_fails(
 
 
 def test_sigmet_product_swaps_to_sigmet_quality_policy() -> None:
-    sigmet = resolve_validation_policies("annex3", product="SIGMET")
+    sigmet = resolve_validation_policies("ICAO_2025", product="SIGMET")
     assert sigmet.tac_quality_policy_id == "annex3-sigmet-quality"
     assert sigmet.iwxxm_output_policy_id == "annex3-iwxxm-output"
-    us = resolve_validation_policies("iwxxm_us", product="SIGMET")
+    us = resolve_validation_policies("US_FAA_NWS", product="SIGMET")
     assert us.tac_quality_policy_id == "annex3-sigmet-quality"
 
 
 def test_airmet_vaa_tca_product_quality_swaps() -> None:
-    assert resolve_validation_policies("annex3", product="AIRMET").tac_quality_policy_id == "annex3-airmet-quality"
-    assert resolve_validation_policies("annex3", product="VAA").tac_quality_policy_id == "annex3-vaa-quality"
-    assert resolve_validation_policies("annex3", product="TCA").tac_quality_policy_id == "annex3-tca-quality"
+    assert resolve_validation_policies("ICAO_2025", product="AIRMET").tac_quality_policy_id == "annex3-airmet-quality"
+    assert resolve_validation_policies("ICAO_2025", product="VAA").tac_quality_policy_id == "annex3-vaa-quality"
+    assert resolve_validation_policies("ICAO_2025", product="TCA").tac_quality_policy_id == "annex3-tca-quality"
 
 
 def test_policy_overrides_replace_one_slot() -> None:
@@ -77,7 +75,7 @@ def test_unknown_profile_and_missing_binding(monkeypatch: pytest.MonkeyPatch) ->
         resolve_validation_policies("not-a-profile")
     monkeypatch.setattr("tac2iwxxm.profile_resolve._POLICY_BY_EMIT", {})
     with pytest.raises(ProfileResolveError, match="no policy binding"):
-        resolve_validation_policies("annex3")
+        resolve_validation_policies("ICAO_2025")
 
 
 def test_profile_dir_layers_one_policy_id(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -99,7 +97,7 @@ def test_profile_dir_layers_one_policy_id(tmp_path: Path, monkeypatch: pytest.Mo
     scoped = resolve_validation_policies("ca_eccc")
     assert scoped.iwxxm_output_policy_id == "ca-iwxxm-output"
     assert scoped.tac_quality_policy_id == "annex3-metar-quality"
-    untouched = resolve_validation_policies("annex3")
+    untouched = resolve_validation_policies("ICAO_2025")
     assert untouched.iwxxm_output_policy_id == "annex3-iwxxm-output"
     (overlay / "ca.yaml").write_text(
         "id: ca-binding\nprofiles: [ca_eccc]\nextends: annex3\ntac_quality_policy_id: ca-tac\n",
@@ -119,7 +117,7 @@ def test_profile_dir_layers_one_policy_id(tmp_path: Path, monkeypatch: pytest.Mo
 
     monkeypatch.setenv("TAC2IWXXM_PROFILE_DIR", str(tmp_path / "missing"))
     with pytest.raises(ProfileResolveError, match="not a folder"):
-        resolve_validation_policies("annex3")
+        resolve_validation_policies("ICAO_2025")
 
     (overlay / "ca.yaml").write_text("id: ca-binding\nprofiles: [ca_eccc]\nextends: not-a-profile\n", encoding="utf-8")
     monkeypatch.setenv("TAC2IWXXM_PROFILE_DIR", str(overlay))
@@ -128,7 +126,7 @@ def test_profile_dir_layers_one_policy_id(tmp_path: Path, monkeypatch: pytest.Mo
 
     (overlay / "ca.yaml").write_text("- just-a-list\n", encoding="utf-8")
     with pytest.raises(ProfileResolveError, match="mapping"):
-        resolve_validation_policies("annex3")
+        resolve_validation_policies("ICAO_2025")
 
     (overlay / "ca.yaml").write_text(
         "id: ca-binding\nprofiles: [ca_eccc]\nextends: [annex3, iwxxm_us]\n",

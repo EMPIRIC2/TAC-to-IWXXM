@@ -37,10 +37,13 @@ async def validate_comprehensive(
         description="Validation layers to run (ALL, or specific: AIRPORT_ICAO, TAC_SYNTAX, XML_WELLFORMED, XML_SCHEMA, SCHEMATRON, GML_REFERENCES, WMO_CODELISTS)",
     ),
     stop_on_error: bool = Form(default=True, description="Stop at first blocking layer failure"),
-    profile: str = Form(default="", description="Deprecated - use semantic_profile (legacy alias: annex3 or iwxxm_us)"),
+    profile: str = Form(
+        default="",
+        description="Deprecated - use semantic_profile (use canonical ids; annex3/iwxxm_us aliases removed)",
+    ),
     semantic_profile: str = Form(
         default="",
-        description="Semantic profile id (e.g. ICAO_2025, US_FAA_NWS, CA_ECCC, AU_BOM, NZ_CAA_MET, UK_METOFFICE; aliases annex3 / iwxxm_us accepted)",
+        description="Semantic profile id (e.g. ICAO_2025, US_FAA_NWS, CA_ECCC, AU_BOM, NZ_CAA_MET, UK_METOFFICE; canonical ids only; annex3/iwxxm_us aliases removed)",
     ),
     exchange_profile: str = Form(
         default="",

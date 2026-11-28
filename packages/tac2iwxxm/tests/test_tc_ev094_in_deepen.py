@@ -64,5 +64,5 @@ def test_tc_ev094_in_taf_fixture_lint_overlay() -> None:
     tac = (IN_ROOT / case["tac"]).read_text(encoding="utf-8")
     codes = {i.code for i in lint(tac, product="TAF", profile="in_imd").issues}
     assert "IN_TAF_TX_TN_OMITTED" in codes
-    annex = {i.code for i in lint(tac, product="TAF", profile="annex3").issues}
+    annex = {i.code for i in lint(tac, product="TAF", profile="ICAO_2025").issues}
     assert "IN_TAF_TX_TN_OMITTED" not in annex

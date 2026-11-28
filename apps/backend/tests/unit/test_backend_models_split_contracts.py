@@ -89,7 +89,7 @@ def test_preset_create_and_update_validation_matrix() -> None:
     created = PresetCreate(
         slug="ops-default",
         name="ops-default",
-        semantic_profile="annex3",
+        semantic_profile="ICAO_2025",
         iwxxm_version="2025-2",
     )
     assert created.name == "ops-default"
@@ -98,7 +98,7 @@ def test_preset_create_and_update_validation_matrix() -> None:
         PresetCreate(
             slug="",
             name="x",
-            semantic_profile="annex3",
+            semantic_profile="ICAO_2025",
             iwxxm_version="2025-2",
         )
 

@@ -4,6 +4,11 @@ All notable user-facing and deployable changes for TAC to IWXXM.
 
 ## Unreleased
 
+### Removed
+- Wire aliases `annex3` → `ICAO_2025` and `iwxxm_us` → `US_FAA_NWS` after the
+  2026-10-31 cutover ([#1025](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1025)).
+  Callers must use canonical semantic ids. Internal emit keys are unchanged.
+
 ### Added
 - Official IWXXM pin catalog + fetch/verify pipeline for Schematron and matching
   XSD (`config/schemas/iwxxm-official-pins.json`, `make fetch-iwxxm-schemas`).

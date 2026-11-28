@@ -65,7 +65,7 @@ def test_normalize_issue_severity(raw: object, expected: str) -> None:
 
 def test_annex3_convert_echoes_remarks_excluded(client: TestClient) -> None:
     tac = "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005 RMK AO2 SLP176="
-    body = _convert(client, tac=tac, profile="annex3")
+    body = _convert(client, tac=tac, profile="ICAO_2025")
     codes = [i.get("code") for i in (body.get("issues") or [])]
     assert "REMARKS_EXCLUDED" in codes
     assert body.get("successful", 0) >= 1
@@ -123,7 +123,7 @@ def test_convert_absorbs_enum_like_and_warning_error_severities(
     body = _convert(
         client,
         tac="METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005=",
-        profile="annex3",
+        profile="ICAO_2025",
     )
     by_code = {i.get("code"): i.get("severity") for i in (body.get("issues") or [])}
     # : convert-path errors promote to critical; warnings/info stay.

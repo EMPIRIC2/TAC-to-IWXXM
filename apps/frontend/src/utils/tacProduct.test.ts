@@ -92,8 +92,8 @@ describe('isConvertProductSelection', () => {
 });
 
 describe('coerceIwxxmProfile', () => {
-  it('keeps ICAO aliases; maps dropped nationals to ICAO_2025 (M1)', () => {
-    expect(coerceIwxxmProfile('annex3')).toBe('annex3');
+  it('maps removed aliases and dropped nationals to ICAO_2025 (M1 / #1025)', () => {
+    expect(coerceIwxxmProfile('annex3')).toBe('ICAO_2025');
     expect(coerceIwxxmProfile('ICAO_2025')).toBe('ICAO_2025');
     expect(coerceIwxxmProfile('iwxxm_us')).toBe('ICAO_2025');
     expect(coerceIwxxmProfile('ca_eccc')).toBe('ICAO_2025');

@@ -25,7 +25,7 @@ def test_convert_low_sm_vis_without_rvr_includes_nil_rvr() -> None:
     result = convert(
         "METAR CYBR 021400Z 04010KT 3/4SM BR OVC002 10/10 A2979=",
         product="METAR",
-        profile="annex3",
+        profile="ICAO_2025",
         iwxxm_version="2025-2",
     )
     assert result.ok

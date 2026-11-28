@@ -43,7 +43,7 @@ def test_validate_calls_sdk_once_without_orchestrator_xsd_schematron(
         xml: str,
         *,
         iwxxm_version: str,
-        profile: str = "annex3",
+        profile: str = "ICAO_2025",
         levels=None,
         product: str | None = None,
         output_policy_id: str | None = None,
@@ -94,7 +94,7 @@ def test_validate_calls_sdk_once_without_orchestrator_xsd_schematron(
         files={
             "xml_content": (None, xml),
             "iwxxm_version": (None, "2023-1"),
-            "profile": (None, "annex3"),
+            "profile": (None, "ICAO_2025"),
             "layers": (None, "ALL"),
         },
     )

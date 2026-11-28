@@ -336,7 +336,7 @@ def test_validate_contract_shape(client: TestClient, monkeypatch: pytest.MonkeyP
         xml: str,
         *,
         iwxxm_version: str,
-        profile: str = "annex3",
+        profile: str = "ICAO_2025",
         levels=None,
         product=None,
         output_policy_id: str | None = None,
