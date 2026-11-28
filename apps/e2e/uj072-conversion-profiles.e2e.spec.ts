@@ -469,10 +469,7 @@ test.describe('UJ-072: ConversionProfile editor (EV-933 / TC-EV933-006)', () => 
       'LIB.CONVERSION.US_FAA_NWS',
     );
 
-    const openBtn = page.getByTestId('open-dissemination-drawer');
-    await expect(openBtn).toBeEnabled({ timeout: 15_000 });
-    await openBtn.click();
-    await expect(page.getByTestId('dissemination-drawer')).toBeVisible();
+    // DI-008: dissemination drawer removed; no opposite-state locator remains.
   });
 
   test('TC-EV1120-010/012/014/017: summary, compare, blocks, and starter sync', async ({

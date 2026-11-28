@@ -4,12 +4,6 @@
  */
 import { describe, expect, it } from 'vitest';
 import {
-  hasDropFiles,
-  dropReaderText,
-  progressRowState,
-} from '@/utils/disseminationDrawerPure';
-import type { DisseminationRowUiState } from '@/models/disseminationDrawer';
-import {
   initialConversionParams,
   conversionParamsFromStoredPreferences,
 } from '@/utils/fileConverterParams';
@@ -58,25 +52,5 @@ describe('FileConverter result-card mutation matrix', () => {
 
     queue = queue.filter((item) => item.id !== 'c1');
     expect(queue).toHaveLength(0);
-  });
-});
-
-describe('DisseminationDrawer helpers matrix', () => {
-  it('validates drop files and reader text (V+/V−)', () => {
-    const empty = { length: 0 } as unknown as FileList;
-    expect(hasDropFiles(empty)).toBe(false);
-    expect(hasDropFiles(undefined)).toBe(false);
-    expect(dropReaderText('hello')).toBe('hello');
-    expect(dropReaderText(null)).toBe('');
-  });
-
-  it('maps progress row states for pending, success, and failure', () => {
-    const state: Record<string, DisseminationRowUiState> = {
-      a: { status: 'ok' },
-      b: { status: 'error', error: 'nope' },
-    };
-    expect(progressRowState(state, 'a').status).toBe('ok');
-    expect(progressRowState(state, 'b').status).toBe('error');
-    expect(progressRowState(state, 'missing').status).toBe('pending');
   });
 });

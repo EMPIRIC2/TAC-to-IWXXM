@@ -21,7 +21,6 @@ from src import api_wire
 from src.config import icao_opmet as icao_cfg
 from src.config import iwxxm_versions as versions
 from src.routers import conversion as conversion_router
-from src.routers import dissemination_router_helpers as diss_helpers
 from src.routers import icao_opmet as icao_router
 from src.schemas.work_session import WorkSessionUpdate
 from src.utilities import abuse_controls as abuse
@@ -116,21 +115,6 @@ def test_wire_payload_dict_branches() -> None:
     assert conversion_router._wire_payload_dict({"a": 1}) == {"a": 1}
     assert conversion_router._wire_payload_dict(SimpleNamespace(model_dump=lambda: {"b": 2})) == {"b": 2}
     assert conversion_router._wire_payload_dict(SimpleNamespace(c=3)) == {}
-
-
-def test_client_id_anonymous_when_no_host() -> None:
-    req = SimpleNamespace(client=None, headers={})
-    assert diss_helpers.client_id(req)
-
-
-async def test_read_send_decode_error() -> None:
-    from starlette.requests import Request
-
-    scope = {"type": "http", "method": "POST", "path": "/", "headers": [], "client": ("1.1.1.1", 1)}
-    req = Request(scope)
-    req._body = b"{not-json"
-    with pytest.raises(HTTPException):
-        await diss_helpers.read_send(req)
 
 
 def test_abuse_positive_int_invalid_and_bad_content_length(monkeypatch: pytest.MonkeyPatch) -> None:

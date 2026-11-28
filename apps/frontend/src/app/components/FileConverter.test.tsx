@@ -806,39 +806,6 @@ describe('FileConverter Component', () => {
       expect(screen.getByLabelText('Enter METAR data manually')).toBeInTheDocument();
     });
 
-    it('primary action strip exposes only New TAC, Convert, and Download latest', () => {
-      operatorDisseminationUiConfig.destinationsEnabled = true;
-      seedLiveConvertChrome();
-      render(<FileConverter {...defaultProps} />);
-      const strip = screen.getByTestId('convert-primary-actions');
-      expect(within(strip).getByTestId('new-tac-button')).toHaveTextContent('New TAC');
-      expect(within(strip).getByTestId('convert-button')).toHaveTextContent('Convert');
-      const downloadLatest = within(strip).getByTestId('convert-download-iwxxm');
-      expect(downloadLatest).toHaveTextContent('Download latest');
-      expect(downloadLatest).toBeDisabled();
-      // Cover onClick early return when no converted result exists yet.
-      const reactPropsKey = Object.keys(downloadLatest).find((key) =>
-        key.startsWith('__reactProps'),
-      );
-      const onClick = reactPropsKey
-        ? (
-            downloadLatest as unknown as Record<
-              string,
-              { onClick?: (event: MouseEvent) => void }
-            >
-          )[reactPropsKey]?.onClick
-        : undefined;
-      expect(onClick).toBeTypeOf('function');
-      onClick?.(new MouseEvent('click'));
-      expect(within(strip).queryByTestId('convert-and-send-button')).toBeNull();
-      expect(within(strip).queryByTestId('open-dissemination-drawer')).toBeNull();
-      expect(within(strip).queryByTestId('download-zip-button')).toBeNull();
-      expect(within(strip).queryByTestId('clear-queue-button')).toBeNull();
-      expect(screen.getByTestId('convert-and-send-button')).toBeInTheDocument();
-      expect(screen.getByTestId('download-zip-button')).toBeInTheDocument();
-      expect(screen.getByTestId('clear-queue-button')).toBeInTheDocument();
-    });
-
     it('UX-2026-10-30: primary actions keep Convert centered in equal columns', () => {
       seedLiveConvertChrome();
       render(<FileConverter {...defaultProps} />);
@@ -1167,18 +1134,6 @@ describe('FileConverter Component', () => {
       expect(screen.getByTestId('theme-toggle')).toBeInTheDocument();
     });
 
-    it('does not display Upload to Database button (EV-beta-ux-export-auth)', async () => {
-      operatorDisseminationUiConfig.destinationsEnabled = true;
-      render(<FileConverter {...defaultProps} />);
-      expect(screen.queryByTestId('upload-to-database-button')).not.toBeInTheDocument();
-      expect(
-        screen.queryByText(/upload to database/i, { selector: 'button' }),
-      ).not.toBeInTheDocument();
-      expect(
-        await screen.findByTestId('open-dissemination-drawer'),
-      ).toBeInTheDocument();
-    });
-
     it('should display settings button', async () => {
       render(<FileConverter {...defaultProps} />);
       const settingsBtn = await screen.findByLabelText(/open user preferences/i);
@@ -1189,7 +1144,6 @@ describe('FileConverter Component', () => {
 
   describe('Dialog Management', () => {
     it('does not mount database upload dialog (EV-beta-ux-export-auth)', async () => {
-      operatorDisseminationUiConfig.destinationsEnabled = true;
       render(<FileConverter {...defaultProps} />);
       expect(screen.queryByTestId('database-upload-dialog')).not.toBeInTheDocument();
       expect(screen.queryByTestId('upload-to-database-button')).not.toBeInTheDocument();
@@ -2674,62 +2628,6 @@ describe('FileConverter Component', () => {
       });
     });
 
-    it('opens upload dialog when converted files are present (destinations UI on)', async () => {
-      operatorDisseminationUiConfig.destinationsEnabled = true;
-      const user = userEvent.setup({ delay: null });
-      mockConvertMetarToIwxxm.mockResolvedValueOnce({
-        results: [{ iwxxm_xml: '<iwxxm>upload-test</iwxxm>' }],
-      });
-
-      const { container } = render(<FileConverter {...defaultProps} />);
-      const textarea = container.querySelector('textarea') as HTMLTextAreaElement;
-      fireEvent.change(textarea, { target: { value: 'METAR UPLOAD BUTTON' } });
-      await user.click(screen.getByTestId('convert-button'));
-
-      expect(screen.queryByTestId('upload-to-database-button')).not.toBeInTheDocument();
-      expect(
-        await screen.findByTestId('open-dissemination-drawer'),
-      ).toBeInTheDocument();
-    });
-
-    it('shows Convert&Send and Disseminate when destinations UI is on (TC-EV091-001 / #898; Upload to Database removed EV-beta)', () => {
-      operatorDisseminationUiConfig.destinationsEnabled = true;
-      render(<FileConverter {...defaultProps} />);
-      expect(screen.getByTestId('open-dissemination-drawer')).toBeInTheDocument();
-      expect(screen.getByTestId('convert-and-send-button')).toBeInTheDocument();
-      expect(screen.queryByTestId('upload-to-database-button')).not.toBeInTheDocument();
-      expect(screen.getByTestId('convert-button')).toBeInTheDocument();
-    });
-
-    it('uses outline Convert&Send so Convert is the sole filled primary (TC-UX-R04-001)', () => {
-      operatorDisseminationUiConfig.destinationsEnabled = true;
-      render(<FileConverter {...defaultProps} />);
-      const convert = screen.getByTestId('convert-button');
-      const convertAndSend = screen.getByTestId('convert-and-send-button');
-      const disseminate = screen.getByTestId('open-dissemination-drawer');
-      expect(convert).toHaveClass('bg-primary');
-      expect(convertAndSend).toHaveClass('bg-background');
-      expect(convertAndSend).not.toHaveClass('bg-secondary');
-      expect(disseminate).toHaveClass('bg-background');
-    });
-
-    it('centers More actions button label clusters (UX-2026-10-29-center-more-actions-buttons)', () => {
-      operatorDisseminationUiConfig.destinationsEnabled = true;
-      render(<FileConverter {...defaultProps} />);
-      const panel = screen.getByTestId('convert-settings-secondary-actions');
-      const buttons = [
-        within(panel).getByTestId('convert-and-send-button'),
-        within(panel).getByTestId('open-dissemination-drawer'),
-        within(panel).getByTestId('download-zip-button'),
-        within(panel).getByTestId('clear-queue-button'),
-      ];
-      for (const button of buttons) {
-        const classes = button.className.split(/\s+/);
-        expect(classes).toContain('justify-center');
-        expect(classes).not.toContain('justify-start');
-      }
-    });
-
     it('contains product-profile bar in main column beside Recent work (TC-UX-RW-001)', () => {
       render(<FileConverter {...defaultProps} onLoadWorkSession={vi.fn()} />);
       const main = screen.getByTestId('workbench-main-column');
@@ -2741,20 +2639,6 @@ describe('FileConverter Component', () => {
       expect(screen.getByTestId('library-pickers-bar')).toBeInTheDocument();
       expect(screen.getByTestId('conversion-library-select')).toBeInTheDocument();
       expect(screen.queryByTestId('exchange-profile-select')).not.toBeInTheDocument();
-    });
-
-    it('hides Convert&Send and Disseminate while destinations UI is off (TC-EV042-001 gate residual)', () => {
-      operatorDisseminationUiConfig.destinationsEnabled = false;
-      render(<FileConverter {...defaultProps} />);
-      expect(screen.queryByTestId('open-dissemination-drawer')).not.toBeInTheDocument();
-      expect(screen.queryByTestId('convert-and-send-button')).not.toBeInTheDocument();
-      expect(screen.queryByTestId('upload-to-database-button')).not.toBeInTheDocument();
-      expect(
-        screen.queryByRole('button', {
-          name: /upload .* converted files to database/i,
-        }),
-      ).not.toBeInTheDocument();
-      expect(screen.getByTestId('convert-button')).toBeInTheDocument();
     });
 
     it('work queue keyboard next + Enter converts focused item (TC-EV042-003)', async () => {
@@ -3678,7 +3562,6 @@ describe('FileConverter Component', () => {
 
     // Upload-to-database dialog removed (EV-beta-ux-export-auth)
     it('does not expose upload-to-database after convert (EV-beta-ux-export-auth)', async () => {
-      operatorDisseminationUiConfig.destinationsEnabled = true;
       const user = userEvent.setup({ delay: null });
       mockConvertMetarToIwxxm.mockResolvedValueOnce({
         results: [{ iwxxm_xml: '<iwxxm>close-dialog</iwxxm>' }],
@@ -3699,73 +3582,6 @@ describe('FileConverter Component', () => {
           name: /upload .* converted files to database/i,
         }),
       ).not.toBeInTheDocument();
-    });
-
-    it('displays Convert&Send button and chains convert with upload (flag-on coverage)', async () => {
-      operatorDisseminationUiConfig.destinationsEnabled = true;
-      const user = userEvent.setup({ delay: null });
-      mockConvertMetarToIwxxm.mockResolvedValueOnce({
-        results: [{ iwxxm_xml: '<iwxxm>send-test</iwxxm>' }],
-      });
-
-      const { container } = render(<FileConverter {...defaultProps} />);
-      fireEvent.click(screen.getByTestId('live-iwxxm-toggle'));
-      const convertAndSendBtn = screen.getByTestId('convert-and-send-button');
-      expect(convertAndSendBtn).toBeDisabled();
-
-      const textarea = container.querySelector('textarea') as HTMLTextAreaElement;
-      fireEvent.change(textarea, { target: { value: 'METAR CONVERT AND SEND' } });
-      expect(convertAndSendBtn).toBeEnabled();
-
-      await user.click(convertAndSendBtn);
-
-      await waitFor(() => {
-        expect(mockConvertMetarToIwxxm).toHaveBeenCalledTimes(1);
-        expect(mockUploadConvertedFiles).toHaveBeenCalledTimes(1);
-      });
-
-      expect(mockUploadConvertedFiles).toHaveBeenCalledWith(
-        expect.objectContaining({
-          options: {
-            format: 'iwxxm',
-            destination: 'primary',
-            includeOriginal: false,
-          },
-        }),
-      );
-      expect(mockToast.success).toHaveBeenCalledWith('Files uploaded successfully');
-    });
-
-    it('shows send failure when convert succeeds but upload fails (flag-on coverage)', async () => {
-      operatorDisseminationUiConfig.destinationsEnabled = true;
-      const user = userEvent.setup({ delay: null });
-      mockConvertMetarToIwxxm.mockResolvedValueOnce({
-        results: [{ iwxxm_xml: '<iwxxm>send-fail</iwxxm>' }],
-      });
-      mockUploadConvertedFiles.mockRejectedValueOnce(new Error('Upload rejected'));
-
-      const { container } = render(<FileConverter {...defaultProps} />);
-      const textarea = container.querySelector('textarea') as HTMLTextAreaElement;
-      fireEvent.change(textarea, { target: { value: 'METAR SEND FAIL' } });
-      await user.click(screen.getByTestId('convert-and-send-button'));
-
-      await waitFor(() => {
-        expect(mockToast.error).toHaveBeenCalledWith(
-          'Conversion succeeded but send failed: Upload rejected',
-        );
-      });
-      expect(screen.getByText('Send Error')).toBeInTheDocument();
-      expect(screen.getByText(/send failed: upload rejected/i)).toBeInTheDocument();
-    });
-
-    it('enables Convert&Send without auth token when destinations UI on (F21)', async () => {
-      operatorDisseminationUiConfig.destinationsEnabled = true;
-      const { container } = render(<FileConverter {...defaultProps} />);
-      const textarea = container.querySelector('textarea') as HTMLTextAreaElement;
-      fireEvent.change(textarea, { target: { value: 'METAR NO TOKEN' } });
-
-      const convertAndSend = screen.getByTestId('convert-and-send-button');
-      expect(convertAndSend).not.toBeDisabled();
     });
 
     it('accumulates prior result cards on successful convert (#903 / F7.r; supersedes #555 replace)', async () => {
@@ -5084,30 +4900,6 @@ describe('FileConverter Component', () => {
       });
     });
 
-    it('marks Convert & Send failed without uploading when conversion has errors', async () => {
-      operatorDisseminationUiConfig.destinationsEnabled = true;
-      const user = userEvent.setup({ delay: null });
-      mockConvertMetarToIwxxm.mockResolvedValueOnce({
-        results: [{ iwxxm_xml: '<partial/>', tac_input: 'METAR PARTIAL=' }],
-        errors: ['partial conversion'],
-        issues: [],
-      });
-      const { container } = render(<FileConverter {...defaultProps} />);
-
-      await user.type(
-        container.querySelector('textarea') as HTMLTextAreaElement,
-        'METAR PARTIAL=',
-      );
-      await user.click(screen.getByTestId('convert-and-send-button'));
-
-      await waitFor(() => {
-        expect(mockPersistSession).toHaveBeenCalledWith(expect.anything(), {
-          status: 'failed',
-        });
-      });
-      expect(mockUploadConvertedFiles).not.toHaveBeenCalled();
-    });
-
     it('shows bulletin failures while retaining converted reports and issue fallback', async () => {
       const user = userEvent.setup({ delay: null });
       mockConvertBulletin.mockResolvedValueOnce({
@@ -5490,100 +5282,6 @@ describe('FileConverter Component', () => {
       await waitFor(() => {
         expect(mockToast.error).toHaveBeenCalledWith(
           'Conversion failed. Please check the input and try again.',
-        );
-      });
-    });
-
-    it('Convert & Send persists failed when conversion returns null', async () => {
-      operatorDisseminationUiConfig.destinationsEnabled = true;
-      mockConvertMetarToIwxxm.mockResolvedValueOnce({
-        results: [],
-        errors: ['nothing converted'],
-        issues: [],
-      });
-      render(<FileConverter {...defaultProps} />);
-
-      fireEvent.change(screen.getByTestId('tac-editor'), {
-        target: { value: 'BAD' },
-      });
-      fireEvent.click(screen.getByTestId('convert-and-send-button'));
-
-      await waitFor(() => {
-        expect(mockPersistSession).toHaveBeenCalledWith(expect.anything(), {
-          status: 'failed',
-        });
-      });
-      expect(mockUploadConvertedFiles).not.toHaveBeenCalled();
-    });
-
-    it('Convert & Send blocks upload on soft-preview soft fail', async () => {
-      operatorDisseminationUiConfig.destinationsEnabled = true;
-      const user = userEvent.setup({ delay: null });
-      mockConvertMetarToIwxxm.mockResolvedValueOnce({
-        results: [{ iwxxm_xml: '<partial/>', tac_input: 'METAR PART=' }],
-        errors: [],
-        issues: [{ message: 'lint warn' }],
-        ok: false,
-        failed_spans: [{ start: 0, end: 3, message: 'bad' }],
-      });
-      render(<FileConverter {...defaultProps} />);
-
-      await user.click(screen.getByTestId('soft-preview-toggle'));
-      fireEvent.change(screen.getByTestId('tac-editor'), {
-        target: { value: 'METAR PART=' },
-      });
-      await user.click(screen.getByTestId('convert-and-send-button'));
-
-      await waitFor(() => {
-        expect(mockToast.warning).toHaveBeenCalledWith(
-          'Soft preview found failed groups. Fix them before Convert & Send.',
-        );
-      });
-      expect(mockUploadConvertedFiles).not.toHaveBeenCalled();
-    });
-
-    it('Convert & Send uses fallback success message when upload response omits message', async () => {
-      operatorDisseminationUiConfig.destinationsEnabled = true;
-      const user = userEvent.setup({ delay: null });
-      mockConvertMetarToIwxxm.mockResolvedValueOnce({
-        results: [{ iwxxm_xml: '<sent/>', tac_input: 'METAR SEND=' }],
-        errors: [],
-        issues: [],
-      });
-      mockUploadConvertedFiles.mockResolvedValueOnce({});
-      render(<FileConverter {...defaultProps} />);
-
-      fireEvent.change(screen.getByTestId('tac-editor'), {
-        target: { value: 'METAR SEND=' },
-      });
-      await user.click(screen.getByTestId('convert-and-send-button'));
-
-      await waitFor(() => {
-        expect(mockToast.success).toHaveBeenCalledWith(
-          'Files converted and sent successfully',
-        );
-      });
-    });
-
-    it('Convert & Send reports generic upload failure for non-Error throws', async () => {
-      operatorDisseminationUiConfig.destinationsEnabled = true;
-      const user = userEvent.setup({ delay: null });
-      mockConvertMetarToIwxxm.mockResolvedValueOnce({
-        results: [{ iwxxm_xml: '<sent/>', tac_input: 'METAR SEND=' }],
-        errors: [],
-        issues: [],
-      });
-      mockUploadConvertedFiles.mockRejectedValueOnce('network down');
-      render(<FileConverter {...defaultProps} />);
-
-      fireEvent.change(screen.getByTestId('tac-editor'), {
-        target: { value: 'METAR SEND=' },
-      });
-      await user.click(screen.getByTestId('convert-and-send-button'));
-
-      await waitFor(() => {
-        expect(mockToast.error).toHaveBeenCalledWith(
-          'Conversion succeeded but send failed: Failed to upload to database',
         );
       });
     });
@@ -6028,21 +5726,6 @@ describe('FileConverter Component', () => {
       render(<FileConverter {...defaultProps} />);
       await user.selectOptions(screen.getByTestId('product-type-select'), 'SPECI');
       expect(screen.queryByTestId('open-dissemination-drawer')).not.toBeInTheDocument();
-    });
-
-    it('no-ops convert and convert-and-send when workbench is read-only', async () => {
-      operatorDisseminationUiConfig.destinationsEnabled = true;
-      mockIsReadOnly.value = true;
-      render(<FileConverter {...defaultProps} />);
-
-      invokeReactOnClick(screen.getByTestId('convert-button'));
-      invokeReactOnClick(screen.getByTestId('convert-and-send-button'));
-      await act(async () => {
-        await Promise.resolve();
-      });
-
-      expect(mockConvertMetarToIwxxm).not.toHaveBeenCalled();
-      expect(mockUploadConvertedFiles).not.toHaveBeenCalled();
     });
 
     it('skips focused and batch queue convert when workbench is read-only', async () => {
@@ -7028,15 +6711,6 @@ describe('FileConverter Component', () => {
       expect(screen.getByTestId('convert-button')).toHaveTextContent(
         /Lint & validate/i,
       );
-    });
-
-    it('hides Convert&Send when product is IWXXM (TC-EV060-1003-003)', async () => {
-      operatorDisseminationUiConfig.destinationsEnabled = true;
-      const user = userEvent.setup({ delay: null });
-      render(<FileConverter {...defaultProps} />);
-      expect(screen.getByTestId('convert-and-send-button')).toBeInTheDocument();
-      await user.selectOptions(screen.getByTestId('product-type-select'), 'IWXXM');
-      expect(screen.queryByTestId('convert-and-send-button')).not.toBeInTheDocument();
     });
 
     it('sends product=iwxxm on convert and skips TAC convert message path', async () => {

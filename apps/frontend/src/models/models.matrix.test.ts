@@ -20,7 +20,6 @@ import type {
   QualityMetricsIssue,
   QualityMetricsResidual,
 } from './openapi';
-import type { ByocDestinationParams } from './disseminationDrawer';
 import type {
   WorkSessionConversionLog,
   WorkSessionConversionParams,
@@ -31,12 +30,6 @@ import {
   conversionParamsFromStoredPreferences,
   initialConversionParams,
 } from '@/utils/fileConverterParams';
-import {
-  dropReaderText,
-  hasDropFiles,
-  progressRowState,
-} from '@/utils/disseminationDrawerPure';
-import type { DisseminationRowUiState } from './disseminationDrawer';
 
 const SRC_ROOT = resolve(process.cwd(), 'src');
 
@@ -161,21 +154,21 @@ describe('frontend models split matrix', () => {
   });
 
   describe('mutation failure', () => {
-    it('rejects BYOC params that are not objects', () => {
-      const parse = (raw: string): ByocDestinationParams | null => {
+    it('rejects empty mass-ingest style payloads (non-dissem residual)', () => {
+      const parseFiles = (raw: string): MassIngestResponse | null => {
         try {
           const parsed: unknown = JSON.parse(raw);
           if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
             return null;
           }
-          return parsed as ByocDestinationParams;
+          return parsed as MassIngestResponse;
         } catch {
           return null;
         }
       };
-      expect(parse('[]')).toBeNull();
-      expect(parse('{')).toBeNull();
-      expect(parse('{"uri":"postgres://x"}')?.uri).toBe('postgres://x');
+      expect(parseFiles('[]')).toBeNull();
+      expect(parseFiles('{')).toBeNull();
+      expect(parseFiles('{"accepted_count":0}')?.accepted_count).toBe(0);
     });
   });
 
@@ -204,19 +197,6 @@ describe('frontend models split matrix', () => {
       const issue: QualityMetricsIssue = {};
       expect(residual.message ?? null).toBeNull();
       expect(issue.code ?? null).toBeNull();
-    });
-  });
-
-  describe('dissemination helpers (touched utils)', () => {
-    it('validates drop files and progress rows', () => {
-      expect(hasDropFiles(undefined)).toBe(false);
-      expect(dropReaderText(null)).toBe('');
-      const state: Record<string, DisseminationRowUiState> = {
-        a: { status: 'ok' },
-        b: { status: 'error', error: 'nope' },
-      };
-      expect(progressRowState(state, 'a').status).toBe('ok');
-      expect(progressRowState(state, 'missing').status).toBe('pending');
     });
   });
 

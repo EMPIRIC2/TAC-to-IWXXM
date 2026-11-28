@@ -67,7 +67,6 @@ export { default as JSZip } from 'jszip';
 export { toast } from 'sonner';
 export { ThemeToggle } from '@/app/components/ThemeToggle';
 export { GoldenExamplesSelect } from '@/app/components/GoldenExamplesSelect';
-export { DisseminationDrawer } from '@/app/components/DisseminationDrawer';
 export { BetaBadge } from '@/app/components/BetaBadge';
 export { Checkbox } from '@/app/components/ui/checkbox';
 export {
@@ -76,7 +75,6 @@ export {
   CollapsibleTrigger,
 } from '@/app/components/ui/collapsible';
 export { Tooltip, TooltipContent, TooltipTrigger } from '@/app/components/ui/tooltip';
-export { isOperatorDisseminationDestinationsEnabled } from '@/utils/operatorDisseminationUi';
 export {
   fetchProfileCatalog,
   type MetarFamilyVariant,

@@ -1,13 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /**
- * FileConverterView: dissemination template change, profile radios, and profile reset.
+ * FileConverterView: profile radios and profile reset.
  * Children and dialogs are stubbed so only the view's own handlers run.
- * FR-052..056 / DI-008: destinations default off; tests flip the flag and restore it.
+ * FR-052..056 / DI-008: dissemination drawer unmounted.
  */
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { FileConverterView } from './FileConverterView';
-import { operatorDisseminationUiConfig } from '@/utils/operatorDisseminationUi';
 import { initialConversionParams } from '@/utils/fileConverterParams';
 import { libraryResetForProfile } from '@/utils/profileLibraryReset';
 
@@ -40,29 +39,6 @@ vi.mock('./ConvertHelpChecklist', () => ({ ConvertHelpChecklist: () => null }));
 vi.mock('./PrivacySettingsDialog', () => ({ PrivacySettingsDialog: () => null }));
 vi.mock('./SiteTermsDialog', () => ({ SiteTermsDialog: () => null }));
 vi.mock('./ConvertResultsDrawer', () => ({ ConvertResultsDrawer: () => null }));
-vi.mock('./DisseminationDrawer', () => ({
-  DisseminationDrawer: ({
-    onDisseminationTemplateChange,
-    onOpenChange,
-    disseminationTemplateId,
-    product,
-    iwxxmXml,
-  }: any) => (
-    <div
-      data-testid="dissemination-drawer-mock"
-      data-template={disseminationTemplateId}
-      data-product={product}
-      data-xml={iwxxmXml}
-    >
-      <button type="button" onClick={() => onDisseminationTemplateChange('tpl-1')}>
-        pick-template
-      </button>
-      <button type="button" onClick={() => onOpenChange(false)}>
-        close-drawer
-      </button>
-    </div>
-  ),
-}));
 vi.mock('./ConvertProfileDrawer', () => ({
   ConvertProfileDrawer: ({ nationalSection, onApply, onReset }: any) => (
     <div data-testid="profile-drawer-mock">
@@ -128,56 +104,13 @@ function applyUpdater(spy: ReturnType<typeof vi.fn>, prev: unknown, call = 0) {
 }
 
 describe('FileConverterView', () => {
-  const originalEnabled = operatorDisseminationUiConfig.destinationsEnabled;
-
-  beforeEach(() => {
-    operatorDisseminationUiConfig.destinationsEnabled = true;
-  });
-
   afterEach(() => {
-    operatorDisseminationUiConfig.destinationsEnabled = originalEnabled;
     cleanup();
   });
 
-  it('updates the dissemination template only when it changes', () => {
-    const props = buildProps();
-    render(<FileConverterView {...(props as any)} />);
-    fireEvent.click(screen.getByText('pick-template'));
-    const prev = props.conversionParams;
-    const next = applyUpdater(props.setConversionParams, prev) as any;
-    expect(next.disseminationTemplateId).toBe('tpl-1');
-    const same = { ...prev, disseminationTemplateId: 'tpl-1' };
-    expect(applyUpdater(props.setConversionParams, same)).toBe(same);
-  });
-
-  it('forwards drawer close to handleDisseminationOpenChange', () => {
-    const props = buildProps();
-    render(<FileConverterView {...(props as any)} />);
-    fireEvent.click(screen.getByText('close-drawer'));
-    expect(props.handleDisseminationOpenChange).toHaveBeenCalledWith(false);
-  });
-
-  it('passes product and IWXXM source to the dissemination drawer', () => {
-    const speci = buildProps({
-      conversionParams: { ...initialConversionParams(), product: 'SPECI' },
-      convertedContent: 'fallback-xml',
-    });
-    const { unmount } = render(<FileConverterView {...(speci as any)} />);
-    const drawer = screen.getByTestId('dissemination-drawer-mock');
-    expect(drawer).toHaveAttribute('data-product', 'speci');
-    expect(drawer).toHaveAttribute('data-xml', 'fallback-xml');
-    unmount();
-
-    const metar = buildProps({ convertedFiles: [{ convertedContent: '<first/>' }] });
-    render(<FileConverterView {...(metar as any)} />);
-    const metarDrawer = screen.getByTestId('dissemination-drawer-mock');
-    expect(metarDrawer).toHaveAttribute('data-product', 'metar');
-    expect(metarDrawer).toHaveAttribute('data-xml', '<first/>');
-  });
-
-  it('hides the dissemination drawer when destinations are disabled (default)', () => {
-    operatorDisseminationUiConfig.destinationsEnabled = false;
+  it('does not mount a dissemination drawer (DI-008)', () => {
     render(<FileConverterView {...(buildProps() as any)} />);
+    expect(screen.queryByTestId('dissemination-drawer')).not.toBeInTheDocument();
     expect(screen.queryByTestId('dissemination-drawer-mock')).not.toBeInTheDocument();
   });
 
@@ -198,14 +131,10 @@ describe('FileConverterView', () => {
   });
 
   it('resets the profile to ICAO_2025 from the profile drawer', () => {
-    const props = buildProps({
-      conversionParams: { ...initialConversionParams(), profile: 'annex3' },
-    });
+    const props = buildProps();
     render(<FileConverterView {...(props as any)} />);
-    fireEvent.click(screen.getByText('apply-profile'));
     fireEvent.click(screen.getByText('reset-profile'));
     const next = applyUpdater(props.setConversionParams, props.conversionParams) as any;
     expect(next.profile).toBe('ICAO_2025');
-    expect(next.reportVariant).toBe('');
   });
 });

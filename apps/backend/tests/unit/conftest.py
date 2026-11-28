@@ -18,13 +18,9 @@ def _broadcast_split_service_patches(monkeypatch: pytest.MonkeyPatch) -> None:
     from src.services import conversion_profiles_service_part_2_mixin_1 as cps_m1
     from src.services import conversion_profiles_service_part_2_mixin_1_mixin_1 as cps_m2
     from src.services import conversion_profiles_service_part_2_mixin_1_mixin_1_mixin_1 as cps_m3
-    from src.services import dissemination_ops_service as dos
-    from src.services import dissemination_ops_service_part_1 as dos_p1
-    from src.services import dissemination_ops_service_part_2 as dos_p2
 
     targets = {
         cps: [cps_p1, cps_p2, cps_m1, cps_m2, cps_m3],
-        dos: [dos_p1, dos_p2],
     }
     real_object = um.patch.object
 

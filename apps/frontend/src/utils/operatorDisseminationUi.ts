@@ -1,29 +1,24 @@
 /**
- * Operator dissemination / DB destination UI (F16–F19 drawer + Convert&Send).
+ * Operator dissemination / DB destination UI (F16–F19).
  *
- * EV-091 / #898: destinations restored (Convert&Send, Disseminate).
- * EV-beta-ux-export-auth: Upload to Database toolbar control removed.
- * Mutable config supports Vitest isolation (set ``destinationsEnabled`` false to assert
- * the EV-042 hide gate still works).
+ * FR-052..056 / DI-008: drawer removed; destinations stay off permanently.
+ * Kept as a drop-guard helper for residual tests that assert absence.
  *
- * FR-052..056 / DI-008: dissemination drawer deferred; destinations stay off.
- * Backend ``/api/v1/dissemination/*`` routes are unregistered.
- *
- * [Corpus: fr] epic #1688
+ * [Corpus: fr] epic #1688 / #1696
  */
 
 export const operatorDisseminationUiConfig = {
-  /** When false, Convert&Send + Disseminate are hidden. */
-  destinationsEnabled: false,
+  /** Always false after DI-008 removal. */
+  destinationsEnabled: false as boolean,
 };
 
 /**
  * Whether operator Convert&Send / Disseminate are shown.
  *
- * @returns true when destinations UI is enabled (default false; FR drop)
+ * @returns always false (feature surface removed)
  * @example
  * const _ = true;
  */
 export function isOperatorDisseminationDestinationsEnabled(): boolean {
-  return operatorDisseminationUiConfig.destinationsEnabled;
+  return false;
 }

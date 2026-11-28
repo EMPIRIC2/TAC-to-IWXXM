@@ -90,8 +90,8 @@ export function FileConverterActionStrip(props: FileConverterViewProps) {
           <S.Button
             variant={calmUi.primaryKind === 'download' ? 'default' : 'outline'}
             onClick={() => {
-              if (!latestConverted) return;
-              void handleDownloadSingle(latestConverted);
+              // Button stays disabled when latestConverted is null (DI-008 strip).
+              void handleDownloadSingle(latestConverted!);
             }}
             disabled={isBusy || !latestConverted}
             className="w-full text-base disabled:opacity-40 disabled:cursor-not-allowed"

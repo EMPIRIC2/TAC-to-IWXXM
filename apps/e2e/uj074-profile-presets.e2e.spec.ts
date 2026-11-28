@@ -367,10 +367,7 @@ test.describe('UJ-074: semantic presets + dissemination templates (EV-1051)', ()
       timeout: 15_000,
     });
 
-    const openBtn = page.getByTestId('open-dissemination-drawer');
-    await expect(openBtn).toBeEnabled({ timeout: 15_000 });
-    await openBtn.click();
-    await expect(page.getByTestId('dissemination-drawer')).toBeVisible();
+    // DI-008: dissemination drawer removed; no opposite-state locator remains.
     await expect(page.getByTestId('dissemination-template-select')).toBeVisible();
     await page.getByTestId('dissemination-template-select').selectOption(TEMPLATE_ID);
     await expect(page.getByTestId('dissemination-template-select')).toHaveValue(

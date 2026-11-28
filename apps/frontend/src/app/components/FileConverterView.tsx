@@ -1,4 +1,4 @@
-/* eslint-disable complexity, @typescript-eslint/no-explicit-any -- FileConverter split */
+/* eslint-disable complexity -- FileConverter split */
 /** Presentational FileConverter view composed from extracted regions. */
 import type { FileConverterViewProps } from './FileConverterViewProps';
 import * as S from './fileConverterViewScope';
@@ -37,21 +37,13 @@ export function FileConverterView(props: FileConverterViewProps) {
     setIsPrivacySettingsOpen,
     setIsSiteTermsOpen,
     onLoadWorkSession,
-    isDisseminationOpen,
-    handleDisseminationOpenChange,
-    convertedContent,
-    convertedFiles,
     conversionParams,
-    packagingExchangeProfile,
-    setPackagingExchangeProfile,
     setConversionParams,
     isPreferencesDialogOpen,
     setIsPreferencesDialogOpen,
     isPrivacySettingsOpen,
     isSiteTermsOpen,
     userEmail,
-    accessToken,
-    manualInput,
     helpChecklistOpen,
     setHelpChecklistOpen,
     profileDrawerOpen,
@@ -202,29 +194,6 @@ export function FileConverterView(props: FileConverterViewProps) {
           onOpenTerms={() => setIsSiteTermsOpen(true)}
         />
       </div>
-      {S.isOperatorDisseminationDestinationsEnabled() ? (
-        <S.DisseminationDrawer
-          key={
-            isDisseminationOpen ? `open-${conversionParams.exchangeProfile}` : 'closed'
-          }
-          open={isDisseminationOpen}
-          onOpenChange={handleDisseminationOpenChange}
-          iwxxmXml={convertedFiles?.[0]?.convertedContent ?? convertedContent}
-          tacText={manualInput || undefined}
-          product={conversionParams.product === 'SPECI' ? 'speci' : 'metar'}
-          accessToken={accessToken}
-          disseminationTemplateId={conversionParams.disseminationTemplateId}
-          onDisseminationTemplateChange={(templateId) =>
-            setConversionParams((prev: any) =>
-              prev.disseminationTemplateId === templateId
-                ? prev
-                : { ...prev, disseminationTemplateId: templateId },
-            )
-          }
-          exchangeProfile={packagingExchangeProfile ?? conversionParams.exchangeProfile}
-          onExchangeProfileChange={setPackagingExchangeProfile}
-        />
-      ) : null}
       <S.UserPreferencesDialog
         isOpen={isPreferencesDialogOpen}
         onClose={() => setIsPreferencesDialogOpen(false)}
