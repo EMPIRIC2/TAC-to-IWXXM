@@ -78,30 +78,8 @@ export function FileConverterSetup(props: FileConverterViewProps) {
                         if (!conversionEngineProfileId) {
                           return { ...prev, ...next };
                         }
-                        const lineChanging = S.isSemanticProfileLineChange(
-                          prev.profile,
-                          conversionEngineProfileId,
-                        );
-                        if (lineChanging) {
-                          if (
-                            !S.confirmLibraryResetForProfile(conversionEngineProfileId)
-                          ) {
-                            return prev;
-                          }
-                          const { profile, libraryIds } = S.libraryResetForProfile(
-                            conversionEngineProfileId,
-                          );
-                          return {
-                            ...prev,
-                            ...libraryIds,
-                            profile,
-                            reportVariant: '',
-                            iwxxmVersion: S.coerceIwxxmVersionForProfile(
-                              profile,
-                              prev.iwxxmVersion,
-                            ),
-                          };
-                        }
+                        // M1 / #1025: every wire id coerces to ICAO_2025, so the
+                        // former line-change confirm path is unreachable.
                         const profile = S.coerceIwxxmProfile(conversionEngineProfileId);
                         return {
                           ...prev,

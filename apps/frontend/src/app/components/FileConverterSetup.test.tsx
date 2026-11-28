@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /**
  * Focused tests for FileConverterSetup handlers that are hard to reach through the
- * full workbench after M1 (ICAO-only ship list): library reset confirm, report
- * variant, and the hidden country preset select.
+ * full workbench after M1 (ICAO-only ship list): alias coerce, report variant,
+ * and the hidden country preset select.
  */
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
